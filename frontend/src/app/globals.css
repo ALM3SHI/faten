@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* Tailwind v4 equivalent of `darkMode: 'class'`.
+   Activates `dark:` utilities when `<html>` (or any ancestor) carries `.dark`.
+   The navbar Sun/Moon toggle is what flips that class — see
+   components/navbar.tsx. The pre-hydration script in app/layout.tsx applies
+   it before paint to prevent FOUC. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tokens that drive Tailwind utilities. `@theme inline` means the value is
+   substituted at build time but the underlying CSS var is preserved at
+   runtime — that's what lets `:root` / `.dark` swap palettes live. */
+@theme inline {
+  --font-sans: var(--font-cairo);
+
+  /* Brand accent (does NOT invert — same hue in both themes; only opacity
+     of glow changes via --accent-glow). */
+  --color-uqu-accent: var(--accent);
+  --color-uqu-cyan: var(--accent-2);
+  --color-uqu-danger: var(--danger);
+  --color-uqu-success: var(--success);
+  --color-uqu-warning: var(--warning);
+
+  /* Semantic surfaces — invert via :root / .dark below. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Muted text — usable as `text-muted` (e.g. descriptions, helper labels).
+     This replaces the shadcn `text-muted-foreground` convention in this
+     codebase; both classes resolve to the same color. */
+  --color-muted: var(--muted-text);
+  --color-muted-foreground: var(--muted-text);
+
+  --color-accent: var(--accent-shadcn);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Chart grid color — separate token so Recharts can read it via CSS var. */
+  --color-chart-grid: var(--chart-grid);
+
+  --radius-uqu-sm: var(--r-sm);
+  --radius-uqu-md: var(--r-md);
+  --radius-uqu-lg: var(--r-lg);
+  --radius-uqu-xl: var(--r-xl);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LIGHT MODE — defaults applied when `.dark` is absent on <html>.
+   Inspired by the user's spec: white surfaces, near-black text,
+   neutral-200 borders, neutral-600 muted text.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Brand (unchanged across themes; only opacity scales). */
+  --accent: hsl(245, 78%, 62%);
+  --accent-glow: hsla(245, 78%, 62%, 0.18);
+  --accent-dim: hsla(245, 78%, 62%, 0.08);
+  --accent-2: hsl(187, 80%, 48%);
+  --accent-2-dim: hsla(187, 80%, 48%, 0.10);
+
+  --success: hsl(158, 64%, 45%);
+  --danger: hsl(0, 70%, 58%);
+  --warning: hsl(38, 92%, 55%);
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Page surface */
+  --background: #ffffff;                /* white */
+  --foreground: oklch(0.145 0 0);       /* neutral-950 */
+
+  /* Cards / popovers — faint gray panels on white pages */
+  --card: oklch(0.985 0 0);             /* neutral-50 */
+  --card-foreground: oklch(0.205 0 0);  /* neutral-900 */
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.145 0 0);
+
+  /* Primary / secondary buttons */
+  --primary: hsl(245 78% 62%);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);         /* neutral-100 */
+  --secondary-foreground: oklch(0.205 0 0);
+
+  /* Muted text — usable as text-muted (descriptions, helper labels) */
+  --muted-text: oklch(0.439 0 0);       /* neutral-600 */
+
+  /* Accents / focus states */
+  --accent-shadcn: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+
+  /* Destructive */
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* Lines */
+  --border: oklch(0.922 0 0);           /* neutral-200 */
+  --input: oklch(0.922 0 0);
+  --ring: hsl(245 78% 62%);
+
+  /* Chart grid (Recharts PolarGrid stroke etc.) */
+  --chart-grid: oklch(0.872 0 0);       /* neutral-300 */
+
+  --chart-1: hsl(245 78% 62%);
+  --chart-2: hsl(187 80% 48%);
+  --chart-3: hsl(197 37% 24%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+
+  color-scheme: light;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DARK MODE — applied when <html> carries `.dark`.
+   Matches the original dark palette so existing screenshots are
+   visually unchanged when dark is the active theme.
+   ───────────────────────────────────────────────────────────── */
+.dark {
+  --accent-glow: hsla(245, 78%, 62%, 0.35);
+  --accent-dim: hsla(245, 78%, 62%, 0.12);
+  --accent-2-dim: hsla(187, 80%, 48%, 0.12);
+
+  --background: hsl(240 10% 3.9%);
+  --foreground: oklch(0.985 0 0);
+
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary: hsl(245 78% 62%);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted-text: oklch(0.708 0 0);       /* neutral-400 */
+
+  --accent-shadcn: hsl(240 3.7% 15.9%);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --destructive: hsl(0 62.8% 30.6%);
+
+  --border: hsl(240 3.7% 15.9%);
+  --input: hsl(240 3.7% 15.9%);
+
+  --chart-grid: oklch(0.269 0 0);       /* neutral-800 */
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    direction: rtl;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  /* Frosted-glass panel. Inverts via the foreground/border tokens so the
+     same class works on both themes — light-mode draws faint dark frost
+     over white surfaces, dark-mode draws faint light frost over black. */
+  .glass {
+    background: color-mix(in oklab, var(--foreground) 5%, transparent);
+    border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent);
+    @apply backdrop-blur-xl shadow-2xl;
+  }
+
+  .aurora {
+    @apply fixed inset-0 pointer-events-none -z-10 overflow-hidden;
+  }
+
+  .aurora-blob {
+    @apply absolute rounded-full blur-[100px] animate-pulse;
+  }
+
+  .blob-1 {
+    @apply w-[500px] h-[500px] -top-48 -right-48 bg-uqu-accent/20;
+    animation-duration: 8s;
+  }
+
+  .blob-2 {
+    @apply w-[400px] h-[400px] -bottom-32 -left-32 bg-uqu-cyan/20;
+    animation-duration: 10s;
+  }
+
+  /* Hide scrollbar utility */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Select / Option — drive from the active theme rather than hardcoding
+   dark. `color-scheme` (set on :root / .dark) already styles the
+   native UA chrome correctly; option backgrounds inherit semantic vars. */
+select option {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  padding: 8px;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Used by <SmartLoadingIndicator> for the gradient sweep behind
+   the rotating "thinking" stages. Kept in global CSS instead of
+   styled-jsx so it works under Turbopack without extra setup. */
+@keyframes chat-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.delay-0 { animation-delay: 0s; }
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
