@@ -26,23 +26,22 @@ async def test_nvidia_connection():
     """
     settings = get_settings()
     client = AsyncOpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=settings.NVIDIA_API_KEY,
+        api_key=settings.OPENAI_API_KEY,
     )
     t0 = time.monotonic()
     try:
         completion = await client.chat.completions.create(
-            model=settings.NVIDIA_MODEL,
+            model=settings.OPENAI_MODEL,
             messages=[{"role": "user", "content": "قل مرحبا باختصار"}],
             temperature=0.5,
             max_tokens=64,
         )
         latency = round((time.monotonic() - t0) * 1000)
         reply = (completion.choices[0].message.content or "").strip()
-        logger.info("[test-nvidia] OK — model=%s reply=%s", settings.NVIDIA_MODEL, reply[:80])
+        logger.info("[test-openai] OK — model=%s reply=%s", settings.OPENAI_MODEL, reply[:80])
         return {
             "ok": True,
-            "model": settings.NVIDIA_MODEL,
+            "model": settings.OPENAI_MODEL,
             "reply": reply[:200],
             "latency_ms": latency,
         }
@@ -53,21 +52,21 @@ async def test_nvidia_connection():
             body = e.response.text[:400]
         except Exception:
             pass
-        logger.error("[test-nvidia] HTTP %s — %s", e.status_code, body)
+        logger.error("[test-openai] HTTP %s — %s", e.status_code, body)
         return {
             "ok": False,
-            "model": settings.NVIDIA_MODEL,
+            "model": settings.OPENAI_MODEL,
             "error": f"HTTP {e.status_code}: {body}",
             "latency_ms": latency,
         }
     except (APIConnectionError, APITimeoutError) as e:
         latency = round((time.monotonic() - t0) * 1000)
-        logger.error("[test-nvidia] Connection/timeout: %s", e)
-        return {"ok": False, "model": settings.NVIDIA_MODEL, "error": str(e), "latency_ms": latency}
+        logger.error("[test-openai] Connection/timeout: %s", e)
+        return {"ok": False, "model": settings.OPENAI_MODEL, "error": str(e), "latency_ms": latency}
     except Exception as e:
         latency = round((time.monotonic() - t0) * 1000)
-        logger.error("[test-nvidia] Unexpected: %s", e)
-        return {"ok": False, "model": settings.NVIDIA_MODEL, "error": str(e), "latency_ms": latency}
+        logger.error("[test-openai] Unexpected: %s", e)
+        return {"ok": False, "model": settings.OPENAI_MODEL, "error": str(e), "latency_ms": latency}
 
 
 @router.post("/analyze")

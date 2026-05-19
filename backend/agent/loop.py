@@ -2,8 +2,8 @@
 ================================================================
 UQU AGENT — Agentic Loop with Reasoning Support
 ================================================================
-Iterative tool-calling loop on top of NVIDIA NIM. The exact model is
-configured via NVIDIA_MODEL in .env — defaults to meta/llama-3.3-70b-instruct.
+Iterative tool-calling loop. The exact model is
+configured via OPENAI_MODEL in .env — defaults to gpt-4o.
 
 Robust error handling:
   • Network / API errors are logged with full detail (status code,
@@ -117,7 +117,7 @@ def _is_tools_schema_error(err: Exception) -> bool:
 
 
 def get_openai_client() -> AsyncOpenAI:
-    """Create an AsyncOpenAI client pointing to NVIDIA NIM.
+    """Create an AsyncOpenAI client.
 
     Returns a fresh client each call. For the hot-path (chat), the caller
     should use the long-lived client stored in app.state (created in main.py
@@ -126,8 +126,7 @@ def get_openai_client() -> AsyncOpenAI:
     """
     settings = get_settings()
     return AsyncOpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=settings.NVIDIA_API_KEY,
+        api_key=settings.OPENAI_API_KEY,
     )
 
 
@@ -205,7 +204,7 @@ async def run_agent_loop(
         client = get_openai_client()
     all_messages = list(messages)  # shallow copy
     actions_log: list[dict] = []
-    model_name = settings.NVIDIA_MODEL
+    model_name = settings.OPENAI_MODEL
 
     # Extract the system prompt for the Gemini fallback (first message if role=system)
     system_prompt_for_fallback = ""

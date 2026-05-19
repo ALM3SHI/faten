@@ -86,7 +86,7 @@ async def daily_notifications_cron():
             )
 
             completion = await client.chat.completions.create(
-                model=settings.NVIDIA_MODEL,
+                model=settings.OPENAI_MODEL,
                 messages=[
                     {"role": "system", "content": system_p},
                     {"role": "user", "content": "ابعث للطالب إشعاراً تحفيزياً صباحياً مناسباً لوضعه الأكاديمي الحالي. استخدم أداة send_notification."},

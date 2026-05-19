@@ -23,8 +23,7 @@ router = APIRouter(prefix="/api/onboarding", tags=["Onboarding"])
 def get_openai_client() -> AsyncOpenAI:
     settings = get_settings()
     return AsyncOpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=settings.NVIDIA_API_KEY,
+        api_key=settings.OPENAI_API_KEY,
     )
 
 def extract_text_from_pdf(file_bytes: bytes) -> str:
@@ -85,7 +84,7 @@ async def analyze_transcript(
 
     try:
         completion = await client.chat.completions.create(
-            model=settings.NVIDIA_MODEL,
+            model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Transcript text:\n\n{text}"}
@@ -141,7 +140,7 @@ async def analyze_timetable(
 
     try:
         completion = await client.chat.completions.create(
-            model=settings.NVIDIA_MODEL,
+            model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Timetable text:\n\n{text}"}

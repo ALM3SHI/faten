@@ -85,10 +85,9 @@ async def lifespan(app: FastAPI):
     # Uvicorn --reload, causing "Event loop is closed" errors.
     settings = get_settings()
     app.state.openai_client = AsyncOpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=settings.NVIDIA_API_KEY,
+        api_key=settings.OPENAI_API_KEY,
     )
-    logger.info("✅ OpenAI/NVIDIA client initialized")
+    logger.info("✅ OpenAI client initialized")
 
     # Schedule daily notifications cron (8:00 AM Riyadh = UTC+3)
     scheduler.add_job(
