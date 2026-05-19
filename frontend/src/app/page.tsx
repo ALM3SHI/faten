@@ -60,7 +60,7 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-muted text-sm font-medium backdrop-blur-md"
           >
             <Sparkles className="w-4 h-4 text-[#0066cc]" />
-            الذكاء الاصطناعي الأكاديمي — جامعة أم القرى
+            فطن — الذكاء الاصطناعي لجامعة أم القرى
           </motion.div>
 
           <motion.h1 
@@ -139,7 +139,7 @@ export default function LandingPage() {
                         <Sparkles className="w-4 h-4 text-foreground" />
                       </div>
                       <div className="bg-card border border-foreground/10 text-foreground px-4 py-3 rounded-2xl rounded-tr-sm max-w-[80%] leading-relaxed">
-                        أهلاً بك! أنا المساعد الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني ترتيب يومك؟
+                        أهلاً بك! أنا فطن، مساعدك الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني ترتيب يومك؟
                       </div>
                     </motion.div>
 
@@ -344,7 +344,7 @@ export default function LandingPage() {
 
       <footer className="py-12 border-t border-foreground/10 bg-background">
         <div className="container mx-auto px-4 text-center text-[#a1a1a6] text-[13px]">
-          <p>© 2026 المساعد الأكاديمي الذكي لجامعة أم القرى. جميع الحقوق محفوظة.</p>
+          <p>© 2026 فطن — المساعد الأكاديمي الذكي لجامعة أم القرى. جميع الحقوق محفوظة.</p>
         </div>
       </footer>
     </div>

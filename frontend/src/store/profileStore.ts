@@ -123,6 +123,21 @@ export const useProfileStore = create<ProfileState>()(
         preferences: s.preferences,
         lastUpdated: s.lastUpdated,
       }),
+      // Persist's default merge is shallow, so older snapshots missing
+      // newer fields (e.g. studentId, totalPlanHours) come back with
+      // `undefined` values — that flips Base UI Inputs from controlled
+      // ("") to uncontrolled (undefined) on rehydration. Deep-merge
+      // each sub-object with its defaults to backfill missing keys.
+      merge: (persisted, current) => {
+        const p = (persisted as Partial<ProfileState>) ?? {};
+        return {
+          ...current,
+          basic: { ...DEFAULT_BASIC, ...(p.basic ?? {}) },
+          goals: { ...DEFAULT_GOALS, ...(p.goals ?? {}) },
+          preferences: { ...DEFAULT_PREFS, ...(p.preferences ?? {}) },
+          lastUpdated: p.lastUpdated ?? null,
+        };
+      },
       // One-time migration from legacy uqu_profile_v2 shape:
       //   { basic, goals, preferences: { studyStyle, focusDuration }, courses, completedCourses }
       // Only runs when the new v3 key has never been written (lastUpdated === null).

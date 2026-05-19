@@ -943,8 +943,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Soft error footer — non-migration server/network failures.
-                Keeps the page useful while signalling that something's off. */}
-            {analyticsError && analyticsError.kind !== "migration" && (
+                Keeps the page useful while signalling that something's off.
+                The outer ternary already excludes "migration", so this branch
+                only sees `kind: "network" | "server"`. */}
+            {analyticsError && (
               <div className="mt-6 p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 text-rose-200 text-xs flex items-start gap-3">
                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>

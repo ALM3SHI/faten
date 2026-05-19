@@ -75,7 +75,7 @@ export function Navbar() {
                 <span className="text-xl">🎓</span>
               </div>
               <div className="hidden md:block">
-                <span className="font-bold text-lg">المساعد الأكاديمي</span>
+                <span className="font-bold text-lg">فطن</span>
                 <span className="ml-2 px-2 py-0.5 text-[10px] font-bold bg-uqu-accent/10 text-uqu-accent rounded-full border border-uqu-accent/20">
                   UQU
                 </span>

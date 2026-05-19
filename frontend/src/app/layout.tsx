@@ -9,8 +9,8 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "المساعد الأكاديمي الذكي — UQU",
-  description: "المساعد الأكاديمي الذكي لجامعة أم القرى — منصة متكاملة للمحادثة، حساب المعدل، وخطط المذاكرة",
+  title: "فطن — UQU",
+  description: "فطن — مساعدك الأكاديمي المتطور مدعوماً بالذكاء الاصطناعي لجامعة أم القرى. منصة متكاملة للمحادثة، حساب المعدل، وخطط المذاكرة",
 };
 
 import { AuthProvider } from "@/components/auth-provider";
