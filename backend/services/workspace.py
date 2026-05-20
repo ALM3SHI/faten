@@ -18,7 +18,7 @@ Legacy fallbacks (read-only):
   users/{uid}.profile, study_preferences, timetable
 
 Consumers:
-  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript/schedule/plan)
+  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript/schedule/plan/chats)
   - services/student.py    (agent / student-context; partial reuse)
 """
 
@@ -628,3 +628,47 @@ async def save_plan(user_id: str, db, payload: dict) -> dict:
     """Async wrapper — runs blocking Firestore write in the default executor."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, save_plan_sync, user_id, db, payload)
+
+
+def save_chat_thread_sync(user_id: str, db, thread_id: str, payload: dict) -> dict:
+    """Merge canonical chat thread onto users/{uid}/chats/{thread_id} (Phase 2E).
+
+    Does not write chat_history — audit path remains POST /api/chat only.
+    """
+    chat_ref = (
+        db.collection("users").document(user_id).collection("chats").document(thread_id)
+    )
+
+    messages = []
+    for m in payload.get("messages") or []:
+        if isinstance(m, dict):
+            messages.append(m)
+
+    chat_ref.set(
+        {
+            "id": payload.get("id") or thread_id,
+            "title": payload.get("title") or "محادثة",
+            "preview": payload.get("preview") or "",
+            "createdAt": payload.get("createdAt")
+            or datetime.now(timezone.utc).isoformat(),
+            "conversationId": payload.get("conversationId"),
+            "messages": messages,
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+
+    chat_snap = chat_ref.get()
+    chat_doc = chat_snap.to_dict() if chat_snap.exists else {}
+    return {
+        "success": True,
+        "thread": _thread_from_chat_doc(thread_id, chat_doc),
+    }
+
+
+async def save_chat_thread(user_id: str, db, thread_id: str, payload: dict) -> dict:
+    """Async wrapper — runs blocking Firestore write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        None, save_chat_thread_sync, user_id, db, thread_id, payload
+    )

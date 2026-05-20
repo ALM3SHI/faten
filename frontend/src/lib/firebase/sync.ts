@@ -41,6 +41,7 @@ import {
 import { auth, db } from "@/lib/firebase";
 
 import {
+  saveChatThreadToBackend,
   savePlanToBackend,
   saveProfileToBackend,
   saveScheduleToBackend,
@@ -466,12 +467,19 @@ export function attachStoreSync(): void {
       }
     }
 
-    // New / changed threads (compare updatedAt — cheap content-equivalent).
+    // New / changed threads — backend-first (Phase 2E), Firestore as safety net.
     for (const thread of newThreads) {
       const prev = prevById.get(thread.id);
       if (!prev || prev.updatedAt !== thread.updatedAt) {
         debouncedPush(`chat:${thread.id}`, () =>
-          safeRun("syncChat", () => syncChat(uid, thread)),
+          safeRun("pushChat", async () => {
+            try {
+              await saveChatThreadToBackend(thread);
+            } catch (err) {
+              console.error("[firebase-sync] saveChatThreadToBackend failed:", err);
+            }
+            await syncChat(uid, thread);
+          }),
         );
       }
     }

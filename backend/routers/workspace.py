@@ -7,6 +7,7 @@ PATCH /api/workspace/profile — save canonical profile fields (Phase 2A).
 PATCH /api/workspace/transcript — save canonical academic record (Phase 2B).
 PATCH /api/workspace/schedule — save canonical weekly timetable (Phase 2C).
 PATCH /api/workspace/plan — save canonical active study plan (Phase 2D).
+PATCH /api/workspace/chats/{thread_id} — save canonical UI chat thread (Phase 2E).
 """
 
 import logging
@@ -16,6 +17,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from auth.dependencies import get_current_user
 from db.firestore import get_db
 from schemas.workspace import (
+    ChatThreadSaveRequest,
+    ChatThreadSaveResponse,
     PlanSaveRequest,
     PlanSaveResponse,
     ProfileSaveRequest,
@@ -28,6 +31,7 @@ from schemas.workspace import (
 )
 from services.workspace import (
     load_workspace,
+    save_chat_thread,
     save_plan,
     save_profile,
     save_schedule,
@@ -108,4 +112,25 @@ async def patch_workspace_plan(
         return PlanSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/plan failed: %s", err, exc_info=True)
+        raise HTTPException(status_code=500, detail=str(err)) from err
+
+
+@router.patch("/api/workspace/chats/{thread_id}", response_model=ChatThreadSaveResponse)
+async def patch_workspace_chat_thread(
+    thread_id: str,
+    payload: ChatThreadSaveRequest,
+    user_id: str = Depends(get_current_user),
+) -> ChatThreadSaveResponse:
+    """Persist UI chat thread to users/{uid}/chats/{thread_id} (merge). No chat_history write."""
+    try:
+        db = get_db()
+        data = await save_chat_thread(user_id, db, thread_id, payload.model_dump())
+        return ChatThreadSaveResponse(**data)
+    except Exception as err:
+        logger.error(
+            "[workspace] PATCH /api/workspace/chats/%s failed: %s",
+            thread_id,
+            err,
+            exc_info=True,
+        )
         raise HTTPException(status_code=500, detail=str(err)) from err

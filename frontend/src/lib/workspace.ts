@@ -148,6 +148,40 @@ export async function savePlanToBackend(slice: PlanSaveSlice): Promise<PlanSaveR
   return (await api.patch("/api/workspace/plan", slice)) as PlanSaveResponse;
 }
 
+/** Serialize thread for PATCH body (ISO timestamps; matches sync.ts serializeThread). */
+function serializeChatThreadForApi(thread: ChatThread) {
+  return {
+    id: thread.id,
+    title: thread.title,
+    preview: thread.preview,
+    createdAt: thread.createdAt,
+    updatedAt: thread.updatedAt,
+    conversationId: thread.conversationId,
+    messages: thread.messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+      timestamp:
+        m.timestamp instanceof Date
+          ? m.timestamp.toISOString()
+          : (m.timestamp as unknown as string),
+      ...(m.actions ? { actions: m.actions } : {}),
+    })),
+  };
+}
+
+export interface ChatThreadSaveResponse {
+  success: boolean;
+  thread: WorkspacePayload["chats"]["threads"][number];
+}
+
+/** PATCH canonical chat thread to backend (Phase 2E). Throws on network / HTTP errors. */
+export async function saveChatThreadToBackend(
+  thread: ChatThread,
+): Promise<ChatThreadSaveResponse> {
+  const path = `/api/workspace/chats/${encodeURIComponent(thread.id)}`;
+  return (await api.patch(path, serializeChatThreadForApi(thread))) as ChatThreadSaveResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.

@@ -159,6 +159,23 @@ class ChatThreadOut(BaseModel):
     messages: list[ChatMessageOut] = Field(default_factory=list)
 
 
+class ChatThreadSaveRequest(BaseModel):
+    """PATCH /api/workspace/chats/{thread_id} — canonical UI thread write (Phase 2E)."""
+
+    id: str
+    title: str = "محادثة"
+    preview: str = ""
+    createdAt: str
+    updatedAt: str
+    conversationId: str | None = None
+    messages: list[ChatMessageOut] = Field(default_factory=list)
+
+
+class ChatThreadSaveResponse(BaseModel):
+    success: bool = True
+    thread: ChatThreadOut
+
+
 class WorkspaceChats(BaseModel):
     threads: list[ChatThreadOut] = Field(default_factory=list)
 
