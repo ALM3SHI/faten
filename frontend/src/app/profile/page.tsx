@@ -17,29 +17,62 @@ import {
   Brain,
   Settings2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { logoutAndPurge } from "@/lib/auth-utils";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
-import { useProfileStore } from "@/store/profileStore";
+import {
+  useProfileStore,
+  type ProfileBasic,
+  type ProfileGoals,
+  type ProfilePreferences,
+} from "@/store/profileStore";
 import { SetupWizard } from "@/components/setup-wizard/SetupWizard";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
 
+type ProfileDraft = {
+  basic: ProfileBasic;
+  goals: ProfileGoals;
+  preferences: ProfilePreferences;
+};
+
+function draftFromStore(): ProfileDraft {
+  const s = useProfileStore.getState();
+  return {
+    basic: { ...s.basic },
+    goals: { ...s.goals },
+    preferences: { ...s.preferences },
+  };
+}
+
 export default function ProfilePage() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isPrefsOpen, setIsPrefsOpen] = useState(false);
 
-  // Profile data (basic + goals) flows through useProfileStore. The store
-  // is persisted to localStorage, so every keystroke is automatically saved.
-  const basic = useProfileStore((s) => s.basic);
-  const goals = useProfileStore((s) => s.goals);
-  const preferences = useProfileStore((s) => s.preferences);
+  // Phase 4B.4 — edit in local draft; commit to store only on "حفظ التغييرات".
+  const [draft, setDraft] = useState<ProfileDraft>(draftFromStore);
+  const [dirty, setDirty] = useState(false);
+
+  const storeBasic = useProfileStore((s) => s.basic);
+  const storeGoals = useProfileStore((s) => s.goals);
+  const storePreferences = useProfileStore((s) => s.preferences);
   const setBasic = useProfileStore((s) => s.setBasic);
   const setGoals = useProfileStore((s) => s.setGoals);
+  const setPreferences = useProfileStore((s) => s.setPreferences);
 
-  const summaryChips = summarizePreferences(preferences);
+  useEffect(() => {
+    if (!dirty) {
+      setDraft({
+        basic: storeBasic,
+        goals: storeGoals,
+        preferences: storePreferences,
+      });
+    }
+  }, [storeBasic, storeGoals, storePreferences, dirty]);
+
+  const summaryChips = summarizePreferences(draft.preferences);
 
   // Zustand-backed state for the unified setup card. We read the data
   // fields (not the function) so the component re-renders when either
@@ -54,8 +87,19 @@ export default function ProfilePage() {
   const hasSchedule = scheduleSlots > 0;
 
   const handleSave = () => {
-    // Store is auto-persisted; this is just user-facing confirmation.
+    setBasic({ ...draft.basic });
+    setGoals({ ...draft.goals });
+    setPreferences({ ...draft.preferences });
+    setDirty(false);
     alert("تم حفظ الملف الشخصي بنجاح! ✨");
+  };
+
+  const handlePreferencesChange = (patch: Partial<ProfilePreferences>) => {
+    setDraft((d) => ({
+      ...d,
+      preferences: { ...d.preferences, ...patch },
+    }));
+    setDirty(true);
   };
 
   return (
@@ -202,8 +246,14 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label>الاسم الكامل</Label>
                 <Input
-                  value={basic.name}
-                  onChange={(e) => setBasic({ name: e.target.value })}
+                  value={draft.basic.name}
+                  onChange={(e) => {
+                    setDraft((d) => ({
+                      ...d,
+                      basic: { ...d.basic, name: e.target.value },
+                    }));
+                    setDirty(true);
+                  }}
                   placeholder="أدخل اسمك..."
                   className="rounded-xl glass border-foreground/10"
                 />
@@ -211,8 +261,14 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label>التخصص الدراسي</Label>
                 <Input
-                  value={basic.major}
-                  onChange={(e) => setBasic({ major: e.target.value })}
+                  value={draft.basic.major}
+                  onChange={(e) => {
+                    setDraft((d) => ({
+                      ...d,
+                      basic: { ...d.basic, major: e.target.value },
+                    }));
+                    setDirty(true);
+                  }}
                   placeholder="مثال: هندسة حاسب"
                   className="rounded-xl glass border-foreground/10"
                 />
@@ -220,8 +276,14 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label>الرقم الجامعي</Label>
                 <Input
-                  value={basic.studentId}
-                  onChange={(e) => setBasic({ studentId: e.target.value })}
+                  value={draft.basic.studentId}
+                  onChange={(e) => {
+                    setDraft((d) => ({
+                      ...d,
+                      basic: { ...d.basic, studentId: e.target.value },
+                    }));
+                    setDirty(true);
+                  }}
                   placeholder="4xxxxxxxx"
                   className="rounded-xl glass border-foreground/10"
                 />
@@ -232,12 +294,18 @@ export default function ProfilePage() {
                   type="number"
                   inputMode="numeric"
                   min={0}
-                  value={basic.totalPlanHours}
+                  value={draft.basic.totalPlanHours}
                   onChange={(e) => {
                     const raw = e.target.value;
-                    setBasic({
-                      totalPlanHours: raw === "" ? "" : Math.max(0, parseInt(raw, 10) || 0),
-                    });
+                    setDraft((d) => ({
+                      ...d,
+                      basic: {
+                        ...d.basic,
+                        totalPlanHours:
+                          raw === "" ? "" : Math.max(0, parseInt(raw, 10) || 0),
+                      },
+                    }));
+                    setDirty(true);
                   }}
                   placeholder="مثال: 132"
                   className="rounded-xl glass border-foreground/10"
@@ -264,8 +332,17 @@ export default function ProfilePage() {
                 <Input
                   type="number"
                   step="0.01"
-                  value={goals.currentGpa}
-                  onChange={(e) => setGoals({ currentGpa: parseFloat(e.target.value) || 0 })}
+                  value={draft.goals.currentGpa}
+                  onChange={(e) => {
+                    setDraft((d) => ({
+                      ...d,
+                      goals: {
+                        ...d.goals,
+                        currentGpa: parseFloat(e.target.value) || 0,
+                      },
+                    }));
+                    setDirty(true);
+                  }}
                   className="rounded-xl glass border-foreground/10"
                 />
               </div>
@@ -274,8 +351,17 @@ export default function ProfilePage() {
                 <Input
                   type="number"
                   step="0.01"
-                  value={goals.targetGpa}
-                  onChange={(e) => setGoals({ targetGpa: parseFloat(e.target.value) || 0 })}
+                  value={draft.goals.targetGpa}
+                  onChange={(e) => {
+                    setDraft((d) => ({
+                      ...d,
+                      goals: {
+                        ...d.goals,
+                        targetGpa: parseFloat(e.target.value) || 0,
+                      },
+                    }));
+                    setDirty(true);
+                  }}
                   className="rounded-xl glass border-foreground/10"
                 />
               </div>
@@ -335,7 +421,12 @@ export default function ProfilePage() {
       </main>
 
       <SetupWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} />
-      <SmartPreferencesModal isOpen={isPrefsOpen} onClose={() => setIsPrefsOpen(false)} />
+      <SmartPreferencesModal
+        isOpen={isPrefsOpen}
+        onClose={() => setIsPrefsOpen(false)}
+        preferences={draft.preferences}
+        onPreferencesChange={handlePreferencesChange}
+      />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Settings, Sparkles, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useProfileStore } from "@/store/profileStore";
+import type { ProfilePreferences } from "@/store/profileStore";
 import {
   PEAK_OPTIONS,
   STRATEGY_OPTIONS,
@@ -17,20 +17,20 @@ import {
 } from "./preferenceOptions";
 
 /**
- * Smart Preferences Modal — opened from the compact summary card on the
- * Profile page. Every interaction writes directly to useProfileStore, so
- * the "Save & Close" button is purely a UX affordance; data is already
- * persisted by the time it's clicked.
+ * Smart Preferences Modal — controlled by Profile page draft state (Phase 4B.4).
+ * Changes apply to the server only when the user clicks "حفظ التغييرات" on /profile.
  */
 export function SmartPreferencesModal({
   isOpen,
   onClose,
+  preferences,
+  onPreferencesChange,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  preferences: ProfilePreferences;
+  onPreferencesChange: (patch: Partial<ProfilePreferences>) => void;
 }) {
-  const preferences = useProfileStore((s) => s.preferences);
-  const setPreferences = useProfileStore((s) => s.setPreferences);
 
   // Lock background scroll while the modal is open and wire Esc to close.
   useEffect(() => {
@@ -114,7 +114,7 @@ export function SmartPreferencesModal({
                       emoji={opt.emoji}
                       title={opt.titleAr}
                       subtitle={opt.subtitleAr}
-                      onClick={() => setPreferences({ energyPeak: opt.value })}
+                      onClick={() => onPreferencesChange({ energyPeak: opt.value })}
                     />
                   ))}
                 </div>
@@ -131,7 +131,7 @@ export function SmartPreferencesModal({
                       emoji={opt.emoji}
                       title={opt.titleAr}
                       subtitle={opt.subtitleAr}
-                      onClick={() => setPreferences({ taskStrategy: opt.value })}
+                      onClick={() => onPreferencesChange({ taskStrategy: opt.value })}
                     />
                   ))}
                 </div>
@@ -148,7 +148,7 @@ export function SmartPreferencesModal({
                       emoji={opt.emoji}
                       title={opt.titleAr}
                       subtitle={opt.subtitleAr}
-                      onClick={() => setPreferences({ learningStyle: opt.value })}
+                      onClick={() => onPreferencesChange({ learningStyle: opt.value })}
                     />
                   ))}
                 </div>
@@ -163,21 +163,21 @@ export function SmartPreferencesModal({
                     unit="دقيقة"
                     options={FOCUS_OPTIONS}
                     selected={preferences.pomodoroFocus}
-                    onChange={(v) => setPreferences({ pomodoroFocus: v })}
+                    onChange={(v) => onPreferencesChange({ pomodoroFocus: v })}
                   />
                   <ChipRow
                     label="استراحة قصيرة"
                     unit="دقيقة"
                     options={SHORT_BREAK_OPTIONS}
                     selected={preferences.pomodoroShortBreak}
-                    onChange={(v) => setPreferences({ pomodoroShortBreak: v })}
+                    onChange={(v) => onPreferencesChange({ pomodoroShortBreak: v })}
                   />
                   <ChipRow
                     label="استراحة طويلة"
                     unit="دقيقة"
                     options={LONG_BREAK_OPTIONS}
                     selected={preferences.pomodoroLongBreak}
-                    onChange={(v) => setPreferences({ pomodoroLongBreak: v })}
+                    onChange={(v) => onPreferencesChange({ pomodoroLongBreak: v })}
                   />
                 </div>
               </section>
@@ -191,7 +191,7 @@ export function SmartPreferencesModal({
                       key={opt.value}
                       selected={preferences.dayOff === opt.value}
                       label={opt.label}
-                      onClick={() => setPreferences({ dayOff: opt.value })}
+                      onClick={() => onPreferencesChange({ dayOff: opt.value })}
                     />
                   ))}
                 </div>
@@ -201,7 +201,7 @@ export function SmartPreferencesModal({
             {/* Footer */}
             <div className="flex items-center justify-between gap-3 p-5 border-t border-foreground/10 bg-foreground/5 shrink-0">
               <p className="text-[11px] text-muted hidden sm:block">
-                يتم حفظ تغييراتك تلقائياً مع كل اختيار.
+                التغييرات تُطبَّق على حسابك عند الضغط على «حفظ التغييرات» في صفحة الملف.
               </p>
               <Button
                 onClick={onClose}

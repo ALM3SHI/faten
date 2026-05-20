@@ -375,6 +375,8 @@ export function attachStoreSync(): void {
   useTranscriptStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    // Phase 4B.3 — defer persist until transcript import/setup (lastUpdated set).
+    if (state.lastUpdated == null) return;
     const slice = {
       name: state.name,
       nameEn: state.nameEn,
@@ -407,6 +409,8 @@ export function attachStoreSync(): void {
   useScheduleStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    // Phase 4B.3 — defer persist until schedule creation (lastUpdated set).
+    if (state.lastUpdated == null) return;
     const slice = {
       schedule: state.schedule,
       lastUpdated: state.lastUpdated,
@@ -427,6 +431,8 @@ export function attachStoreSync(): void {
   usePlanStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    // Phase 4B.3 — defer persist until a real plan exists (generate/add task).
+    if (!state.plan) return;
     const slice = {
       plan: state.plan,
       model: state.model,
@@ -502,6 +508,10 @@ export function attachStoreSync(): void {
       if (!prev || prev.updatedAt !== thread.updatedAt) {
         debouncedPush(`chat:${thread.id}`, () =>
           safeRun("pushChat", async () => {
+            const hasUserMessage =
+              Array.isArray(thread.messages) &&
+              thread.messages.some((m) => m.role === "user");
+            if (!hasUserMessage) return;
             try {
               await saveChatThreadToBackend(thread);
             } catch (err) {
