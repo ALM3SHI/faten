@@ -363,8 +363,8 @@ export function attachStoreSync(): void {
           await saveProfileToBackend(slice);
         } catch (err) {
           console.error("[firebase-sync] saveProfileToBackend failed:", err);
+          await syncProfile(uid, slice);
         }
-        await syncProfile(uid, slice);
       }),
     );
   });
