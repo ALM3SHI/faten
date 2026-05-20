@@ -351,6 +351,8 @@ export function attachStoreSync(): void {
   useProfileStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    // Phase 4B.2 — defer persist until user/setup has written profile (lastUpdated set).
+    if (state.lastUpdated == null) return;
     const slice = {
       basic: state.basic,
       goals: state.goals,
