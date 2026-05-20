@@ -114,6 +114,23 @@ export async function saveTranscriptToBackend(
   return (await api.patch("/api/workspace/transcript", slice)) as TranscriptSaveResponse;
 }
 
+export type ScheduleSaveSlice = {
+  schedule: ReturnType<typeof useScheduleStore.getState>["schedule"];
+  lastUpdated: string | null;
+};
+
+export interface ScheduleSaveResponse {
+  success: boolean;
+  schedule: WorkspacePayload["schedule"];
+}
+
+/** PATCH canonical schedule to backend (Phase 2C). Throws on network / HTTP errors. */
+export async function saveScheduleToBackend(
+  slice: ScheduleSaveSlice,
+): Promise<ScheduleSaveResponse> {
+  return (await api.patch("/api/workspace/schedule", slice)) as ScheduleSaveResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.

@@ -5,6 +5,7 @@ UQU Academic Assistant — Workspace Router
 GET /api/workspace — load full user workspace via backend (Phase 1).
 PATCH /api/workspace/profile — save canonical profile fields (Phase 2A).
 PATCH /api/workspace/transcript — save canonical academic record (Phase 2B).
+PATCH /api/workspace/schedule — save canonical weekly timetable (Phase 2C).
 """
 
 import logging
@@ -16,11 +17,13 @@ from db.firestore import get_db
 from schemas.workspace import (
     ProfileSaveRequest,
     ProfileSaveResponse,
+    ScheduleSaveRequest,
+    ScheduleSaveResponse,
     TranscriptSaveRequest,
     TranscriptSaveResponse,
     WorkspaceResponse,
 )
-from services.workspace import load_workspace, save_profile, save_transcript
+from services.workspace import load_workspace, save_profile, save_schedule, save_transcript
 
 logger = logging.getLogger(__name__)
 
@@ -66,4 +69,19 @@ async def patch_workspace_transcript(
         return TranscriptSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/transcript failed: %s", err, exc_info=True)
+        raise HTTPException(status_code=500, detail=str(err)) from err
+
+
+@router.patch("/api/workspace/schedule", response_model=ScheduleSaveResponse)
+async def patch_workspace_schedule(
+    payload: ScheduleSaveRequest,
+    user_id: str = Depends(get_current_user),
+) -> ScheduleSaveResponse:
+    """Persist schedule slots to users/{uid}/academic_record/schedule (merge)."""
+    try:
+        db = get_db()
+        data = await save_schedule(user_id, db, payload.model_dump())
+        return ScheduleSaveResponse(**data)
+    except Exception as err:
+        logger.error("[workspace] PATCH /api/workspace/schedule failed: %s", err, exc_info=True)
         raise HTTPException(status_code=500, detail=str(err)) from err

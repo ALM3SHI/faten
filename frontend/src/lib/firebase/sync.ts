@@ -40,7 +40,11 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-import { saveProfileToBackend, saveTranscriptToBackend } from "@/lib/workspace";
+import {
+  saveProfileToBackend,
+  saveScheduleToBackend,
+  saveTranscriptToBackend,
+} from "@/lib/workspace";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
@@ -393,17 +397,23 @@ export function attachStoreSync(): void {
     );
   });
 
-  // ── Schedule ──
+  // ── Schedule — backend-first (Phase 2C), Firestore as safety net ──
   useScheduleStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    const slice = {
+      schedule: state.schedule,
+      lastUpdated: state.lastUpdated,
+    };
     debouncedPush(`schedule:${uid}`, () =>
-      safeRun("syncSchedule", () =>
-        syncSchedule(uid, {
-          schedule: state.schedule,
-          lastUpdated: state.lastUpdated,
-        }),
-      ),
+      safeRun("pushSchedule", async () => {
+        try {
+          await saveScheduleToBackend(slice);
+        } catch (err) {
+          console.error("[firebase-sync] saveScheduleToBackend failed:", err);
+        }
+        await syncSchedule(uid, slice);
+      }),
     );
   });
 

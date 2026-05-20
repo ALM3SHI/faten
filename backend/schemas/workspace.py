@@ -107,6 +107,18 @@ class WorkspaceSchedule(BaseModel):
     lastUpdated: str | None = None
 
 
+class ScheduleSaveRequest(BaseModel):
+    """PATCH /api/workspace/schedule — canonical timetable write (Phase 2C)."""
+
+    schedule: list[dict[str, Any]] = Field(default_factory=list)
+    lastUpdated: str | None = None
+
+
+class ScheduleSaveResponse(BaseModel):
+    success: bool = True
+    schedule: WorkspaceSchedule
+
+
 class WorkspacePlan(BaseModel):
     plan: dict[str, Any] | None = None
     model: str | None = None

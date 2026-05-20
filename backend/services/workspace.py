@@ -18,7 +18,7 @@ Legacy fallbacks (read-only):
   users/{uid}.profile, study_preferences, timetable
 
 Consumers:
-  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript)
+  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript/schedule)
   - services/student.py    (agent / student-context; partial reuse)
 """
 
@@ -566,3 +566,36 @@ async def save_transcript(user_id: str, db, payload: dict) -> dict:
     """Async wrapper — runs blocking Firestore write in the default executor."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, save_transcript_sync, user_id, db, payload)
+
+
+def save_schedule_sync(user_id: str, db, payload: dict) -> dict:
+    """Merge canonical schedule onto users/{uid}/academic_record/schedule (Phase 2C)."""
+    schedule_ref = (
+        db.collection("users")
+        .document(user_id)
+        .collection("academic_record")
+        .document("schedule")
+    )
+    last_updated = payload.get("lastUpdated") or datetime.now(timezone.utc).isoformat()
+
+    schedule_ref.set(
+        {
+            "schedule": payload.get("schedule") or [],
+            "lastUpdated": last_updated,
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+
+    schedule_snap = schedule_ref.get()
+    schedule_doc = schedule_snap.to_dict() if schedule_snap.exists else {}
+    return {
+        "success": True,
+        "schedule": normalize_schedule(schedule_doc, user_doc=None),
+    }
+
+
+async def save_schedule(user_id: str, db, payload: dict) -> dict:
+    """Async wrapper — runs blocking Firestore write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, save_schedule_sync, user_id, db, payload)
