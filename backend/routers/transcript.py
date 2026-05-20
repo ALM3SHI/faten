@@ -15,6 +15,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from schemas.transcript import TranscriptPayload, TranscriptResponse
 from auth.dependencies import get_current_user
 from db.firestore import get_db
+from common.deprecation import raise_deprecated_endpoint
 from agent.loop import get_openai_client
 from config import get_settings
 
@@ -51,5 +52,13 @@ async def sync_transcript(
     payload: TranscriptPayload,
     user_id: str = Depends(get_current_user),
 ):
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/transcript."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/sync-transcript",
+        replacement="PATCH /api/workspace/transcript",
+        legacy_firestore_paths=["users/{uid}/transcripts/*"],
+        user_id=user_id,
+    )
     return await _sync_transcript_logic(payload, user_id)
 

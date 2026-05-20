@@ -3,7 +3,7 @@ import logging
 import io
 from datetime import datetime, timezone
 import pdfplumber
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Body, Depends, HTTPException, UploadFile, File
 from openai import AsyncOpenAI
 from pydantic import ValidationError
 
@@ -12,10 +12,10 @@ from auth.dependencies import get_current_user_optional, get_current_user
 from schemas.onboarding import (
     OnboardingTranscriptResponse,
     TimetableResponse,
-    SaveProfileRequest,
     SaveProfileResponse,
 )
 from db.firestore import get_db
+from common.deprecation import raise_deprecated_endpoint
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/onboarding", tags=["Onboarding"])
@@ -164,9 +164,26 @@ async def analyze_timetable(
 
 @router.post("/save-profile", response_model=SaveProfileResponse)
 async def save_onboarding_profile(
-    payload: SaveProfileRequest,
     user_id: str = Depends(get_current_user),
+    payload: dict | None = Body(default=None),
 ):
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/profile, transcript, schedule."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/onboarding/save-profile",
+        replacement=(
+            "PATCH /api/workspace/profile; "
+            "PATCH /api/workspace/transcript; "
+            "PATCH /api/workspace/schedule"
+        ),
+        legacy_firestore_paths=[
+            "users/{uid}.profile",
+            "users/{uid}.study_preferences",
+            "users/{uid}.timetable",
+            "users/{uid}/semesters/*",
+        ],
+        user_id=user_id,
+    )
     """
     Server-side replacement for the direct Firestore batch write
     that was previously in onboarding.js (lines 276-303).

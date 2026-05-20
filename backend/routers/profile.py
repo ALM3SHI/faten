@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from schemas.profile import ProfilePayload, ProfileResponse
 from auth.dependencies import get_current_user
 from db.firestore import get_db
+from common.deprecation import raise_deprecated_endpoint
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Profile"])
@@ -66,5 +67,16 @@ async def sync_profile(
     payload: ProfilePayload,
     user_id: str = Depends(get_current_user),
 ):
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/profile."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/sync-profile",
+        replacement="PATCH /api/workspace/profile",
+        legacy_firestore_paths=[
+            "users/{uid}.profile",
+            "users/{uid}.study_preferences",
+        ],
+        user_id=user_id,
+    )
     return await _sync_profile_logic(payload, user_id)
 

@@ -22,17 +22,17 @@ logCompletedSession is handled by /api/pomodoro/log-session (Module 4).
 import logging
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 
 from auth.bearer import verify_firebase_token
 from db.firestore import get_db
 from schemas.firebase_writes import (
     PushPlanRequest,
-    PushChatRequest,
     PushTranscriptRequest,
     SyncSemestersRequest,
     FirebaseWriteResponse,
 )
+from common.deprecation import raise_deprecated_endpoint
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +53,14 @@ async def push_plan(
     body: PushPlanRequest,
     user_id: str = Depends(verify_firebase_token),
 ) -> FirebaseWriteResponse:
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/plan."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/firebase/push-plan",
+        replacement="PATCH /api/workspace/plan",
+        legacy_firestore_paths=["users/{uid}/study_plans/*"],
+        user_id=user_id,
+    )
     """Mirror of pushPlanToFirestore(planData):
         users/{uid}/study_plans → add({ ...planData, createdAt })
     """
@@ -79,9 +87,17 @@ async def push_plan(
 
 @router.post("/push-chat", response_model=FirebaseWriteResponse)
 async def push_chat(
-    body: PushChatRequest,
     user_id: str = Depends(verify_firebase_token),
+    body: dict | None = Body(default=None),
 ) -> FirebaseWriteResponse:
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/chats/{thread_id} and POST /api/chat."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/firebase/push-chat",
+        replacement="PATCH /api/workspace/chats/{thread_id} (UI); POST /api/chat (agent)",
+        legacy_firestore_paths=["users/{uid}/chat_history/*"],
+        user_id=user_id,
+    )
     """Mirror of pushChatToFirestore(conversationId, messages, title):
         users/{uid}/chat_history/{conversationId}.set(
           { title, messages, updatedAt }, merge=True
@@ -117,6 +133,14 @@ async def push_transcript(
     body: PushTranscriptRequest,
     user_id: str = Depends(verify_firebase_token),
 ) -> FirebaseWriteResponse:
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/transcript."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/firebase/push-transcript",
+        replacement="PATCH /api/workspace/transcript",
+        legacy_firestore_paths=["users/{uid}/academic_records/*"],
+        user_id=user_id,
+    )
     """Mirror of pushTranscriptToFirestore(courses, cgpa, totalHours, semesters):
         users/{uid}/academic_records.add({
           type: 'transcript', courses, semesters, cgpa, totalHours, createdAt
@@ -182,6 +206,14 @@ async def sync_semesters(
     body: SyncSemestersRequest,
     user_id: str = Depends(verify_firebase_token),
 ) -> FirebaseWriteResponse:
+    """Deprecated Phase 4C.1 — use PATCH /api/workspace/transcript."""
+    raise_deprecated_endpoint(
+        method="POST",
+        path="/api/firebase/sync-semesters",
+        replacement="PATCH /api/workspace/transcript",
+        legacy_firestore_paths=["users/{uid}/academic_records/*"],
+        user_id=user_id,
+    )
     """Mirror of syncSemestersToFirestore(semesters):
         for each sem:
           users/{uid}/academic_records.add({
