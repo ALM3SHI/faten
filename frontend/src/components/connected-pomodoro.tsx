@@ -6,6 +6,13 @@ import { Play, Pause, RotateCcw, CheckCircle2, Loader2, FastForward } from "luci
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePomodoroStore } from "@/store/pomodoroStore";
+import {
+  getFocusDurationMinutesForLog,
+  getFocusDurationSeconds,
+  isPomodoroTestDurationActive,
+  logPomodoroSession,
+  todayYmd,
+} from "@/lib/pomodoro";
 
 interface ConnectedPomodoroProps {
   taskName?: string;
@@ -21,15 +28,22 @@ export function ConnectedPomodoro({
   // Rich layout only when the column has room to breathe (single widget). Otherwise the
   // compact horizontal row keeps the widget short enough to leave space for the sibling.
   const layoutMode: "rich" | "compact" = density === "single" ? "rich" : "compact";
-  const totalSeconds = duration * 60;
-  
-  const { 
-    timeLeft, setTimeLeft, 
-    timerState: state, setTimerState: setState, 
-    incrementSession, completedSessions 
+  const totalSeconds = getFocusDurationSeconds(duration);
+
+  const {
+    timeLeft, setTimeLeft,
+    timerState: state, setTimerState: setState,
+    incrementSession, completedSessions
   } = usePomodoroStore();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!isPomodoroTestDurationActive()) return;
+    if (state === "idle" || state === "paused") {
+      setTimeLeft(getFocusDurationSeconds(duration));
+    }
+  }, [duration, state, setTimeLeft]);
 
   useEffect(() => {
     if (state === "running") {
@@ -54,9 +68,19 @@ export function ConnectedPomodoro({
 
   const handleSessionComplete = async () => {
     setState("saving");
-    // Simulate DB save / API call to update global state
-    await new Promise(r => setTimeout(r, 1500));
     incrementSession();
+    try {
+      await logPomodoroSession({
+        courseCode: "",
+        courseName: taskName || "مذاكرة عامة",
+        duration: getFocusDurationMinutesForLog(duration),
+        type: "focus",
+        date: todayYmd(),
+        completedAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error("[connected-pomodoro] logPomodoroSession failed:", err);
+    }
     setState("completed");
   };
 

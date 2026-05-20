@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { PlanTask } from "@/store/planStore";
+import { getFocusDurationSeconds } from "@/lib/pomodoro";
 
 type SessionState = "idle" | "running" | "paused" | "saving" | "completed";
 
@@ -28,6 +29,8 @@ export interface ActiveTask {
 interface PomodoroState {
   completedSessions: number;
   incrementSession: () => void;
+  /** Hydrate today's completed focus count from GET /api/pomodoro/stats. */
+  setCompletedSessions: (n: number) => void;
   timeLeft: number;
   setTimeLeft: (time: number | ((prev: number) => number)) => void;
   timerState: SessionState;
@@ -45,6 +48,7 @@ interface PomodoroState {
 export const usePomodoroStore = create<PomodoroState>((set) => ({
   completedSessions: 0,
   incrementSession: () => set((state) => ({ completedSessions: state.completedSessions + 1 })),
+  setCompletedSessions: (n) => set({ completedSessions: Math.max(0, n) }),
   timeLeft: 25 * 60,
   setTimeLeft: (time) =>
     set((state) => ({
@@ -69,7 +73,7 @@ export const usePomodoroStore = create<PomodoroState>((set) => ({
       },
       // Seed the timer with the task's duration so /pomodoro lands
       // ready to start. The page can still reset to the default.
-      timeLeft: task.durationMinutes * 60,
+      timeLeft: getFocusDurationSeconds(task.durationMinutes),
       timerState: "idle",
       // A task launch is always a focus session — even if the user
       // last left the timer in break mode.

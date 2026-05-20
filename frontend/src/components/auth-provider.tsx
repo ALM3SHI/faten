@@ -10,6 +10,8 @@ import {
   pauseSyncForLogout,
 } from '@/lib/firebase/sync';
 import { hydrateWorkspaceFromApi } from '@/lib/workspace';
+import { fetchPomodoroStats } from '@/lib/pomodoro';
+import { usePomodoroStore } from '@/store/pomodoroStore';
 
 interface AuthContextType {
   user: User | null;
@@ -63,6 +65,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } catch (err) {
             console.error('[auth] hydrateUserWorkspace failed:', err);
           }
+        }
+
+        try {
+          const stats = await fetchPomodoroStats();
+          usePomodoroStore.getState().setCompletedSessions(stats.todaySessions);
+        } catch (err) {
+          console.warn('[auth] fetchPomodoroStats failed:', err);
         }
       } else {
         // Logout: stop sync immediately so any in-flight debounced pushes

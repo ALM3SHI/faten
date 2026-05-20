@@ -285,6 +285,7 @@ function ChatPageContent() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const clearAllThreads = useChatHistoryStore((s) => s.clearAll);
 
@@ -295,6 +296,10 @@ function ChatPageContent() {
   const loadThreadFromStore = useChatHistoryStore((s) => s.loadThread);
   const startNewThread = useChatHistoryStore((s) => s.startNewThread);
   const [conversationId, setConversationId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -628,8 +633,16 @@ function ChatPageContent() {
                       {isBot && msg.suggestedActions && msg.suggestedActions.length > 0 && (
                         <NavigationCTA actions={msg.suggestedActions} />
                       )}
-                      <span className="text-[10px] text-muted px-1">
-                        {msg.timestamp.toLocaleTimeString("ar-SA", { hour: '2-digit', minute: '2-digit' })}
+                      <span
+                        className="text-[10px] text-muted px-1"
+                        suppressHydrationWarning
+                      >
+                        {mounted
+                          ? msg.timestamp.toLocaleTimeString("ar-SA", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : ""}
                       </span>
                     </div>
                   </motion.div>

@@ -1,5 +1,47 @@
+import asyncio
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
+
+
+def fetch_completed_sessions_sync(user_id: str, db) -> List[Dict[str, Any]]:
+    """Load all completed_sessions docs for a user (includes document id)."""
+    sessions: List[Dict[str, Any]] = []
+    coll = db.collection("users").document(user_id).collection("completed_sessions")
+    for doc in coll.stream():
+        data = doc.to_dict() or {}
+        data["id"] = doc.id
+        sessions.append(data)
+    return sessions
+
+
+def _normalize_session_record(raw: dict) -> dict:
+    """Shape a Firestore session for PomodoroSession schema."""
+    return {
+        "id": raw.get("id") or "",
+        "courseCode": raw.get("courseCode") or "",
+        "courseName": raw.get("courseName") or "مذاكرة عامة",
+        "duration": int(raw.get("duration") or 0),
+        "type": raw.get("type") or "focus",
+        "date": raw.get("date") or "",
+        "completedAt": raw.get("completedAt") or "",
+    }
+
+
+def get_pomodoro_stats_sync(user_id: str, db) -> dict:
+    """Blocking read + stats for GET /api/pomodoro/stats."""
+    sessions = fetch_completed_sessions_sync(user_id, db)
+    stats = calculate_pomodoro_stats(sessions)
+    stats["recentSessions"] = [
+        _normalize_session_record(s) for s in stats.get("recentSessions") or []
+    ]
+    return stats
+
+
+async def get_pomodoro_stats(user_id: str, db) -> dict:
+    """Async wrapper — runs blocking Firestore read in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, get_pomodoro_stats_sync, user_id, db)
+
 
 def calculate_pomodoro_stats(sessions: List[Dict[str, Any]]) -> Dict[str, Any]:
     # Filter focus sessions only

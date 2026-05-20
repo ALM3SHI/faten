@@ -26,6 +26,13 @@ import {
 } from "@/store/pomodoroStore";
 import { useProfileStore } from "@/store/profileStore";
 import { usePlanStore } from "@/store/planStore";
+import {
+  getFocusDurationMinutesForLog,
+  getFocusDurationSeconds,
+  isPomodoroTestDurationActive,
+  logPomodoroSession,
+  todayYmd,
+} from "@/lib/pomodoro";
 
 export default function PomodoroPage() {
   // ── Pomodoro store ────────────────────────────────────────────────
@@ -55,11 +62,29 @@ export default function PomodoroPage() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  useEffect(() => {
+    if (!hydrated || !isPomodoroTestDurationActive()) return;
+    if (mode === "focus" && timerState === "idle") {
+      setTimeLeft(
+        getFocusDurationSeconds(activeTask?.durationMinutes ?? pomodoroFocus),
+      );
+    }
+  }, [
+    hydrated,
+    mode,
+    timerState,
+    activeTask,
+    pomodoroFocus,
+    setTimeLeft,
+  ]);
+
   // ── Default duration helper (in seconds) ──────────────────────────
   // For focus mode, an active task's duration overrides the profile
   // default — the user opted into a specific session length.
   const modeDuration = (m: PomodoroMode): number => {
-    if (m === "focus") return (activeTask?.durationMinutes ?? pomodoroFocus) * 60;
+    if (m === "focus") {
+      return getFocusDurationSeconds(activeTask?.durationMinutes ?? pomodoroFocus);
+    }
     if (m === "shortBreak") return pomodoroShortBreak * 60;
     return pomodoroLongBreak * 60;
   };
@@ -88,6 +113,19 @@ export default function PomodoroPage() {
       // Pomodoro: long break after every 4th focus session.
       const justFinished = completedSessions + 1;
       incrementSession();
+      const durationMin = getFocusDurationMinutesForLog(
+        activeTask?.durationMinutes ?? pomodoroFocus,
+      );
+      void logPomodoroSession({
+        courseCode: activeTask?.courseCode ?? "",
+        courseName: activeTask?.courseName ?? activeTask?.title ?? "مذاكرة عامة",
+        duration: durationMin,
+        type: "focus",
+        date: todayYmd(),
+        completedAt: new Date().toISOString(),
+      }).catch((err) => {
+        console.error("[pomodoro] logPomodoroSession failed:", err);
+      });
       const nextMode: PomodoroMode =
         justFinished > 0 && justFinished % 4 === 0 ? "longBreak" : "shortBreak";
       setMode(nextMode);
@@ -97,7 +135,7 @@ export default function PomodoroPage() {
     } else {
       // Break → next focus block.
       setMode("focus");
-      setTimeLeft(pomodoroFocus * 60);
+      setTimeLeft(getFocusDurationSeconds(pomodoroFocus));
     }
   };
 
