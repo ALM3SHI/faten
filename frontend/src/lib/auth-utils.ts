@@ -28,7 +28,11 @@ import { usePlanStore } from "@/store/planStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useScheduleStore } from "@/store/scheduleStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
+import { usePomodoroStore } from "@/store/pomodoroStore";
 import { STORAGE_KEYS } from "@/lib/core";
+
+/** Tab-scoped last Firebase UID — survives refresh, cleared on logout tracking reset. */
+const AUTH_UID_SESSION_KEY = "uqu_last_auth_uid";
 
 /**
  * Keys we want to keep across the purge. Theme is a per-device UI
@@ -116,6 +120,50 @@ function getPersistedStores(): PersistedStore[] {
  * Every step is wrapped in try/catch so a single failure can't
  * leave the rest of the purge half-done.
  */
+function getTrackedAuthUid(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return sessionStorage.getItem(AUTH_UID_SESSION_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setTrackedAuthUid(uid: string | null): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (uid === null) {
+      sessionStorage.removeItem(AUTH_UID_SESSION_KEY);
+    } else {
+      sessionStorage.setItem(AUTH_UID_SESSION_KEY, uid);
+    }
+  } catch (err) {
+    console.warn("[auth] setTrackedAuthUid failed:", err);
+  }
+}
+
+/**
+ * When a different user signs in on the same tab, purge persisted slots
+ * before workspace hydrate. Same UID (including normal refresh) is a no-op.
+ * Returns true if a purge ran.
+ */
+export function purgePersistedDataIfAccountSwitched(nextUid: string): boolean {
+  const prevUid = getTrackedAuthUid();
+  if (prevUid !== null && prevUid !== nextUid) {
+    clearAllAppData();
+    usePomodoroStore.getState().setCompletedSessions(0);
+    setTrackedAuthUid(nextUid);
+    return true;
+  }
+  setTrackedAuthUid(nextUid);
+  return false;
+}
+
+/** Call when auth session ends (logout). Does not purge — use logoutAndPurge for that. */
+export function clearAuthenticatedUidTracking(): void {
+  setTrackedAuthUid(null);
+}
+
 export function clearAllAppData(): void {
   if (typeof window === "undefined") return;
 

@@ -9,6 +9,10 @@ import {
   hydrateUserWorkspace,
   pauseSyncForLogout,
 } from '@/lib/firebase/sync';
+import {
+  clearAuthenticatedUidTracking,
+  purgePersistedDataIfAccountSwitched,
+} from '@/lib/auth-utils';
 import { hydrateWorkspaceFromApi } from '@/lib/workspace';
 import { fetchPomodoroStats } from '@/lib/pomodoro';
 import { usePomodoroStore } from '@/store/pomodoroStore';
@@ -37,6 +41,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
+        purgePersistedDataIfAccountSwitched(user.uid);
+
         // Sync with Firestore
         const docRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(docRef);
@@ -77,6 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Logout: stop sync immediately so any in-flight debounced pushes
         // don't fire under a stale or missing UID.
         pauseSyncForLogout();
+        clearAuthenticatedUidTracking();
         setProfile(null);
       }
       setLoading(false);

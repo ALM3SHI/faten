@@ -256,31 +256,40 @@ export function applyWorkspaceToStores(data: WorkspacePayload): void {
     });
   }
 
-  const rawThreads = chats.threads ?? [];
-  if (rawThreads.length > 0) {
-    const threads: ChatThread[] = rawThreads.map((t) => ({
-      id: t.id,
-      title: t.title || "محادثة",
-      preview: t.preview || "",
-      createdAt: t.createdAt,
-      updatedAt: t.updatedAt,
-      conversationId: t.conversationId ?? null,
-      messages: t.messages.map((m) => ({
-        role: m.role === "bot" || m.role === "assistant" ? "bot" : "user",
-        content: m.content ?? "",
-        timestamp: parseMessageTimestamp(m.timestamp),
-        actions: m.actions,
-      })),
-    }));
+  const rawThreads = chats.threads;
+  if (!Array.isArray(rawThreads)) return;
 
-    threads.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-
+  if (rawThreads.length === 0) {
     useChatHistoryStore.setState({
-      threads,
+      threads: [],
       activeId: null,
       hasHydrated: true,
     });
+    return;
   }
+
+  const threads: ChatThread[] = rawThreads.map((t) => ({
+    id: t.id,
+    title: t.title || "محادثة",
+    preview: t.preview || "",
+    createdAt: t.createdAt,
+    updatedAt: t.updatedAt,
+    conversationId: t.conversationId ?? null,
+    messages: t.messages.map((m) => ({
+      role: m.role === "bot" || m.role === "assistant" ? "bot" : "user",
+      content: m.content ?? "",
+      timestamp: parseMessageTimestamp(m.timestamp),
+      actions: m.actions,
+    })),
+  }));
+
+  threads.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
+  useChatHistoryStore.setState({
+    threads,
+    activeId: null,
+    hasHydrated: true,
+  });
 }
 
 /**

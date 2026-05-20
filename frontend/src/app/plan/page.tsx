@@ -34,6 +34,16 @@ import {
 // covers Sun–Thu lecture days, but the AI plan covers the whole week).
 const ALL_WEEK_DAYS_AR = [...WEEK_DAYS, "الجمعة", "السبت"];
 
+function safeMinutes(value: unknown): number {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function formatStudyHours(totalMinutes: number): string {
+  const hours = safeMinutes(totalMinutes) / 60;
+  return `${hours.toFixed(1)}س`;
+}
+
 const PRIORITY_META: Record<
   PlanTask["priority"],
   { label: string; ring: string; chip: string; dot: string }
@@ -90,12 +100,17 @@ export default function PlanPage() {
     const map = new Map<string, PlanTask[]>();
     if (!plan) return map;
     for (const t of plan.tasks) {
+      if (!t.suggestedDay) continue;
       const list = map.get(t.suggestedDay) ?? [];
       list.push(t);
       map.set(t.suggestedDay, list);
     }
     for (const list of map.values()) {
-      list.sort((a, b) => a.suggestedTime.localeCompare(b.suggestedTime));
+      list.sort((a, b) => {
+        const timeA = a.suggestedTime || "99:99";
+        const timeB = b.suggestedTime || "99:99";
+        return timeA.localeCompare(timeB);
+      });
     }
     return map;
   }, [plan]);
@@ -109,13 +124,19 @@ export default function PlanPage() {
     const m = new Map<string, { summary: string; totalMinutes: number }>();
     if (!plan) return m;
     for (const s of plan.dailySummary) {
-      m.set(s.day, { summary: s.summary, totalMinutes: s.totalMinutes });
+      m.set(s.day, {
+        summary: s.summary,
+        totalMinutes: safeMinutes(s.totalMinutes),
+      });
     }
     return m;
   }, [plan]);
 
   const totalMinutes = useMemo(
-    () => (plan ? plan.tasks.reduce((acc, t) => acc + t.durationMinutes, 0) : 0),
+    () =>
+      plan
+        ? plan.tasks.reduce((acc, t) => acc + safeMinutes(t.durationMinutes), 0)
+        : 0,
     [plan],
   );
   const totalSessions = plan?.tasks.length ?? 0;
@@ -333,7 +354,7 @@ export default function PlanPage() {
                   <SidebarStat label="إجمالي الجلسات" value={String(totalSessions)} />
                   <SidebarStat
                     label="ساعات مذاكرة"
-                    value={`${(totalMinutes / 60).toFixed(1)}س`}
+                    value={formatStudyHours(totalMinutes)}
                   />
                 </div>
               </Card>
@@ -387,7 +408,8 @@ function DayGroup({
           )}
         </div>
         <div className="text-[11px] font-mono text-muted shrink-0">
-          {doneCount}/{tasks.length} · {summary ? `${summary.totalMinutes} د` : ""}
+          {doneCount}/{tasks.length}
+          {summary ? ` · ${safeMinutes(summary.totalMinutes)} د` : ""}
         </div>
       </div>
       <div className="space-y-3">
@@ -474,7 +496,7 @@ function TaskCard({
             <div className="flex items-center gap-4 text-[11px] text-muted flex-wrap font-mono">
               <span className="inline-flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {task.suggestedTime} · {task.durationMinutes} د
+                {task.suggestedTime ?? "—"} · {safeMinutes(task.durationMinutes)} د
               </span>
               <span className="inline-flex items-center gap-1 text-foreground">
                 <GraduationCap className="w-3 h-3" />
