@@ -5,9 +5,10 @@ AI Agent Backend v2.0 (Python/FastAPI)
 ================================================================
 Endpoints:
   POST /api/chat                 — AI Agent (NVIDIA kimi-k2.5 + Function Calling)
-  POST /api/sync-profile         — DEPRECATED (410, Phase 4C.1); use PATCH /api/workspace/profile
-  POST /api/sync-transcript      — DEPRECATED (410, Phase 4C.1); use PATCH /api/workspace/transcript
-  POST /api/firebase/*           — DEPRECATED legacy writes (410, Phase 4C.1)
+  POST /api/sync-profile         — DEPRECATED (410, Phase 4C.1); dead write logic removed 4C.2
+  POST /api/sync-transcript      — DEPRECATED (410, Phase 4C.1); dead write logic removed 4C.2
+  POST /api/firebase/*           — DEPRECATED legacy writes (410, Phase 4C.1); dead logic removed 4C.2
+  POST /api/onboarding/save-profile — DEPRECATED (410, Phase 4C.1); dead write logic removed 4C.2
   GET  /api/student-context      — Fetch full Firestore data for frontend
   POST /api/mark-notification-read — Mark notification as read
   CRON                           — Daily proactive notifications (8 AM Riyadh)
