@@ -395,8 +395,8 @@ export function attachStoreSync(): void {
           await saveTranscriptToBackend(slice);
         } catch (err) {
           console.error("[firebase-sync] saveTranscriptToBackend failed:", err);
+          await syncTranscript(uid, slice);
         }
-        await syncTranscript(uid, slice);
       }),
     );
   });
