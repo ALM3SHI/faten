@@ -200,7 +200,7 @@ export function SmartPreferencesModal({
 
             {/* Footer */}
             <div className="flex items-center justify-between gap-3 p-5 border-t border-foreground/10 bg-foreground/5 shrink-0">
-              <p className="text-[11px] text-muted hidden sm:block">
+              <p className="text-[11px] text-muted">
                 التغييرات تُطبَّق على حسابك عند الضغط على «حفظ التغييرات» في صفحة الملف.
               </p>
               <Button
@@ -208,7 +208,7 @@ export function SmartPreferencesModal({
                 className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-5 font-bold mr-auto"
               >
                 <Check className="w-4 h-4" />
-                حفظ وإغلاق
+                تطبيق وإغلاق
               </Button>
             </div>
           </motion.div>
