@@ -437,8 +437,8 @@ export function attachStoreSync(): void {
           await savePlanToBackend(slice);
         } catch (err) {
           console.error("[firebase-sync] savePlanToBackend failed:", err);
+          await syncPlan(uid, slice);
         }
-        await syncPlan(uid, slice);
       }),
     );
   });
