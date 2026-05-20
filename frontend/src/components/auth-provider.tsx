@@ -9,6 +9,7 @@ import {
   hydrateUserWorkspace,
   pauseSyncForLogout,
 } from '@/lib/firebase/sync';
+import { hydrateWorkspaceFromApi } from '@/lib/workspace';
 
 interface AuthContextType {
   user: User | null;
@@ -53,14 +54,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setProfile(initialProfile);
         }
 
-        // Pull the whole workspace (profile / transcript / schedule /
-        // plan / chats) into the Zustand stores. hydrateUserWorkspace
-        // pauses outbound sync while it writes, then re-enables it so
-        // subsequent mutations push back to Firestore automatically.
-        try {
-          await hydrateUserWorkspace(user.uid);
-        } catch (err) {
-          console.error('[auth] hydrateUserWorkspace failed:', err);
+        // Phase 1: prefer backend workspace loader; fall back to direct
+        // Firestore pull if the API is unreachable.
+        const hydratedFromApi = await hydrateWorkspaceFromApi();
+        if (!hydratedFromApi) {
+          try {
+            await hydrateUserWorkspace(user.uid);
+          } catch (err) {
+            console.error('[auth] hydrateUserWorkspace failed:', err);
+          }
         }
       } else {
         // Logout: stop sync immediately so any in-flight debounced pushes

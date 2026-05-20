@@ -52,6 +52,11 @@ import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
 let syncEnabled = false;
 let attached = false;
 
+/** Gate outbound Firestore pushes during hydration (API or direct pull). */
+export function setStoreSyncEnabled(enabled: boolean): void {
+  syncEnabled = enabled;
+}
+
 function currentUid(): string | null {
   return auth.currentUser?.uid ?? null;
 }
@@ -193,7 +198,7 @@ export async function clearAllChats(uid: string) {
 export async function hydrateUserWorkspace(uid: string): Promise<void> {
   // Sync is OFF during hydration; otherwise the subscribers below would
   // see setState() and immediately try to push the same data back.
-  syncEnabled = false;
+  setStoreSyncEnabled(false);
   try {
     const [profileSnap, transcriptSnap, scheduleSnap, planSnap, chatsSnap] =
       await Promise.all([
@@ -320,7 +325,7 @@ export async function hydrateUserWorkspace(uid: string): Promise<void> {
   } finally {
     // Hand sync back on regardless of partial failure — better to
     // resume pushing than to leave the user in a write-paused state.
-    syncEnabled = true;
+    setStoreSyncEnabled(true);
   }
 }
 
@@ -449,7 +454,7 @@ export function attachStoreSync(): void {
 // ─────────────────────────────────────────────────────────────────
 
 export function pauseSyncForLogout(): void {
-  syncEnabled = false;
+  setStoreSyncEnabled(false);
   for (const t of timers.values()) clearTimeout(t);
   timers.clear();
 }

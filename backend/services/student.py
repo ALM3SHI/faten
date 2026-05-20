@@ -14,6 +14,10 @@ multiple threads simultaneously, which is not thread-safe.
 Consumers:
   - routers/chat.py   (system prompt construction)
   - routers/student.py (GET /api/student-context)
+
+Workspace slices (profile, transcript, plan) are loaded via
+services.workspace.load_workspace to avoid duplicating canonical
+paths and legacy fallbacks.
 """
 
 import asyncio
@@ -21,6 +25,12 @@ import logging
 from datetime import datetime
 
 from google.cloud.firestore_v1.base_query import FieldFilter
+
+from services.workspace import (
+    load_workspace,
+    transcript_has_data,
+    workspace_plan_to_active_plan,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -69,17 +79,12 @@ async def load_student_context(user_id: str, db) -> dict:
     user_ref = db.collection("users").document(user_id)
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # ── Run each blocking Firestore fetch in the thread pool, sequentially ──
+    # Shared workspace loader (canonical paths + legacy fallbacks).
+    ws = await load_workspace(user_id, db)
 
     def _fetch_user():
         snap = user_ref.get()
         return snap.to_dict() if snap.exists else {}
-
-    def _fetch_academic_record():
-        # v3 canonical home of transcript + current-semester courses.
-        # Lives at users/{uid}/academic_record/main, written by the
-        # frontend's syncTranscript().
-        return load_academic_record(user_ref)
 
     def _fetch_transcript():
         snaps = (
@@ -111,23 +116,15 @@ async def load_student_context(user_id: str, db) -> dict:
         )
         return [d.to_dict() for d in snaps]
 
-    def _fetch_plan():
-        snaps = (
-            user_ref.collection("study_plans")
-            .where(filter=FieldFilter("active", "==", True))
-            .order_by("createdAt", direction="DESCENDING")
-            .limit(1)
-            .get()
-        )
-        docs = list(snaps)
-        return docs[0].to_dict() if docs else None
+    user_data = await loop.run_in_executor(None, _fetch_user)
+    transcript = await loop.run_in_executor(None, _fetch_transcript)
+    semesters = await loop.run_in_executor(None, _fetch_semesters)
+    upcoming_exams = await loop.run_in_executor(None, _fetch_exams)
 
-    user_data       = await loop.run_in_executor(None, _fetch_user)
-    academic_record = await loop.run_in_executor(None, _fetch_academic_record)
-    transcript      = await loop.run_in_executor(None, _fetch_transcript)
-    semesters       = await loop.run_in_executor(None, _fetch_semesters)
-    upcoming_exams  = await loop.run_in_executor(None, _fetch_exams)
-    active_plan     = await loop.run_in_executor(None, _fetch_plan)
+    academic_record = (
+        ws["transcript"] if transcript_has_data(ws.get("transcript")) else {}
+    )
+    active_plan = workspace_plan_to_active_plan(ws.get("plan"))
 
     # ── v3 schema merge ────────────────────────────────────────────────
     # The frontend now stores the parsed transcript + current courses at
@@ -184,4 +181,5 @@ async def load_student_context(user_id: str, db) -> dict:
         "transcript": transcript,
         "upcoming_exams": upcoming_exams,
         "active_plan": active_plan,
+        "notifications": ws.get("notifications") or [],
     }

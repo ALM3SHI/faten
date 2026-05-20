@@ -71,6 +71,7 @@ import {
 } from "@/store/transcriptStore";
 import { usePlanStore, taskKey, type PlanTask, type PlanPriority } from "@/store/planStore";
 import { api } from "@/lib/api";
+import { useAuth } from "@/components/auth-provider";
 import { buildCreditsResolver } from "@/lib/transcript-utils";
 
 // ──────────────────────────────────────────────────────────────────
@@ -209,6 +210,7 @@ function classifyError(err: unknown): AnalyticsError {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
 
   // ── Stores ────────────────────────────────────────────────────────
   const basic = useProfileStore((s) => s.basic);
@@ -248,7 +250,7 @@ export default function DashboardPage() {
 
   // ── Fetch effect ─────────────────────────────────────────────────
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || authLoading || !user) return;
     if (completedCourses.length === 0 || currentGpa <= 0) {
       setAnalyticsData(null);
       setAnalyticsError(null);
@@ -330,7 +332,7 @@ export default function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [hydrated, currentGpa, targetGpa, earnedHours, completedCourses, currentCourses]);
+  }, [hydrated, authLoading, user, currentGpa, targetGpa, earnedHours, completedCourses, currentCourses]);
 
   // ── Derived view models ─────────────────────────────────────────
   const requiredNext = useMemo<{

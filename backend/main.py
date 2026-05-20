@@ -56,6 +56,7 @@ from routers.diagnostics import router as diagnostics_router
 from routers.nav import router as nav_router
 from routers.analytics import router as analytics_router
 from routers.stt import router as stt_router
+from routers.workspace import router as workspace_router
 
 # ── Import CRON tasks ──
 from tasks.cron import daily_notifications_cron
@@ -167,6 +168,7 @@ app.include_router(diagnostics_router)
 app.include_router(nav_router)
 app.include_router(analytics_router)
 app.include_router(stt_router)
+app.include_router(workspace_router)
 
 
 # ── Health Check ──
