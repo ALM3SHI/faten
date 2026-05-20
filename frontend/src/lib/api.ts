@@ -34,6 +34,8 @@ export async function fetchWithAuth(path: string, options: RequestInit = {}) {
 
 export const api = {
   get: (path: string, options?: RequestInit) => fetchWithAuth(path, { ...options, method: "GET" }),
-  post: (path: string, body: any, options?: RequestInit) => 
+  post: (path: string, body: any, options?: RequestInit) =>
     fetchWithAuth(path, { ...options, method: "POST", body: JSON.stringify(body) }),
+  patch: (path: string, body: unknown, options?: RequestInit) =>
+    fetchWithAuth(path, { ...options, method: "PATCH", body: JSON.stringify(body) }),
 };

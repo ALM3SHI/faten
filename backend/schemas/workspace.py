@@ -47,6 +47,20 @@ class WorkspaceProfile(BaseModel):
     uid: str | None = None
 
 
+class ProfileSaveRequest(BaseModel):
+    """PATCH /api/workspace/profile — canonical profile write (Phase 2A)."""
+
+    basic: ProfileBasic = Field(default_factory=ProfileBasic)
+    goals: ProfileGoals = Field(default_factory=ProfileGoals)
+    preferences: ProfilePreferences = Field(default_factory=ProfilePreferences)
+    lastUpdated: str | None = None
+
+
+class ProfileSaveResponse(BaseModel):
+    success: bool = True
+    profile: WorkspaceProfile
+
+
 class WorkspaceTranscript(BaseModel):
     name: str | None = None
     nameEn: str | None = None

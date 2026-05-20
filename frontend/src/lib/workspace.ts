@@ -78,6 +78,25 @@ export async function fetchWorkspace(): Promise<WorkspacePayload> {
   return (await api.get("/api/workspace")) as WorkspacePayload;
 }
 
+export type ProfileSaveSlice = {
+  basic: ReturnType<typeof useProfileStore.getState>["basic"];
+  goals: ReturnType<typeof useProfileStore.getState>["goals"];
+  preferences: ReturnType<typeof useProfileStore.getState>["preferences"];
+  lastUpdated: string | null;
+};
+
+export interface ProfileSaveResponse {
+  success: boolean;
+  profile: WorkspacePayload["profile"];
+}
+
+/** PATCH canonical profile to backend (Phase 2A). Throws on network / HTTP errors. */
+export async function saveProfileToBackend(
+  slice: ProfileSaveSlice,
+): Promise<ProfileSaveResponse> {
+  return (await api.patch("/api/workspace/profile", slice)) as ProfileSaveResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.

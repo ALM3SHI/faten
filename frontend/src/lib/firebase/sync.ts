@@ -40,6 +40,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
+import { saveProfileToBackend } from "@/lib/workspace";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
@@ -338,19 +339,25 @@ export function attachStoreSync(): void {
   if (attached) return;
   attached = true;
 
-  // ── Profile ──
+  // ── Profile — backend-first (Phase 2A), Firestore as safety net ──
   useProfileStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    const slice = {
+      basic: state.basic,
+      goals: state.goals,
+      preferences: state.preferences,
+      lastUpdated: state.lastUpdated,
+    };
     debouncedPush(`profile:${uid}`, () =>
-      safeRun("syncProfile", () =>
-        syncProfile(uid, {
-          basic: state.basic,
-          goals: state.goals,
-          preferences: state.preferences,
-          lastUpdated: state.lastUpdated,
-        }),
-      ),
+      safeRun("pushProfile", async () => {
+        try {
+          await saveProfileToBackend(slice);
+        } catch (err) {
+          console.error("[firebase-sync] saveProfileToBackend failed:", err);
+        }
+        await syncProfile(uid, slice);
+      }),
     );
   });
 

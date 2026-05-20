@@ -18,7 +18,7 @@ Legacy fallbacks (read-only):
   users/{uid}.profile, study_preferences, timetable
 
 Consumers:
-  - routers/workspace.py   (GET /api/workspace)
+  - routers/workspace.py   (GET /api/workspace, PATCH /api/workspace/profile)
   - services/student.py    (agent / student-context; partial reuse)
 """
 
@@ -26,9 +26,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
+from firebase_admin import firestore as fb_firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 
 logger = logging.getLogger(__name__)
@@ -493,3 +494,33 @@ async def load_workspace(user_id: str, db) -> dict:
     """Async wrapper — runs blocking Firestore I/O in the default executor."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, load_workspace_sync, user_id, db)
+
+
+def save_profile_sync(user_id: str, db, payload: dict) -> dict:
+    """Merge canonical profile fields onto users/{uid} (Phase 2A write path)."""
+    user_ref = db.collection("users").document(user_id)
+    last_updated = payload.get("lastUpdated") or datetime.now(timezone.utc).isoformat()
+
+    user_ref.set(
+        {
+            "basic": payload.get("basic") or DEFAULT_BASIC,
+            "goals": payload.get("goals") or DEFAULT_GOALS,
+            "preferences": payload.get("preferences") or DEFAULT_PREFS,
+            "lastUpdated": last_updated,
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+
+    user_snap = user_ref.get()
+    user_doc = user_snap.to_dict() if user_snap.exists else {}
+    return {
+        "success": True,
+        "profile": normalize_profile(user_doc, uid=user_id),
+    }
+
+
+async def save_profile(user_id: str, db, payload: dict) -> dict:
+    """Async wrapper — runs blocking Firestore write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, save_profile_sync, user_id, db, payload)
