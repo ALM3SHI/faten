@@ -78,6 +78,30 @@ class WorkspaceTranscript(BaseModel):
     lastUpdated: str | None = None
 
 
+class TranscriptSaveRequest(BaseModel):
+    """PATCH /api/workspace/transcript — canonical academic record write (Phase 2B)."""
+
+    name: str | None = None
+    nameEn: str | None = None
+    studentId: str | None = None
+    university: str | None = None
+    major: str | None = None
+    faculty: str | None = None
+    degree: str | None = None
+    gpa: float | None = None
+    earnedHours: float | int | None = None
+    planHours: float | int | None = None
+    completedCourses: list[dict[str, Any]] = Field(default_factory=list)
+    currentCourses: list[dict[str, Any]] = Field(default_factory=list)
+    confidence: float = 0
+    lastUpdated: str | None = None
+
+
+class TranscriptSaveResponse(BaseModel):
+    success: bool = True
+    transcript: WorkspaceTranscript
+
+
 class WorkspaceSchedule(BaseModel):
     schedule: list[dict[str, Any]] = Field(default_factory=list)
     lastUpdated: str | None = None

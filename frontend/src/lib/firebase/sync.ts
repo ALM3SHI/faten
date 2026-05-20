@@ -40,7 +40,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-import { saveProfileToBackend } from "@/lib/workspace";
+import { saveProfileToBackend, saveTranscriptToBackend } from "@/lib/workspace";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
@@ -361,29 +361,35 @@ export function attachStoreSync(): void {
     );
   });
 
-  // ── Transcript ──
+  // ── Transcript — backend-first (Phase 2B), Firestore as safety net ──
   useTranscriptStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    const slice = {
+      name: state.name,
+      nameEn: state.nameEn,
+      studentId: state.studentId,
+      university: state.university,
+      major: state.major,
+      faculty: state.faculty,
+      degree: state.degree,
+      gpa: state.gpa,
+      earnedHours: state.earnedHours,
+      planHours: state.planHours,
+      completedCourses: state.completedCourses,
+      currentCourses: state.currentCourses,
+      confidence: state.confidence,
+      lastUpdated: state.lastUpdated,
+    };
     debouncedPush(`transcript:${uid}`, () =>
-      safeRun("syncTranscript", () =>
-        syncTranscript(uid, {
-          name: state.name,
-          nameEn: state.nameEn,
-          studentId: state.studentId,
-          university: state.university,
-          major: state.major,
-          faculty: state.faculty,
-          degree: state.degree,
-          gpa: state.gpa,
-          earnedHours: state.earnedHours,
-          planHours: state.planHours,
-          completedCourses: state.completedCourses,
-          currentCourses: state.currentCourses,
-          confidence: state.confidence,
-          lastUpdated: state.lastUpdated,
-        }),
-      ),
+      safeRun("pushTranscript", async () => {
+        try {
+          await saveTranscriptToBackend(slice);
+        } catch (err) {
+          console.error("[firebase-sync] saveTranscriptToBackend failed:", err);
+        }
+        await syncTranscript(uid, slice);
+      }),
     );
   });
 

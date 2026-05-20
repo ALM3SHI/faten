@@ -97,6 +97,23 @@ export async function saveProfileToBackend(
   return (await api.patch("/api/workspace/profile", slice)) as ProfileSaveResponse;
 }
 
+export type TranscriptSaveSlice = Omit<
+  ReturnType<typeof useTranscriptStore.getState>,
+  "setTranscript" | "clearTranscript" | "hasTranscript"
+>;
+
+export interface TranscriptSaveResponse {
+  success: boolean;
+  transcript: WorkspacePayload["transcript"];
+}
+
+/** PATCH canonical transcript to backend (Phase 2B). Throws on network / HTTP errors. */
+export async function saveTranscriptToBackend(
+  slice: TranscriptSaveSlice,
+): Promise<TranscriptSaveResponse> {
+  return (await api.patch("/api/workspace/transcript", slice)) as TranscriptSaveResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.

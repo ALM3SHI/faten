@@ -6,10 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Upload, FileText, CheckCircle2, AlertCircle, BarChart3, ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Storage, STORAGE_KEYS } from "@/lib/core";
 import { useRouter } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api";
 import { parseTranscriptPDF, type ParsedTranscript } from "@/lib/transcript-parser";
+import { useTranscriptStore } from "@/store/transcriptStore";
 
 // What the UI works with: the parsed transcript + optional AI analysis
 // that arrives moments later. `error` is for the local-parse failure
@@ -114,48 +114,19 @@ export default function TranscriptParserPage() {
     }
   };
 
-  const saveAndContinue = async () => {
+  const saveAndContinue = () => {
     if (!parsedData || "error" in parsedData) return;
 
-    // 1. Update Local Storage
-    const profile = Storage.get(STORAGE_KEYS.PROFILE, { basic: {}, goals: {}, preferences: {} }) as any;
-    profile.basic = {
-      ...profile.basic,
-      name: parsedData.name || profile.basic.name,
-      studentId: parsedData.studentId || profile.basic.studentId,
-      earnedHours: parsedData.earnedHours || profile.basic.earnedHours,
-    };
-    profile.goals = {
-      ...profile.goals,
-      currentGpa: parsedData.gpa || profile.goals.currentGpa,
-    };
-    profile.completedCourses = parsedData.completedCourses || [];
-    profile.insights = {
-      strengths: parsedData.analysis?.strengths || [],
-      weaknesses: parsedData.analysis?.needs_focus || [],
-      recommendations: parsedData.analysis?.recommendations || [],
-      lastUpdated: new Date().toISOString(),
-    };
-
-    Storage.set(STORAGE_KEYS.PROFILE, profile);
-
-    // 2. Sync with Backend (Firestore)
-    try {
-      await fetchWithAuth("/api/sync-transcript", {
-        method: "POST",
-        body: JSON.stringify({
-          courses: parsedData.completedCourses || [],
-          cgpa: parsedData.gpa || 0,
-          totalHours: parsedData.earnedHours || 0,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      router.push("/dashboard");
-    } catch (err) {
-      console.error("Sync error:", err);
-      // Even if sync fails, we have it locally, so we can still proceed
-      router.push("/dashboard");
-    }
+    // Commit to transcriptStore → PATCH /api/workspace/transcript → syncTranscript safety net.
+    const {
+      analysis: _analysis,
+      analysisError: _analysisError,
+      analysisQuotaHit: _analysisQuotaHit,
+      isAnalyzing: _isAnalyzing,
+      ...transcript
+    } = parsedData;
+    useTranscriptStore.getState().setTranscript(transcript as ParsedTranscript);
+    router.push("/dashboard");
   };
 
   return (

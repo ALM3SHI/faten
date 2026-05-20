@@ -18,7 +18,7 @@ Legacy fallbacks (read-only):
   users/{uid}.profile, study_preferences, timetable
 
 Consumers:
-  - routers/workspace.py   (GET /api/workspace, PATCH /api/workspace/profile)
+  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript)
   - services/student.py    (agent / student-context; partial reuse)
 """
 
@@ -524,3 +524,45 @@ async def save_profile(user_id: str, db, payload: dict) -> dict:
     """Async wrapper — runs blocking Firestore write in the default executor."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, save_profile_sync, user_id, db, payload)
+
+
+def save_transcript_sync(user_id: str, db, payload: dict) -> dict:
+    """Merge canonical transcript onto users/{uid}/academic_record/main (Phase 2B)."""
+    main_ref = (
+        db.collection("users").document(user_id).collection("academic_record").document("main")
+    )
+    last_updated = payload.get("lastUpdated") or datetime.now(timezone.utc).isoformat()
+
+    main_ref.set(
+        {
+            "name": payload.get("name"),
+            "nameEn": payload.get("nameEn"),
+            "studentId": payload.get("studentId"),
+            "university": payload.get("university"),
+            "major": payload.get("major"),
+            "faculty": payload.get("faculty"),
+            "degree": payload.get("degree"),
+            "gpa": payload.get("gpa"),
+            "earnedHours": payload.get("earnedHours"),
+            "planHours": payload.get("planHours"),
+            "completedCourses": payload.get("completedCourses") or [],
+            "currentCourses": payload.get("currentCourses") or [],
+            "confidence": payload.get("confidence", 0),
+            "lastUpdated": last_updated,
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+
+    main_snap = main_ref.get()
+    main_doc = main_snap.to_dict() if main_snap.exists else {}
+    return {
+        "success": True,
+        "transcript": normalize_transcript(main_doc, legacy_transcript=None),
+    }
+
+
+async def save_transcript(user_id: str, db, payload: dict) -> dict:
+    """Async wrapper — runs blocking Firestore write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, save_transcript_sync, user_id, db, payload)
