@@ -182,6 +182,31 @@ export async function saveChatThreadToBackend(
   return (await api.patch(path, serializeChatThreadForApi(thread))) as ChatThreadSaveResponse;
 }
 
+export interface ChatThreadDeleteResponse {
+  success: boolean;
+  threadId: string;
+}
+
+/** DELETE canonical chat thread from backend (Phase 2E.1). Throws on network / HTTP errors. */
+export async function deleteChatThreadFromBackend(
+  threadId: string,
+): Promise<ChatThreadDeleteResponse> {
+  const path = `/api/workspace/chats/${encodeURIComponent(threadId)}`;
+  return (await api.delete(path)) as ChatThreadDeleteResponse;
+}
+
+export interface SuppressLegacyFallbackResponse {
+  success: boolean;
+}
+
+/** POST suppress flag so empty chats skips chat_history on GET (Phase 2E.2). */
+export async function suppressChatsLegacyFallback(): Promise<SuppressLegacyFallbackResponse> {
+  return (await api.post(
+    "/api/workspace/chats/suppress-legacy-fallback",
+    {},
+  )) as SuppressLegacyFallbackResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.

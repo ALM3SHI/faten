@@ -41,11 +41,13 @@ import {
 import { auth, db } from "@/lib/firebase";
 
 import {
+  deleteChatThreadFromBackend,
   saveChatThreadToBackend,
   savePlanToBackend,
   saveProfileToBackend,
   saveScheduleToBackend,
   saveTranscriptToBackend,
+  suppressChatsLegacyFallback,
 } from "@/lib/workspace";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
@@ -451,19 +453,44 @@ export function attachStoreSync(): void {
     const prevThreads = prevState.threads ?? [];
     const newThreads = state.threads ?? [];
 
-    // Bulk clear: prev had threads, new is empty → batch-delete subcollection.
+    // Bulk clear: backend-first per thread (Phase 2E.1), suppress fallback (2E.2), safety net.
     if (prevThreads.length > 0 && newThreads.length === 0) {
-      safeRun("clearAllChats", () => clearAllChats(uid));
+      safeRun("clearAllChats", async () => {
+        await Promise.allSettled(
+          prevThreads.map((t) =>
+            deleteChatThreadFromBackend(t.id).catch((err) => {
+              console.error(
+                "[firebase-sync] deleteChatThreadFromBackend failed:",
+                t.id,
+                err,
+              );
+            }),
+          ),
+        );
+        await clearAllChats(uid);
+        try {
+          await suppressChatsLegacyFallback();
+        } catch (err) {
+          console.error("[firebase-sync] suppressChatsLegacyFallback failed:", err);
+        }
+      });
       return;
     }
 
     const prevById = new Map(prevThreads.map((t) => [t.id, t]));
     const newById = new Map(newThreads.map((t) => [t.id, t]));
 
-    // Deleted threads
+    // Deleted threads — backend-first (Phase 2E.1), Firestore as safety net.
     for (const id of prevById.keys()) {
       if (!newById.has(id)) {
-        safeRun("deleteChat", () => deleteChat(uid, id));
+        safeRun("deleteChat", async () => {
+          try {
+            await deleteChatThreadFromBackend(id);
+          } catch (err) {
+            console.error("[firebase-sync] deleteChatThreadFromBackend failed:", err);
+          }
+          await deleteChat(uid, id);
+        });
       }
     }
 

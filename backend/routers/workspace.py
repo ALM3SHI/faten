@@ -8,6 +8,8 @@ PATCH /api/workspace/transcript — save canonical academic record (Phase 2B).
 PATCH /api/workspace/schedule — save canonical weekly timetable (Phase 2C).
 PATCH /api/workspace/plan — save canonical active study plan (Phase 2D).
 PATCH /api/workspace/chats/{thread_id} — save canonical UI chat thread (Phase 2E).
+DELETE /api/workspace/chats/{thread_id} — delete canonical UI chat thread (Phase 2E.1).
+POST /api/workspace/chats/suppress-legacy-fallback — skip chat_history fallback (Phase 2E.2).
 """
 
 import logging
@@ -17,6 +19,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from auth.dependencies import get_current_user
 from db.firestore import get_db
 from schemas.workspace import (
+    ChatThreadDeleteResponse,
     ChatThreadSaveRequest,
     ChatThreadSaveResponse,
     PlanSaveRequest,
@@ -25,13 +28,16 @@ from schemas.workspace import (
     ProfileSaveResponse,
     ScheduleSaveRequest,
     ScheduleSaveResponse,
+    SuppressLegacyFallbackResponse,
     TranscriptSaveRequest,
     TranscriptSaveResponse,
     WorkspaceResponse,
 )
 from services.workspace import (
+    delete_chat_thread,
     load_workspace,
     save_chat_thread,
+    suppress_chats_legacy_fallback,
     save_plan,
     save_profile,
     save_schedule,
@@ -130,6 +136,50 @@ async def patch_workspace_chat_thread(
         logger.error(
             "[workspace] PATCH /api/workspace/chats/%s failed: %s",
             thread_id,
+            err,
+            exc_info=True,
+        )
+        raise HTTPException(status_code=500, detail=str(err)) from err
+
+
+@router.delete(
+    "/api/workspace/chats/{thread_id}",
+    response_model=ChatThreadDeleteResponse,
+)
+async def delete_workspace_chat_thread(
+    thread_id: str,
+    user_id: str = Depends(get_current_user),
+) -> ChatThreadDeleteResponse:
+    """Delete UI chat thread at users/{uid}/chats/{thread_id}. No chat_history delete."""
+    try:
+        db = get_db()
+        data = await delete_chat_thread(user_id, db, thread_id)
+        return ChatThreadDeleteResponse(**data)
+    except Exception as err:
+        logger.error(
+            "[workspace] DELETE /api/workspace/chats/%s failed: %s",
+            thread_id,
+            err,
+            exc_info=True,
+        )
+        raise HTTPException(status_code=500, detail=str(err)) from err
+
+
+@router.post(
+    "/api/workspace/chats/suppress-legacy-fallback",
+    response_model=SuppressLegacyFallbackResponse,
+)
+async def post_suppress_chats_legacy_fallback(
+    user_id: str = Depends(get_current_user),
+) -> SuppressLegacyFallbackResponse:
+    """Set chatsSuppressLegacyFallback on users/{uid}. Idempotent; no chat_history change."""
+    try:
+        db = get_db()
+        data = await suppress_chats_legacy_fallback(user_id, db)
+        return SuppressLegacyFallbackResponse(**data)
+    except Exception as err:
+        logger.error(
+            "[workspace] POST /api/workspace/chats/suppress-legacy-fallback failed: %s",
             err,
             exc_info=True,
         )

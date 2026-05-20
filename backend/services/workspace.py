@@ -367,15 +367,39 @@ def _load_chat_history_threads(user_ref) -> list[dict]:
     return threads
 
 
-def normalize_chats(user_ref, chat_docs: list) -> dict:
-    """Prefer users/{uid}/chats; fall back to chat_history only when empty."""
+def normalize_chats(user_ref, chat_docs: list, user_doc: dict | None = None) -> dict:
+    """Prefer users/{uid}/chats; fall back to chat_history only when empty and not suppressed."""
     if chat_docs:
         threads = [_thread_from_chat_doc(snap.id, snap.to_dict() or {}) for snap in chat_docs]
         threads.sort(key=lambda t: t.get("updatedAt") or "", reverse=True)
         return {"threads": threads}
 
+    if (user_doc or {}).get("chatsSuppressLegacyFallback"):
+        return {"threads": []}
+
     legacy_threads = _load_chat_history_threads(user_ref)
     return {"threads": legacy_threads}
+
+
+def _set_chats_suppress_legacy_fallback(user_ref, *, suppress: bool) -> None:
+    """Phase 2E.2 — control whether empty chats skips chat_history fallback on GET."""
+    if suppress:
+        user_ref.set(
+            {
+                "chatsSuppressLegacyFallback": True,
+                "chatsSuppressLegacyFallbackAt": datetime.now(timezone.utc).isoformat(),
+            },
+            merge=True,
+        )
+    else:
+        user_ref.set({"chatsSuppressLegacyFallback": False}, merge=True)
+
+
+def suppress_chats_legacy_fallback_sync(user_id: str, db) -> dict:
+    """Set suppress flag on users/{uid} (idempotent). Does not touch chat_history."""
+    user_ref = db.collection("users").document(user_id)
+    _set_chats_suppress_legacy_fallback(user_ref, suppress=True)
+    return {"success": True}
 
 
 def normalize_achievements(state_doc: dict | None) -> dict:
@@ -484,7 +508,7 @@ def load_workspace_sync(user_id: str, db) -> dict:
         "transcript": normalize_transcript(main_doc, legacy_transcript),
         "schedule": normalize_schedule(schedule_doc, user_doc),
         "plan": normalize_plan(plan_current_doc, study_plan_doc),
-        "chats": normalize_chats(user_ref, chat_snaps),
+        "chats": normalize_chats(user_ref, chat_snaps, user_doc),
         "achievements": normalize_achievements(ach_doc),
         "notifications": fetch_notifications(user_ref),
     }
@@ -658,6 +682,9 @@ def save_chat_thread_sync(user_id: str, db, thread_id: str, payload: dict) -> di
         merge=True,
     )
 
+    user_ref = db.collection("users").document(user_id)
+    _set_chats_suppress_legacy_fallback(user_ref, suppress=False)
+
     chat_snap = chat_ref.get()
     chat_doc = chat_snap.to_dict() if chat_snap.exists else {}
     return {
@@ -671,4 +698,39 @@ async def save_chat_thread(user_id: str, db, thread_id: str, payload: dict) -> d
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(
         None, save_chat_thread_sync, user_id, db, thread_id, payload
+    )
+
+
+def delete_chat_thread_sync(user_id: str, db, thread_id: str) -> dict:
+    """Delete users/{uid}/chats/{thread_id} only (Phase 2E.1).
+
+    Does not read, write, or delete chat_history — audit path unchanged.
+    Idempotent: deleting a missing doc is success.
+    """
+    chat_ref = (
+        db.collection("users").document(user_id).collection("chats").document(thread_id)
+    )
+    chat_ref.delete()
+
+    chats_coll = db.collection("users").document(user_id).collection("chats")
+    if not list(chats_coll.limit(1).stream()):
+        user_ref = db.collection("users").document(user_id)
+        _set_chats_suppress_legacy_fallback(user_ref, suppress=True)
+
+    return {"success": True, "threadId": thread_id}
+
+
+async def delete_chat_thread(user_id: str, db, thread_id: str) -> dict:
+    """Async wrapper — runs blocking Firestore delete in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        None, delete_chat_thread_sync, user_id, db, thread_id
+    )
+
+
+async def suppress_chats_legacy_fallback(user_id: str, db) -> dict:
+    """Async wrapper — runs blocking suppress-flag write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        None, suppress_chats_legacy_fallback_sync, user_id, db
     )

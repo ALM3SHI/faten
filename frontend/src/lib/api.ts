@@ -38,4 +38,6 @@ export const api = {
     fetchWithAuth(path, { ...options, method: "POST", body: JSON.stringify(body) }),
   patch: (path: string, body: unknown, options?: RequestInit) =>
     fetchWithAuth(path, { ...options, method: "PATCH", body: JSON.stringify(body) }),
+  delete: (path: string, options?: RequestInit) =>
+    fetchWithAuth(path, { ...options, method: "DELETE" }),
 };

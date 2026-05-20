@@ -176,6 +176,19 @@ class ChatThreadSaveResponse(BaseModel):
     thread: ChatThreadOut
 
 
+class ChatThreadDeleteResponse(BaseModel):
+    """DELETE /api/workspace/chats/{thread_id} — canonical UI thread delete (Phase 2E.1)."""
+
+    success: bool = True
+    threadId: str
+
+
+class SuppressLegacyFallbackResponse(BaseModel):
+    """POST /api/workspace/chats/suppress-legacy-fallback (Phase 2E.2)."""
+
+    success: bool = True
+
+
 class WorkspaceChats(BaseModel):
     threads: list[ChatThreadOut] = Field(default_factory=list)
 
