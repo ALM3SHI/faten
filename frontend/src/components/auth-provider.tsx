@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             createdAt: new Date().toISOString(),
             basic: { name: user.displayName || "" },
             goals: { currentGpa: 0, targetGpa: 0 },
-            courses: []
           };
           await setDoc(docRef, initialProfile);
           setProfile(initialProfile);
