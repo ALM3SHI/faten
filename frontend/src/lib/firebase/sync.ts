@@ -415,8 +415,8 @@ export function attachStoreSync(): void {
           await saveScheduleToBackend(slice);
         } catch (err) {
           console.error("[firebase-sync] saveScheduleToBackend failed:", err);
+          await syncSchedule(uid, slice);
         }
-        await syncSchedule(uid, slice);
       }),
     );
   });
