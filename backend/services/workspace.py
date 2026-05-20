@@ -18,7 +18,7 @@ Legacy fallbacks (read-only):
   users/{uid}.profile, study_preferences, timetable
 
 Consumers:
-  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript/schedule)
+  - routers/workspace.py   (GET /api/workspace, PATCH profile/transcript/schedule/plan)
   - services/student.py    (agent / student-context; partial reuse)
 """
 
@@ -599,3 +599,32 @@ async def save_schedule(user_id: str, db, payload: dict) -> dict:
     """Async wrapper — runs blocking Firestore write in the default executor."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(None, save_schedule_sync, user_id, db, payload)
+
+
+def save_plan_sync(user_id: str, db, payload: dict) -> dict:
+    """Merge canonical plan onto users/{uid}/plan/current (Phase 2D). Does not write study_plans."""
+    plan_ref = db.collection("users").document(user_id).collection("plan").document("current")
+
+    plan_ref.set(
+        {
+            "plan": payload.get("plan"),
+            "model": payload.get("model"),
+            "generatedAt": payload.get("generatedAt"),
+            "completed": payload.get("completed") or [],
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+
+    plan_snap = plan_ref.get()
+    plan_doc = plan_snap.to_dict() if plan_snap.exists else {}
+    return {
+        "success": True,
+        "plan": normalize_plan(plan_doc, study_plan_doc=None),
+    }
+
+
+async def save_plan(user_id: str, db, payload: dict) -> dict:
+    """Async wrapper — runs blocking Firestore write in the default executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, save_plan_sync, user_id, db, payload)

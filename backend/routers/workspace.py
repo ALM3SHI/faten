@@ -6,6 +6,7 @@ GET /api/workspace — load full user workspace via backend (Phase 1).
 PATCH /api/workspace/profile — save canonical profile fields (Phase 2A).
 PATCH /api/workspace/transcript — save canonical academic record (Phase 2B).
 PATCH /api/workspace/schedule — save canonical weekly timetable (Phase 2C).
+PATCH /api/workspace/plan — save canonical active study plan (Phase 2D).
 """
 
 import logging
@@ -15,6 +16,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from auth.dependencies import get_current_user
 from db.firestore import get_db
 from schemas.workspace import (
+    PlanSaveRequest,
+    PlanSaveResponse,
     ProfileSaveRequest,
     ProfileSaveResponse,
     ScheduleSaveRequest,
@@ -23,7 +26,13 @@ from schemas.workspace import (
     TranscriptSaveResponse,
     WorkspaceResponse,
 )
-from services.workspace import load_workspace, save_profile, save_schedule, save_transcript
+from services.workspace import (
+    load_workspace,
+    save_plan,
+    save_profile,
+    save_schedule,
+    save_transcript,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -84,4 +93,19 @@ async def patch_workspace_schedule(
         return ScheduleSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/schedule failed: %s", err, exc_info=True)
+        raise HTTPException(status_code=500, detail=str(err)) from err
+
+
+@router.patch("/api/workspace/plan", response_model=PlanSaveResponse)
+async def patch_workspace_plan(
+    payload: PlanSaveRequest,
+    user_id: str = Depends(get_current_user),
+) -> PlanSaveResponse:
+    """Persist active plan to users/{uid}/plan/current (merge). Does not write study_plans."""
+    try:
+        db = get_db()
+        data = await save_plan(user_id, db, payload.model_dump())
+        return PlanSaveResponse(**data)
+    except Exception as err:
+        logger.error("[workspace] PATCH /api/workspace/plan failed: %s", err, exc_info=True)
         raise HTTPException(status_code=500, detail=str(err)) from err

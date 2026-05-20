@@ -126,6 +126,20 @@ class WorkspacePlan(BaseModel):
     completed: list[str] = Field(default_factory=list)
 
 
+class PlanSaveRequest(BaseModel):
+    """PATCH /api/workspace/plan — canonical active study plan write (Phase 2D)."""
+
+    plan: dict[str, Any] | None = None
+    model: str | None = None
+    generatedAt: str | None = None
+    completed: list[str] = Field(default_factory=list)
+
+
+class PlanSaveResponse(BaseModel):
+    success: bool = True
+    plan: WorkspacePlan
+
+
 class ChatMessageOut(BaseModel):
     role: str
     content: str = ""

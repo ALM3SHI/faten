@@ -41,6 +41,7 @@ import {
 import { auth, db } from "@/lib/firebase";
 
 import {
+  savePlanToBackend,
   saveProfileToBackend,
   saveScheduleToBackend,
   saveTranscriptToBackend,
@@ -417,19 +418,25 @@ export function attachStoreSync(): void {
     );
   });
 
-  // ── Plan ──
+  // ── Plan — backend-first (Phase 2D), Firestore as safety net ──
   usePlanStore.subscribe((state) => {
     const uid = currentUid();
     if (!uid) return;
+    const slice = {
+      plan: state.plan,
+      model: state.model,
+      generatedAt: state.generatedAt,
+      completed: state.completed,
+    };
     debouncedPush(`plan:${uid}`, () =>
-      safeRun("syncPlan", () =>
-        syncPlan(uid, {
-          plan: state.plan,
-          model: state.model,
-          generatedAt: state.generatedAt,
-          completed: state.completed,
-        }),
-      ),
+      safeRun("pushPlan", async () => {
+        try {
+          await savePlanToBackend(slice);
+        } catch (err) {
+          console.error("[firebase-sync] savePlanToBackend failed:", err);
+        }
+        await syncPlan(uid, slice);
+      }),
     );
   });
 

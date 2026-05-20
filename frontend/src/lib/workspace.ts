@@ -131,6 +131,23 @@ export async function saveScheduleToBackend(
   return (await api.patch("/api/workspace/schedule", slice)) as ScheduleSaveResponse;
 }
 
+export type PlanSaveSlice = {
+  plan: ReturnType<typeof usePlanStore.getState>["plan"];
+  model: string | null;
+  generatedAt: string | null;
+  completed: string[];
+};
+
+export interface PlanSaveResponse {
+  success: boolean;
+  plan: WorkspacePayload["plan"];
+}
+
+/** PATCH canonical plan to backend (Phase 2D). Throws on network / HTTP errors. */
+export async function savePlanToBackend(slice: PlanSaveSlice): Promise<PlanSaveResponse> {
+  return (await api.patch("/api/workspace/plan", slice)) as PlanSaveResponse;
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.
