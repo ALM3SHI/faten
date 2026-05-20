@@ -132,16 +132,24 @@ async def load_student_context(user_id: str, db) -> dict:
     # legacy shapes (`user_data.profile.courses`, transcript.courses) so
     # the system prompt and any tool still reading the old keys keep
     # working without a deeper refactor.
-    if academic_record:
-        profile = user_data.setdefault("profile", {})
+    # Canonical profile name (Profile page / workspace basic) — not transcript name.
+    ws_basic = (ws.get("profile") or {}).get("basic") or {}
+    profile = user_data.setdefault("profile", {})
+    canonical_name = (ws_basic.get("name") or "").strip()
+    if not canonical_name:
+        root_basic = user_data.get("basic") or {}
+        canonical_name = (root_basic.get("name") or "").strip()
+    if canonical_name:
+        profile["name"] = canonical_name
 
+    if academic_record:
         current_courses = academic_record_current_courses(academic_record)
         if current_courses and not profile.get("courses"):
             profile["courses"] = current_courses
 
         # Promote top-level stats so prompt blocks that read profile.gpa
-        # / earnedHours still find a value.
-        for key in ("gpa", "earnedHours", "planHours", "major", "studentId", "name"):
+        # / earnedHours still find a value. Name stays profile/basic only.
+        for key in ("gpa", "earnedHours", "planHours", "major", "studentId"):
             val = academic_record.get(key)
             if val is not None and not profile.get(key):
                 if key == "gpa":

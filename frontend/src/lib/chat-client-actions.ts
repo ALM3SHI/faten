@@ -279,9 +279,12 @@ export function buildClientContext(): ClientContextSnapshot {
 
   const today = AR_DAYS[new Date().getDay()];
 
+  const displayName =
+    (profile.basic.name || transcript.name || transcript.nameEn || "").trim();
+
   return {
     profile: {
-      name: profile.basic.name,
+      name: displayName,
       major: profile.basic.major,
       studentId: profile.basic.studentId,
       totalPlanHours: profile.basic.totalPlanHours,

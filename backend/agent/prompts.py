@@ -22,6 +22,25 @@ GP_MAP = {
 }
 
 
+def _student_display_name(
+    client_context: dict | None,
+    profile: dict,
+    academic_record: dict | None,
+) -> str:
+    """Preferred name for greeting / identity — profile first, transcript fallback."""
+    fe_profile = (client_context or {}).get("profile") or {}
+    record = academic_record or {}
+    for candidate in (
+        fe_profile.get("name"),
+        profile.get("name"),
+        record.get("name"),
+        record.get("nameEn"),
+    ):
+        if candidate and str(candidate).strip():
+            return str(candidate).strip()
+    return ""
+
+
 def _subject_family(code: str, name: str) -> str:
     """Bucket a completed course into a coarse subject family so the
     agent can spot domain-level weaknesses (e.g. "weak in math foundation"
@@ -91,7 +110,11 @@ def build_system_prompt(
     today_str = today.strftime("%Y-%m-%d")
     today_ar = today.strftime("%A, %Y-%m-%d")
 
-    profile = user_data.get("profile", {})
+    profile = dict(user_data.get("profile") or {})
+    basic = user_data.get("basic") or {}
+    if (basic.get("name") or "").strip():
+        profile["name"] = str(basic["name"]).strip()
+    display_name = _student_display_name(client_context, profile, academic_record)
     prefs = user_data.get("study_preferences", {})
     analysis = user_data.get("analysis", {})
 
@@ -246,7 +269,7 @@ ADD_TASK ×4، لأن START_POMODORO يبدأ مؤقتاً واحداً فقط �
         prompt += "\n═══ 📡 سياق مباشر من واجهة الطالب (Live) ═══\n"
         prompt += "هذا السياق وُلِّد لحظياً من متاجر Zustand في المتصفح. يُقدَّم على أي بيانات قد تكون قديمة في Firestore.\n"
         if fe_profile:
-            name = fe_profile.get("name") or "—"
+            name = display_name or "—"
             major = fe_profile.get("major") or "—"
             student_id = fe_profile.get("studentId") or "—"
             target = fe_profile.get("targetGpa")
@@ -299,11 +322,14 @@ ADD_TASK ×4، لأن START_POMODORO يبدأ مؤقتاً واحداً فقط �
     # ══════════════════════════════════════════════════
     #  BLOCK 2: Student Profile & Identity
     # ══════════════════════════════════════════════════
-    has_profile = bool(profile.get("name") or profile.get("major"))
+    has_profile = bool(display_name or profile.get("major"))
     if has_profile:
         prompt += "\n═══ 🎓 بيانات الطالب ═══\n"
-        if profile.get("name"):
-            prompt += f"الاسم: {profile['name']}\n"
+        if display_name:
+            prompt += f"الاسم (المعروض — من الملف الشخصي): {display_name}\n"
+        record_name = (academic_record or {}).get("name") or (academic_record or {}).get("nameEn")
+        if record_name and str(record_name).strip() and str(record_name).strip() != display_name:
+            prompt += f"اسم السجل الأكاديمي (مرجع فقط): {str(record_name).strip()}\n"
         if profile.get("university"):
             prompt += f"الجامعة: {profile['university']}\n"
         if profile.get("major"):

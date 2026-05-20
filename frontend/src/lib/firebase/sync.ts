@@ -504,8 +504,8 @@ export function attachStoreSync(): void {
               await saveChatThreadToBackend(thread);
             } catch (err) {
               console.error("[firebase-sync] saveChatThreadToBackend failed:", err);
+              await syncChat(uid, thread);
             }
-            await syncChat(uid, thread);
           }),
         );
       }

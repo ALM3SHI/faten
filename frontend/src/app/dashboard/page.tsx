@@ -591,7 +591,7 @@ export default function DashboardPage() {
   // ── Header bits ──────────────────────────────────────────────────
   const [streak] = useState(7);
   const studentFirstName =
-    (transcriptStudentName || basic.name || "").split(" ").filter(Boolean)[0] || null;
+    (basic.name || transcriptStudentName || "").split(" ").filter(Boolean)[0] || null;
   const greeting = studentFirstName
     ? `أهلاً بك مجدداً، ${studentFirstName}! 👋`
     : "أهلاً بك مجدداً، يا بطل! 👋";
