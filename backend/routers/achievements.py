@@ -22,6 +22,11 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 
 from auth.bearer import verify_firebase_token
 from db.firestore import get_db
+from services.workspace import (
+    load_active_plan_docs_sync,
+    normalize_plan,
+    plan_section_metrics,
+)
 from schemas.achievements import (
     AchievementsState, AchievementsResponse, AchievementsData,
     CheckBadgesRequest, AddXPRequest
@@ -74,6 +79,37 @@ LEVELS = [
     {"level": 9, "title": "عبقري", "xpNeeded": 3500},
     {"level": 10, "title": "أيقونة أكاديمية", "xpNeeded": 5000},
 ]
+
+
+def _count_chat_user_messages(db, user_id: str) -> int:
+    """Count user-role chat messages — canonical chats first, chat_history fallback."""
+    user_ref = db.collection("users").document(user_id)
+    msg_count = 0
+
+    chat_snaps = list(user_ref.collection("chats").stream())
+    if chat_snaps:
+        for snap in chat_snaps:
+            data = snap.to_dict() or {}
+            msgs = data.get("messages") or []
+            msg_count += sum(1 for m in msgs if m.get("role") == "user")
+        return msg_count
+
+    for conv_doc in user_ref.collection("chat_history").stream():
+        conv_data = conv_doc.to_dict() or {}
+        msgs = conv_data.get("messages") or []
+        if not msgs:
+            try:
+                msg_snaps = (
+                    conv_doc.reference.collection("messages")
+                    .limit(200)
+                    .stream()
+                )
+                msgs = [m.to_dict() for m in msg_snaps]
+            except Exception:
+                msgs = []
+        msg_count += sum(1 for m in msgs if m.get("role") == "user")
+
+    return msg_count
 
 
 def _collect_metrics(db, user_id: str) -> dict:
@@ -145,38 +181,18 @@ def _collect_metrics(db, user_id: str) -> dict:
         pass
 
     try:
-        # Plan data — stored in study_plans sub-collection, not as a user doc field
-        plan_docs = (
-            db.collection("users").document(user_id)
-            .collection("study_plans")
-            .where(filter=FieldFilter("active", "==", True))
-            .limit(1)
-            .stream()
-        )
-        for plan_doc in plan_docs:
-            plan_data = plan_doc.to_dict() or {}
-            plan_list = plan_data.get("plan") or plan_data.get("tasks") or []
-            metrics["hasPlan"] = len(plan_list) > 0
-            metrics["completedTasks"] = sum(
-                1 for t in plan_list if t.get("done") or t.get("completed")
-            )
-            break
+        # Plan — canonical plan/current first, study_plans fallback (Phase 4C.3.1)
+        user_ref = db.collection("users").document(user_id)
+        plan_current_doc, study_plan_doc = load_active_plan_docs_sync(user_ref)
+        plan_section = normalize_plan(plan_current_doc, study_plan_doc)
+        has_plan, completed_tasks = plan_section_metrics(plan_section)
+        metrics["hasPlan"] = has_plan
+        metrics["completedTasks"] = completed_tasks
     except Exception:
         pass
 
     try:
-        # Chat data — messages are embedded in chat_history documents under "messages" array
-        chat_docs = (
-            db.collection("users").document(user_id)
-            .collection("chat_history")
-            .stream()
-        )
-        msg_count = 0
-        for conv_doc in chat_docs:
-            conv_data = conv_doc.to_dict() or {}
-            msgs = conv_data.get("messages") or []
-            msg_count += sum(1 for m in msgs if m.get("role") == "user")
-        metrics["chatMessages"] = msg_count
+        metrics["chatMessages"] = _count_chat_user_messages(db, user_id)
     except Exception:
         pass
     

@@ -25,6 +25,7 @@ Consumers:
 from __future__ import annotations
 
 import asyncio
+import copy
 import logging
 from datetime import datetime, timezone
 from typing import Any
@@ -107,20 +108,385 @@ def plan_has_data(plan_section: dict | None) -> bool:
     return False
 
 
+def _plan_task_completion_key(task: dict) -> str:
+    """Match frontend planStore.taskKey when canonical fields are present."""
+    day = task.get("suggestedDay") or task.get("date") or ""
+    time_slot = task.get("suggestedTime") or task.get("time") or ""
+    code = task.get("courseCode") or task.get("code") or ""
+    if day and time_slot and code:
+        return f"{day}|{time_slot}|{code}"
+    task_id = task.get("id")
+    return str(task_id) if task_id else ""
+
+
+def _tasks_with_completion_flags(
+    tasks: list,
+    completed_keys: list | None,
+) -> list[dict]:
+    """Merge canonical completed[] keys and legacy per-task done flags."""
+    completed_set = set(completed_keys or [])
+    out: list[dict] = []
+    for raw in tasks or []:
+        if not isinstance(raw, dict):
+            continue
+        task = dict(raw)
+        if task.get("done"):
+            task["done"] = True
+        else:
+            key = _plan_task_completion_key(task)
+            task["done"] = bool(key and key in completed_set)
+        out.append(task)
+    return out
+
+
+def load_active_plan_docs_sync(user_ref) -> tuple[dict | None, dict | None]:
+    """Canonical-first plan docs: plan/current, then active study_plans (Phase 4C.3.1)."""
+    plan_snap = user_ref.collection("plan").document("current").get()
+    plan_current_doc = plan_snap.to_dict() if plan_snap.exists else None
+
+    study_plan_doc = None
+    if not (plan_current_doc and plan_current_doc.get("plan")):
+        study_plan_doc = _fetch_active_study_plan(user_ref)
+
+    return plan_current_doc, study_plan_doc
+
+
+def plan_section_metrics(plan_section: dict | None) -> tuple[bool, int]:
+    """Return (has_plan, completed_task_count) from a normalized workspace plan slice."""
+    if not plan_section or not plan_section.get("plan"):
+        return False, 0
+    plan_obj = plan_section["plan"]
+    if not isinstance(plan_obj, dict):
+        return False, 0
+    raw_tasks = plan_obj.get("tasks")
+    tasks = raw_tasks if isinstance(raw_tasks, list) else []
+    if not tasks:
+        return False, 0
+    hydrated = _tasks_with_completion_flags(
+        tasks,
+        plan_section.get("completed") or [],
+    )
+    done_count = sum(1 for t in hydrated if t.get("done"))
+    return True, done_count
+
+
 def workspace_plan_to_active_plan(plan_section: dict | None) -> dict | None:
     """Map workspace `plan` slice → legacy active_plan shape for agent context."""
     if not plan_section or not plan_section.get("plan"):
         return None
     plan_obj = plan_section["plan"]
-    tasks = plan_obj.get("tasks") if isinstance(plan_obj, dict) else []
+    if not isinstance(plan_obj, dict):
+        return None
+    raw_tasks = plan_obj.get("tasks")
+    tasks_list = raw_tasks if isinstance(raw_tasks, list) else []
+    completed_keys = plan_section.get("completed") or []
+    tasks = _tasks_with_completion_flags(tasks_list, completed_keys)
+
+    overview = (plan_obj.get("overview") or "").strip()
+    if overview:
+        title = overview.split("\n")[0][:80]
+    else:
+        title = "الخطة الدراسية"
+
     return {
+        "title": title,
         "plan": plan_obj,
-        "tasks": tasks or [],
+        "tasks": tasks,
         "active": True,
         "model": plan_section.get("model"),
         "generatedAt": plan_section.get("generatedAt"),
-        "completed": plan_section.get("completed") or [],
+        "completed": completed_keys,
     }
+
+
+def load_active_plan_sync(user_ref) -> dict | None:
+    """Load active plan for agent/cron/achievements — read-only, canonical-first."""
+    plan_current_doc, study_plan_doc = load_active_plan_docs_sync(user_ref)
+    section = normalize_plan(plan_current_doc, study_plan_doc)
+    active = workspace_plan_to_active_plan(section)
+    if not active:
+        return None
+
+    if plan_current_doc and plan_current_doc.get("plan"):
+        active["source"] = "plan/current"
+    else:
+        active["source"] = "study_plans"
+        if study_plan_doc and study_plan_doc.get("title"):
+            active["title"] = study_plan_doc.get("title")
+
+    return active
+
+
+def study_plan_payload_for_agent(user_ref) -> dict | None:
+    """Shape expected by get_student_data(study_plan) — read-only."""
+    active = load_active_plan_sync(user_ref)
+    if not active:
+        return None
+    return {
+        "title": active.get("title") or "الخطة الدراسية",
+        "tasks": active.get("tasks") or [],
+        "active": True,
+        "createdAt": active.get("generatedAt"),
+        "model": active.get("model"),
+        "completed": active.get("completed") or [],
+        "source": active.get("source"),
+        "plan": active.get("plan"),
+    }
+
+
+_AR_WEEKDAYS = [
+    "الإثنين", "الثلاثاء", "الأربعاء", "الخميس",
+    "الجمعة", "السبت", "الأحد",
+]
+
+
+def _enrich_agent_task(task: dict) -> dict:
+    """Add canonical plan task fields while keeping legacy agent keys."""
+    t = dict(task)
+    duration = t.get("durationMinutes")
+    if duration is None:
+        duration = t.get("duration", 60)
+    try:
+        t["durationMinutes"] = int(duration)
+    except (TypeError, ValueError):
+        t["durationMinutes"] = 60
+    if t.get("duration") is None:
+        t["duration"] = t["durationMinutes"]
+
+    time_slot = t.get("suggestedTime") or t.get("time") or ""
+    if time_slot:
+        t["suggestedTime"] = str(time_slot)
+        if not t.get("time"):
+            t["time"] = t["suggestedTime"]
+
+    subject = t.get("subject") or t.get("courseName") or ""
+    if subject and not t.get("courseName"):
+        t["courseName"] = subject
+    code = t.get("courseCode") or t.get("code") or ""
+    if code:
+        t["courseCode"] = str(code)
+
+    date_str = t.get("date")
+    if date_str and not t.get("suggestedDay"):
+        try:
+            d = datetime.fromisoformat(str(date_str)[:10])
+            t["suggestedDay"] = _AR_WEEKDAYS[d.weekday()]
+        except (ValueError, TypeError):
+            pass
+
+    return t
+
+
+def agent_legacy_plan_to_canonical(
+    legacy_plan: dict,
+    *,
+    model: str | None = None,
+) -> dict:
+    """Map agent legacy plan dict → plan/current Firestore payload (Phase 4C.3.2)."""
+    title = (legacy_plan.get("title") or "خطة دراسية").strip()
+    raw_tasks = legacy_plan.get("tasks") or []
+    tasks = [_enrich_agent_task(t) for t in raw_tasks if isinstance(t, dict)]
+
+    plan_obj = legacy_plan.get("plan")
+    if isinstance(plan_obj, dict):
+        plan_obj = dict(plan_obj)
+        if not (plan_obj.get("overview") or "").strip():
+            plan_obj["overview"] = title
+        inner_tasks = plan_obj.get("tasks") or tasks
+        plan_obj["tasks"] = [
+            _enrich_agent_task(t) for t in inner_tasks if isinstance(t, dict)
+        ]
+        if not plan_obj.get("dailySummary"):
+            plan_obj["dailySummary"] = legacy_plan.get("dailySummary") or []
+    else:
+        plan_obj = {
+            "overview": title,
+            "tasks": tasks,
+            "dailySummary": legacy_plan.get("dailySummary") or [],
+        }
+        for key in (
+            "type", "weeks", "focus_mode", "personalization",
+            "subject_weights", "deadline",
+        ):
+            if legacy_plan.get(key) is not None:
+                plan_obj[key] = legacy_plan[key]
+
+    generated = legacy_plan.get("createdAt") or legacy_plan.get("generatedAt")
+    generated_at = to_iso(generated) or datetime.now(timezone.utc).isoformat()
+
+    model_val = model or legacy_plan.get("model")
+    if not model_val:
+        if legacy_plan.get("type") == "semester_master":
+            model_val = "agent-semester"
+        else:
+            model_val = "agent"
+
+    completed = legacy_plan.get("completed") or []
+    if not isinstance(completed, list):
+        completed = []
+
+    return {
+        "plan": plan_obj,
+        "model": model_val,
+        "generatedAt": generated_at,
+        "completed": completed,
+    }
+
+
+def upsert_plan_current_sync(user_ref, payload: dict) -> dict:
+    """Merge agent/workspace plan onto users/{uid}/plan/current only (Phase 4C.3.2)."""
+    plan_ref = user_ref.collection("plan").document("current")
+    plan_ref.set(
+        {
+            "plan": payload.get("plan"),
+            "model": payload.get("model"),
+            "generatedAt": payload.get("generatedAt"),
+            "completed": payload.get("completed") or [],
+            "updatedAt": fb_firestore.SERVER_TIMESTAMP,
+        },
+        merge=True,
+    )
+    snap = plan_ref.get()
+    doc = snap.to_dict() if snap.exists else {}
+    return {
+        "success": True,
+        "plan_id": "current",
+        "plan": normalize_plan(doc, study_plan_doc=None),
+    }
+
+
+def load_plan_for_tool_mutation_sync(user_ref) -> tuple[Any, dict | None]:
+    """Canonical-first active plan for tool mutations; returns (plan_ref, section copy)."""
+    plan_ref = user_ref.collection("plan").document("current")
+    plan_current_doc, study_plan_doc = load_active_plan_docs_sync(user_ref)
+    section = normalize_plan(plan_current_doc, study_plan_doc)
+    if not section.get("plan"):
+        return plan_ref, None
+    return plan_ref, copy.deepcopy(section)
+
+
+def _task_matches_for_tools(
+    task: dict,
+    task_id: str | None,
+    search_name: str,
+) -> bool:
+    if task_id and task.get("id") == task_id:
+        return True
+    if search_name and search_name in (task.get("title") or ""):
+        return True
+    return False
+
+
+def apply_complete_task(
+    plan_section: dict,
+    task_id: str | None,
+    task_name: str,
+    *,
+    done_at: str,
+) -> dict | None:
+    """Mark a task complete; updates completed[] and/or per-task done flags."""
+    plan_obj = plan_section.get("plan")
+    if not isinstance(plan_obj, dict):
+        return None
+    raw_tasks = plan_obj.get("tasks")
+    tasks = raw_tasks if isinstance(raw_tasks, list) else []
+    if not tasks:
+        return None
+
+    search_name = (task_name or "").strip()
+    found = False
+    completed = list(plan_section.get("completed") or [])
+    completed_set = set(completed)
+    new_tasks: list = []
+
+    for raw in tasks:
+        if not isinstance(raw, dict):
+            new_tasks.append(raw)
+            continue
+        task = dict(raw)
+        if _task_matches_for_tools(task, task_id, search_name):
+            found = True
+            key = _plan_task_completion_key(task)
+            if key and key not in completed_set:
+                completed.append(key)
+                completed_set.add(key)
+            task["done"] = True
+            task["doneAt"] = done_at
+        new_tasks.append(task)
+
+    if not found:
+        return None
+
+    out_section = dict(plan_section)
+    out_section["completed"] = completed
+    out_plan = dict(plan_obj)
+    out_plan["tasks"] = new_tasks
+    out_section["plan"] = out_plan
+    return out_section
+
+
+def apply_modify_study_session(
+    plan_section: dict,
+    args: dict,
+    *,
+    now_iso: str,
+) -> dict | None:
+    """Update one task in plan_section; returns updated section or None if not found."""
+    plan_obj = plan_section.get("plan")
+    if not isinstance(plan_obj, dict):
+        return None
+    raw_tasks = plan_obj.get("tasks")
+    tasks = list(raw_tasks) if isinstance(raw_tasks, list) else []
+    if not tasks:
+        return None
+
+    search_name = str(args.get("task_name") or args.get("task_id") or "")
+    task_id = args.get("task_id")
+    found_idx = -1
+    for idx, raw in enumerate(tasks):
+        if not isinstance(raw, dict):
+            continue
+        if _task_matches_for_tools(raw, task_id, search_name):
+            found_idx = idx
+            break
+
+    if found_idx == -1:
+        return None
+
+    task = dict(tasks[found_idx])
+
+    if args.get("new_date"):
+        task["date"] = args["new_date"]
+        try:
+            d = datetime.fromisoformat(str(args["new_date"])[:10])
+            task["suggestedDay"] = _AR_WEEKDAYS[d.weekday()]
+        except (ValueError, TypeError):
+            pass
+    if args.get("new_time"):
+        task["time"] = args["new_time"]
+        task["suggestedTime"] = args["new_time"]
+    if args.get("new_duration") is not None:
+        try:
+            mins = int(args["new_duration"])
+        except (TypeError, ValueError):
+            mins = args["new_duration"]
+        task["duration"] = mins
+        task["durationMinutes"] = mins
+    if args.get("new_subject"):
+        task["subject"] = args["new_subject"]
+        task["courseName"] = args["new_subject"]
+    if args.get("new_priority"):
+        task["priority"] = args["new_priority"]
+
+    task["modifiedAt"] = now_iso
+    task["modificationReason"] = args.get("reason", "")
+    tasks[found_idx] = task
+
+    out_section = dict(plan_section)
+    out_plan = dict(plan_obj)
+    out_plan["tasks"] = tasks
+    out_section["plan"] = out_plan
+    return out_section
 
 
 def normalize_profile(user_doc: dict | None, uid: str | None = None) -> dict:
@@ -490,12 +856,7 @@ def load_workspace_sync(user_id: str, db) -> dict:
     schedule_snap = user_ref.collection("academic_record").document("schedule").get()
     schedule_doc = schedule_snap.to_dict() if schedule_snap.exists else None
 
-    plan_snap = user_ref.collection("plan").document("current").get()
-    plan_current_doc = plan_snap.to_dict() if plan_snap.exists else None
-
-    study_plan_doc = None
-    if not (plan_current_doc and plan_current_doc.get("plan")):
-        study_plan_doc = _fetch_active_study_plan(user_ref)
+    plan_current_doc, study_plan_doc = load_active_plan_docs_sync(user_ref)
 
     chat_snaps = list(user_ref.collection("chats").stream())
 

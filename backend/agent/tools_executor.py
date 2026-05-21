@@ -55,6 +55,14 @@ from services.student import (
     academic_record_current_courses,
     academic_record_completed_courses,
 )
+from services.workspace import (
+    agent_legacy_plan_to_canonical,
+    apply_complete_task,
+    apply_modify_study_session,
+    load_plan_for_tool_mutation_sync,
+    study_plan_payload_for_agent,
+    upsert_plan_current_sync,
+)
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -87,6 +95,65 @@ def _to_float(v, default: float) -> float:
         return float(v)
     except (TypeError, ValueError):
         return default
+
+
+# Canonical profile / preferences field mapping (Phase 4C.5).
+_PROFILE_BASIC_FIELDS = frozenset({
+    "name", "major", "level", "studentId", "totalPlanHours",
+})
+_PROFILE_GOALS_FIELDS = frozenset({"currentGpa", "targetGpa"})
+_VALID_LEARNING_STYLES = frozenset({"visual", "auditory", "kinesthetic", "reading"})
+_ENERGY_PEAK_ALIASES = {
+    "morning": "morning",
+    "afternoon": "afternoon",
+    "night": "night",
+    "evening": "night",
+    "صباحي": "morning",
+    "صباح": "morning",
+    "ظهر": "afternoon",
+    "مسائي": "afternoon",
+    "ليلي": "night",
+    "ليل": "night",
+}
+
+
+def _coerce_profile_field_value(field: str, value):
+    """Coerce update_profile values for canonical basic/goals fields."""
+    if field in ("currentGpa", "targetGpa"):
+        return _to_float(value, 0.0)
+    if field == "totalPlanHours":
+        if value is None or value == "":
+            return ""
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return value
+    if field == "earnedHours":
+        return _to_int(value, 0)
+    return value
+
+
+def _apply_learning_preference(preferences: dict, field: str, value) -> dict:
+    """Map agent study_preferences keys → canonical preferences (Phase 4C.5)."""
+    prefs = dict(preferences or {})
+    raw = str(value).strip() if value is not None else ""
+
+    if field == "best_time":
+        key = raw.lower()
+        prefs["energyPeak"] = _ENERGY_PEAK_ALIASES.get(key, _ENERGY_PEAK_ALIASES.get(raw, raw))
+    elif field == "method":
+        style = raw.lower()
+        if style in _VALID_LEARNING_STYLES:
+            prefs["learningStyle"] = style
+        else:
+            prefs["learningStyle"] = raw
+    elif field == "focus_length":
+        prefs["pomodoroFocus"] = _to_int(value, prefs.get("pomodoroFocus", 25))
+    else:
+        # study_hours, study_speed, stress_level — no canonical rename yet.
+        prefs[field] = _to_int(value, value) if field == "study_hours" else value
+
+    return prefs
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -226,10 +293,11 @@ async def execute_tool(
             "createdAt": now_iso,
             "active":    True,
         }
-        _, ref = user_ref.collection("study_plans").add(plan)
+        payload = agent_legacy_plan_to_canonical(plan, model="agent")
+        upsert_plan_current_sync(user_ref, payload)
         return {
             "success": True,
-            "id": ref.id,
+            "id": "current",
             "tasks_count": len(tasks),
             "message": f"تم إنشاء الخطة \"{plan['title']}\" بـ {len(tasks)} مهام"
         }
@@ -300,12 +368,7 @@ async def execute_tool(
             data["exams"] = [{"id": d.id, **d.to_dict()} for d in snaps]
 
         if section in ("all", "study_plan"):
-            snaps = (user_ref.collection("study_plans")
-                     .where(filter=FieldFilter("active", "==", True))
-                     .order_by("createdAt", direction="DESCENDING")
-                     .limit(1).get())
-            docs = list(snaps)
-            data["study_plan"] = docs[0].to_dict() if docs else None
+            data["study_plan"] = study_plan_payload_for_agent(user_ref)
 
         if section in ("all", "preferences"):
             snap = user_ref.get()
@@ -397,11 +460,37 @@ async def execute_tool(
     # ── 6. Update Profile ──
     elif tool_name == "update_profile":
         field = args["field"]
-        value = args["value"]
-        user_ref.update({
-            f"profile.{field}": value,
-            "updatedAt": now_iso,
-        })
+        value = _coerce_profile_field_value(args["field"], args["value"])
+
+        snap = user_ref.get()
+        user_data = snap.to_dict() if snap.exists else {}
+        basic = dict(user_data.get("basic") or {})
+        goals = dict(user_data.get("goals") or {})
+
+        if field in _PROFILE_BASIC_FIELDS:
+            basic[field] = value
+        elif field in _PROFILE_GOALS_FIELDS:
+            goals[field] = value
+        elif field == "earnedHours":
+            record_ref = user_ref.collection("academic_record").document("main")
+            record_ref.set(
+                {"earnedHours": value, "lastUpdated": now_iso},
+                merge=True,
+            )
+        else:
+            return {"success": False, "message": f"حقل غير معروف: {field}"}
+
+        if field != "earnedHours":
+            user_ref.set(
+                {
+                    "basic": basic,
+                    "goals": goals,
+                    "lastUpdated": now_iso,
+                    "updatedAt": now_iso,
+                },
+                merge=True,
+            )
+
         return {"success": True, "message": f"تم تحديث {field}"}
 
     # ── 7. Get Upcoming Exams ──
@@ -447,43 +536,25 @@ async def execute_tool(
             },
             merge=True,
         )
-        # Mirror to the legacy flat path too, in case any pre-migration
-        # tool still reads it during the current request.
-        user_ref.update({"profile.courses": ArrayUnion([course])})
         return {"success": True, "message": f"تمت إضافة مادة \"{name_val}\""}
 
     # ── 9. Complete Task ──
     elif tool_name == "complete_task":
-        snaps = (user_ref.collection("study_plans")
-                 .where(filter=FieldFilter("active", "==", True))
-                 .order_by("createdAt", direction="DESCENDING")
-                 .limit(1).get())
-        docs = list(snaps)
-        if not docs:
+        _, section = load_plan_for_tool_mutation_sync(user_ref)
+        if not section:
             return {"success": False, "message": "لا توجد خطة نشطة"}
 
-        plan_doc = docs[0]
-        plan_data = plan_doc.to_dict()
-        tasks = plan_data.get("tasks", [])
-        found = False
-
-        # Accept both task_name (backend) and task_title (frontend)
         search_name = args.get("task_name") or args.get("task_title", "")
-
-        updated_tasks = []
-        for t in tasks:
-            if t.get("id") == args.get("task_id") or (
-                search_name and search_name in t.get("title", "")
-            ):
-                found = True
-                updated_tasks.append({**t, "done": True, "doneAt": now_iso})
-            else:
-                updated_tasks.append(t)
-
-        if not found:
+        updated = apply_complete_task(
+            section,
+            args.get("task_id"),
+            search_name,
+            done_at=now_iso,
+        )
+        if not updated:
             return {"success": False, "message": "لم يتم العثور على المهمة"}
 
-        plan_doc.reference.update({"tasks": updated_tasks})
+        upsert_plan_current_sync(user_ref, updated)
         return {"success": True, "message": "تم تحديد المهمة كمنجزة ✅"}
 
     # ═══════════════════════════════════════════════════════════════
@@ -492,66 +563,51 @@ async def execute_tool(
 
     # ── 10. Modify Study Session ──
     elif tool_name == "modify_study_session":
-        snaps = (user_ref.collection("study_plans")
-                 .where(filter=FieldFilter("active", "==", True))
-                 .order_by("createdAt", direction="DESCENDING")
-                 .limit(1).get())
-        docs = list(snaps)
-        if not docs:
+        _, section = load_plan_for_tool_mutation_sync(user_ref)
+        if not section:
             return {"success": False, "message": "لا توجد خطة دراسية نشطة لتعديلها"}
 
-        plan_doc = docs[0]
-        plan_data = plan_doc.to_dict()
-        tasks = plan_data.get("tasks", [])
-
-        # Find the task to modify
         search_name = args.get("task_name") or args.get("task_id", "")
-        found_idx = -1
-        for idx, t in enumerate(tasks):
-            if t.get("id") == args.get("task_id") or (
-                search_name and search_name in t.get("title", "")
-            ):
-                found_idx = idx
-                break
-
-        if found_idx == -1:
-            return {"success": False, "message": f"لم أجد مهمة باسم '{search_name}' في الخطة الحالية"}
-
-        # Apply modifications
-        task = tasks[found_idx]
         changes = []
 
         if args.get("new_date"):
-            task["date"] = args["new_date"]
             changes.append(f"التاريخ → {args['new_date']}")
         if args.get("new_time"):
-            task["time"] = args["new_time"]
             changes.append(f"الوقت → {args['new_time']}")
         if args.get("new_duration"):
-            task["duration"] = args["new_duration"]
             changes.append(f"المدة → {args['new_duration']} دقيقة")
         if args.get("new_subject"):
-            task["subject"] = args["new_subject"]
             changes.append(f"المادة → {args['new_subject']}")
         if args.get("new_priority"):
-            task["priority"] = args["new_priority"]
             changes.append(f"الأولوية → {args['new_priority']}")
 
         if not changes:
             return {"success": False, "message": "لم يتم تحديد أي تغييرات"}
 
-        # Record modification history
-        task["modifiedAt"] = now_iso
-        task["modificationReason"] = args.get("reason", "")
+        updated = apply_modify_study_session(section, args, now_iso=now_iso)
+        if not updated:
+            return {
+                "success": False,
+                "message": f"لم أجد مهمة باسم '{search_name}' في الخطة الحالية",
+            }
 
-        tasks[found_idx] = task
-        plan_doc.reference.update({"tasks": tasks})
+        upsert_plan_current_sync(user_ref, updated)
+
+        modified_task = None
+        for t in updated.get("plan", {}).get("tasks") or []:
+            if isinstance(t, dict) and (
+                t.get("id") == args.get("task_id")
+                or (search_name and search_name in (t.get("title") or ""))
+            ):
+                modified_task = t
+                break
 
         changes_str = "، ".join(changes)
+        title = (modified_task or {}).get("title", "")
         return {
             "success": True,
-            "message": f"✏️ تم تعديل \"{task.get('title', '')}\": {changes_str}",
-            "modified_task": task,
+            "message": f"✏️ تم تعديل \"{title}\": {changes_str}",
+            "modified_task": modified_task,
         }
 
     # ── 11. Predict GPA Pathway ──
@@ -759,10 +815,21 @@ async def execute_tool(
             except (ValueError, TypeError):
                 pass
 
-        user_ref.update({
-            f"study_preferences.{field}": value,
-            "updatedAt": now_iso,
-        })
+        snap = user_ref.get()
+        user_data = snap.to_dict() if snap.exists else {}
+        preferences = _apply_learning_preference(
+            user_data.get("preferences") or {},
+            field,
+            value,
+        )
+        user_ref.set(
+            {
+                "preferences": preferences,
+                "lastUpdated": now_iso,
+                "updatedAt": now_iso,
+            },
+            merge=True,
+        )
 
         # Friendly field names for response
         field_labels = {
@@ -1069,12 +1136,7 @@ async def execute_tool(
 
                     day_mins_remaining -= course_mins
 
-        # ── 7. Deactivate old plans & save new master plan ──
-        old_plans = (user_ref.collection("study_plans")
-                     .where(filter=FieldFilter("active", "==", True)).get())
-        for old in old_plans:
-            old.reference.update({"active": False})
-
+        # ── 7. Save master plan to canonical plan/current (Phase 4C.3.2) ──
         plan_title = "🎯 الخطة الفصلية الذكية"
         plan = {
             "title": plan_title,
@@ -1098,7 +1160,8 @@ async def execute_tool(
                 for cw in course_weights
             ],
         }
-        _, ref = user_ref.collection("study_plans").add(plan)
+        payload = agent_legacy_plan_to_canonical(plan, model="agent-semester")
+        upsert_plan_current_sync(user_ref, payload)
 
         # ── 8. Build summary ──
         weak_courses = [cw["name"] for cw in course_weights if cw["is_weak"]]
@@ -1120,7 +1183,7 @@ async def execute_tool(
 
         return {
             "success": True,
-            "plan_id": ref.id,
+            "plan_id": "current",
             "total_sessions": len(all_tasks),
             "weeks": total_weeks,
             "focus_mode": focus_mode,
@@ -1206,26 +1269,53 @@ async def execute_tool(
             s = _re.sub(r"ة", "ه", s)
             return s.lower().strip()
 
-        snap = user_ref.get()
-        user_data = snap.to_dict() if snap.exists else {}
-        courses = user_data.get("profile", {}).get("courses", [])
+        def _course_display_name(c: dict) -> str:
+            return (
+                c.get("name")
+                or c.get("nameAr")
+                or c.get("nameEn")
+                or c.get("code")
+                or ""
+            )
 
+        record = load_academic_record(user_ref)
         course_name = args["course_name"]
-        grade       = float(args["grade"])
+        grade = float(args["grade"])
 
+        completed = list(academic_record_completed_courses(record))
+        current = list(academic_record_current_courses(record))
         found = False
-        for c in courses:
-            if _norm(course_name) in _norm(c.get("name", "")) or \
-               _norm(c.get("name", "")) in _norm(course_name):
-                c["grade"]     = grade
+        updated_in_completed = False
+
+        for c in completed:
+            display = _course_display_name(c)
+            if _norm(course_name) in _norm(display) or _norm(display) in _norm(course_name):
+                c["grade"] = grade
                 c["updatedAt"] = now_iso
                 found = True
+                updated_in_completed = True
                 break
+
+        if not found:
+            for c in current:
+                display = _course_display_name(c)
+                if _norm(course_name) in _norm(display) or _norm(display) in _norm(course_name):
+                    c["grade"] = grade
+                    c["updatedAt"] = now_iso
+                    found = True
+                    break
 
         if not found:
             return {"success": False, "message": f"لم أجد مادة باسم: {course_name}"}
 
-        user_ref.update({"profile.courses": courses, "updatedAt": now_iso})
+        record_ref = user_ref.collection("academic_record").document("main")
+        payload = {"lastUpdated": now_iso}
+        if updated_in_completed:
+            payload["completedCourses"] = completed
+        else:
+            payload["currentCourses"] = current
+
+        record_ref.set(payload, merge=True)
         return {
             "success": True,
             "message": f"تم تحديث درجة {course_name} إلى {grade} / 4.00",

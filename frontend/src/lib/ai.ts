@@ -4,7 +4,7 @@
  */
 
 import { fetchWithAuth } from './api';
-import { Storage, STORAGE_KEYS } from './core';
+import { Storage, STORAGE_KEYS } from './core'; // STORAGE_KEYS.THEME only (Phase 4C.5)
 import {
   buildClientContext,
   dispatchClientActions,
@@ -74,35 +74,11 @@ export async function executeClientTool(name: string, args: any, backendData: an
       return backendData;
     }
 
-    case 'add_course': {
-      const profile = Storage.get(STORAGE_KEYS.PROFILE, { courses: [] }) as any;
-      const course = {
-        id: backendData.id || Date.now(), 
-        name: args.name, 
-        code: args.code || '',
-        difficulty: args.difficulty || 'medium', 
-        examDate: args.examDate || null,
-        grade: args.grade ?? null,
-        createdAt: new Date().toISOString()
-      };
-      profile.courses.push(course);
-      Storage.set(STORAGE_KEYS.PROFILE, profile);
+    case 'add_course':
+    case 'update_profile':
+      // Server already writes canonical Firestore paths (Phase 4C.5).
+      // Do not mirror into legacy uqu_profile_v2 localStorage.
       return backendData;
-    }
-
-    case 'update_profile': {
-      const profile = Storage.get(STORAGE_KEYS.PROFILE, { basic: {}, goals: {}, preferences: {} }) as any;
-      const { field, value } = args;
-      if (field === 'currentGpa' || field === 'targetGpa') {
-        profile.goals[field] = parseFloat(value);
-      } else if (['studyStyle', 'focusDuration', 'studyTime', 'availableHours'].includes(field)) {
-        profile.preferences[field] = value;
-      } else if (field === 'name' || field === 'major') {
-        profile.basic[field] = value;
-      }
-      Storage.set(STORAGE_KEYS.PROFILE, profile);
-      return backendData;
-    }
 
     case 'change_theme': {
       const theme = args.theme || 'auto';

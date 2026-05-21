@@ -615,14 +615,27 @@ ADD_TASK ×4، لأن START_POMODORO يبدأ مؤقتاً واحداً فقط �
         prompt += f"  التقدم: {len(done)}/{len(tasks)} ({completion}%)\n"
 
         if pending:
-            # Show today's tasks first
-            today_tasks = [t for t in pending if t.get("date") == today_str]
+            # Show today's tasks first (legacy `date` or canonical `suggestedDay`)
+            ar_days = [
+                "الأحد", "الإثنين", "الثلاثاء", "الأربعاء",
+                "الخميس", "الجمعة", "السبت",
+            ]
+            today_ar = ar_days[today.weekday()]
+            today_tasks = [
+                t for t in pending
+                if t.get("date") == today_str or t.get("suggestedDay") == today_ar
+            ]
             if today_tasks:
                 prompt += "  مهام اليوم:\n"
                 for t in today_tasks:
-                    prompt += f"    ◦ {t.get('title', '')} ({t.get('subject', '')}) — {t.get('duration', 60)} دقيقة\n"
+                    subject = t.get("subject") or t.get("courseName") or t.get("courseCode") or "عام"
+                    duration = t.get("durationMinutes") or t.get("duration") or 60
+                    prompt += f"    ◦ {t.get('title', '')} ({subject}) — {duration} دقيقة\n"
 
-            other = [t for t in pending if t.get("date") != today_str][:5]
+            other = [
+                t for t in pending
+                if t.get("date") != today_str and t.get("suggestedDay") != today_ar
+            ][:5]
             if other:
                 prompt += "  قادمة:\n"
                 for t in other:

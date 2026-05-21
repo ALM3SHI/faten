@@ -610,10 +610,90 @@ def _extract_json_object(text: str) -> Any:
     raise ValueError(f"could not extract JSON from response: {s[:200]}")
 
 
-async def _call_llama(system_prompt: str, user_content: str) -> Any:
-    """Single round-trip to the Llama-compatible Chat Completions API.
+async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
+    """OpenAI fallback when LLAMA_API_KEY is unset (POST /api/plan/generate-ai only)."""
+    settings = get_settings()
+    client = AsyncOpenAI(
+        api_key=settings.OPENAI_API_KEY,
+        timeout=90.0,
+        max_retries=1,
+    )
 
-    Tries JSON mode first (`response_format={"type": "json_object"}`).
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_content},
+    ]
+
+    async def _do_call(use_json_mode: bool) -> str:
+        kwargs: dict[str, Any] = {
+            "model": settings.OPENAI_MODEL,
+            "messages": messages,
+            "temperature": 0.4,
+            "max_tokens": 6144,
+        }
+        if use_json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
+        completion = await client.chat.completions.create(**kwargs)  # type: ignore[arg-type]
+        if not completion.choices:
+            raise HTTPException(
+                status_code=502,
+                detail="OpenAI returned no choices.",
+            )
+        msg = completion.choices[0].message
+        text = (msg.content or "").strip()
+        if not text:
+            raise HTTPException(
+                status_code=502,
+                detail="OpenAI returned an empty message.",
+            )
+        return text
+
+    try:
+        try:
+            raw_text = await _do_call(use_json_mode=True)
+        except BadRequestError as exc:
+            err_msg = (str(exc) or "").lower()
+            if "response_format" in err_msg or "json_object" in err_msg:
+                logger.info(
+                    "OpenAI rejected response_format — retrying without JSON mode."
+                )
+                raw_text = await _do_call(use_json_mode=False)
+            else:
+                raise
+    except APITimeoutError as exc:
+        logger.warning("OpenAI upstream timeout: %s", exc)
+        raise HTTPException(status_code=502, detail="انتهت مهلة الاتصال بمزود الذكاء الاصطناعي.") from exc
+    except APIConnectionError as exc:
+        logger.warning("OpenAI upstream connection error: %s", exc)
+        raise HTTPException(status_code=502, detail="تعذّر الاتصال بمزود الذكاء الاصطناعي.") from exc
+    except APIStatusError as exc:
+        detail = f"OpenAI upstream error: {exc.status_code} {getattr(exc, 'message', '')}".strip()
+        logger.warning(detail)
+        status = 429 if exc.status_code == 429 else 502
+        raise HTTPException(status_code=status, detail=detail) from exc
+    except APIError as exc:
+        logger.error("OpenAI API error: %s", exc, exc_info=True)
+        raise HTTPException(status_code=502, detail=f"خطأ من مزود الذكاء الاصطناعي: {exc}") from exc
+    finally:
+        try:
+            await client.close()
+        except Exception:
+            pass
+
+    try:
+        return _extract_json_object(raw_text)
+    except (ValueError, json.JSONDecodeError) as exc:
+        logger.warning("OpenAI returned malformed JSON: %s | text=%s", exc, raw_text[:600])
+        raise HTTPException(
+            status_code=502,
+            detail="استجابة الذكاء الاصطناعي ليست JSON صالحاً.",
+        ) from exc
+
+
+async def _call_llama(system_prompt: str, user_content: str) -> Any:
+    """Plan LLM call — Llama-compatible API, or OpenAI when Llama key is missing.
+
+    Tries JSON mode first (`response_format={"type": "json_object"}`) for Llama.
     A handful of OpenAI-compatible providers (or older Ollama builds)
     reject that field with a 400 — in that case we transparently retry
     without it. The prompt already strictly forbids non-JSON output,
@@ -624,9 +704,16 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
     """
     settings = get_settings()
     if not settings.LLAMA_API_KEY:
+        if settings.OPENAI_API_KEY:
+            logger.info(
+                "[plan_ai] LLAMA_API_KEY missing — using OPENAI_API_KEY fallback."
+            )
+            return await _call_openai_plan(system_prompt, user_content)
         raise HTTPException(
             status_code=503,
-            detail="LLAMA_API_KEY is not configured on the server.",
+            detail=(
+                "Plan generation requires LLAMA_API_KEY or OPENAI_API_KEY on the server."
+            ),
         )
 
     # The OpenAI SDK enforces that the API key not be an empty string;
@@ -726,7 +813,7 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
         400 — empty courses list (caller should pre-validate too)
         429 — upstream rate limit (Llama provider)
         502 — Llama failure / invalid JSON / schema mismatch
-        503 — LLAMA_API_KEY not configured
+        503 — neither LLAMA_API_KEY nor OPENAI_API_KEY configured
     """
     if not req.courses:
         raise HTTPException(
@@ -793,8 +880,13 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
         d.totalMinutes = sums.get(d.day, 0)
 
     settings = get_settings()
+    model_id = (
+        settings.LLAMA_MODEL
+        if settings.LLAMA_API_KEY
+        else settings.OPENAI_MODEL
+    )
     return {
         "plan": plan.model_dump(),
-        "model": settings.LLAMA_MODEL,
+        "model": model_id,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
     }

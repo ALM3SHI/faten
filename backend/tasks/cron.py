@@ -18,6 +18,7 @@ from agent.prompts import build_system_prompt
 from db.firestore import get_db
 from config import get_settings
 from google.cloud.firestore_v1.base_query import FieldFilter
+from services.workspace import load_active_plan_sync
 
 logger = logging.getLogger(__name__)
 
@@ -43,12 +44,7 @@ async def load_student_context_for_cron(user_id: str, db) -> dict:
                .limit(10).get())
     upcoming_exams = [d.to_dict() for d in e_snaps]
 
-    p_snaps = (user_ref.collection("study_plans")
-               .where(filter=FieldFilter("active", "==", True))
-               .order_by("createdAt", direction="DESCENDING")
-               .limit(1).get())
-    p_docs = list(p_snaps)
-    active_plan = p_docs[0].to_dict() if p_docs else None
+    active_plan = load_active_plan_sync(user_ref)
 
     return {
         "user_data": user_data,
