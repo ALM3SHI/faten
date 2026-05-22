@@ -66,6 +66,8 @@ const TIME_SLOTS: { start: string; end: string }[] = [
   { start: "17:00", end: "17:50" },
   { start: "18:00", end: "18:50" },
   { start: "19:00", end: "19:50" },
+  { start: "20:00", end: "20:50" },
+  { start: "21:00", end: "21:50" },
 ];
 
 // A cell is either empty (droppable), the HEAD of a multi-row slot
@@ -86,7 +88,7 @@ const CELL_HEIGHT_PX = 60;
  *   Right panel  → Draggable list of current-semester courses. The SAME
  *                  course can be dragged multiple times, which is the
  *                  intended way to split into separate نظري + عملي slots.
- *   Left panel   → 5-column × 12-row weekly grid (Sun→Thu, 08:00→20:00).
+ *   Left panel   → 5-column × 14-row weekly grid (Sun→Thu, 08:00→21:00).
  *
  * Multi-hour slots (labs, double-lectures) span N rows visually via
  * HTML `rowSpan`. Covered cells are not rendered, and they're treated
