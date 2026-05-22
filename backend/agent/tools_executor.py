@@ -1247,11 +1247,19 @@ async def execute_tool(
             "createdAt": now_iso,
         }
         _, ref = user_ref.collection("semesters").add(semester)
-        # Keep profile.currentGpa in sync
-        user_ref.update({
-            "profile.currentGpa": float(args["gpa"]),
-            "updatedAt": now_iso,
-        })
+        # Sync canonical goals.currentGpa (workspace / profile UI read path).
+        snap = user_ref.get()
+        user_data = snap.to_dict() if snap.exists else {}
+        goals = dict(user_data.get("goals") or {})
+        goals["currentGpa"] = float(args["gpa"])
+        user_ref.set(
+            {
+                "goals": goals,
+                "lastUpdated": now_iso,
+                "updatedAt": now_iso,
+            },
+            merge=True,
+        )
         return {
             "success": True,
             "id": ref.id,
