@@ -18,11 +18,13 @@ const navItems = [
 ];
 
 import { useAuth } from "@/components/auth-provider";
+import { useProfileStore } from "@/store/profileStore";
 import { User } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
   const { user } = useAuth();
+  const profileName = useProfileStore((s) => s.basic.name.trim());
   const [scrolled, setScrolled] = useState(false);
   // Source of truth on the client is the `.dark` class set by the inline
   // boot script in app/layout.tsx. We mirror that into local state on mount
@@ -119,7 +121,9 @@ export function Navbar() {
                   <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">
                      <User className="w-4 h-4" />
                   </div>
-                  <span className="hidden sm:inline text-xs font-bold text-foreground">{user.displayName || user.email?.split('@')[0]}</span>
+                  <span className="hidden sm:inline text-xs font-bold text-foreground">
+                    {profileName || user.displayName || user.email?.split("@")[0]}
+                  </span>
                 </Button>
               </Link>
             ) : (

@@ -207,11 +207,49 @@ export async function suppressChatsLegacyFallback(): Promise<SuppressLegacyFallb
   )) as SuppressLegacyFallbackResponse;
 }
 
+/** Agent tools that persist to canonical Firestore (not emit_client_action). */
+export const CHAT_SERVER_MUTATING_TOOLS = new Set([
+  "update_profile",
+  "update_learning_preferences",
+  "add_course",
+  "create_study_plan",
+  "complete_task",
+  "modify_study_session",
+  "generate_semester_master_plan",
+  "update_course_grade",
+  "add_semester_gpa",
+]);
+
+export type ChatToolLogEntry = {
+  tool?: string;
+  result?: { success?: boolean } | null;
+};
+
+/** True when the chat turn wrote profile / transcript / plan on the server. */
+export function chatActionsNeedWorkspaceRefresh(
+  actions: ChatToolLogEntry[] | undefined,
+): boolean {
+  if (!Array.isArray(actions) || actions.length === 0) return false;
+  return actions.some((entry) => {
+    const tool = entry?.tool;
+    if (!tool || !CHAT_SERVER_MUTATING_TOOLS.has(tool)) return false;
+    const result = entry?.result;
+    return (
+      result != null &&
+      typeof result === "object" &&
+      (result as { success?: boolean }).success === true
+    );
+  });
+}
+
 /**
  * Apply workspace payload into Zustand stores.
  * Caller should disable store sync before calling and re-enable after.
  */
-export function applyWorkspaceToStores(data: WorkspacePayload): void {
+export function applyWorkspaceToStores(
+  data: WorkspacePayload,
+  opts?: { skipChats?: boolean },
+): void {
   const { profile, transcript, schedule, plan, chats } = data;
 
   useProfileStore.setState((prev) => ({
@@ -255,6 +293,8 @@ export function applyWorkspaceToStores(data: WorkspacePayload): void {
       completed: plan.completed ?? [],
     });
   }
+
+  if (opts?.skipChats) return;
 
   const rawThreads = chats.threads;
   if (!Array.isArray(rawThreads)) return;
@@ -304,6 +344,28 @@ export async function hydrateWorkspaceFromApi(): Promise<boolean> {
     return true;
   } catch (err) {
     console.warn("[workspace] API hydrate failed, will use Firestore fallback:", err);
+    return false;
+  } finally {
+    setStoreSyncEnabled(true);
+  }
+}
+
+/**
+ * Re-pull canonical workspace after chat tools wrote on the server.
+ * Skips chat threads so the active conversation / sidebar draft stay intact.
+ * Sync is paused during apply to avoid echo writes back to Firestore.
+ */
+export async function refreshWorkspaceAfterChat(
+  actions: ChatToolLogEntry[] | undefined,
+): Promise<boolean> {
+  if (!chatActionsNeedWorkspaceRefresh(actions)) return false;
+  setStoreSyncEnabled(false);
+  try {
+    const data = await fetchWorkspace();
+    applyWorkspaceToStores(data, { skipChats: true });
+    return true;
+  } catch (err) {
+    console.warn("[workspace] post-chat refresh failed:", err);
     return false;
   } finally {
     setStoreSyncEnabled(true);

@@ -11,6 +11,7 @@ import {
   type ClientAction,
   type ClientContextSnapshot,
 } from './chat-client-actions';
+import { refreshWorkspaceAfterChat } from './workspace';
 
 export interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -152,6 +153,12 @@ export const AIService = {
       // New structured client-action channel (Zustand mutations).
       if (data.client_actions && data.client_actions.length > 0) {
         dispatchClientActions(data.client_actions);
+      }
+
+      // Server tools (update_profile, add_course, plan mutations, …) write
+      // Firestore but do not patch Zustand — re-hydrate from GET /api/workspace.
+      if (data.success && !data.error_type) {
+        await refreshWorkspaceAfterChat(data.actions);
       }
 
       return data;
