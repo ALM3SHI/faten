@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   parseTranscriptPDF,
@@ -150,7 +151,7 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
       <ReviewView
         parsed={state.parsed}
         currentCourses={state.currentCourses}
-        onConfirm={() => onConfirm(state.parsed, state.currentCourses)}
+        onConfirm={(patchedParsed, courses) => onConfirm(patchedParsed, courses)}
         onReset={() => {
           setFile(null);
           setState({ kind: "idle" });
@@ -441,7 +442,7 @@ function SummaryView({
   );
 }
 
-// ── Review View (fresh upload) — unchanged from previous behavior ──────
+// ── Review View (fresh upload) ─────────────────────────────────────────
 
 function ReviewView({
   parsed,
@@ -451,14 +452,27 @@ function ReviewView({
 }: {
   parsed: ParsedTranscript;
   currentCourses: EnrichedCourse[];
-  onConfirm: () => void;
+  onConfirm: (parsed: ParsedTranscript, courses: EnrichedCourse[]) => void;
   onReset: () => void;
 }) {
+  const [editedCourses, setEditedCourses] = useState<EnrichedCourse[]>(() => currentCourses);
+
+  const setCourseHours = (code: string, creditHours: number) => {
+    setEditedCourses((prev) =>
+      prev.map((c) => (c.code === code ? applyCreditHours(c, creditHours) : c)),
+    );
+  };
+
+  const handleConfirm = () => {
+    onConfirm(patchParsedTranscriptCredits(parsed, editedCourses), editedCourses);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
+      dir="rtl"
     >
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
@@ -466,6 +480,10 @@ function ReviewView({
           <p className="text-sm text-muted-foreground">
             تم استخراج <strong className="text-emerald-400">{currentCourses.length}</strong> مادة
             من السجل (دقة {parsed.confidence}%). راجعها وأكّدها للمتابعة.
+          </p>
+          <p className="text-xs text-muted-foreground/90 leading-relaxed mt-2 max-w-xl">
+            قد تظهر ساعات مواد الترم الحالي بصفر لأنها لا تُحتسب في السجل إلا بعد رصد الدرجة. يمكنك
+            تعديلها يدويًا قبل المتابعة.
           </p>
         </div>
         <Button
@@ -480,14 +498,18 @@ function ReviewView({
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {currentCourses.map((c) => (
-          <CourseChip key={c.code} course={c} />
+        {editedCourses.map((c) => (
+          <EditableCourseChip
+            key={c.code}
+            course={c}
+            onHoursChange={(hours) => setCourseHours(c.code, hours)}
+          />
         ))}
       </div>
 
       <div className="flex items-center justify-end pt-2">
         <Button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           className={cn(
             "rounded-2xl bg-[#0066cc] hover:bg-[#005bb5] gap-2 px-6 py-6 text-base font-bold",
             "shadow-[0_0_24px_rgba(0,102,204,0.4)]",
@@ -641,6 +663,82 @@ function CourseChip({ course }: { course: EnrichedCourse }) {
       </Badge>
     </div>
   );
+}
+
+function EditableCourseChip({
+  course,
+  onHoursChange,
+}: {
+  course: EnrichedCourse;
+  onHoursChange: (hours: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors">
+      <div className="w-10 h-10 rounded-xl bg-[#0066cc]/10 border border-[#0066cc]/20 flex items-center justify-center shrink-0">
+        <BookOpen className="w-4 h-4 text-[#0066cc]" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[13px] font-bold truncate">
+          {course.nameAr || course.nameEn || course.code}
+        </div>
+        <div className="text-[10px] text-muted font-mono">{course.code}</div>
+      </div>
+      <div className="flex items-center gap-1 shrink-0">
+        <Input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={6}
+          step={1}
+          value={course.creditHours}
+          onChange={(e) => onHoursChange(clampCreditHours(Number(e.target.value)))}
+          className="w-14 h-8 text-center font-mono text-sm px-1"
+          aria-label={`ساعات ${course.code}`}
+        />
+        <span className="text-[11px] text-muted font-bold">س</span>
+      </div>
+    </div>
+  );
+}
+
+const MIN_COURSE_CREDITS = 0;
+const MAX_COURSE_CREDITS = 6;
+
+function clampCreditHours(value: number): number {
+  if (!Number.isFinite(value)) return MIN_COURSE_CREDITS;
+  return Math.min(MAX_COURSE_CREDITS, Math.max(MIN_COURSE_CREDITS, Math.round(value)));
+}
+
+function applyCreditHours(course: EnrichedCourse, creditHours: number): EnrichedCourse {
+  const hours = clampCreditHours(creditHours);
+  return {
+    ...course,
+    creditHours: hours,
+    difficulty: hours >= 4 ? "hard" : hours <= 2 ? "easy" : "medium",
+  };
+}
+
+function patchParsedTranscriptCredits(
+  parsed: ParsedTranscript,
+  edited: EnrichedCourse[],
+): ParsedTranscript {
+  const hoursByCode = new Map(edited.map((c) => [c.code, c.creditHours]));
+
+  const patchCourse = (c: EnrichedCourse): EnrichedCourse => {
+    const hours = hoursByCode.get(c.code);
+    if (hours === undefined) return c;
+    return applyCreditHours(c, hours);
+  };
+
+  const isInProgress = (c: EnrichedCourse) =>
+    hoursByCode.has(c.code) && !(c.grade ?? "").trim();
+
+  return {
+    ...parsed,
+    registeredCourses: parsed.registeredCourses.map(patchCourse),
+    currentSemesterCourses: parsed.currentSemesterCourses.map(patchCourse),
+    allCourses: parsed.allCourses.map((c) => (isInProgress(c) ? patchCourse(c) : c)),
+  };
 }
 
 // ── Derived-insight helpers ────────────────────────────────────────────
