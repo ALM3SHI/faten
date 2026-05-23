@@ -74,7 +74,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         try {
           const stats = await fetchPomodoroStats();
-          usePomodoroStore.getState().setCompletedSessions(stats.todaySessions);
+          const pomodoro = usePomodoroStore.getState();
+          pomodoro.setCompletedSessions(stats.todaySessions);
+          pomodoro.setCurrentStreak(stats.currentStreak);
         } catch (err) {
           console.warn('[auth] fetchPomodoroStats failed:', err);
         }

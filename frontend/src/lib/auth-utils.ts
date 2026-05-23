@@ -151,7 +151,9 @@ export function purgePersistedDataIfAccountSwitched(nextUid: string): boolean {
   const prevUid = getTrackedAuthUid();
   if (prevUid !== null && prevUid !== nextUid) {
     clearAllAppData();
-    usePomodoroStore.getState().setCompletedSessions(0);
+    const pomodoro = usePomodoroStore.getState();
+    pomodoro.setCompletedSessions(0);
+    pomodoro.setCurrentStreak(0);
     setTrackedAuthUid(nextUid);
     return true;
   }

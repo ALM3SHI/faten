@@ -28,9 +28,12 @@ export interface ActiveTask {
 
 interface PomodoroState {
   completedSessions: number;
+  /** Consecutive days with focus sessions (from GET /api/pomodoro/stats). */
+  currentStreak: number;
   incrementSession: () => void;
   /** Hydrate today's completed focus count from GET /api/pomodoro/stats. */
   setCompletedSessions: (n: number) => void;
+  setCurrentStreak: (n: number) => void;
   timeLeft: number;
   setTimeLeft: (time: number | ((prev: number) => number)) => void;
   timerState: SessionState;
@@ -47,8 +50,10 @@ interface PomodoroState {
 
 export const usePomodoroStore = create<PomodoroState>((set) => ({
   completedSessions: 0,
+  currentStreak: 0,
   incrementSession: () => set((state) => ({ completedSessions: state.completedSessions + 1 })),
   setCompletedSessions: (n) => set({ completedSessions: Math.max(0, n) }),
+  setCurrentStreak: (n) => set({ currentStreak: Math.max(0, n) }),
   timeLeft: 25 * 60,
   setTimeLeft: (time) =>
     set((state) => ({

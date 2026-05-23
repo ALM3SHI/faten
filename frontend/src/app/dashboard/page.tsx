@@ -38,7 +38,6 @@ import {
   TrendingUp,
   BookOpen,
   Settings,
-  Search,
   Flame,
   Target,
   LineChart as LineChartIcon,
@@ -70,6 +69,7 @@ import {
   type EnrichedCourse,
 } from "@/store/transcriptStore";
 import { usePlanStore, taskKey, type PlanTask, type PlanPriority } from "@/store/planStore";
+import { usePomodoroStore } from "@/store/pomodoroStore";
 import { api } from "@/lib/api";
 import { useAuth } from "@/components/auth-provider";
 import { buildCreditsResolver } from "@/lib/transcript-utils";
@@ -223,6 +223,7 @@ export default function DashboardPage() {
 
   const plan = usePlanStore((s) => s.plan);
   const completedTaskKeys = usePlanStore((s) => s.completed);
+  const streak = usePomodoroStore((s) => s.currentStreak);
 
   // ── Derived ──────────────────────────────────────────────────────
   // Prefer the transcript's authoritative GPA over profile.goals when present.
@@ -589,7 +590,6 @@ export default function DashboardPage() {
   }, [completedCourses]);
 
   // ── Header bits ──────────────────────────────────────────────────
-  const [streak] = useState(7);
   const studentFirstName =
     (basic.name || transcriptStudentName || "").split(" ").filter(Boolean)[0] || null;
   const greeting = studentFirstName
@@ -624,16 +624,6 @@ export default function DashboardPage() {
               <span className="font-black text-orange-500">{streak}</span>
               <span className="text-muted-foreground text-sm font-bold">يوم</span>
             </div>
-            <Button
-              variant="outline"
-              className="rounded-2xl h-11 border-foreground/10 glass hidden md:flex items-center gap-2"
-            >
-              <Search className="w-4 h-4" />
-              بحث
-              <kbd className="bg-background/50 border border-foreground/10 rounded px-1.5 py-0.5 text-[10px]">
-                ⌘K
-              </kbd>
-            </Button>
             <Link href="/profile">
               <Button className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 shadow-lg shadow-uqu-accent/20 gap-2">
                 <Settings className="w-4 h-4" />
