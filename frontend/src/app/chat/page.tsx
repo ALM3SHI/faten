@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useWorkspaceStore, ChatMessage as Message } from "@/store/workspaceStore";
 import { useChatHistoryStore } from "@/store/chatHistoryStore";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { toast } from "@/lib/toast";
 
 export default function ChatPage() {
   return (
@@ -285,6 +287,7 @@ function ChatPageContent() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const clearAllThreads = useChatHistoryStore((s) => s.clearAll);
@@ -549,12 +552,7 @@ function ChatPageContent() {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-foreground/5" />
                 <DropdownMenuItem
-                  onClick={() => {
-                    if (typeof window !== "undefined"
-                      && window.confirm("هل تريد مسح سجل المحادثة بالكامل؟ لا يمكن التراجع.")) {
-                      clearAllThreads();
-                    }
-                  }}
+                  onClick={() => setClearHistoryOpen(true)}
                   className="gap-2 text-[13px] text-red-500 focus:bg-red-500/10 focus:text-red-400"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -738,6 +736,19 @@ function ChatPageContent() {
       </main>
 
       {/* Drawers / Modals — overlay layer above the workspace */}
+      <ConfirmDialog
+        open={clearHistoryOpen}
+        onOpenChange={setClearHistoryOpen}
+        title="مسح سجل المحادثة"
+        description="هل تريد مسح سجل المحادثة بالكامل؟ لا يمكن التراجع."
+        confirmLabel="مسح الكل"
+        destructive
+        onConfirm={() => {
+          clearAllThreads();
+          toast.success("تم مسح سجل المحادثة");
+        }}
+      />
+
       <ChatHistoryDrawer
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MessageSquare, Search, Plus, Trash2 } from "lucide-react";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { toast } from "@/lib/toast";
 
 interface ChatHistoryDrawerProps {
   isOpen: boolean;
@@ -47,6 +49,7 @@ export function ChatHistoryDrawer({
   const activeId = useChatHistoryStore((s) => s.activeId);
   const deleteThread = useChatHistoryStore((s) => s.deleteThread);
   const [query, setQuery] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   // Close on Escape — small ergonomics win, matches macOS sheet conventions.
   useEffect(() => {
@@ -69,6 +72,7 @@ export function ChatHistoryDrawer({
   }, [threads, query]);
 
   return (
+    <>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -148,11 +152,12 @@ export function ChatHistoryDrawer({
                     : "لا توجد محادثات تطابق بحثك."}
                 </div>
               ) : (
-                filtered.map((s) => {
+                filtered.map((s, index) => {
                   const isActive = s.id === activeId;
+                  const rowKey = s.id ? `${s.id}-${index}` : `thread-${index}`;
                   return (
                     <div
-                      key={s.id}
+                      key={rowKey}
                       className={
                         "group relative flex items-stretch gap-1 rounded-2xl transition-all " +
                         (isActive
@@ -179,7 +184,7 @@ export function ChatHistoryDrawer({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (confirm("حذف هذه المحادثة؟")) deleteThread(s.id);
+                          setPendingDeleteId(s.id);
                         }}
                         aria-label="حذف المحادثة"
                         title="حذف"
@@ -196,5 +201,23 @@ export function ChatHistoryDrawer({
         </>
       )}
     </AnimatePresence>
+
+    <ConfirmDialog
+      open={pendingDeleteId !== null}
+      onOpenChange={(open) => {
+        if (!open) setPendingDeleteId(null);
+      }}
+      title="حذف المحادثة"
+      description="هل تود حذف هذه المحادثة؟ لا يمكن التراجع بعد الحذف."
+      confirmLabel="حذف"
+      destructive
+      onConfirm={() => {
+        if (pendingDeleteId) {
+          deleteThread(pendingDeleteId);
+          toast.success("تم حذف المحادثة");
+        }
+      }}
+    />
+    </>
   );
 }
