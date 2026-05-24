@@ -49,6 +49,8 @@ import {
   CheckCircle2,
   Sparkles,
   Activity,
+  CalendarDays,
+  CalendarClock,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Card } from "@/components/ui/card";
@@ -203,6 +205,60 @@ function classifyError(err: unknown): AnalyticsError {
   }
   return { kind: "server", detail: msg };
 }
+
+// ──────────────────────────────────────────────────────────────────
+// بيانات التقويم الأكاديمي لجامعة أم القرى 1447 / 1448 هـ
+// ──────────────────────────────────────────────────────────────────
+const UQU_CALENDAR = [
+  {
+    term: "الفصل الدراسي الأول",
+    events: [
+      { title: "تأجيل الدراسة", date: "24 Aug - 30 Aug 2025", hijri: "01/03 - 07/03/1447", type: "system" },
+      { title: "بداية الفصل الدراسي الأول", date: "24 Aug 2025", hijri: "01/03/1447", type: "academic" },
+      { title: "الاعتذار عن الدراسة", date: "31 Aug - 01 Nov 2025", hijri: "08/03 - 10/05/1447", type: "system" },
+      { title: "إجازة اليوم الوطني", date: "23 Sep 2025", hijri: "01/04/1447", type: "holiday" },
+      { title: "الاختبارات النصفية", date: "19 Oct - 30 Oct 2025", hijri: "27/04 - 08/05/1447", type: "exam" },
+      { title: "الانسحاب من مقرر دراسي", date: "02 Nov - 15 Nov 2025", hijri: "11/05 - 24/05/1447", type: "system" },
+      { title: "إجازة الخريف", date: "20 Nov - 29 Nov 2025", hijri: "29/05 - 08/06/1447", type: "holiday" },
+      { title: "اختبارات المتطلبات العامة والعملية", date: "21 Dec - 25 Dec 2025", hijri: "01/07 - 05/07/1447", type: "exam" },
+      { title: "إعادة القيد للفصل الثاني", date: "21 Dec - 22 Jan 2026", hijri: "01/07 - 03/08/1447", type: "system" },
+      { title: "الاختبارات النهائية", date: "28 Dec - 08 Jan 2026", hijri: "08/07 - 19/07/1447", type: "exam" },
+      { title: "إجازة منتصف العام الدراسي", date: "08 Jan - 17 Jan 2026", hijri: "19/07 - 28/07/1447", type: "holiday" },
+    ],
+  },
+  {
+    term: "الفصل الدراسي الثاني",
+    events: [
+      { title: "تأجيل الدراسة", date: "18 Jan - 24 Jan 2026", hijri: "29/07 - 05/08/1447", type: "system" },
+      { title: "بداية الفصل الدراسي الثاني", date: "18 Jan 2026", hijri: "29/07/1447", type: "academic" },
+      { title: "الاعتذار عن الدراسة", date: "25 Jan - 18 Apr 2026", hijri: "06/08 - 01/11/1447", type: "system" },
+      { title: "إجازة يوم التأسيس", date: "22 Feb 2026", hijri: "05/09/1447", type: "holiday" },
+      { title: "إجازة عيد الفطر", date: "05 Mar - 28 Mar 2026", hijri: "16/09 - 09/10/1447", type: "holiday" },
+      { title: "الاختبارات النصفية", date: "05 Apr - 16 Apr 2026", hijri: "17/10 - 28/10/1447", type: "exam" },
+      { title: "التحويل بين الكليات والأقسام", date: "05 Apr - 18 Apr 2026", hijri: "17/10 - 01/11/1447", type: "system" },
+      { title: "الانسحاب من مقرر دراسي", date: "19 Apr - 02 May 2026", hijri: "02/11 - 15/11/1447", type: "system" },
+      { title: "إدخال رغبات التسكين", date: "03 May - 09 May 2026", hijri: "16/11 - 22/11/1447", type: "academic" },
+      { title: "إجازة عيد الأضحى", date: "14 May - 01 Jun 2026", hijri: "27/11 - 15/12/1447", type: "holiday" },
+      { title: "إعادة القيد للصيفي", date: "07 Jun - 30 Jun 2026", hijri: "21/12 - 15/01/1448", type: "system" },
+      { title: "اختبارات المتطلبات العامة والعملية", date: "07 Jun - 11 Jun 2026", hijri: "21/12 - 25/12/1447", type: "exam" },
+      { title: "الاختبارات النهائية", date: "14 Jun - 25 Jun 2026", hijri: "28/12 - 10/01/1448", type: "exam" },
+      { title: "التحويل الخارجي لجامعة أم القرى", date: "25 Jun - 04 Jul 2026", hijri: "10/01 - 19/01/1448", type: "system" },
+      { title: "إجازة نهاية العام الدراسي", date: "25 Jun 2026", hijri: "10/01/1448", type: "holiday" },
+    ],
+  },
+];
+
+// دالة مساعدة لتلوين نوع الحدث
+function getEventTone(type: string) {
+  switch (type) {
+    case "holiday": return "bg-rose-500/15 text-rose-300 border-rose-500/30";
+    case "exam": return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+    case "system": return "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30";
+    default: return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+  }
+}
+
+
 
 // ──────────────────────────────────────────────────────────────────
 // Page
@@ -360,21 +416,7 @@ export default function DashboardPage() {
   // Carry the raw `courses` list AND the reliability flag through so the
   // drill-down dialog + tooltip + dominant-gap callout can all gate on
   // sample size without a second API call.
-  const radarSeries = useMemo(
-    () =>
-      (analyticsData?.strengths_radar ?? []).map((p) => ({
-        category: p.category,
-        student: p.student_competency,
-        market: p.market_demand,
-        skillGap: p.skill_gap,
-        creditHours: p.credit_hours,
-        courseCount: p.course_count,
-        isReliable: p.is_reliable,
-        courses: p.courses,
-      })),
-    [analyticsData],
-  );
-
+  
   const roiCourses = useMemo(
     () => analyticsData?.high_roi_courses ?? [],
     [analyticsData],
@@ -834,11 +876,9 @@ export default function DashboardPage() {
               </Dialog>
             </div>
 
-            {/* ╔═══ MIDDLE ROW · Chart + Radar ═══╗ */}
+          {/* ╔═══ MIDDLE ROW · Chart + Calendar ═══╗ */}
             <div className="grid lg:grid-cols-2 gap-6 mb-6">
-              {/* Wrap the cumulative chart in a flex column so the
-                  Sprint-4 trend insight (AI sparkle box) sits directly
-                  beneath it without breaking the middle-row 2-col grid. */}
+              {/* العمود الأول: مخطط المعدل التراكمي وتحليله */}
               <div className="flex flex-col gap-3 min-w-0">
                 <CumulativeGpaCard
                   series={gpaSeries}
@@ -850,6 +890,8 @@ export default function DashboardPage() {
                   <GpaTrendInsight text={analyticsData.gpa_trend_analysis} />
                 )}
               </div>
+
+              {/* العمود الثاني: التقويم الجامعي (بديل الرادار المحذوف) */}
               <Dialog>
                 <DialogTrigger
                   nativeButton={false}
@@ -857,17 +899,14 @@ export default function DashboardPage() {
                     <div
                       role="button"
                       tabIndex={0}
-                      aria-label="افتح تفاصيل مصفوفة الـDNA الأكاديمي"
+                      aria-label="افتح التقويم الجامعي"
                       className="block w-full text-right cursor-pointer focus:outline-none h-full"
                     />
                   }
                 >
-                  <StrengthsRadarCard
-                    data={radarSeries}
-                    loading={analyticsLoading && !analyticsData}
-                  />
+                  <AcademicCalendarCard />
                 </DialogTrigger>
-                <SkillsRadarDialogContent data={radarSeries} />
+                <AcademicCalendarDialogContent />
               </Dialog>
             </div>
 
@@ -933,7 +972,6 @@ export default function DashboardPage() {
                 </Dialog>
               </div>
             </div>
-
             {/* Soft error footer — non-migration server/network failures.
                 Keeps the page useful while signalling that something's off.
                 The outer ternary already excludes "migration", so this branch
@@ -3499,5 +3537,161 @@ function ChartSkeleton() {
       <div className="h-2.5 w-40 rounded-full bg-foreground/5" />
       <div className="h-2 w-28 rounded-full bg-foreground/5" />
     </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────
+// مكونات كارد التقويم الأكاديمي
+// ──────────────────────────────────────────────────────────────────
+
+function AcademicCalendarCard() {
+  const [todayStr, setTodayStr] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    
+    // تنسيق تاريخ اليوم للعرض
+    setTodayStr(
+      new Intl.DateTimeFormat('ar-SA', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(today)
+    );
+
+    const getEndDate = (dateStr: string) => {
+      const parts = dateStr.split("-");
+      return new Date(parts[parts.length - 1].trim());
+    };
+
+    const allEvents = UQU_CALENDAR.flatMap(term => term.events);
+    const startOfToday = new Date(today);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const upcoming = allEvents
+      .filter(ev => getEndDate(ev.date) >= startOfToday)
+      .sort((a, b) => getEndDate(a.date).getTime() - getEndDate(b.date).getTime())
+      .slice(0, 3);
+      
+    setUpcomingEvents(upcoming);
+  }, []);
+
+  return (
+    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden h-full flex flex-col">
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+        <div>
+          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
+            <CalendarDays className="w-5 h-5 text-sky-400" />
+            التقويم الجامعي
+          </h3>
+          <p className="text-xs text-sky-300/80 font-medium mt-1">
+            اليوم: {todayStr || "يتم التحميل..."}
+          </p>
+        </div>
+        <Badge variant="outline" className="text-[10px] bg-sky-500/10 text-sky-400 border-sky-500/20 px-2.5 py-1 rounded-full">
+          الأحداث القادمة
+        </Badge>
+      </div>
+
+      <div className="space-y-3 flex-1">
+        {upcomingEvents.length === 0 ? (
+           <div className="flex flex-col items-center justify-center h-[120px] text-muted-foreground text-sm border-2 border-dashed border-foreground/10 rounded-2xl">
+             لا توجد أحداث أكاديمية قادمة.
+           </div>
+        ) : (
+          upcomingEvents.map((ev, i) => (
+            <div 
+              key={i} 
+              className="p-4 rounded-2xl bg-foreground/5 border border-foreground/10 flex flex-col gap-2.5 hover:border-sky-500/20 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2" 
+              style={{ animationFillMode: "both", animationDelay: `${i * 100}ms` }}
+            >
+              {/* العنوان ونوع الحدث */}
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-[13.5px] font-black text-foreground leading-tight">{ev.title}</span>
+                <span className={cn("text-[9px] font-black px-2 py-0.5 rounded-md border shrink-0 uppercase tracking-wider", getEventTone(ev.type))}>
+                  {ev.type === "holiday" ? "إجازة" : ev.type === "exam" ? "اختبارات" : ev.type === "system" ? "نظام" : "أكاديمي"}
+                </span>
+              </div>
+              
+              {/* التواريخ المرتبة والمفصولة بصرياً */}
+              <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px]">
+                {/* كبسولة التاريخ الهجري */}
+                <span className="inline-flex items-center gap-1.5 bg-black/30 dark:bg-background/40 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono">
+                  <span className="text-[9px] font-sans font-black text-amber-400/90 bg-amber-400/10 px-1 rounded-sm">هـ</span>
+                  <span className="text-foreground/90 font-bold">{ev.hijri}</span>
+                </span>
+
+                {/* كبسولة التاريخ الميلادي */}
+                <span className="inline-flex items-center gap-1.5 bg-black/30 dark:bg-background/40 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono" dir="ltr">
+                  <span className="text-foreground/90 font-bold">{ev.date}</span>
+                  <span className="text-[9px] font-sans font-black text-sky-400/90 bg-sky-400/10 px-1 rounded-sm">م</span>
+                </span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      
+      <div className="mt-5 pt-4 border-t border-foreground/10 text-[11px] text-muted-foreground font-medium text-center">
+        اضغط لمعاينة التقويم الكامل للفصلين
+      </div>
+    </Card>
+  );
+}
+function AcademicCalendarDialogContent() {
+  return (
+    <DialogContent
+      className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(700px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      dir="rtl"
+    >
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
+        <DialogTitle className="text-xl font-black flex items-center gap-3">
+          <CalendarClock className="w-6 h-6 text-sky-400" />
+          التقويم الجامعي لعام 1447 / 1448 هـ
+        </DialogTitle>
+        <DialogDescription className="text-muted-foreground text-sm">
+          جميع الأحداث الأكاديمية والأنظمة بناءً على التقويم المعتمد لجامعة أم القرى.
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+        {UQU_CALENDAR.map((termData, termIdx) => (
+          <div key={termIdx} className="space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="h-px flex-1 bg-foreground/10" />
+              <h4 className="text-sm font-black uppercase tracking-widest text-sky-400">
+                {termData.term}
+              </h4>
+              <span className="h-px flex-1 bg-foreground/10" />
+            </div>
+
+            <div className="space-y-2">
+              {termData.events.map((ev, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-4 p-3 rounded-xl bg-foreground/5 border border-foreground/10 hover:border-sky-500/30 transition-colors"
+                >
+                  <div className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-[13px] truncate">{ev.title}</div>
+                    <div className="flex items-center gap-3 mt-1 text-[11px] font-mono text-muted">
+                      <span>{ev.hijri}</span>
+                      <span className="text-foreground/30">|</span>
+                      <span>{ev.date}</span>
+                    </div>
+                  </div>
+                  <span className={cn("text-[10px] font-black px-2 py-1 rounded-md border shrink-0", getEventTone(ev.type))}>
+                     {ev.type === "holiday" ? "إجازة" : ev.type === "exam" ? "اختبارات" : ev.type === "system" ? "النظام" : "أكاديمي"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </DialogContent>
   );
 }
