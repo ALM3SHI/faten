@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { LogIn, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { toast } from "@/lib/toast";
 
 // Denylist of commonly-leaked / trivially-sequential passwords that should
 // be rejected outright on sign-up, even if they meet the 8-char minimum.
@@ -32,6 +33,40 @@ const WEAK_PASSWORDS = new Set([
   "admin123",
 ]);
 
+const AUTH_ERROR_FALLBACK = "حدث خطأ أثناء تسجيل الدخول. حاول مرة أخرى.";
+
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  "auth/wrong-password": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "auth/invalid-credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "auth/user-not-found": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "auth/invalid-email": "عنوان البريد الإلكتروني غير صالح.",
+  "auth/email-already-in-use": "هذا البريد الإلكتروني مستخدم بالفعل.",
+  "auth/weak-password": "كلمة المرور ضعيفة جداً. استخدم كلمة مرور أقوى.",
+  "auth/too-many-requests": "محاولات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
+  "auth/popup-closed-by-user": "تم إلغاء تسجيل الدخول.",
+  "auth/network-request-failed": "تعذّر الاتصال. تحقق من الإنترنت وحاول مرة أخرى.",
+};
+
+function getAuthErrorCode(error: unknown): string | null {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof (error as { code: unknown }).code === "string"
+  ) {
+    return (error as { code: string }).code;
+  }
+  return null;
+}
+
+function getArabicAuthError(error: unknown): string {
+  const code = getAuthErrorCode(error);
+  if (code && AUTH_ERROR_MESSAGES[code]) {
+    return AUTH_ERROR_MESSAGES[code];
+  }
+  return AUTH_ERROR_FALLBACK;
+}
+
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -48,7 +83,7 @@ export default function LoginPage() {
     // flash the loading state.
     if (!isLogin) {
       if (password !== confirmPassword) {
-        alert("كلمات المرور غير متطابقة");
+        toast.error("كلمات المرور غير متطابقة");
         return;
       }
       const normalized = password.trim();
@@ -56,7 +91,7 @@ export default function LoginPage() {
         normalized.length < 8 ||
         WEAK_PASSWORDS.has(normalized.toLowerCase())
       ) {
-        alert("كلمة المرور ضعيفة، يرجى استخدام حروف وأرقام أكثر تعقيداً");
+        toast.warning("كلمة المرور ضعيفة، يرجى استخدام حروف وأرقام أكثر تعقيداً");
         return;
       }
     }
@@ -69,8 +104,8 @@ export default function LoginPage() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
       router.push("/dashboard");
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      toast.error(getArabicAuthError(error));
     } finally {
       setLoading(false);
     }
@@ -80,8 +115,13 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, googleProvider);
       router.push("/dashboard");
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      const code = getAuthErrorCode(error);
+      if (code === "auth/popup-closed-by-user") {
+        toast.warning(getArabicAuthError(error));
+        return;
+      }
+      toast.error(getArabicAuthError(error));
     }
   };
 
