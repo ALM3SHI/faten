@@ -12,6 +12,7 @@ import {
   type ClientContextSnapshot,
 } from './chat-client-actions';
 import { refreshWorkspaceAfterChat } from './workspace';
+import { executeCalendarTool, formatCalendarResults } from './calendar-tool';
 
 export interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -55,6 +56,19 @@ export async function executeClientTool(name: string, args: any, backendData: an
   if (!backendData) return { success: false, error: 'No backend result provided' };
 
   switch (name) {
+    case 'get_calendar_info': {
+      // تنفيذ أداة التقويم الجامعي
+      const result = executeCalendarTool(args);
+      const formattedResults = formatCalendarResults(result.data);
+      return {
+        ...backendData,
+        calendar_data: result.data,
+        formatted_text: formattedResults,
+        success: result.success,
+        message: result.message
+      };
+    }
+
     case 'navigate_to_page': {
       // ⚠️ Auto-redirect removed — was hijacking the user mid-read.
       // The args still flow through `response.actions` so the chat
