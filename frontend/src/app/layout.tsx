@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/components/auth-provider";
+import { ToastProvider } from "@/components/toast-provider";
 
 export default function RootLayout({
   children,
@@ -44,7 +45,7 @@ export default function RootLayout({
       </head>
       <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </AuthProvider>
       </body>
     </html>

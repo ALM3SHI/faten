@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { logoutAndPurge } from "@/lib/auth-utils";
+import { toast } from "@/lib/toast";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
 import {
@@ -91,7 +92,7 @@ export default function ProfilePage() {
     setGoals({ ...draft.goals });
     setPreferences({ ...draft.preferences });
     setDirty(false);
-    alert("تم حفظ الملف الشخصي بنجاح! ✨");
+    toast.success("تم حفظ الملف الشخصي بنجاح");
   };
 
   const handlePreferencesChange = (patch: Partial<ProfilePreferences>) => {
