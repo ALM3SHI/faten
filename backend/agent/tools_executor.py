@@ -1329,6 +1329,151 @@ async def execute_tool(
             "message": f"تم تحديث درجة {course_name} إلى {grade} / 4.00",
         }
 
+   # ── 19. Get Calendar Info (Server-Side Execution) ──
+    elif tool_name == "get_calendar_info":
+        import re
+        
+        query_type = args.get("query_type")
+        query = str(args.get("query", "")).lower().strip()
+        event_type = args.get("event_type")
+
+        # بيانات التقويم الأكاديمي لجامعة أم القرى 1447 / 1448 هـ مدمجة بالكامل
+        UQU_CALENDAR = [
+            {
+                "term": "الفصل الدراسي الأول",
+                "events": [
+                    {"title": "بداية الفصل الدراسي الأول", "date": "24 Aug 2025", "hijri": "01/03/1447", "type": "academic"},
+                    {"title": "تأجيل الدراسة", "date": "24 Aug - 30 Aug 2025", "hijri": "01/03 - 07/03/1447", "type": "system"},
+                    {"title": "الاعتذار عن الدراسة", "date": "31 Aug - 01 Nov 2025", "hijri": "08/03 - 10/05/1447", "type": "system"},
+                    {"title": "إجازة اليوم الوطني", "date": "23 Sep 2025", "hijri": "01/04/1447", "type": "holiday"},
+                    {"title": "الاختبارات النصفية", "date": "19 Oct - 30 Oct 2025", "hijri": "27/04 - 08/05/1447", "type": "exam"},
+                    {"title": "الانسحاب من مقرر دراسي", "date": "02 Nov - 15 Nov 2025", "hijri": "11/05 - 24/05/1447", "type": "system"},
+                    {"title": "إجازة الخريف", "date": "20 Nov - 29 Nov 2025", "hijri": "29/05 - 08/06/1447", "type": "holiday"},
+                    {"title": "اختبارات المتطلبات العامة والعملية", "date": "21 Dec - 25 Dec 2025", "hijri": "01/07 - 05/07/1447", "type": "exam"},
+                    {"title": "تقديم طلب إعادة القيد للفصل الثاني", "date": "21 Dec 2025 - 22 Jan 2026", "hijri": "01/07 - 03/08/1447", "type": "system"},
+                    {"title": "الاختبارات النهائية", "date": "28 Dec 2025 - 08 Jan 2026", "hijri": "08/07 - 19/07/1447", "type": "exam"},
+                    {"title": "إجازة منتصف العام الدراسي", "date": "08 Jan - 17 Jan 2026", "hijri": "19/07 - 28/07/1447", "type": "holiday"},
+                ],
+            },
+            {
+                "term": "الفصل الدراسي الثاني",
+                "events": [
+                    {"title": "تأجيل الدراسة", "date": "18 Jan - 24 Jan 2026", "hijri": "29/07 - 05/08/1447", "type": "system"},
+                    {"title": "بداية الفصل الدراسي الثاني", "date": "18 Jan 2026", "hijri": "29/07/1447", "type": "academic"},
+                    {"title": "الاعتذار عن الدراسة", "date": "25 Jan - 18 Apr 2026", "hijri": "06/08 - 01/11/1447", "type": "system"},
+                    {"title": "إجازة يوم التأسيس", "date": "22 Feb 2026", "hijri": "05/09/1447", "type": "holiday"},
+                    {"title": "إجازة عيد الفطر", "date": "05 Mar - 28 Mar 2026", "hijri": "16/09 - 09/10/1447", "type": "holiday"},
+                    {"title": "الاختبارات النصفية", "date": "05 Apr - 16 Apr 2026", "hijri": "17/10 - 28/10/1447", "type": "exam"},
+                    {"title": "طلب التحويل بين الكليات والأقسام", "date": "05 Apr - 18 Apr 2026", "hijri": "17/10 - 01/11/1447", "type": "system"},
+                    {"title": "الانسحاب من مقرر دراسي", "date": "19 Apr - 02 May 2026", "hijri": "02/11 - 15/11/1447", "type": "system"},
+                    {"title": "إدخال رغبات التسكين (تحضيري)", "date": "03 May - 09 May 2026", "hijri": "16/11 - 22/11/1447", "type": "academic"},
+                    {"title": "إجازة عيد الأضحى", "date": "14 May - 01 Jun 2026", "hijri": "27/11 - 15/12/1447", "type": "holiday"},
+                    {"title": "طلب إعادة القيد للفصل الصيفي", "date": "07 Jun - 30 Jun 2026", "hijri": "21/12/1447 - 15/01/1448", "type": "system"},
+                    {"title": "اختبارات المتطلبات العامة والعملية", "date": "07 Jun - 11 Jun 2026", "hijri": "21/12 - 25/12/1447", "type": "exam"},
+                    {"title": "الاختبارات النهائية", "date": "14 Jun - 25 Jun 2026", "hijri": "28/12/1447 - 10/01/1448", "type": "exam"},
+                    {"title": "إجازة نهاية العام الدراسي", "date": "25 Jun 2026", "hijri": "10/01/1448", "type": "holiday"},
+                    {"title": "التحويل الخارجي لجامعة أم القرى", "date": "25 Jun - 04 Jul 2026", "hijri": "10/01 - 19/01/1448", "type": "system"},
+                ],
+            },
+            {
+                "term": "العام الجامعي القادم",
+                "events": [
+                    {"title": "بداية الدراسة للعام الجامعي 1448/1449هـ", "date": "23 Aug 2026", "hijri": "10/03/1448", "type": "academic"}
+                ]
+            }
+        ]
+
+        results = []
+        message = ""
+
+        try:
+            if query_type == "search":
+                if not query:
+                    return {"success": False, "message": "يجب تحديد كلمة البحث"}
+                for term in UQU_CALENDAR:
+                    for event in term.get("events", []):
+                        # البحث في العنوان أو النوع أو التاريخ
+                        if (query in event.get("title", "").lower() or 
+                            query in event.get("type", "").lower() or 
+                            query in event.get("date", "").lower() or 
+                            query in event.get("hijri", "").lower()):
+                            results.append(event)
+                message = f"تم العثور على {len(results)} حدث"
+
+            elif query_type == "by_type":
+                if not event_type:
+                    return {"success": False, "message": "يجب تحديد نوع الحدث"}
+                for term in UQU_CALENDAR:
+                    for event in term.get("events", []):
+                        if event.get("type") == event_type:
+                            results.append(event)
+                message = f"تم العثور على {len(results)} حدث من نوع {event_type}"
+
+            elif query_type == "by_term":
+                if not query:
+                    return {"success": False, "message": "يجب تحديد اسم الفصل الدراسي"}
+                for term in UQU_CALENDAR:
+                    if query in term.get("term", "").lower():
+                        results.extend(term.get("events", []))
+                message = f"تم العثور على {len(results)} حدث في الفصل الدراسي"
+
+            elif query_type == "next_event":
+                # استخراج وتجهيز دالة مساعدة لفك التواريخ المركبة مثل "24 Aug - 30 Aug 2025"
+                today = datetime.now().date()
+                next_event = None
+                next_event_date = None
+
+                def parse_start_date(date_str):
+                    try:
+                        # استخراج السنة
+                        year_match = re.search(r'\d{4}', date_str)
+                        year = year_match.group(0) if year_match else str(today.year)
+                        
+                        # استخراج اليوم والشهر الأول (مثال: "24 Aug")
+                        dm_match = re.search(r'\d{1,2}\s+[A-Za-z]+', date_str)
+                        if dm_match:
+                            first_date = dm_match.group(0)
+                            # دمج السنة مع اليوم والشهر إذا لم تكن مرتبطة به
+                            full_match = re.search(first_date + r'\s+\d{4}', date_str)
+                            full_date_str = full_match.group(0) if full_match else f"{first_date} {year}"
+                            
+                            return datetime.strptime(full_date_str, "%d %b %Y").date()
+                    except Exception:
+                        pass
+                    return None
+
+                for term in UQU_CALENDAR:
+                    for event in term.get("events", []):
+                        event_date = parse_start_date(event.get("date", ""))
+                        if event_date and event_date >= today:
+                            if next_event is None or event_date < next_event_date:
+                                next_event = event
+                                next_event_date = event_date
+
+                if next_event:
+                    results = [next_event]
+                    message = "تم العثور على الحدث القادم"
+                else:
+                    message = "لا توجد أحداث قادمة"
+
+            elif query_type == "all":
+                for term in UQU_CALENDAR:
+                    results.extend(term.get("events", []))
+                message = f"جميع الأحداث: {len(results)} حدث"
+
+            else:
+                return {"success": False, "message": "نوع استعلام غير معروف"}
+
+        except Exception as e:
+            logger.error(f"[Calendar Tool] Error: {e}")
+            return {"success": False, "message": "حدث خطأ أثناء البحث في التقويم"}
+
+        # إرجاع البيانات بشكل نقي (بدون client_only) للنموذج (LLM)
+        return {
+            "success": True,
+            "data": results,
+            "message": message
+        }
     # ── Unknown tool ──
     else:
         return {"success": False, "message": f"أداة غير معروفة: {tool_name}"}

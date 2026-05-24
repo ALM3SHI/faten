@@ -460,6 +460,35 @@ TOOLS_SCHEMA: list[dict] = [
             }
         }
     },
+    
 
+    # التقويم الأكاديمي لجامعة أم القرى
+    {
+        "type": "function",
+        "function": {
+            "name": "get_calendar_info",
+            "description": "استخدم هذه الأداة للبحث في التقويم الأكاديمي لجامعة أم القرى. استدعها فوراً إذا سأل المستخدم بصيغة عامة عن الاختبارات أو الإجازات.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query_type": {
+                        "type": "string",
+                        "enum": ["search", "by_type", "by_term", "next_event", "all"],
+                        "description": "نوع البحث المطلوب"
+                    },
+                    "query": {
+                        "type": "string",
+                        "description": "كلمة البحث (مثال: 'عيد الفطر', 'اختبارات نهائية')"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "enum": ["exam", "holiday", "academic", "system"]
+                    }
+                },
+                "required": ["query_type"]
+            }
+        }
+    }
 ]
+
 
