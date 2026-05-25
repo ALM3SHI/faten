@@ -7,6 +7,96 @@ emit_client_action channel that lets the agent directly mutate the
 user's Zustand stores via a structured action contract.
 """
 
+import datetime
+
+# دالة مساعدة لتوليد أداة التقويم الديناميكية
+def get_dynamic_calendar_tool():
+    today = datetime.datetime.now()
+    current_date_str = today.strftime("%Y-%m-%d")
+    
+  
+    
+    term1_start = datetime.datetime(2025, 8, 24).date()
+    term1_end = datetime.datetime(2026, 1, 8).date()
+    term2_start = datetime.datetime(2026, 1, 18).date()
+    term2_end = datetime.datetime(2026, 6, 25).date()
+    next_year_start = datetime.datetime(2026, 8, 23).date()
+    
+    today_date = today.date()
+    
+    # تحديد الفصل الحالي بناءً على التاريخ الفعلي
+    if term1_start <= today_date <= term1_end:
+        current_term = "الفصل الدراسي الأول"
+        last_term = "غير متوفر (نحن في بداية العام)"
+        next_term = "الفصل الدراسي الثاني"
+        
+    elif term2_start <= today_date <= term2_end:
+        current_term = "الفصل الدراسي الثاني"
+        last_term = "الفصل الدراسي الأول"
+        next_term = "العام الجامعي القادم"
+        
+    elif today_date >= next_year_start:
+        current_term = "العام الجامعي القادم"
+        last_term = "الفصل الدراسي الثاني"
+        next_term = "غير متوفر (لم يُحدد بعد)"
+        
+    else:  # الفترة بين الفصول (إجازات)
+        # إذا كان قبل الفصل الأول
+        if today_date < term1_start:
+            current_term = "إجازة صيفية (قبل بداية العام)"
+            last_term = "العام الماضي"
+            next_term = "الفصل الدراسي الأول"
+        # إذا كان بين الفصل الأول والثاني
+        elif term1_end < today_date < term2_start:
+            current_term = "إجازة منتصف العام"
+            last_term = "الفصل الدراسي الأول"
+            next_term = "الفصل الدراسي الثاني"
+        # إذا كان بين الفصل الثاني والعام القادم
+        else:  # term2_end < today_date < next_year_start
+            current_term = "إجازة نهاية العام"
+            last_term = "الفصل الدراسي الثاني"
+            next_term = "العام الجامعي القادم"
+
+    dynamic_description = f"""استخدم هذه الأداة للبحث في التقويم الأكاديمي لجامعة أم القرى.
+[معلومات سياقية هامة جداً]:
+- تاريخ اليوم الفعلي هو: {current_date_str}.
+- نحن الآن فعلياً في: "{current_term}".
+- الفصل الماضي هو: "{last_term}".
+- الفصل القادم هو: "{next_term}".
+
+[قواعد الاستخدام]:
+استدعِ هذه الأداة فوراً إذا سأل المستخدم بصيغة عامة عن الاختبارات أو الإجازات.
+إذا سأل المستخدم عن "الفصل الماضي" أو "الترم الماضي"، مرر القيمة "{last_term}" حرفياً في المتغير query.
+إذا سأل عن "الفصل الحالي" أو "الترم الحالي"، مرر القيمة "{current_term}" حرفياً في المتغير query.
+إذا سأل عن "الفصل القادم"، مرر القيمة "{next_term}".
+"""
+
+    return {
+        "type": "function",
+        "function": {
+            "name": "get_calendar_info",
+            "description": dynamic_description,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query_type": {
+                        "type": "string",
+                        "enum": ["search", "by_type", "by_term", "next_event", "all"],
+                        "description": "نوع البحث المطلوب"
+                    },
+                    "query": {
+                        "type": "string",
+                        "description": "كلمة البحث أو اسم الفصل الدراسي الصريح"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "enum": ["exam", "holiday", "academic", "system"]
+                    }
+                },
+                "required": ["query_type"]
+            }
+        }
+    }
 TOOLS_SCHEMA: list[dict] = [
 
     # ── 0. Emit Client Action ─────────────────────────────────────
@@ -460,35 +550,6 @@ TOOLS_SCHEMA: list[dict] = [
             }
         }
     },
-    
+    get_dynamic_calendar_tool()
 
-    # التقويم الأكاديمي لجامعة أم القرى
-    {
-        "type": "function",
-        "function": {
-            "name": "get_calendar_info",
-            "description": "استخدم هذه الأداة للبحث في التقويم الأكاديمي لجامعة أم القرى. استدعها فوراً إذا سأل المستخدم بصيغة عامة عن الاختبارات أو الإجازات.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query_type": {
-                        "type": "string",
-                        "enum": ["search", "by_type", "by_term", "next_event", "all"],
-                        "description": "نوع البحث المطلوب"
-                    },
-                    "query": {
-                        "type": "string",
-                        "description": "كلمة البحث (مثال: 'عيد الفطر', 'اختبارات نهائية')"
-                    },
-                    "event_type": {
-                        "type": "string",
-                        "enum": ["exam", "holiday", "academic", "system"]
-                    }
-                },
-                "required": ["query_type"]
-            }
-        }
-    }
 ]
-
-
