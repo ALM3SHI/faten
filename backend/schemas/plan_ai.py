@@ -51,7 +51,14 @@ class PlanPreferencesInput(BaseModel):
     """Smart Preferences Hub selections."""
 
     learningStyle: Literal["visual", "auditory", "kinesthetic", "reading"] = "visual"
-    energyPeak: Literal["morning", "afternoon", "night"] = "morning"
+    energyPeak: Literal["morning", "afternoon", "night"] = Field(
+        default="morning",
+        description=(
+            "Preferred review window: morning 06:00–11:59; "
+            "afternoon 12:00–16:59 (17:00–21:59 overflow); "
+            "night 22:00–23:59 and 00:00–01:59"
+        ),
+    )
     taskStrategy: Literal["eat_frog", "snowball"] = "eat_frog"
     pomodoroFocus: int = Field(default=25, ge=15, le=120)
     pomodoroShortBreak: int = Field(default=5, ge=3, le=30)

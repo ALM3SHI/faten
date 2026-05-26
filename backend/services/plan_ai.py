@@ -41,10 +41,20 @@ from pydantic import ValidationError
 from config import get_settings
 from schemas.plan_ai import (
     GeneratePlanRequest,
-    PlanPreferencesInput,
     PlanScheduleSlotInput,
-    PlanTask,
     StudyPlan,
+)
+from services.plan_task_placement import (
+    AI_SESSION_DEFAULT,
+    AI_SESSION_MAX,
+    AI_SESSION_MIN,
+    DAY_EN_TO_AR,
+    STUDY_DAY_END,
+    STUDY_DAY_START,
+    WEEK_DAYS_AR,
+    recompute_daily_summaries,
+    repair_ai_task_placements,
+    sanitize_ai_plan_tasks,
 )
 
 logger = logging.getLogger(__name__)
@@ -53,36 +63,6 @@ logger = logging.getLogger(__name__)
 # ──────────────────────────────────────────────────────────────────
 # Constants
 # ──────────────────────────────────────────────────────────────────
-
-# Weekdays in the order the schedule store uses (Saudi work week).
-# The plan is allowed to use Friday/Saturday too if the student's
-# `dayOff` permits it — those days are simply free of fixed
-# lectures, so the full 7-day list is what the model schedules against.
-WEEK_DAYS_AR = [
-    "الأحد",
-    "الإثنين",
-    "الثلاثاء",
-    "الأربعاء",
-    "الخميس",
-    "الجمعة",
-    "السبت",
-]
-
-# English → Arabic day map (preferences `dayOff` is English).
-DAY_EN_TO_AR = {
-    "sunday": "الأحد",
-    "monday": "الإثنين",
-    "tuesday": "الثلاثاء",
-    "wednesday": "الأربعاء",
-    "thursday": "الخميس",
-    "friday": "الجمعة",
-    "saturday": "السبت",
-}
-
-# Window of allowed study hours (24-hour). Outside this, the model
-# is instructed not to schedule.
-STUDY_DAY_START = "06:00"
-STUDY_DAY_END = "23:00"
 
 # Friendly Arabic blurbs for the preference enums — fed directly
 # into the prompt so the model can quote the student's preferences
@@ -95,42 +75,15 @@ LEARNING_STYLE_AR = {
 }
 
 ENERGY_PEAK_AR = {
-    "morning": "صباحاً (6 ص – 12 ظهراً)",
-    "afternoon": "ظهراً وعصراً (12 ظهراً – 6 مساءً)",
-    "night": "مساءً وليلاً (9 م – 2 ص)",
+    "morning": "صباحاً (06:00–12:00)",
+    "afternoon": "مساءً (12:00–18:00)",
+    "night": "ليلاً (21:00–02:00)",
 }
 
 TASK_STRATEGY_AR = {
     "eat_frog": "ابدأ بالمهام الصعبة أولاً (أكل الضفدع)",
     "snowball": "ابدأ بالمهام السهلة أولاً لبناء الزخم (كرة الثلج)",
 }
-
-
-# ──────────────────────────────────────────────────────────────────
-# Task quality guardrails (anti-hallucination)
-# ──────────────────────────────────────────────────────────────────
-
-# Hard ceiling on any single task. Violates Pomodoro discipline above
-# this. If the model needs more, it MUST split into "الجزء 1" / "الجزء 2".
-MAX_TASK_MINUTES = 50
-
-# Words the model is strictly forbidden from using in task titles. They
-# produce the lazy "Review Chapter 1" pattern we keep seeing and trick the
-# model into inventing syllabus numbers that don't exist. Keep this list
-# small and surgical — overly broad bans force evasive paraphrasing.
-FORBIDDEN_TITLE_WORDS_AR = ["الفصل", "الوحدة", "شابتر", "درس", "الباب"]
-
-# Heuristic: course names containing any of these markers are treated as
-# practical/project work and get a distinct task vocabulary.
-PROJECT_COURSE_MARKERS_AR = [
-    "مشروع",
-    "تخرج",
-    "graduation",
-    "project",
-    "capstone",
-    "تدريب",
-    "internship",
-]
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -154,13 +107,18 @@ def _to_hhmm(mins: int) -> str:
 def _free_windows_by_day(
     busy: list[PlanScheduleSlotInput],
     min_chunk_minutes: int,
+    energy_peak: str = "morning",
 ) -> dict[str, list[dict[str, str]]]:
     """For each weekday, return a list of {start, end} windows during
     which the student has at least `min_chunk_minutes` of contiguous
     free time inside [STUDY_DAY_START, STUDY_DAY_END].
     """
     day_start = _to_minutes(STUDY_DAY_START)
-    day_end = _to_minutes(STUDY_DAY_END)
+    day_end = (
+        _to_minutes("23:59")
+        if energy_peak == "night"
+        else _to_minutes(STUDY_DAY_END)
+    )
 
     # Group busy slots by day.
     by_day: dict[str, list[tuple[int, int]]] = {d: [] for d in WEEK_DAYS_AR}
@@ -193,169 +151,63 @@ def _free_windows_by_day(
         if day_end - cursor >= min_chunk_minutes:
             windows.append({"start": _to_hhmm(cursor), "end": _to_hhmm(day_end)})
 
+        # Night preference: 21:00–23:59 plus 00:00–02:00 review slots.
+        if energy_peak == "night":
+            evening_start = 21 * 60
+            spans_evening = False
+            for w in windows:
+                s = _to_minutes(w.get("start", ""))
+                e = _to_minutes(w.get("end", ""))
+                if (
+                    s >= 0
+                    and e > s
+                    and s <= evening_start
+                    and e >= evening_start + min_chunk_minutes
+                ):
+                    spans_evening = True
+                    break
+            if not spans_evening:
+                windows.append(
+                    {"start": _to_hhmm(evening_start), "end": _to_hhmm(day_end)}
+                )
+
+            early_end = _to_minutes("02:00")
+            if early_end - 0 >= min_chunk_minutes:
+                early_blocked = [
+                    (s, e)
+                    for s, e in merged
+                    if s < early_end and e > 0
+                ]
+                early_cursor = 0
+                for s, e in sorted(early_blocked):
+                    if s - early_cursor >= min_chunk_minutes:
+                        windows.append(
+                            {
+                                "start": _to_hhmm(early_cursor),
+                                "end": _to_hhmm(min(s, early_end)),
+                            }
+                        )
+                    early_cursor = max(early_cursor, e)
+                if early_end - early_cursor >= min_chunk_minutes:
+                    windows.append(
+                        {"start": _to_hhmm(early_cursor), "end": _to_hhmm(early_end)}
+                    )
+
         out[day] = windows
     return out
 
 
-# ──────────────────────────────────────────────────────────────────
-# Post-LLM safety net (defense-in-depth)
-# ──────────────────────────────────────────────────────────────────
-# The hardened system prompt is the primary defense, but Llama 3.3 70B
-# still drifts (lazy "مراجعة الفصل 1" titles, 60/75/90-min blocks). The
-# sanitizer below intercepts every parsed task and:
-#
-#   • Scrubs titles that contain any FORBIDDEN_TITLE_WORDS_AR — the
-#     offending title is replaced with a generic safe one referencing
-#     the course name. No LLM retry (saves time + API quota).
-#
-#   • Enforces the MAX_TASK_MINUTES (or per-student effective) cap.
-#     Overlong tasks are split into contiguous "الجزء 1 / الجزء 2 / …"
-#     parts with short-break gaps; if splitting can't be safely sized
-#     (bad time field), we fall back to a hard cap.
-#
-# Every intervention emits a `logger.warning` so we can monitor drift
-# rates over time without disrupting the user-facing flow.
-
-# Cap how many parts one overlong task can split into. Keeps the task
-# list sane when the LLM emits something wild like a 240-min block.
-_MAX_SPLIT_PARTS = 4
-
-
-def _title_has_forbidden_word(title: str) -> bool:
-    """True if any blacklisted Arabic syllabus word appears in `title`."""
-    if not title:
-        return False
-    return any(w in title for w in FORBIDDEN_TITLE_WORDS_AR)
-
-
-def _fallback_title(task: PlanTask) -> str:
-    """Generic safe title built from the course name + a neutral verb.
-
-    Uses courseName when present (most Arabic-rendered), else courseCode,
-    else a defensive last resort so a missing field never crashes the run.
-    """
-    course = (task.courseName or "").strip() or (task.courseCode or "").strip() or "هذه المادة"
-    return f"جلسة مذاكرة وتطبيق عملي لمادة {course}"
-
-
-def _split_overlong_task(
-    task: PlanTask,
-    effective_max: int,
-    short_break: int,
-) -> list[PlanTask]:
-    """Split a task whose `durationMinutes` exceeds `effective_max` into
-    ≤ `_MAX_SPLIT_PARTS` contiguous parts, each ≤ `effective_max` minutes.
-
-    Time math:
-        part_i.suggestedTime = original_start + (i-1) * (per_part + short_break)
-
-    If `task.durationMinutes <= effective_max`, returns the task unchanged
-    in a single-element list (caller can extend uniformly).
-
-    If the original `suggestedTime` is malformed (can't compute follow-up
-    starts), we fall back to a hard cap on the original task — degraded
-    but safe.
-    """
-    duration = task.durationMinutes
-    if duration <= effective_max:
-        return [task]
-
-    # ceil(duration / effective_max), capped so we never produce more
-    # than _MAX_SPLIT_PARTS rows. The cap means very long LLM-emitted
-    # tasks (e.g., 240 min) lose some planned content in exchange for
-    # not flooding the user's plan with 8 fragments.
-    parts_needed = min(_MAX_SPLIT_PARTS, max(2, -(-duration // effective_max)))
-    # Evenly distribute, but never below the schema minimum (15) nor
-    # above the effective cap. Pydantic's PlanTask.durationMinutes has
-    # ge=15, le=240 — staying inside that range avoids re-validation.
-    per_part = min(effective_max, max(15, -(-duration // parts_needed)))
-
-    start_minutes = _to_minutes(task.suggestedTime)
-    if start_minutes < 0:
-        # Malformed time → can't safely compute Part 2's start. Hard-cap
-        # the original instead of risking misaligned follow-ups.
-        return [task.model_copy(update={"durationMinutes": effective_max})]
-
-    parts: list[PlanTask] = []
-    cursor = start_minutes
-    for i in range(parts_needed):
-        parts.append(
-            task.model_copy(
-                update={
-                    "title": f"{task.title} — الجزء {i + 1}",
-                    "durationMinutes": per_part,
-                    "suggestedTime": _to_hhmm(cursor),
-                }
-            )
-        )
-        cursor += per_part + short_break
-    return parts
-
-
-def _sanitize_plan(
-    plan: StudyPlan,
-    prefs: PlanPreferencesInput,
-) -> tuple[StudyPlan, dict[str, int]]:
-    """Apply the title-blacklist + duration-cap safety net to every task.
-
-    Returns the sanitized plan and a counters dict for observability.
-    Always returns a valid StudyPlan — the sanitizer never raises.
-    """
-    effective_max = min(prefs.pomodoroFocus, MAX_TASK_MINUTES)
-    short_break = prefs.pomodoroShortBreak
-
-    counters = {
-        "titles_scrubbed": 0,
-        "tasks_split": 0,
-        "tasks_capped": 0,
+def _energy_peak_windows_for_prompt(energy_peak: str) -> list[dict[str, str]]:
+    """Human-readable peak bands for the LLM user payload."""
+    labels = {
+        "morning": [{"start": "06:00", "end": "12:00", "overflow": False}],
+        "afternoon": [{"start": "12:00", "end": "18:00", "overflow": False}],
+        "night": [
+            {"start": "21:00", "end": "23:59", "overflow": False},
+            {"start": "00:00", "end": "02:00", "overflow": False},
+        ],
     }
-
-    new_tasks: list[PlanTask] = []
-    for task in plan.tasks:
-        # ── A. Title blacklist scrub ──────────────────────────────
-        if _title_has_forbidden_word(task.title):
-            old_title = task.title
-            task = task.model_copy(update={"title": _fallback_title(task)})
-            counters["titles_scrubbed"] += 1
-            logger.warning(
-                "[plan_ai sanitizer] forbidden word in title — scrubbed: %r → %r (course=%s)",
-                old_title,
-                task.title,
-                task.courseCode,
-            )
-
-        # ── B. Pomodoro duration enforcement ──────────────────────
-        if task.durationMinutes > effective_max:
-            original_duration = task.durationMinutes
-            split = _split_overlong_task(task, effective_max, short_break)
-            if len(split) > 1:
-                counters["tasks_split"] += 1
-                logger.warning(
-                    "[plan_ai sanitizer] %d-min task split into %d × ≤%d-min parts "
-                    "(course=%s, title=%r)",
-                    original_duration,
-                    len(split),
-                    effective_max,
-                    task.courseCode,
-                    task.title,
-                )
-            else:
-                # _split_overlong_task fell back to hard-cap (bad time).
-                counters["tasks_capped"] += 1
-                logger.warning(
-                    "[plan_ai sanitizer] %d-min task hard-capped at %d "
-                    "(course=%s, suggestedTime=%r — could not split safely)",
-                    original_duration,
-                    effective_max,
-                    task.courseCode,
-                    task.suggestedTime,
-                )
-            new_tasks.extend(split)
-        else:
-            new_tasks.append(task)
-
-    sanitized = plan.model_copy(update={"tasks": new_tasks})
-    return sanitized, counters
+    return labels.get(energy_peak, labels["morning"])
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -370,12 +222,12 @@ _RESPONSE_SCHEMA_DOC = """{
   "overview": "string (Arabic, 2 sentences max — what the week focuses on)",
   "tasks": [
     {
-      "title": "string (Arabic, action verb + concrete target)",
+      "title": "string (Arabic REVIEW session only — must include «مراجعة» or «حل أسئلة ومراجعة»)",
       "courseCode": "string (must match a code from courses[])",
       "courseName": "string (Arabic, from courses[])",
-      "durationMinutes": number (must equal pomodoroFocus, or 2x/3x of it for deep sessions),
+      "durationMinutes": number (45–90, default 60),
       "suggestedDay": "string (one of: الأحد، الإثنين، الثلاثاء، الأربعاء، الخميس، الجمعة، السبت)",
-      "suggestedTime": "string (HH:MM 24-hour, inside an available_windows entry for that day)",
+      "suggestedTime": "string (HH:MM 24-hour, inside preferred_study_window and available_windows)",
       "priority": "high" | "medium" | "low",
       "reason": "string (Arabic, ONE sentence: why this day/time was picked, referencing the student's preferences)"
     }
@@ -399,13 +251,7 @@ def _build_system_prompt(req: GeneratePlanRequest) -> str:
         else "الطالب لم يحدد يوم راحة — وزّع المهام على الأسبوع بحكمة."
     )
 
-    # Effective per-task ceiling. Never let pomodoroFocus push a single
-    # task above the hard 50-minute Pomodoro discipline ceiling — if the
-    # student configured 60-min focus, the model still splits work into
-    # ≤50-min chunks ("الجزء 1" / "الجزء 2") rather than emitting one
-    # 60-min block.
-    effective_max = min(prefs.pomodoroFocus, MAX_TASK_MINUTES)
-    forbidden_list_ar = "، ".join(f'"{w}"' for w in FORBIDDEN_TITLE_WORDS_AR)
+    peak_windows = _energy_peak_windows_for_prompt(prefs.energyPeak)
 
     # Sprint-5 Bug #14 — Smart Task Rollover.
     # Build a backlog block if the request includes uncompleted tasks
@@ -455,71 +301,41 @@ def _build_system_prompt(req: GeneratePlanRequest) -> str:
 - نمط التعلم: {LEARNING_STYLE_AR.get(prefs.learningStyle, prefs.learningStyle)}
 - وقت ذروة الطاقة: {ENERGY_PEAK_AR.get(prefs.energyPeak, prefs.energyPeak)}
 - استراتيجية المهام: {TASK_STRATEGY_AR.get(prefs.taskStrategy, prefs.taskStrategy)}
-- مدة جلسة التركيز (بومودورو): {prefs.pomodoroFocus} دقيقة
-- استراحة قصيرة: {prefs.pomodoroShortBreak} دقيقة، استراحة طويلة: {prefs.pomodoroLongBreak} دقيقة
+- نافذة الذروة المفضلة (preferred_study_window في رسالة المستخدم): {json.dumps(peak_windows, ensure_ascii=False)}
 
 🛑 قواعد صارمة (مخالفة أي منها = فشل):
 1. أخرج JSON صالحاً تماماً، يطابق المخطط أدناه فقط — بدون أي نص قبل أو بعد، بدون markdown، بدون code fences.
 2. {day_off_clause}
-3. ضع المهام عالية الأولوية (priority="high") داخل نافذة وقت ذروة الطاقة للطالب.
-4. استراتيجية ترتيب اليوم: {TASK_STRATEGY_AR.get(prefs.taskStrategy, prefs.taskStrategy)}.
-5. كل مهمة يجب أن تكون داخل نافذة من available_windows لنفس اليوم — لا تجدول داخل أوقات الجدول المشغولة.
+3. كل مهمة = جلسة **مراجعة/مذاكرة** فقط. العنوان يجب أن يتضمن «مراجعة» أو «حل أسئلة ومراجعة».
+4. ممنوع في العنوان: مشروع، واجب، اختبار، تدريب، pitch deck، برمجة ميزة، أو أي مهمة غير مراجعة.
+5. ممنوع ترقيم المنهج (الفصل، الوحدة، الباب، شابتر، درس 1/2/3).
+6. ضع المهام عالية الأولوية (priority="high") داخل preferred_study_window.
+7. استراتيجية ترتيب اليوم: {TASK_STRATEGY_AR.get(prefs.taskStrategy, prefs.taskStrategy)}.
+8. كل مهمة داخل available_windows لنفس اليوم — لا تداخل مع busy_schedule، ويفضّل ترك 60 دقيقة قبل/بعد كل محاضرة.
+9. نوّع suggestedTime عبر الأيام — لا تضع كل الجلسات في نفس الساعة (مثلاً ليس كلها 08:00).
+10. durationMinutes بين {AI_SESSION_MIN} و{AI_SESSION_MAX} (الافتراضي {AI_SESSION_DEFAULT}).
+11. غطّ كل مادة من courses[] بجلستي مراجعة على الأقل (3 للمواد الصعبة difficulty=hard أو creditHours≥4).
+12. لا تضع أكثر من 4 جلسات في يوم واحد. وزّع المواد على أيام مختلفة وتجنب تكرار نفس المادة متتالياً في نفس اليوم.
+13. كل courseCode يطابق courses[] حرفياً. reason تربط الوقت بالذروة الذهنية أو الصعوبة.
 
-6. ⏱️ حدود البومودورو الصارمة:
-   - durationMinutes لكل مهمة ≤ {effective_max} دقيقة. ممنوع تماماً تجاوز الـ50 دقيقة في مهمة واحدة.
-   - لا تستخدم 60 ولا 75 ولا 90 دقيقة أبداً — هذه أرقام مرفوضة قطعياً.
-   - إذا احتاجت المادة إلى وقت أطول من {effective_max} دقيقة في يوم واحد، قسّمها إلى مهمتين أو أكثر بأسماء مختلفة وأوقات بداية متتالية تفصلها استراحة (مثال: مهمة "تطبيق عملي على REST APIs — الجزء 1" الساعة 19:00 لمدة {effective_max} دقيقة، ثم "تطبيق عملي على REST APIs — الجزء 2" الساعة {(_to_minutes('19:00') + effective_max + prefs.pomodoroShortBreak) // 60:02d}:{(_to_minutes('19:00') + effective_max + prefs.pomodoroShortBreak) % 60:02d} لمدة {effective_max} دقيقة).
-   - القيمة الافتراضية الموصى بها = {effective_max} دقيقة. يمكنك استخدام قيم أقل (مثل 25 أو 30) إذا كانت المهمة بسيطة.
-
-7. غطّ كل مادة من courses[] بـ 2–3 جلسات على الأقل خلال الأسبوع. لا تتجاهل أي مادة.
-8. كل courseCode في tasks[] يجب أن يطابق رمزاً موجوداً في courses[] (تطابق نصي حرفي).
-9. عبارة "reason" يجب أن تذكر صراحةً سبب اختيار اليوم/الوقت بربطه بتفضيلات الطالب (الذروة الذهنية، يوم الراحة، نمط التعلم، أو مستوى الصعوبة).
-
-10. ✍️ جودة العنوان (title):
-    - عربية فصحى مبسطة، ودودة لكن مهنية. عناوين قصيرة محفّزة بفعل أمر واضح.
-    - أمثلة جيدة: "تلخيص المفاهيم الأساسية باستخدام الاسترجاع النشط"، "حل تمارين تطبيقية على المخططات الانسيابية"، "بناء خريطة ذهنية للمصطلحات الجديدة"، "تطبيق عملي مع كتابة الكود خطوة بخطوة".
-
-11. 🚫 قائمة المحظورات الصارمة (Blacklist):
-    - ممنوع منعاً باتاً استخدام أي من هذه الكلمات في حقل title: {forbidden_list_ar}.
-    - ممنوع اختراع أرقام تسلسلية للمنهج (لا "الأول"، "الثاني"، "الثالث"، ولا أرقام عددية مثل "1" أو "2" تدل على ترقيم منهجي).
-    - السبب: لا تعرف فعلياً ما هي فصول/وحدات الكتاب؛ التظاهر بمعرفتها هلوسة. ركّز على الأفعال والمفاهيم بدل الترقيم.
-    - عناوين خاطئة يجب تجنبها: "مراجعة الفصل الأول"، "حل تمارين الفصل 3"، "خريطة ذهنية للوحدة 2"، "ملخص الباب الخامس".
-
-12. 🧠 الوعي بطبيعة المادة (Course-Type Awareness):
-    حلّل اسم المادة قبل توليد المهام، ثم اختر مفردات المهام وفقاً للنوع:
-
-    أ) مادة مشروع/تطبيقية (يحتوي اسمها على: "مشروع"، "تخرج"، "تدريب"، "Project"، "Graduation"، "Capstone"، "Internship"):
-       • المهام عملية بطبيعتها. أمثلة مقبولة:
-         - "برمجة وتطوير ميزة تسجيل الدخول في النظام"
-         - "كتابة قسم منهجية البحث في التوثيق (Documentation)"
-         - "تحضير شرائح العرض التقديمي (Pitch Deck)"
-         - "البحث عن مراجع علمية حديثة وتلخيصها"
-         - "اختبار النظام وتسجيل ملاحظات الـQA"
-       • ممنوع تماماً صياغة مهام نظرية مثل "مراجعة المفاهيم" لمادة مشروع.
-
-    ب) مادة نظرية/علوم حاسب (مثل: الحوسبة السحابية، قواعد البيانات، الذكاء الاصطناعي، هياكل البيانات):
-       • أمثلة مقبولة:
-         - "مراجعة المفاهيم المعمارية الأساسية"
-         - "تطبيق عملي على الكود مع كتابة الأمثلة بنفسك"
-         - "تلخيص المحاضرات السابقة عبر الخرائط الذهنية"
-         - "حل تمارين نمطية مع تتبع الخطوات صوتياً"
-         - "شرح المفهوم بصوتك كأنك تُدرّس زميلاً (Feynman)"
-
-    ج) مادة إنسانية/لغوية (إذا واضح من الاسم): استخدم أفعالاً مثل "قراءة نقدية"، "كتابة فقرة تحليلية"، "مناقشة حالة دراسية"، بدون أي ترقيم منهجي.
+✍️ أمثلة عناوين صحيحة:
+- "مراجعة أساسيات الحوسبة السحابية"
+- "مراجعة محاضرة الرسومات بالحاسب"
+- "حل أسئلة ومراجعة مواضيع مختارة"
 
 📋 المخطط المطلوب (JSON Schema):
 {_RESPONSE_SCHEMA_DOC}
 
-✨ مثال مرجعي لمهمة مثالية (التزم بهذه الجودة):
+✨ مثال مرجعي:
 {{
-  "title": "تلخيص المفاهيم الأساسية باستخدام الاسترجاع النشط",
-  "duration_minutes": 30,
-  "reason": "لأن مادة الحوسبة السحابية تتطلب حفظاً وفهماً عميقاً للمصطلحات، وتناسب طاقتك العالية."
+  "title": "مراجعة أساسيات الحوسبة السحابية",
+  "durationMinutes": 60,
+  "reason": "جلسة مراجعة في ذروة طاقتك الصباحية بعيداً عن محاضراتك."
 }}
 
-ملاحظة: المثال أعلاه يوضّح فقط جودة العنوان والمدة والسبب — في إخراجك الفعلي استخدم الحقول الكاملة من المخطط (durationMinutes بهذا التهجي بالضبط، مع courseCode و courseName و suggestedDay و suggestedTime و priority).
+ملاحظة: استخدم الحقول الكاملة من المخطط (durationMinutes، courseCode، courseName، suggestedDay، suggestedTime، priority).
 {backlog_block}
-⚠️ ملاحظة نهائية لنماذج Llama: أعد كائن JSON خام فقط، يبدأ بـ {{ وينتهي بـ }}. لا تضع ```json ولا أي شرح قبل أو بعد. أي نص خارج JSON يُعتبر إخفاقاً. أي عنوان يحتوي إحدى الكلمات المحظورة = إخفاق. أي durationMinutes > 50 = إخفاق.
+⚠️ أعد JSON خام فقط. أي عنوان بلا «مراجعة» = فشل. أي durationMinutes خارج {AI_SESSION_MIN}-{AI_SESSION_MAX} = فشل.
 """
 
 
@@ -546,11 +362,19 @@ def _build_user_content(req: GeneratePlanRequest, free_windows: dict) -> str:
             for s in req.schedule
         ],
         "available_windows": free_windows,
+        "preferred_study_window": _energy_peak_windows_for_prompt(
+            req.preferences.energyPeak
+        ),
         "preferences": req.preferences.model_dump(),
         "constraints": {
             "earliest_time": STUDY_DAY_START,
             "latest_time": STUDY_DAY_END,
             "valid_days": WEEK_DAYS_AR,
+            "session_duration_min": AI_SESSION_MIN,
+            "session_duration_max": AI_SESSION_MAX,
+            "session_duration_default": AI_SESSION_DEFAULT,
+            "lecture_buffer_minutes": 60,
+            "max_sessions_per_day": 4,
         },
     }
     return (
@@ -690,6 +514,11 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
         ) from exc
 
 
+async def _call_plan_llm(system_prompt: str, user_content: str) -> Any:
+    """Provider entrypoint for AI plan generation (Llama-compatible or OpenAI fallback)."""
+    return await _call_llama(system_prompt, user_content)
+
+
 async def _call_llama(system_prompt: str, user_content: str) -> Any:
     """Plan LLM call — Llama-compatible API, or OpenAI when Llama key is missing.
 
@@ -821,11 +650,10 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
             detail="لا توجد مواد مسجّلة لتوليد الخطة. ارفع سجلك الأكاديمي أولاً.",
         )
 
-    # The smallest free window we care about = one pomodoro session.
-    # Anything shorter is too cramped for a useful study block.
     free_windows = _free_windows_by_day(
         req.schedule,
-        min_chunk_minutes=req.preferences.pomodoroFocus,
+        min_chunk_minutes=AI_SESSION_MIN,
+        energy_peak=req.preferences.energyPeak,
     )
 
     system_prompt = _build_system_prompt(req)
@@ -838,7 +666,7 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
         req.preferences.model_dump(),
     )
 
-    raw = await _call_llama(system_prompt, user_content)
+    raw = await _call_plan_llm(system_prompt, user_content)
 
     # The model occasionally wraps the schema in `{ "plan": {...} }` or
     # emits a bare list — unwrap defensively.
@@ -854,30 +682,24 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
             detail="استجابة الذكاء الاصطناعي لم تطابق الصيغة المتوقعة. حاول مرة أخرى.",
         ) from exc
 
-    # ── Defense-in-depth: sanitize before recomputing daily totals ──
-    # The prompt is the primary guard, but Llama still drifts. The
-    # sanitizer rewrites blacklisted titles in place and splits any
-    # task exceeding the Pomodoro cap into contiguous parts. We log
-    # every intervention so we can monitor drift rates, but never
-    # retry the LLM (saves time + API quota — the fixes are safe).
-    plan, sanitize_counters = _sanitize_plan(plan, req.preferences)
-    total_fixes = sum(sanitize_counters.values())
-    if total_fixes > 0:
+    courses_by_code = {c.code: c for c in req.courses}
+    plan, sanitize_counters = sanitize_ai_plan_tasks(plan, courses_by_code)
+    if sum(sanitize_counters.values()) > 0:
         logger.warning(
-            "[plan_ai] sanitizer applied %d fix(es): scrubbed=%d split=%d capped=%d",
-            total_fixes,
-            sanitize_counters["titles_scrubbed"],
-            sanitize_counters["tasks_split"],
-            sanitize_counters["tasks_capped"],
+            "[plan_ai] AI sanitizer: titles_rewritten=%d durations_adjusted=%d",
+            sanitize_counters["titles_rewritten"],
+            sanitize_counters["durations_adjusted"],
         )
 
-    # Post-validate: recompute totalMinutes per day from the SANITIZED
-    # task list (split tasks change the per-day sum).
-    sums: dict[str, int] = {}
-    for t in plan.tasks:
-        sums[t.suggestedDay] = sums.get(t.suggestedDay, 0) + t.durationMinutes
-    for d in plan.dailySummary:
-        d.totalMinutes = sums.get(d.day, 0)
+    plan, placement_counters = repair_ai_task_placements(plan, req, free_windows)
+    if sum(placement_counters.values()) > 0:
+        logger.info(
+            "[plan_ai] placement repair: moved=%d unplaced_kept=%d",
+            placement_counters["tasks_moved"],
+            placement_counters["tasks_unplaced_kept"],
+        )
+
+    plan = recompute_daily_summaries(plan)
 
     settings = get_settings()
     model_id = (

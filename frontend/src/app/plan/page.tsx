@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,6 @@ import { Card } from "@/components/ui/card";
 import {
   Sparkles,
   Brain,
-  CheckCircle2,
-  Clock,
   AlertCircle,
   RefreshCw,
   Wand2,
@@ -18,21 +16,24 @@ import {
   Lightbulb,
   GraduationCap,
   Coffee,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "@/lib/toast";
+import { validatePlanTaskPlacement } from "@/lib/plan-task-conflicts";
+import type { StudyGridBlock } from "@/lib/schedule-grid";
 import { useTranscriptStore } from "@/store/transcriptStore";
-import { useScheduleStore, WEEK_DAYS } from "@/store/scheduleStore";
+import { useScheduleStore } from "@/store/scheduleStore";
 import { useProfileStore } from "@/store/profileStore";
 import {
   usePlanStore,
   taskKey,
-  type PlanTask,
   type GeneratePlanPayload,
+  type PlanTask,
 } from "@/store/planStore";
-
-// Friday + Saturday are valid plan days too (the schedule store only
-// covers Sun–Thu lecture days, but the AI plan covers the whole week).
-const ALL_WEEK_DAYS_AR = [...WEEK_DAYS, "الجمعة", "السبت"];
+import { PlanTimetable } from "@/components/plan/PlanTimetable";
+import { StudySessionDialog } from "@/components/plan/StudySessionDialog";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 function safeMinutes(value: unknown): number {
   const n = Number(value);
@@ -43,30 +44,6 @@ function formatStudyHours(totalMinutes: number): string {
   const hours = safeMinutes(totalMinutes) / 60;
   return `${hours.toFixed(1)}س`;
 }
-
-const PRIORITY_META: Record<
-  PlanTask["priority"],
-  { label: string; ring: string; chip: string; dot: string }
-> = {
-  high: {
-    label: "أولوية عالية",
-    ring: "border-rose-500/40 hover:border-rose-500/60",
-    chip: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-    dot: "bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]",
-  },
-  medium: {
-    label: "متوسط",
-    ring: "border-uqu-accent/30 hover:border-uqu-accent/50",
-    chip: "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30",
-    dot: "bg-uqu-accent shadow-[0_0_8px_hsla(245,78%,62%,0.6)]",
-  },
-  low: {
-    label: "خفيف",
-    ring: "border-emerald-500/30 hover:border-emerald-500/50",
-    chip: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-    dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]",
-  },
-};
 
 export default function PlanPage() {
   // ── Source stores ─────────────────────────────────────────────────
@@ -86,51 +63,23 @@ export default function PlanPage() {
   const completed = usePlanStore((s) => s.completed);
   const generatePlan = usePlanStore((s) => s.generatePlan);
   const toggleTaskDone = usePlanStore((s) => s.toggleTaskDone);
+  const addTask = usePlanStore((s) => s.addTask);
+  const updateTask = usePlanStore((s) => s.updateTask);
+  const removeTask = usePlanStore((s) => s.removeTask);
   const clearError = usePlanStore((s) => s.clearError);
+
+  const [sessionDialogOpen, setSessionDialogOpen] = useState(false);
+  const [sessionDialogMode, setSessionDialogMode] = useState<"add" | "edit">("add");
+  const [editingTask, setEditingTask] = useState<PlanTask | null>(null);
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ key: string; title: string } | null>(
+    null,
+  );
 
   // ── Derived state ─────────────────────────────────────────────────
   const hasTranscript = currentCourses.length > 0;
   const hasSchedule = schedule.length > 0;
   const canGenerate = hasTranscript && !isGenerating;
-
-  // Group tasks by suggestedDay, preserving Sun→Sat order. Days with
-  // no tasks are skipped — the UI shouldn't show empty cards for
-  // dayOff or untouched weekends.
-  const tasksByDay = useMemo(() => {
-    const map = new Map<string, PlanTask[]>();
-    if (!plan) return map;
-    for (const t of plan.tasks) {
-      if (!t.suggestedDay) continue;
-      const list = map.get(t.suggestedDay) ?? [];
-      list.push(t);
-      map.set(t.suggestedDay, list);
-    }
-    for (const list of map.values()) {
-      list.sort((a, b) => {
-        const timeA = a.suggestedTime || "99:99";
-        const timeB = b.suggestedTime || "99:99";
-        return timeA.localeCompare(timeB);
-      });
-    }
-    return map;
-  }, [plan]);
-
-  const orderedDays = useMemo(
-    () => ALL_WEEK_DAYS_AR.filter((d) => tasksByDay.has(d)),
-    [tasksByDay],
-  );
-
-  const summaryByDay = useMemo(() => {
-    const m = new Map<string, { summary: string; totalMinutes: number }>();
-    if (!plan) return m;
-    for (const s of plan.dailySummary) {
-      m.set(s.day, {
-        summary: s.summary,
-        totalMinutes: safeMinutes(s.totalMinutes),
-      });
-    }
-    return m;
-  }, [plan]);
 
   const totalMinutes = useMemo(
     () =>
@@ -180,6 +129,72 @@ export default function PlanPage() {
     await generatePlan(payload);
   };
 
+  const existingTasks = plan?.tasks ?? [];
+
+  const openAddSession = () => {
+    setSessionDialogMode("add");
+    setEditingTask(null);
+    setEditingKey(null);
+    setSessionDialogOpen(true);
+  };
+
+  const openEditSession = (block: StudyGridBlock) => {
+    const task = existingTasks[block.taskIndex];
+    if (!task) return;
+    setSessionDialogMode("edit");
+    setEditingTask(task);
+    setEditingKey(block.taskKey);
+    setSessionDialogOpen(true);
+  };
+
+  const openDeleteSession = (block: StudyGridBlock) => {
+    const task = existingTasks[block.taskIndex];
+    setDeleteTarget({
+      key: block.taskKey,
+      title: task?.title ?? block.title,
+    });
+  };
+
+  const handleSessionSubmit = (task: PlanTask) => {
+    if (sessionDialogMode === "add") {
+      const err = validatePlanTaskPlacement({
+        task,
+        lectures: schedule,
+        existingTasks,
+      });
+      if (err) {
+        toast.error(err);
+        return;
+      }
+      addTask(task);
+      toast.success("تمت إضافة جلسة المذاكرة");
+      setSessionDialogOpen(false);
+      return;
+    }
+
+    if (!editingKey) return;
+    const err = validatePlanTaskPlacement({
+      task,
+      lectures: schedule,
+      existingTasks,
+      excludeTaskKey: editingKey,
+    });
+    if (err) {
+      toast.error(err);
+      return;
+    }
+    updateTask(editingKey, task);
+    toast.success("تم تحديث جلسة المذاكرة");
+    setSessionDialogOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+    removeTask(deleteTarget.key);
+    toast.success("تم حذف جلسة المذاكرة");
+    setDeleteTarget(null);
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <Navbar />
@@ -188,7 +203,7 @@ export default function PlanPage() {
         <div className="aurora-blob blob-2 opacity-10" />
       </div>
 
-      <main className="container mx-auto pt-32 px-4 max-w-6xl space-y-8" dir="rtl">
+      <main className="w-full max-w-[95vw] mx-auto pt-32 px-3 sm:px-5 lg:px-6 space-y-8" dir="rtl">
         {/* ── Header ──────────────────────────────────────────────── */}
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
@@ -199,15 +214,29 @@ export default function PlanPage() {
                 Gemini AI
               </span>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-              خطة أسبوعية يبنيها الذكاء الاصطناعي بناءً على موادك، جدولك، ووقت ذروتك الذهنية —
-              مقسّمة على جلسات بومودورو من {preferences.pomodoroFocus} دقيقة.
+            <p className="text-muted-foreground text-sm max-w-xl">
+              جلسات مراجعة أسبوعية موزّعة حسب جدولك وتفضيلاتك.
             </p>
             {generatedAt && (
-              <p className="text-[11px] text-muted mt-2 font-mono">
-                آخر توليد · {new Date(generatedAt).toLocaleString("ar-SA")}
-                {model && <span className="mr-2 px-1.5 py-0.5 rounded bg-foreground/5">{model}</span>}
-              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground/70">
+                <span>
+                  آخر توليد{" "}
+                  {new Date(generatedAt).toLocaleString("ar-SA", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </span>
+                {model && (
+                  <>
+                    <span className="text-muted-foreground/40" aria-hidden>
+                      ·
+                    </span>
+                    <span className="font-mono text-[10px] text-muted-foreground/55 truncate max-w-[12rem]">
+                      {model}
+                    </span>
+                  </>
+                )}
+              </div>
             )}
           </div>
           <Button
@@ -227,12 +256,12 @@ export default function PlanPage() {
             ) : plan ? (
               <>
                 <Wand2 className="w-4 h-4" />
-                توليد خطة جديدة
+                توليد جلسات مراجعة جديدة
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                توليد خطتي الذكية
+                توليد جلسات المراجعة
               </>
             )}
           </Button>
@@ -242,7 +271,7 @@ export default function PlanPage() {
         {!hasTranscript && (
           <PrerequisiteCard
             title="ارفع سجلك الأكاديمي أولاً"
-            description="نحتاج قائمة مواد ترمك الحالي حتى يتمكن الذكاء الاصطناعي من بناء خطة مخصصة لك."
+            description="نحتاج قائمة مواد ترمك الحالي حتى يتمكن الذكاء الاصطناعي من جدولة جلسات مراجعة مخصصة لك."
             icon={<GraduationCap className="w-6 h-6" />}
             href="/profile"
             cta="انتقل إلى الملف الأكاديمي"
@@ -251,7 +280,7 @@ export default function PlanPage() {
         {hasTranscript && !hasSchedule && (
           <PrerequisiteCard
             title="جدولك الدراسي غير مهيّأ"
-            description="يمكنك المتابعة بدون جدول، لكن الخطة ستكون أدق إذا عرف المساعد متى تكون مشغولاً في المحاضرات."
+            description="يمكنك المتابعة بدون جدول، لكن جلسات المراجعة ستكون أدق إذا عرف المساعد متى تكون مشغولاً في المحاضرات."
             icon={<Calendar className="w-6 h-6" />}
             href="/profile"
             cta="إضافة الجدول"
@@ -282,61 +311,49 @@ export default function PlanPage() {
         </AnimatePresence>
 
         {/* ── Loading state ───────────────────────────────────────── */}
-        {isGenerating && <LoadingState pomodoro={preferences.pomodoroFocus} />}
+        {isGenerating && <LoadingState />}
 
-        {/* ── Empty state ─────────────────────────────────────────── */}
-        {!isGenerating && !plan && hasTranscript && (
-          <EmptyState onGenerate={handleGenerate} disabled={!canGenerate} />
-        )}
+        {/* ── Full-width timetable, cards below ─ */}
+        {hasTranscript && !isGenerating && (
+          <div className="flex flex-col gap-8 w-full">
+            <section className="w-full min-w-0 max-w-full space-y-6">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <p className="text-xs text-muted-foreground">
+                  أضف أو عدّل جلسات المذاكرة يدوياً على الجدول
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={openAddSession}
+                  className="rounded-xl gap-2.5 h-11 px-5 text-base font-bold border-violet-500/40 hover:bg-violet-500/15 shadow-sm"
+                >
+                  <Plus className="w-5 h-5" />
+                  إضافة جلسة
+                </Button>
+              </div>
+              <PlanTimetable
+                tasks={plan?.tasks}
+                completed={completed}
+                onToggleTask={toggleTaskDone}
+                interactiveStudy
+                onEditStudyBlock={openEditSession}
+                onDeleteStudyBlock={openDeleteSession}
+              />
 
-        {/* ── Plan view ───────────────────────────────────────────── */}
-        {!isGenerating && plan && (
-          <div className="grid lg:grid-cols-[1fr_320px] gap-6">
-            <div className="space-y-6">
-              {/* Overview */}
-              <Card className="glass rounded-[28px] border-uqu-accent/20 bg-uqu-accent/[0.04] p-6 relative overflow-hidden">
-                <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-uqu-accent/20 blur-3xl pointer-events-none" />
-                <div className="relative flex items-start gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-uqu-accent text-foreground flex items-center justify-center shrink-0 shadow-[0_0_18px_hsla(245,78%,62%,0.55)]">
-                    <Brain className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-base font-bold mb-1">رؤية الذكاء الاصطناعي للأسبوع</h2>
-                    <p className="text-sm text-foreground leading-relaxed">{plan.overview}</p>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Day groups */}
-              {orderedDays.length === 0 && (
-                <Card className="rounded-2xl border-dashed border-foreground/10 p-10 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    لم يولّد الذكاء الاصطناعي أي مهام — قد تكون أوقاتك الحرة محدودة.
-                  </p>
-                </Card>
+              {!plan && (
+                <EmptyState onGenerate={handleGenerate} disabled={!canGenerate} />
               )}
-              {orderedDays.map((day) => (
-                <DayGroup
-                  key={day}
-                  day={day}
-                  tasks={tasksByDay.get(day) ?? []}
-                  summary={summaryByDay.get(day)}
-                  completed={completed}
-                  onToggle={toggleTaskDone}
-                />
-              ))}
-            </div>
+            </section>
 
-            {/* Sidebar */}
-            <aside className="space-y-4 lg:sticky lg:top-28 h-fit">
-              <Card className="glass rounded-2xl border-foreground/10 p-5 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full">
+              <Card className="glass rounded-2xl border-foreground/10 p-5 space-y-4 h-full">
                 <div className="flex items-center gap-2">
                   <Flame className="w-4 h-4 text-uqu-accent" />
                   <h3 className="font-bold text-sm">تقدّم الخطة</h3>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-xs text-muted">المهام المنجزة</span>
+                    <span className="text-xs text-muted">الجلسات المنجزة</span>
                     <span className="text-sm font-bold font-mono">
                       {completedCount}/{totalSessions}
                     </span>
@@ -359,7 +376,7 @@ export default function PlanPage() {
                 </div>
               </Card>
 
-              <Card className="glass rounded-2xl border-foreground/10 p-5 space-y-3">
+              <Card className="glass rounded-2xl border-foreground/10 p-5 space-y-3 h-full">
                 <div className="flex items-center gap-2">
                   <Lightbulb className="w-4 h-4 text-amber-400" />
                   <h3 className="font-bold text-sm">إعداداتك المعتمدة</h3>
@@ -368,161 +385,48 @@ export default function PlanPage() {
                 <PrefRow label="الاستراتيجية" value={strategyLabel(preferences.taskStrategy)} />
                 <PrefRow label="نمط التعلم" value={learningLabel(preferences.learningStyle)} />
                 <PrefRow
-                  label="جلسة التركيز"
+                  label="بومودورو (مؤقت)"
                   value={`${preferences.pomodoroFocus} د`}
                   mono
                 />
                 <PrefRow label="يوم الراحة" value={dayOffLabel(preferences.dayOff)} />
               </Card>
-            </aside>
+            </div>
           </div>
         )}
       </main>
+
+      <StudySessionDialog
+        open={sessionDialogOpen}
+        onOpenChange={setSessionDialogOpen}
+        mode={sessionDialogMode}
+        initialTask={editingTask ?? undefined}
+        courses={currentCourses}
+        onSubmit={handleSessionSubmit}
+      />
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        title="حذف جلسة المذاكرة"
+        description={
+          deleteTarget
+            ? `هل تريد حذف «${deleteTarget.title}»؟ لا يمكن التراجع عن هذا الإجراء.`
+            : ""
+        }
+        confirmLabel="حذف"
+        destructive
+        onConfirm={handleConfirmDelete}
+      />
     </div>
-  );
-}
-
-// ── DayGroup ──────────────────────────────────────────────────────────
-
-function DayGroup({
-  day,
-  tasks,
-  summary,
-  completed,
-  onToggle,
-}: {
-  day: string;
-  tasks: PlanTask[];
-  summary: { summary: string; totalMinutes: number } | undefined;
-  completed: string[];
-  onToggle: (key: string) => void;
-}) {
-  const doneCount = tasks.filter((t) => completed.includes(taskKey(t))).length;
-  return (
-    <section>
-      <div className="flex items-end justify-between gap-3 mb-3">
-        <div>
-          <h3 className="text-lg font-black tracking-tight">{day}</h3>
-          {summary && (
-            <p className="text-xs text-muted mt-0.5 leading-relaxed">{summary.summary}</p>
-          )}
-        </div>
-        <div className="text-[11px] font-mono text-muted shrink-0">
-          {doneCount}/{tasks.length}
-          {summary ? ` · ${safeMinutes(summary.totalMinutes)} د` : ""}
-        </div>
-      </div>
-      <div className="space-y-3">
-        {tasks.map((t, idx) => (
-          // taskKey() can collide when the model schedules the same course
-          // at the same slot twice. Disambiguate the React key with `idx`
-          // (taskKey itself is unchanged because it's persisted in the
-          // completed[] set — both duplicates intentionally toggle together).
-          <TaskCard
-            key={`${taskKey(t)}#${idx}`}
-            task={t}
-            done={completed.includes(taskKey(t))}
-            onToggle={() => onToggle(taskKey(t))}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ── TaskCard ──────────────────────────────────────────────────────────
-
-function TaskCard({
-  task,
-  done,
-  onToggle,
-}: {
-  task: PlanTask;
-  done: boolean;
-  onToggle: () => void;
-}) {
-  const meta = PRIORITY_META[task.priority];
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18 }}
-    >
-      <Card
-        className={cn(
-          "glass rounded-2xl border p-5 transition-all relative overflow-hidden",
-          meta.ring,
-          done && "opacity-60",
-        )}
-      >
-        <div className="flex items-start gap-4">
-          {/* Checkbox */}
-          <button
-            onClick={onToggle}
-            className={cn(
-              "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all shrink-0 mt-0.5",
-              done
-                ? "bg-uqu-accent border-uqu-accent shadow-[0_0_12px_hsla(245,78%,62%,0.6)]"
-                : "border-foreground/10 hover:border-uqu-accent/60",
-            )}
-            aria-label={done ? "إلغاء الإتمام" : "وضع علامة منجز"}
-          >
-            {done && <CheckCircle2 className="w-4 h-4 text-foreground" />}
-          </button>
-
-          {/* Body */}
-          <div className="flex-1 min-w-0 space-y-2.5">
-            <div className="flex items-start justify-between gap-2 flex-wrap">
-              <h4
-                className={cn(
-                  "font-bold text-[15px] leading-snug",
-                  done && "line-through text-muted",
-                )}
-              >
-                {task.title}
-              </h4>
-              <span
-                className={cn(
-                  "text-[10px] font-bold px-2 py-0.5 rounded-full border inline-flex items-center gap-1 shrink-0",
-                  meta.chip,
-                )}
-              >
-                <span className={cn("w-1.5 h-1.5 rounded-full", meta.dot)} />
-                {meta.label}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-4 text-[11px] text-muted flex-wrap font-mono">
-              <span className="inline-flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {task.suggestedTime ?? "—"} · {safeMinutes(task.durationMinutes)} د
-              </span>
-              <span className="inline-flex items-center gap-1 text-foreground">
-                <GraduationCap className="w-3 h-3" />
-                {task.courseCode}
-                {task.courseName && (
-                  <span className="text-muted font-sans">· {task.courseName}</span>
-                )}
-              </span>
-            </div>
-
-            {task.reason && (
-              <div className="flex items-start gap-2 p-2.5 rounded-xl bg-foreground/5 border border-foreground/10">
-                <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-muted leading-relaxed">{task.reason}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </Card>
-    </motion.div>
   );
 }
 
 // ── States ────────────────────────────────────────────────────────────
 
-function LoadingState({ pomodoro }: { pomodoro: number }) {
+function LoadingState() {
   return (
     <Card className="glass rounded-[32px] border-uqu-accent/20 bg-uqu-accent/[0.04] p-12 flex flex-col items-center gap-5 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsla(245,78%,62%,0.2),transparent_70%)] pointer-events-none" />
@@ -536,8 +440,8 @@ function LoadingState({ pomodoro }: { pomodoro: number }) {
       <div className="text-center space-y-2 relative">
         <h3 className="text-lg font-bold">🧠 الذكاء الاصطناعي يحلل جدولك وموادك...</h3>
         <p className="text-sm text-muted max-w-md leading-relaxed">
-          نبني خطة أسبوعية تحترم وقت ذروتك الذهنية وتقسّم المذاكرة على جلسات من {pomodoro} دقيقة.
-          قد يستغرق ذلك حتى دقيقة.
+          نجدول جلسات مراجعة أسبوعية داخل وقت ذروتك الذهنية (حوالي 45–90 دقيقة لكل جلسة) مع
+          تجنب تعارض المحاضرات. قد يستغرق ذلك حتى دقيقة.
         </p>
       </div>
       <div className="flex gap-2 mt-1">
@@ -567,9 +471,10 @@ function EmptyState({
         <Wand2 className="w-7 h-7" />
       </div>
       <div className="space-y-2 max-w-md">
-        <h3 className="text-lg font-bold">جاهز لتوليد خطتك الأسبوعية</h3>
+        <h3 className="text-lg font-bold">جاهز لتوليد جلسات المراجعة الأسبوعية</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          سيستخدم المساعد موادك، أوقات محاضراتك، وتفضيلاتك لرسم خطة دقيقة موزّعة على الأسبوع.
+          سيستخدم المساعد موادك ومحاضراتك وتفضيلاتك لاقتراح جلسات مراجعة موزّعة على الأسبوع —
+          ويمكنك إضافة جلسات يدوياً لاحقاً.
         </p>
       </div>
       <Button
@@ -578,7 +483,7 @@ function EmptyState({
         className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-5 font-bold"
       >
         <Sparkles className="w-4 h-4" />
-        ابدأ التوليد الآن
+        توليد جلسات المراجعة
       </Button>
     </Card>
   );

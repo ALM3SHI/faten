@@ -110,6 +110,11 @@ interface PlanState {
   /** Append a single task to the current plan (used by the chat agent's
    *  ADD_TASK client action). Creates a minimal plan shell if none exists. */
   addTask: (task: PlanTask) => void;
+  /** Replace a task matched by taskKey(task) === oldKey. Migrates completion
+   *  when the synthesized key changes. */
+  updateTask: (oldKey: string, updatedTask: PlanTask) => void;
+  /** Remove a task and its completion entry. */
+  removeTask: (key: string) => void;
   clearPlan: () => void;
   clearError: () => void;
 }
@@ -212,6 +217,39 @@ export const usePlanStore = create<PlanState>()(
             tasks: nextTasks,
             dailySummary: cur?.dailySummary ?? [],
           },
+        });
+      },
+
+      updateTask: (oldKey, updatedTask) => {
+        const cur = get().plan;
+        if (!cur) return;
+        const idx = cur.tasks.findIndex((t) => taskKey(t) === oldKey);
+        if (idx < 0) return;
+        const nextTasks = cur.tasks.slice();
+        nextTasks[idx] = updatedTask;
+        const newKey = taskKey(updatedTask);
+        let nextCompleted = get().completed;
+        if (newKey !== oldKey && nextCompleted.includes(oldKey)) {
+          nextCompleted = [
+            ...nextCompleted.filter((k) => k !== oldKey),
+            newKey,
+          ];
+        }
+        set({
+          plan: { ...cur, tasks: nextTasks },
+          completed: nextCompleted,
+        });
+      },
+
+      removeTask: (key) => {
+        const cur = get().plan;
+        if (!cur) return;
+        set({
+          plan: {
+            ...cur,
+            tasks: cur.tasks.filter((t) => taskKey(t) !== key),
+          },
+          completed: get().completed.filter((k) => k !== key),
         });
       },
 
