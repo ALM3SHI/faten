@@ -14,6 +14,8 @@ interface ChatHistoryDrawerProps {
   onSelectThread: (id: string) => void;
   /** Called when the user clicks "محادثة جديدة". */
   onNewThread: () => void;
+  /** Called when the user confirms deleting a thread from the drawer. */
+  onDeleteThread: (id: string) => void;
 }
 
 function formatRelative(iso: string): string {
@@ -44,10 +46,10 @@ export function ChatHistoryDrawer({
   onClose,
   onSelectThread,
   onNewThread,
+  onDeleteThread,
 }: ChatHistoryDrawerProps) {
   const threads = useChatHistoryStore((s) => s.threads);
   const activeId = useChatHistoryStore((s) => s.activeId);
-  const deleteThread = useChatHistoryStore((s) => s.deleteThread);
   const [query, setQuery] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
@@ -213,7 +215,7 @@ export function ChatHistoryDrawer({
       destructive
       onConfirm={() => {
         if (pendingDeleteId) {
-          deleteThread(pendingDeleteId);
+          onDeleteThread(pendingDeleteId);
           toast.success("تم حذف المحادثة");
         }
       }}

@@ -2,8 +2,8 @@
 
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import { Sparkles, User as UserIcon, ChevronDown, Timer, Calculator, X, History, Settings, MapPin, LayoutDashboard, CalendarDays, FileDown, Trash2, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useState, useRef, useEffect, Suspense } from "react";
+import { Sparkles, User as UserIcon, ChevronDown, Timer, Calculator, X, History, Settings, MapPin, LayoutDashboard, CalendarDays, Trash2, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ChatResponse } from "@/lib/ai";
@@ -96,6 +96,9 @@ function CollapsibleWidget({ title, icon: Icon, onClose, onDragStart, onDragEnd,
 }
 
 export type Density = "single" | "compact";
+
+const NEW_CHAT_WELCOME =
+  "أهلاً بك من جديد! بدأنا محادثة جديدة. كيف يمكنني مساعدتك؟";
 
 // ── Manual navigation CTA helpers ─────────────────────────────────────
 // The agent used to hard-redirect via `window.location.assign(path)` /
@@ -291,6 +294,8 @@ function ChatPageContent() {
   const [mounted, setMounted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const clearAllThreads = useChatHistoryStore((s) => s.clearAll);
+  const activeId = useChatHistoryStore((s) => s.activeId);
+  const deleteThread = useChatHistoryStore((s) => s.deleteThread);
 
   // Chat-history persistence (localStorage). The store materialises a
   // thread on the first user↔assistant exchange and updates it on every
@@ -299,6 +304,31 @@ function ChatPageContent() {
   const loadThreadFromStore = useChatHistoryStore((s) => s.loadThread);
   const startNewThread = useChatHistoryStore((s) => s.startNewThread);
   const [conversationId, setConversationId] = useState<string | null>(null);
+
+  const resetToNewConversation = useCallback(
+    (options?: { clearInput?: boolean }) => {
+      startNewThread();
+      setMessages([
+        {
+          role: "bot",
+          content: NEW_CHAT_WELCOME,
+          timestamp: new Date(),
+        },
+      ]);
+      setConversationId(null);
+      if (options?.clearInput) setInput("");
+    },
+    [setMessages, setInput, startNewThread],
+  );
+
+  const handleDeleteThread = useCallback(
+    (threadId: string) => {
+      const wasActive = activeId === threadId;
+      deleteThread(threadId);
+      if (wasActive) resetToNewConversation({ clearInput: true });
+    },
+    [activeId, deleteThread, resetToNewConversation],
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -540,16 +570,6 @@ function ChatPageContent() {
                     : <Eye className="w-4 h-4 text-muted" />}
                   <span>{isWorkspaceEnabled ? "إخفاء مساحات العمل" : "إظهار مساحات العمل"}</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    // Placeholder — PDF export not implemented yet.
-                    console.info("[chat-settings] Export to PDF requested");
-                  }}
-                  className="gap-2 text-[13px] focus:bg-foreground/5 focus:text-foreground"
-                >
-                  <FileDown className="w-4 h-4 text-muted" />
-                  <span>تصدير المحادثة (PDF)</span>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-foreground/5" />
                 <DropdownMenuItem
                   onClick={() => setClearHistoryOpen(true)}
@@ -745,6 +765,7 @@ function ChatPageContent() {
         destructive
         onConfirm={() => {
           clearAllThreads();
+          resetToNewConversation({ clearInput: true });
           toast.success("تم مسح سجل المحادثة");
         }}
       />
@@ -759,17 +780,9 @@ function ChatPageContent() {
           setConversationId(thread.conversationId);
           setIsHistoryOpen(false);
         }}
+        onDeleteThread={handleDeleteThread}
         onNewThread={() => {
-          startNewThread();
-          setMessages([
-            {
-              role: "bot",
-              content:
-                "أهلاً بك من جديد! بدأنا محادثة جديدة. كيف يمكنني مساعدتك؟",
-              timestamp: new Date(),
-            },
-          ]);
-          setConversationId(null);
+          resetToNewConversation();
           setIsHistoryOpen(false);
         }}
       />
