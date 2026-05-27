@@ -31,8 +31,6 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  AreaChart,
-  Area,
 } from "recharts";
 import {
   TrendingUp,
@@ -459,26 +457,6 @@ export default function DashboardPage() {
 
   const agenticAction = analyticsData?.agentic_action;
 
-  // ── Predictive GPA Topography (sparkline) ─────────────────────────
-  // The sparkline inside the Current GPA StatCard is the cumulative_gpa
-  // trajectory pulled straight from chart_data. Resilience direction
-  // (last delta) drives the colour: positive → green, negative → orange.
-  // We never recompute the math here — the backend's cumulative is the
-  // single source of truth.
-  const sparkline = useMemo(() => {
-    const series = analyticsData?.chart_data ?? [];
-    if (series.length < 2) {
-      return { data: [] as { i: number; v: number }[], direction: "flat" as const };
-    }
-    const data = series.map((p, i) => ({ i, v: p.cumulative_gpa }));
-    const last = data[data.length - 1].v;
-    const prev = data[data.length - 2].v;
-    const delta = last - prev;
-    const direction =
-      Math.abs(delta) < 0.01 ? "flat" : delta > 0 ? "up" : "down";
-    return { data, direction } as const;
-  }, [analyticsData]);
-
   // ── Agentic Self-Healing dispatcher ───────────────────────────────
   // When the backend surfaces an intervention with `scheduled_tasks`,
   // dispatch them into the plan store ONCE per intervention_id. We gate
@@ -532,10 +510,8 @@ export default function DashboardPage() {
     return { completed: done, total, pct: Math.round((done / total) * 100) };
   }, [plan, completedTaskKeys]);
 
-  // ── Sprint-5 Pulse Check + Smart Rollover derivations ───────────
-  // Mapping `Date.getDay()` (Sun=0..Sat=6) directly onto our Arabic
-  // weekday labels so both `last3DaysSnapshot` and `overdueTasks`
-  // share a single source of truth.
+  // ── Smart Rollover derivations ───────────────────────────────────
+  // Mapping `Date.getDay()` (Sun=0..Sat=6) directly onto Arabic weekday labels.
   const AR_WEEK = useMemo(
     () => [
       "الأحد",
@@ -548,32 +524,6 @@ export default function DashboardPage() {
     ],
     [],
   );
-
-  // The last three calendar days (yesterday, day-before, day-3-back),
-  // expressed as Arabic weekday labels. We use this to detect "user
-  // hasn't logged anything for 3 days despite having tasks scheduled".
-  const last3DaysSnapshot = useMemo(() => {
-    const today = new Date();
-    const labels: string[] = [];
-    for (let i = 1; i <= 3; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      labels.push(AR_WEEK[d.getDay()]);
-    }
-    const tasks = plan?.tasks ?? [];
-    const completedSet = new Set(completedTaskKeys);
-    const inWindow = tasks.filter((t) => labels.includes(t.suggestedDay));
-    const done = inWindow.filter((t) => completedSet.has(taskKey(t))).length;
-    return {
-      labels,
-      tasks: inWindow,
-      done,
-      // Pulse-check trigger: at least 3 tasks were scheduled across
-      // those days AND not a single one was marked done. The "3 tasks"
-      // floor prevents false positives for a sparse week.
-      shouldShowPulse: inWindow.length >= 3 && done === 0,
-    };
-  }, [plan, completedTaskKeys, AR_WEEK]);
 
   // "Overdue" = scheduled on a weekday earlier than today THIS week,
   // not in the completed set. Tasks aren't dated, so we approximate
@@ -591,16 +541,10 @@ export default function DashboardPage() {
     });
   }, [plan, completedTaskKeys, AR_WEEK]);
 
-  // Bulk action wired up so the Pulse Check's "نعم، أنجزت مهامي"
-  // button can forgive a whole stretch in one click.
   const planMarkTasksDone = usePlanStore((s) => s.markTasksDone);
-  const handleAckPulse = () => {
-    planMarkTasksDone(last3DaysSnapshot.tasks.map((t) => taskKey(t)));
-  };
 
-  // Controlled rollover dialog — opened from the Pulse Check's "لا، لقد
-  // تأخرت" button AND from the Overdue section inside the adherence
-  // dialog. Kept at page scope so either path opens the same modal.
+  // Controlled rollover dialog — opened from the Overdue section inside
+  // the adherence dialog.
   const [rolloverOpen, setRolloverOpen] = useState(false);
 
   // Per-Arabic-weekday adherence rollup — drives the Adherence drill-down
@@ -650,12 +594,6 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div>
-            <Badge
-              variant="outline"
-              className="bg-uqu-accent/10 text-uqu-accent border-uqu-accent/20 mb-3 px-3 py-1 rounded-full font-bold"
-            >
-              🧠 مركز الذكاء الأكاديمي
-            </Badge>
             <h1 className="text-4xl font-black mb-2">لوحة المعلومات</h1>
             <p className="text-muted-foreground font-medium">{greeting}</p>
           </div>
@@ -722,15 +660,6 @@ export default function DashboardPage() {
                     icon={<TrendingUp className="w-5 h-5 text-emerald-500" />}
                     color="emerald"
                     delay="delay-0"
-                    sparkline={
-                      sparkline.data.length >= 2
-                        ? {
-                            data: sparkline.data,
-                            direction:
-                              sparkline.direction === "flat" ? "up" : sparkline.direction,
-                          }
-                        : undefined
-                    }
                   />
                 </DialogTrigger>
                 <DialogContent className="glass border-foreground/10 sm:max-w-md">
@@ -810,18 +739,6 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </div>
-
-                  <Button
-                    onClick={() => {
-                      // TODO: Open Full Transcript Table — pending the
-                      // in-place transcript browser. Intentionally not
-                      // routing to /transcript anymore (legacy page).
-                      console.log("TODO: Open Full Transcript Table");
-                    }}
-                    className="w-full rounded-xl bg-cyan-500 hover:bg-cyan-600 text-foreground"
-                  >
-                    عرض جميع المواد
-                  </Button>
                 </DialogContent>
               </Dialog>
 
@@ -936,18 +853,7 @@ export default function DashboardPage() {
                   earnedHours={earnedHours}
                 />
               </Dialog>
-              {/* Pulse-check sits ABOVE the adherence card in the same
-                  bento cell when triggered. Keeping it outside the
-                  Dialog trigger keeps its inline action buttons free
-                  of click-bubbling concerns. */}
               <div className="flex flex-col gap-3 min-w-0 h-full">
-                {last3DaysSnapshot.shouldShowPulse && (
-                  <PulseCheckCard
-                    pendingCount={last3DaysSnapshot.tasks.length}
-                    onAck={handleAckPulse}
-                    onLate={() => setRolloverOpen(true)}
-                  />
-                )}
                 <Dialog>
                   <DialogTrigger
                     nativeButton={false}
@@ -987,9 +893,7 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Sprint-5: page-scoped rollover modal. Opened from either
-                the Pulse Check's "لا، لقد تأخرت" button OR the Overdue
-                section inside the adherence dialog. */}
+            {/* Page-scoped rollover modal — opened from the adherence dialog. */}
             <TaskRolloverDialog
               open={rolloverOpen}
               onOpenChange={setRolloverOpen}
@@ -2605,77 +2509,13 @@ function RoiSimRow({
   );
 }
 
-// ── Sprint-5 Pulse Check + Smart Task Rollover ───────────────────
+// ── Smart Task Rollover ───────────────────────────────────────────
 //
-// Two complementary surfaces:
-//   • PulseCheckCard — supportive, micro-interactive card that pops
-//     above the AdherenceCard when the user has logged zero activity
-//     for ≥3 days despite scheduled tasks. Two CTAs: forgive (mark
-//     done) or open rollover.
-//   • TaskRolloverDialog — focused modal listing overdue tasks with
-//     two paths: accept-all (bulk-mark done) or jump to /plan to
-//     regenerate (the planStore auto-injects backlog into the prompt).
+// TaskRolloverDialog — focused modal listing overdue tasks with two paths:
+// accept-all (bulk-mark done) or jump to /plan to regenerate (the planStore
+// auto-injects backlog into the prompt).
 
-/** Days/tasks pulse — the friendly nudge. */
-function PulseCheckCard({
-  pendingCount,
-  onAck,
-  onLate,
-}: {
-  pendingCount: number;
-  onAck: () => void;
-  onLate: () => void;
-}) {
-  return (
-    <div
-      className={cn(
-        "relative overflow-hidden rounded-[24px] border border-uqu-accent/30",
-        "bg-gradient-to-l from-uqu-accent/[0.10] via-cyan-500/[0.06] to-emerald-500/[0.06]",
-        "p-4 md:p-5 shadow-[0_0_32px_-12px_hsla(245,78%,62%,0.55)]",
-        "animate-in fade-in slide-in-from-top-2 duration-400",
-      )}
-    >
-      <span className="pointer-events-none absolute -top-12 -right-8 w-40 h-40 rounded-full bg-uqu-accent/15 blur-3xl" />
-      <div className="relative flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-uqu-accent/15 border border-uqu-accent/30 flex items-center justify-center shrink-0">
-          <Sparkles className="w-5 h-5 text-uqu-accent" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[10px] font-black uppercase tracking-widest text-uqu-accent mb-1">
-            فحص نبض الانضباط
-          </div>
-          <p className="text-[13px] font-bold text-foreground leading-relaxed">
-            تبدو مشغولاً هذا الأسبوع! هل تذاكر بطريقتك الخاصة خارج النظام؟
-          </p>
-          <p className="text-[10px] text-muted font-mono mt-1">
-            {pendingCount} مهام في آخر 3 أيام بلا تأكيد إنجاز.
-          </p>
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
-            <Button
-              size="sm"
-              onClick={onAck}
-              className="rounded-xl bg-emerald-500/90 hover:bg-emerald-500 text-foreground gap-1.5"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              نعم، أنجزت مهامي
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onLate}
-              className="rounded-xl glass border-foreground/10 gap-1.5"
-            >
-              <Activity className="w-3.5 h-3.5" />
-              لا، لقد تأخرت
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Page-scoped task rollover modal — see TaskRolloverDialog spec above. */
+/** Page-scoped task rollover modal. */
 function TaskRolloverDialog({
   open,
   onOpenChange,
@@ -3177,7 +3017,6 @@ function StatCard({
   icon,
   color,
   delay,
-  sparkline,
   extraSubtext,
 }: {
   title: string;
@@ -3187,11 +3026,6 @@ function StatCard({
   icon: React.ReactNode;
   color: "emerald" | "uqu" | "cyan" | "rose";
   delay?: string;
-  /** Optional predictive-GPA topography rendered between value and footer. */
-  sparkline?: {
-    data: { i: number; v: number }[];
-    direction: "up" | "down" | "flat";
-  };
   /** Sprint-4 Bug #7: subtle second-line muted text rendered below the
    *  primary subtitle (e.g., "Expected GPA based on trajectory: X.XX"
    *  on the Target GPA card). Optional so other cards stay unchanged. */
@@ -3214,17 +3048,13 @@ function StatCard({
   return (
     <Card
       className={cn(
-        // h-full + flex column ensures every card in the top row pulls
-        // to the same grid-cell height regardless of which one carries
-        // the sparkline. The sparkline itself is taken out of flow
-        // below (absolute) so it can't push the card taller.
         "glass p-6 rounded-[28px] border-foreground/10 hover:border-foreground/10 transition-all group animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
         "relative overflow-hidden h-full flex flex-col",
         delay,
       )}
     >
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+        <h3 className="text-sm font-bold text-foreground leading-snug">
           {title}
         </h3>
         <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", colorMap[color])}>
@@ -3240,98 +3070,10 @@ function StatCard({
           </div>
         )}
       </div>
-      {/* Footer pushed to the bottom of the flex column. The sparkline
-          slips BEHIND it (absolute, lower z-index, low opacity) so it
-          reads as ambient texture, never as a height contributor. */}
-      <div className="mt-auto pt-4 border-t border-foreground/10 text-[10px] text-muted-foreground font-medium relative z-10">
+      <div className="mt-auto pt-4 border-t border-foreground/10 text-[10px] text-muted-foreground font-medium">
         {footer}
       </div>
-      {sparkline && sparkline.data.length >= 2 && (
-        <PredictiveGpaSparkline
-          data={sparkline.data}
-          direction={sparkline.direction}
-        />
-      )}
     </Card>
-  );
-}
-
-/**
- * Predictive GPA Topography — a thin, axis-less area chart inside the
- * Current GPA card. Green stroke + fill when the most recent term-over-
- * term delta is positive ("resilience vector up"), orange when negative.
- * Flat (within ±0.01) defaults to a muted accent.
- */
-function PredictiveGpaSparkline({
-  data,
-  direction,
-}: {
-  data: { i: number; v: number }[];
-  direction: "up" | "down" | "flat";
-}) {
-  const stroke =
-    direction === "up"
-      ? "hsl(160, 80%, 50%)"
-      : direction === "down"
-        ? "hsl(28, 92%, 55%)"
-        : "hsl(220, 12%, 60%)";
-  const gradientId =
-    direction === "up"
-      ? "sparkUp"
-      : direction === "down"
-        ? "sparkDown"
-        : "sparkFlat";
-
-  // Ensure the area never bottoms out at 0 — looks better when the
-  // band hugs the actual data range. Recharts auto-domains by default
-  // but we pin a tiny floor below min so a steady trajectory still
-  // shows a sliver of fill.
-  const vs = data.map((d) => d.v);
-  const minV = Math.min(...vs);
-  const maxV = Math.max(...vs);
-  const yMin = Math.max(0, minV - 0.15);
-  const yMax = Math.min(4, maxV + 0.15);
-
-  return (
-    <div
-      // Absolutely positioned at the card's bottom edge so it never
-      // contributes to layout height — guarantees the three top-row
-      // KPI cards remain perfectly uniform whether or not this card
-      // owns a sparkline. opacity-50 + pointer-events-none keep it
-      // visually ambient and never intercept clicks meant for the card.
-      className="absolute bottom-0 left-0 right-0 h-[40px] opacity-50 pointer-events-none z-0"
-      aria-label={
-        direction === "up"
-          ? "اتجاه المعدل: صاعد"
-          : direction === "down"
-            ? "اتجاه المعدل: هابط"
-            : "اتجاه المعدل: مستقر"
-      }
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 4, right: 2, left: 2, bottom: 0 }}>
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={stroke} stopOpacity={0.55} />
-              <stop offset="100%" stopColor={stroke} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <YAxis hide domain={[yMin, yMax]} />
-          <XAxis dataKey="i" hide />
-          <Area
-            type="monotone"
-            dataKey="v"
-            stroke={stroke}
-            strokeWidth={2}
-            fill={`url(#${gradientId})`}
-            fillOpacity={1}
-            isAnimationActive
-            dot={false}
-            activeDot={false}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
   );
 }
 
