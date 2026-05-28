@@ -377,7 +377,6 @@ export default function PlanPage() {
                 </div>
                 <PrefRow label="ذروة الطاقة" value={energyPeakLabel(preferences.energyPeak)} />
                 <PrefRow label="الاستراتيجية" value={strategyLabel(preferences.taskStrategy)} />
-                <PrefRow label="نمط التعلم" value={learningLabel(preferences.learningStyle)} />
                 <PrefRow
                   label="بومودورو (مؤقت)"
                   value={`${preferences.pomodoroFocus} د`}
@@ -568,16 +567,10 @@ function PrefRow({ label, value, mono }: { label: string; value: string; mono?: 
 // ── Preference label helpers ──────────────────────────────────────────
 
 function energyPeakLabel(v: string): string {
-  return { morning: "🌅 صباحي", afternoon: "🌇 مسائي", night: "🦉 ليلي" }[v] || v;
+  return { morning: "صباحي", afternoon: "مسائي", night: "ليلي" }[v] || v;
 }
 function strategyLabel(v: string): string {
-  return { eat_frog: "🐸 أكل الضفدع", snowball: "⛄ كرة الثلج" }[v] || v;
-}
-function learningLabel(v: string): string {
-  return (
-    { visual: "👀 بصري", auditory: "🎧 سمعي", kinesthetic: "🏃 حركي", reading: "📖 قرائي" }[v] ||
-    v
-  );
+  return { eat_frog: "أكل الضفدع", snowball: "كرة الثلج" }[v] || v;
 }
 function dayOffLabel(v: string): string {
   return (

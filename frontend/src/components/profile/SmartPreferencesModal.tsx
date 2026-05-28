@@ -2,14 +2,13 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, Sparkles, X, Check } from "lucide-react";
+import { Settings, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ProfilePreferences } from "@/store/profileStore";
 import {
   PEAK_OPTIONS,
   STRATEGY_OPTIONS,
-  LEARNING_OPTIONS,
   FOCUS_OPTIONS,
   SHORT_BREAK_OPTIONS,
   LONG_BREAK_OPTIONS,
@@ -68,7 +67,7 @@ export function SmartPreferencesModal({
             transition={{ duration: 0.25, ease: "easeOut" }}
             dir="rtl"
             role="dialog"
-            aria-label="تفضيلات المذاكرة الذكية"
+            aria-label="تفضيلات المذاكرة"
             className="fixed inset-4 md:inset-x-auto md:inset-y-10 md:left-1/2 md:-translate-x-1/2 md:w-[min(960px,calc(100%-2rem))] z-50 bg-card border border-border text-foreground dark:bg-card/95 dark:border-foreground/10 backdrop-blur-2xl rounded-[28px] shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
@@ -78,13 +77,7 @@ export function SmartPreferencesModal({
                   <Settings className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h2 className="text-lg md:text-xl font-bold">تفضيلات المذاكرة الذكية</h2>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30 inline-flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5" />
-                      ذكي
-                    </span>
-                  </div>
+                  <h2 className="text-lg md:text-xl font-bold mb-1">تفضيلات المذاكرة</h2>
                   <p className="text-xs md:text-sm text-muted-foreground">
                     خصّص تجربتك ليبني المساعد خطة دراسة وجلسات تركيز مناسبة لك.
                   </p>
@@ -105,13 +98,12 @@ export function SmartPreferencesModal({
             <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
               {/* Peak Energy */}
               <section>
-                <SectionHeader kicker="PEAK ENERGY" titleAr="أوقات الذروة الذهنية" />
+                <SectionHeader titleAr="أوقات الذروة الذهنية" />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {PEAK_OPTIONS.map((opt) => (
                     <SelectCard
                       key={opt.value}
                       selected={preferences.energyPeak === opt.value}
-                      emoji={opt.emoji}
                       title={opt.titleAr}
                       subtitle={opt.subtitleAr}
                       onClick={() => onPreferencesChange({ energyPeak: opt.value })}
@@ -122,13 +114,12 @@ export function SmartPreferencesModal({
 
               {/* Task Strategy */}
               <section>
-                <SectionHeader kicker="STRATEGY" titleAr="استراتيجية المذاكرة" />
+                <SectionHeader titleAr="استراتيجية المذاكرة" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {STRATEGY_OPTIONS.map((opt) => (
                     <SelectCard
                       key={opt.value}
                       selected={preferences.taskStrategy === opt.value}
-                      emoji={opt.emoji}
                       title={opt.titleAr}
                       subtitle={opt.subtitleAr}
                       onClick={() => onPreferencesChange({ taskStrategy: opt.value })}
@@ -137,26 +128,9 @@ export function SmartPreferencesModal({
                 </div>
               </section>
 
-              {/* Learning Style */}
-              <section>
-                <SectionHeader kicker="LEARNING STYLE" titleAr="نمط التعلم" />
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {LEARNING_OPTIONS.map((opt) => (
-                    <SelectCard
-                      key={opt.value}
-                      selected={preferences.learningStyle === opt.value}
-                      emoji={opt.emoji}
-                      title={opt.titleAr}
-                      subtitle={opt.subtitleAr}
-                      onClick={() => onPreferencesChange({ learningStyle: opt.value })}
-                    />
-                  ))}
-                </div>
-              </section>
-
               {/* Pomodoro */}
               <section>
-                <SectionHeader kicker="POMODORO" titleAr="إعدادات البومودورو" />
+                <SectionHeader titleAr="إعدادات البومودورو" />
                 <div className="space-y-4 p-5 rounded-2xl bg-foreground/5 border border-foreground/10">
                   <ChipRow
                     label="مدة التركيز"
@@ -184,7 +158,7 @@ export function SmartPreferencesModal({
 
               {/* Day Off */}
               <section>
-                <SectionHeader kicker="DAY OFF" titleAr="يوم الراحة المفضل" />
+                <SectionHeader titleAr="يوم الراحة المفضل" />
                 <div className="flex flex-wrap gap-2">
                   {DAY_OFF_OPTIONS.map((opt) => (
                     <Chip
@@ -222,13 +196,11 @@ export function SmartPreferencesModal({
 
 function SelectCard({
   selected,
-  emoji,
   title,
   subtitle,
   onClick,
 }: {
   selected: boolean;
-  emoji: string;
   title: string;
   subtitle?: string;
   onClick: () => void;
@@ -240,20 +212,12 @@ function SelectCard({
       whileTap={{ scale: 0.97 }}
       whileHover={{ y: -2 }}
       className={cn(
-        "group relative flex flex-col items-start gap-3 p-5 rounded-2xl border text-right transition-all overflow-hidden",
+        "group relative flex flex-col items-start gap-1 p-5 rounded-2xl border text-right transition-all overflow-hidden",
         selected
           ? "border-uqu-accent/50 bg-uqu-accent/[0.08] shadow-[0_0_40px_-10px_hsla(245,78%,62%,0.45)]"
           : "bg-background border-border hover:border-foreground/20",
       )}
     >
-      <div
-        className={cn(
-          "w-11 h-11 rounded-xl flex items-center justify-center text-2xl transition-colors shrink-0",
-          selected ? "bg-uqu-accent/20" : "bg-foreground/5",
-        )}
-      >
-        <span aria-hidden>{emoji}</span>
-      </div>
       <div className="space-y-0.5 min-w-0">
         <div className="font-bold text-[15px] leading-tight text-foreground">
           {title}
@@ -331,13 +295,6 @@ function ChipRow({
   );
 }
 
-function SectionHeader({ kicker, titleAr }: { kicker: string; titleAr: string }) {
-  return (
-    <div className="flex items-baseline gap-2 mb-3">
-      <h3 className="text-base font-bold text-foreground">{titleAr}</h3>
-      <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
-        {kicker}
-      </span>
-    </div>
-  );
+function SectionHeader({ titleAr }: { titleAr: string }) {
+  return <h3 className="text-base font-bold text-foreground mb-3">{titleAr}</h3>;
 }

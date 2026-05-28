@@ -61,19 +61,17 @@ function findOption<V extends string>(
 
 /**
  * Build the chips shown on the compact summary card.
- * Each chip is an emoji + short label, ordered to match the modal sections.
+ * Labels only — ordered to match the modal sections.
  */
-export function summarizePreferences(p: ProfilePreferences): { emoji: string; label: string }[] {
+export function summarizePreferences(p: ProfilePreferences): string[] {
   const peak = findOption(PEAK_OPTIONS, p.energyPeak);
   const strategy = findOption(STRATEGY_OPTIONS, p.taskStrategy);
-  const learning = findOption(LEARNING_OPTIONS, p.learningStyle);
   const day = DAY_OFF_OPTIONS.find((d) => d.value === p.dayOff);
 
   return [
-    peak     && { emoji: peak.emoji,     label: peak.titleAr },
-    strategy && { emoji: strategy.emoji, label: strategy.titleAr },
-    learning && { emoji: learning.emoji, label: learning.titleAr },
-    { emoji: "⏱️", label: `${p.pomodoroFocus} د` },
-    day      && { emoji: day.emoji,      label: `راحة: ${day.label}` },
-  ].filter(Boolean) as { emoji: string; label: string }[];
+    peak?.titleAr,
+    strategy?.titleAr,
+    `${p.pomodoroFocus} د`,
+    day ? `راحة: ${day.label}` : undefined,
+  ].filter(Boolean) as string[];
 }

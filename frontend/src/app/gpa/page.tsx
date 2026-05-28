@@ -451,7 +451,7 @@ export default function GPAPage() {
                         </span>
                         <span className="text-right">
                           <span className="block text-base font-black">
-                            📊 عرض السجل الأكاديمي التفصيلي
+                            عرض السجل الأكاديمي التفصيلي
                           </span>
                           <span className="block text-[11px] text-muted mt-0.5">
                             {historicalSemesters.length} فصل دراسي مكتمل • {historicalHours} ساعة معتمدة
@@ -711,13 +711,10 @@ function SimulatorSection({
     <Card className="glass rounded-[28px] border-foreground/10 overflow-hidden">
       <div className="p-5 md:p-6 border-b border-foreground/10 flex items-center justify-between gap-3 flex-wrap">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-base font-black truncate">{CURRENT_TERM_LABEL}</h3>
-            <span className="text-[10px] font-black px-2 py-0.5 rounded-full border bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30 shadow-[0_0_18px_rgba(99,102,241,0.18)]">
-              محاكاة
-            </span>
-          </div>
-          <p className="text-[11px] text-muted mt-1 font-mono">{subtitle}</p>
+          <h3 className="text-base font-black truncate">{CURRENT_TERM_LABEL}</h3>
+          <p className="text-sm md:text-base font-medium text-foreground/80 mt-1.5">
+            {subtitle}
+          </p>
         </div>
       </div>
       <div className="px-4 md:px-6 pb-5 md:pb-6 pt-4">{children}</div>

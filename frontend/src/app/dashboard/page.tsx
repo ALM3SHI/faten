@@ -579,8 +579,8 @@ export default function DashboardPage() {
   const studentFirstName =
     (basic.name || transcriptStudentName || "").split(" ").filter(Boolean)[0] || null;
   const greeting = studentFirstName
-    ? `أهلاً بك مجدداً، ${studentFirstName}! 👋`
-    : "أهلاً بك مجدداً، يا بطل! 👋";
+    ? `أهلاً بك مجدداً، ${studentFirstName}!`
+    : "أهلاً بك مجدداً، يا بطل!";
 
   return (
     <div className="min-h-screen bg-background">

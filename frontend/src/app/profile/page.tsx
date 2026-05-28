@@ -14,7 +14,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Rocket,
-  Brain,
   Settings2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -114,7 +113,7 @@ export default function ProfilePage() {
       <main className="container mx-auto pt-32 px-4 max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black mb-2">الملف الأكاديمي</h1>
+            <h1 className="text-3xl font-black mb-2">الملف الشخصي</h1>
             <p className="text-muted-foreground">قم بإعداد بياناتك للحصول على أفضل تجربة ذكاء اصطناعي.</p>
           </div>
           <div className="flex gap-3">
@@ -382,16 +381,10 @@ export default function ProfilePage() {
             <div className="relative flex items-start justify-between gap-4 flex-wrap">
               <div className="flex items-start gap-3 min-w-0">
                 <div className="w-11 h-11 rounded-xl bg-uqu-accent/10 flex items-center justify-center text-uqu-accent shrink-0">
-                  <Brain className="w-5 h-5" />
+                  <Settings2 className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h2 className="text-lg font-bold">تفضيلات المذاكرة الذكية 🧠</h2>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30 inline-flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5" />
-                      ذكي
-                    </span>
-                  </div>
+                  <h2 className="text-lg font-bold mb-1">تفضيلات المذاكرة</h2>
                   <p className="text-xs text-muted-foreground">
                     اختياراتك الحالية — تُغذّي مولّد خطة الدراسة وجلسات التركيز.
                   </p>
@@ -402,18 +395,17 @@ export default function ProfilePage() {
                 className="rounded-2xl bg-foreground/5 border border-foreground/10 hover:bg-foreground/5 text-foreground gap-2 font-bold"
               >
                 <Settings2 className="w-4 h-4" />
-                تعديل التفضيلات ⚙️
+                تعديل التفضيلات
               </Button>
             </div>
 
             <div className="relative flex flex-wrap gap-2 mt-5">
-              {summaryChips.map((chip, i) => (
+              {summaryChips.map((label) => (
                 <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-foreground/5 border border-foreground/10 text-[13px] font-bold text-foreground"
+                  key={label}
+                  className="inline-flex items-center px-3 py-1.5 rounded-xl bg-foreground/5 border border-foreground/10 text-[13px] font-bold text-foreground"
                 >
-                  <span aria-hidden>{chip.emoji}</span>
-                  {chip.label}
+                  {label}
                 </span>
               ))}
             </div>
