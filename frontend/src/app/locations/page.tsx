@@ -223,11 +223,8 @@ function LocationsContent() {
           dir="rtl"
         >
           {/* Header — sticky title */}
-          <div className="px-6 pt-6 pb-2 space-y-2 shrink-0">
-            <h1 className="text-2xl font-black">الخريطة الذكية</h1>
-            <p className="text-xs text-muted-foreground">
-              نظام ملاحة داخلي يعتمد على A* — اسحب للتنقل، استخدم العجلة للتكبير.
-            </p>
+          <div className="px-6 pt-6 pb-2 shrink-0">
+            <h1 className="text-2xl font-black">الخريطة</h1>
           </div>
 
           {/* Sticky search — ONLY visible in browse mode. When the user
