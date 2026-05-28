@@ -60,7 +60,7 @@ export default function LandingPage() {
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-foreground/5 border border-foreground/10 text-muted text-sm font-medium backdrop-blur-md"
           >
             <Sparkles className="w-4 h-4 text-[#0066cc]" />
-            فطن — الذكاء الاصطناعي لجامعة أم القرى
+            فطن
           </motion.div>
 
           <motion.h1 
@@ -69,8 +69,8 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-6xl md:text-8xl font-black leading-[1.1] tracking-tighter"
           >
-            رفيقك الذكي في <br />
-            الرحلة الجامعية
+            رفيقك في <br />
+            رحلتك الجامعية
           </motion.h1>
 
           <motion.p 
@@ -79,7 +79,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-xl md:text-2xl text-[#a1a1a6] max-w-2xl mx-auto leading-relaxed tracking-tight"
           >
-            منصة متكاملة تجمع المحادثة الذكية، حاسبة المعدل، وجداول المذاكرة في مكان واحد بتصميم عصري وأداء فائق.
+            منصة متكاملة تجمع المحادثة الذكية، حاسبة المعدل، وجداول المذاكرة في مكان واحد.
           </motion.p>
 
           <motion.div 
