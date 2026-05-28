@@ -207,13 +207,7 @@ export default function PlanPage() {
         {/* ── Header ──────────────────────────────────────────────── */}
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-black tracking-tight">خطة المذاكرة الذكية</h1>
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30 inline-flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                Gemini AI
-              </span>
-            </div>
+            <h1 className="text-3xl font-black tracking-tight mb-2">خطة المذاكرة</h1>
             <p className="text-muted-foreground text-sm max-w-xl">
               جلسات مراجعة أسبوعية موزّعة حسب جدولك وتفضيلاتك.
             </p>

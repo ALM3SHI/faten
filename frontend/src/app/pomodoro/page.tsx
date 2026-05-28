@@ -11,7 +11,6 @@ import {
   Zap,
   Volume2,
   VolumeX,
-  Settings2,
   X,
   BookOpen,
   Sparkles,
@@ -53,14 +52,27 @@ export default function PomodoroPage() {
   const pomodoroLongBreak = useProfileStore((s) => s.preferences.pomodoroLongBreak);
 
   const isRunning = timerState === "running";
+  const canEditDuration = !isRunning;
+
+  const MIN_DURATION_MINUTES = 1;
+  const MAX_DURATION_MINUTES = 180;
 
   // ── Local UI state ────────────────────────────────────────────────
   const [muted, setMuted] = useState(false);
+  const [minutesDraft, setMinutesDraft] = useState<string | null>(null);
   // SSR/hydration guard for the timer value — useProfileStore is
   // persisted, so the first paint can show stale defaults before
   // rehydration. Show "--:--" until the client takes over.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
+
+  useEffect(() => {
+    if (isRunning) setMinutesDraft(null);
+  }, [isRunning]);
+
+  useEffect(() => {
+    setMinutesDraft(null);
+  }, [mode]);
 
   useEffect(() => {
     if (!hydrated || !isPomodoroTestDurationActive()) return;
@@ -201,6 +213,29 @@ export default function PomodoroPage() {
   // keep counting down even though the link is gone.
   const clearActiveTask = () => setActiveTask(null);
 
+  const secondsToMinutes = (seconds: number) =>
+    Math.min(
+      MAX_DURATION_MINUTES,
+      Math.max(MIN_DURATION_MINUTES, Math.ceil(Math.max(0, seconds) / 60)),
+    );
+
+  const commitDurationMinutes = (raw: string) => {
+    const parsed = Number.parseInt(raw.trim(), 10);
+    if (!Number.isFinite(parsed)) {
+      setMinutesDraft(null);
+      return;
+    }
+    const clamped = Math.min(
+      MAX_DURATION_MINUTES,
+      Math.max(MIN_DURATION_MINUTES, parsed),
+    );
+    setTimeLeft(clamped * 60);
+    setMinutesDraft(null);
+  };
+
+  const durationMinutesDisplay =
+    minutesDraft ?? String(secondsToMinutes(timeLeft));
+
   // ── Visual mode tokens ────────────────────────────────────────────
   const isBreak = mode !== "focus";
   const isLongBreak = mode === "longBreak";
@@ -225,7 +260,7 @@ export default function PomodoroPage() {
 
       <main className="container mx-auto pt-32 px-4 flex flex-col items-center">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black mb-4">بومودورو الدراسية</h1>
+          <h1 className="text-4xl font-black mb-4">بومودورو</h1>
           <p className="text-muted-foreground">
             استخدم تقنية البومودورو لزيادة تركيزك وإنجاز مهامك الأكاديمية.
           </p>
@@ -290,7 +325,7 @@ export default function PomodoroPage() {
                 className="flex items-center justify-center gap-2 text-muted text-sm font-bold"
               >
                 <Sparkles className="w-4 h-4" />
-                جلسة تركيز حرة
+                جلسة تركيز
               </motion.div>
             ) : (
               <motion.div
@@ -302,7 +337,7 @@ export default function PomodoroPage() {
                 className="flex items-center justify-center gap-2 text-emerald-400 text-sm font-bold"
               >
                 <Coffee className="w-4 h-4" />
-                {isLongBreak ? "وقت استراحة طويلة 🌿" : "وقت استراحة قصيرة ☕"}
+                {isLongBreak ? "وقت استراحة طويلة" : "وقت استراحة"}
               </motion.div>
             )}
           </AnimatePresence>
@@ -314,7 +349,7 @@ export default function PomodoroPage() {
           <div className="flex bg-foreground/5 p-1.5 rounded-2xl relative z-10">
             <ModeBtn label="تركيز" active={mode === "focus"} accent="uqu" onClick={() => switchMode("focus")} />
             <ModeBtn
-              label="استراحة قصيرة"
+              label="استراحة"
               active={mode === "shortBreak"}
               accent="emerald"
               onClick={() => switchMode("shortBreak")}
@@ -328,7 +363,7 @@ export default function PomodoroPage() {
           </div>
 
           {/* Timer display */}
-          <div className="relative">
+          <div className="relative flex flex-col items-center gap-3">
             <div
               className={cn(
                 "text-[120px] font-black tracking-tighter leading-none select-none font-mono transition-colors",
@@ -337,6 +372,39 @@ export default function PomodoroPage() {
             >
               {hydrated ? formatTime(timeLeft) : "--:--"}
             </div>
+            {hydrated && canEditDuration && (
+              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+                <label htmlFor="pomodoro-duration-minutes" className="sr-only">
+                  المدة بالدقائق
+                </label>
+                <input
+                  id="pomodoro-duration-minutes"
+                  type="number"
+                  inputMode="numeric"
+                  min={MIN_DURATION_MINUTES}
+                  max={MAX_DURATION_MINUTES}
+                  step={1}
+                  value={durationMinutesDisplay}
+                  onChange={(e) => {
+                    const next = e.target.value.replace(/[^\d]/g, "");
+                    setMinutesDraft(next);
+                    if (next !== "") {
+                      commitDurationMinutes(next);
+                    }
+                  }}
+                  onBlur={() => {
+                    if (minutesDraft === null || minutesDraft === "") {
+                      setMinutesDraft(null);
+                      return;
+                    }
+                    commitDurationMinutes(minutesDraft);
+                  }}
+                  className="w-16 rounded-xl border border-foreground/10 bg-foreground/5 px-2 py-1 text-center font-mono text-foreground outline-none focus:border-uqu-accent/40"
+                  aria-label="المدة بالدقائق"
+                />
+                <span>دقيقة</span>
+              </div>
+            )}
             <div className="absolute -top-4 -right-4">
               {mode === "focus" ? (
                 <Brain
@@ -408,12 +476,6 @@ export default function PomodoroPage() {
             )}
           </div>
 
-          <button
-            className="absolute top-8 right-8 text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="الإعدادات"
-          >
-            <Settings2 className="w-5 h-5" />
-          </button>
         </Card>
 
         {/* Tips */}
