@@ -26,9 +26,14 @@ export const PEAK_OPTIONS: OptionMeta<EnergyPeak>[] = [
 ];
 
 export const STRATEGY_OPTIONS: OptionMeta<TaskStrategy>[] = [
-  { value: "eat_frog", emoji: "🐸", titleAr: "أكل الضفدع", subtitleAr: "ابدأ بالأصعب أولاً" },
-  { value: "snowball", emoji: "⛄", titleAr: "كرة الثلج",  subtitleAr: "ابدأ بالأسهل لبناء الزخم" },
+  { value: "eat_frog", emoji: "🐸", titleAr: "ابدأ بالصعب أولاً", subtitleAr: "" },
+  { value: "snowball", emoji: "⛄", titleAr: "ابدأ بالسهل أولاً", subtitleAr: "" },
 ];
+
+/** User-facing Arabic label for a stored task strategy value. */
+export function strategyLabelAr(value: TaskStrategy | string): string {
+  return findOption(STRATEGY_OPTIONS, value as TaskStrategy)?.titleAr ?? value;
+}
 
 export const LEARNING_OPTIONS: OptionMeta<LearningStyle>[] = [
   { value: "visual",      emoji: "👀", titleAr: "بصري",        subtitleAr: "رسوم ومخططات" },

@@ -1474,6 +1474,215 @@ async def execute_tool(
             "data": results,
             "message": message
         }
+
+    # ── 20. Get Course Info (READ-ONLY catalog lookup) ──
+    #    Reads the top-level `courses` collection. Document ID == course
+    #    code (e.g. "CS4510"); fields include course_id, course_name (EN),
+    #    course_name_ar (AR), exam_dates, grading_policy, and any extras.
+    #    This branch performs NO Firestore writes.
+    elif tool_name == "get_course_info":
+        import re as _re
+        from difflib import SequenceMatcher
+
+        raw_query = str(args.get("query", "")).strip()
+        if not raw_query:
+            return {
+                "success": True,
+                "found": False,
+                "query": raw_query,
+                "message": "Course not found in Firestore courses collection.",
+            }
+
+        # Fold Arabic-Indic (٠-٩) and Extended/Persian (۰-۹) digits → ASCII
+        # so "مواضيع مختارة ٢" and "مواضيع مختارة 2" compare equal.
+        _DIGIT_FOLD = str.maketrans(
+            "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹",
+            "01234567890123456789",
+        )
+        # Arabic tashkeel/diacritics + tatweel (ـ) — stripped before matching.
+        _TASHKEEL_RE = _re.compile(r"[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]")
+        # Punctuation/symbols that should not affect name matching.
+        _PUNCT_RE = _re.compile(r"[\-\u2013\u2014_()\[\]{}،,.:;/\\|!؟?\"'`~]")
+
+        def _norm(s: str) -> str:
+            """Normalize Arabic/English text for tolerant matching:
+            fold Arabic-Indic digits, strip tashkeel/tatweel, unify alef/ya/
+            ta-marbuta variants, drop punctuation, collapse whitespace, lower."""
+            if not s:
+                return ""
+            s = str(s).translate(_DIGIT_FOLD)
+            s = _TASHKEEL_RE.sub("", s)
+            s = _re.sub(r"[أإآ]", "ا", s)
+            s = (s.replace("ؤ", "و")
+                   .replace("ئ", "ي")
+                   .replace("ى", "ي")
+                   .replace("ة", "ه"))
+            s = _PUNCT_RE.sub(" ", s)
+            s = _re.sub(r"\s+", " ", s)
+            return s.lower().strip()
+
+        def _code_key(s: str) -> str:
+            """Course-code comparison key: fold digits, drop spaces/dashes,
+            uppercase."""
+            s = str(s or "").translate(_DIGIT_FOLD)
+            return _re.sub(r"[\s\-_]", "", s).upper()
+
+        # Question/filler words stripped from the query before name scoring
+        # so "وش معلومات مادة مواضيع مختارة؟" scores against "مواضيع مختارة".
+        # Stored on the normalized form (ة→ه, إ/أ/آ→ا) to match _norm output.
+        _FILLER_WORDS = {
+            "وش", "ما", "ماهي", "هي", "هو", "معلومات", "معلومه", "ماده", "المعلومات",
+            "عن", "حق", "حول", "اخبرني", "اعطني", "ابي", "ابغى", "ايش", "ويش",
+            "كم", "متى", "وين", "هل", "تفاصيل", "بيانات", "ماهيه",
+        }
+
+        def _strip_fillers(normalized: str) -> str:
+            """Drop common question/filler tokens from an already-normalized
+            query, keeping the meaningful course-name tokens."""
+            toks = [t for t in normalized.split(" ") if t and t not in _FILLER_WORDS]
+            return " ".join(toks).strip()
+
+        def _ratio(a: str, b: str) -> float:
+            """Similarity in [0,1]; contains-match (either direction) is
+            treated as a strong signal so extra words in the sentence
+            (e.g. 'متى فاينل الحوسبة السحابية') don't sink a real match."""
+            if not a or not b:
+                return 0.0
+            if a in b or b in a:
+                return 0.92
+            return SequenceMatcher(None, a, b).ratio()
+
+        # Output-only HTML sanitizer. Some course fields (e.g. grading_policy)
+        # are stored with literal "<br>" tags; show a clean Arabic separator
+        # instead of raw HTML. This NEVER touches Firestore — it only cleans
+        # the dict copy returned to the chat. Arabic comma is used (not a
+        # newline) so values stay intact inside Markdown table cells.
+        _BR_RE = _re.compile(r"<\s*br\s*/?\s*>", _re.IGNORECASE)
+
+        def _clean_str(s: str) -> str:
+            cleaned = _BR_RE.sub("، ", str(s))
+            cleaned = _re.sub(r"(\s*،\s*)+", "، ", cleaned)  # collapse dup seps
+            cleaned = _re.sub(r"[ \t]+", " ", cleaned)
+            return cleaned.strip().strip("،").strip()
+
+        def _sanitize(obj):
+            """Recursively clean HTML line breaks from strings in a dict/list."""
+            if isinstance(obj, str):
+                return _clean_str(obj)
+            if isinstance(obj, dict):
+                return {k: _sanitize(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [_sanitize(v) for v in obj]
+            return obj
+
+        courses_col = db.collection("courses")
+
+        # ── Tier 1: direct document fetch by code (doc ID == course code) ──
+        # Try the raw query and a space/dash-stripped uppercase variant.
+        doc_candidates = []
+        seen_ids = set()
+        for cand in (raw_query, _code_key(raw_query)):
+            if cand and cand not in seen_ids:
+                seen_ids.add(cand)
+                doc_candidates.append(cand)
+
+        for cand in doc_candidates:
+            snap = courses_col.document(cand).get()
+            if snap.exists:
+                course = snap.to_dict() or {}
+                course.setdefault("course_id", snap.id)
+                return {"success": True, "found": True, "course": _sanitize(course)}
+
+        # ── Load the catalog once for the remaining tiers (~7 docs). ──
+        all_docs = list(courses_col.stream())
+        catalog = []
+        for d in all_docs:
+            data = d.to_dict() or {}
+            data.setdefault("course_id", d.id)
+            catalog.append((d.id, data))
+
+        qn = _norm(raw_query)
+        qcode = _code_key(raw_query)
+        q_clean = _strip_fillers(qn) or qn  # never let stripping empty it out
+
+        # ── Tier 2: exact code match via course_id field (case-insensitive) ──
+        for doc_id, data in catalog:
+            cid = data.get("course_id") or doc_id
+            if qcode and _code_key(cid) == qcode:
+                return {"success": True, "found": True, "course": _sanitize(data)}
+
+        # ── Tier 3: fuzzy name/code scoring ──
+        # Score each course against the cleaned query (and the raw normalized
+        # query as a fallback), taking the best of AR-name / EN-name / code.
+        # Thresholds:
+        #   • best >= 0.75  → return that single course.
+        #   • 0.55 .. 0.75  → ambiguous: return all candidates, ask to choose.
+        #   • < 0.55        → not found (no hallucination).
+        HIGH_THRESHOLD = 0.75
+        LOW_THRESHOLD = 0.55
+
+        scored = []
+        for doc_id, data in catalog:
+            name_ar = _norm(data.get("course_name_ar"))
+            name_en = _norm(data.get("course_name"))
+            cid_norm = _norm(data.get("course_id") or doc_id)
+            score = max(
+                _ratio(q_clean, name_ar),
+                _ratio(q_clean, name_en),
+                _ratio(qn, name_ar),
+                _ratio(qn, name_en),
+                _ratio(q_clean, cid_norm),
+            )
+            scored.append((round(score, 3), data))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+
+        def _match_entry(score, data):
+            return {
+                "course_id": data.get("course_id"),
+                "course_name": _clean_str(data.get("course_name") or ""),
+                "course_name_ar": _clean_str(data.get("course_name_ar") or ""),
+                "score": score,
+            }
+
+        if scored:
+            # High-confidence band. If several courses tie at >= HIGH, don't
+            # guess between them — surface the tied set for the user to pick.
+            high = [(s, d) for s, d in scored if s >= HIGH_THRESHOLD]
+            if len(high) == 1:
+                return {"success": True, "found": True, "course": _sanitize(high[0][1])}
+            if len(high) > 1:
+                return {
+                    "success": True,
+                    "found": True,
+                    "multiple": True,
+                    "matches": [_match_entry(s, d) for s, d in high],
+                }
+
+            # Ambiguous band — not confident enough to auto-pick. Return every
+            # plausible candidate (even a lone one) so the assistant confirms
+            # with the user instead of guessing.
+            mid = [(s, d) for s, d in scored if s >= LOW_THRESHOLD]
+            if mid:
+                return {
+                    "success": True,
+                    "found": True,
+                    "multiple": True,
+                    "matches": [_match_entry(s, d) for s, d in mid],
+                }
+
+        # ── No reliable match ──
+        return {
+            "success": True,
+            "found": False,
+            "query": raw_query,
+            "message": (
+                "Course not found in Firestore courses collection. "
+                "Ask the user to verify the name or provide the course code "
+                "(e.g. CS4510)."
+            ),
+        }
+
     # ── Unknown tool ──
     else:
         return {"success": False, "message": f"أداة غير معروفة: {tool_name}"}

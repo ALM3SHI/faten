@@ -36,6 +36,7 @@ import { PlanTimetable } from "@/components/plan/PlanTimetable";
 import { StudySessionDialog } from "@/components/plan/StudySessionDialog";
 import { RegisteredEventsDialog } from "@/components/plan/RegisteredEventsDialog";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { strategyLabelAr } from "@/components/profile/preferenceOptions";
 
 function safeMinutes(value: unknown): number {
   const n = Number(value);
@@ -412,7 +413,7 @@ export default function PlanPage() {
                   <h3 className="font-bold text-sm">إعداداتك المعتمدة</h3>
                 </div>
                 <PrefRow label="ذروة الطاقة" value={energyPeakLabel(preferences.energyPeak)} />
-                <PrefRow label="الاستراتيجية" value={strategyLabel(preferences.taskStrategy)} />
+                <PrefRow label="الاستراتيجية" value={strategyLabelAr(preferences.taskStrategy)} />
                 <PrefRow
                   label="بومودورو (مؤقت)"
                   value={`${preferences.pomodoroFocus} د`}
@@ -612,9 +613,6 @@ function PrefRow({ label, value, mono }: { label: string; value: string; mono?: 
 
 function energyPeakLabel(v: string): string {
   return { morning: "صباحي", afternoon: "مسائي", night: "ليلي" }[v] || v;
-}
-function strategyLabel(v: string): string {
-  return { eat_frog: "أكل الضفدع", snowball: "كرة الثلج" }[v] || v;
 }
 function dayOffLabel(v: string): string {
   return (

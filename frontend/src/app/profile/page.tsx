@@ -114,7 +114,7 @@ export default function ProfilePage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-black mb-2">الملف الشخصي</h1>
-            <p className="text-muted-foreground">قم بإعداد بياناتك للحصول على أفضل تجربة ذكاء اصطناعي.</p>
+            <p className="text-muted-foreground">قم بإعداد بياناتك للحصول على أفضل تجربة</p>
           </div>
           <div className="flex gap-3">
             <Button onClick={handleSave} className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">
