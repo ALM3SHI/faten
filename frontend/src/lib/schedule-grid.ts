@@ -71,6 +71,77 @@ export function cellKey(day: string, rowIdx: number): string {
   return `${day}:${rowIdx}`;
 }
 
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * Parse "YYYY-MM-DD" as a LOCAL calendar date (midnight local time). Using a
+ * local constructor avoids the UTC-shift bug of `new Date("YYYY-MM-DD")`.
+ * Returns null on malformed/out-of-range input.
+ */
+export function parseLocalDate(iso: string | undefined | null): Date | null {
+  if (!iso) return null;
+  const m = iso.trim().match(ISO_DATE_RE);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mon = Number(m[2]);
+  const d = Number(m[3]);
+  const date = new Date(y, mon - 1, d);
+  if (
+    date.getFullYear() !== y ||
+    date.getMonth() !== mon - 1 ||
+    date.getDate() !== d
+  ) {
+    return null;
+  }
+  return date;
+}
+
+/** Format a Date as local "YYYY-MM-DD". */
+export function toISODate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Arabic weekday name for a Date, aligned with PLAN_WEEK_DAYS (Sun→Sat). */
+export function weekdayNameFromDate(date: Date): string {
+  return PLAN_WEEK_DAYS[date.getDay()];
+}
+
+export interface WeekRange {
+  /** Local Date at 00:00 on Sunday. */
+  start: Date;
+  /** Local Date at 00:00 on the following Sunday (exclusive end). */
+  end: Date;
+}
+
+/** Sunday-anchored week containing `now` (local), matching PLAN_WEEK_DAYS. */
+export function currentWeekRange(now: Date = new Date()): WeekRange {
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  start.setDate(start.getDate() - start.getDay()); // rewind to Sunday
+  const end = new Date(start);
+  end.setDate(end.getDate() + 7); // exclusive next Sunday
+  return { start, end };
+}
+
+/** True when a "YYYY-MM-DD" date falls inside [range.start, range.end). */
+export function isDateInWeek(iso: string, range: WeekRange): boolean {
+  const d = parseLocalDate(iso);
+  if (!d) return false;
+  const t = d.getTime();
+  return t >= range.start.getTime() && t < range.end.getTime();
+}
+
+/** Whole-day signed difference (targetDate − today) in local days; null if invalid. */
+export function daysUntil(iso: string, now: Date = new Date()): number | null {
+  const d = parseLocalDate(iso);
+  if (!d) return null;
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  return Math.round((d.getTime() - today.getTime()) / MS_PER_DAY);
+}
+
 const TIME_RE = /^(\d{1,2}):(\d{2})$/;
 
 /** Parse "HH:MM" to minutes from midnight; null if invalid. */
@@ -144,6 +215,13 @@ export function rowSpanForDuration(startTime: string, durationMinutes: number): 
 export interface BuildGridMapOptions {
   days?: string[];
   rowCount?: number;
+  /**
+   * When provided, dated events (tasks with `targetDate`) only render if their
+   * date falls inside this week. Out-of-week events are skipped silently — they
+   * stay saved and are NOT counted as hidden/conflicting. Normal weekly tasks
+   * (no targetDate) are unaffected.
+   */
+  weekRange?: WeekRange;
 }
 
 /**
@@ -251,9 +329,16 @@ export function buildPlanTimetableGrid(
   const daySet = new Set(days);
 
   const gridMap = buildLectureGridMap(lectures, { days, rowCount });
+  const weekRange = options.weekRange;
   let hiddenStudyCount = 0;
 
   tasks.forEach((task, taskIndex) => {
+    // Dated events outside the displayed week are intentionally not shown
+    // (still saved, still in the registered-events list) — not a conflict.
+    if (task.targetDate && weekRange && !isDateInWeek(task.targetDate, weekRange)) {
+      return;
+    }
+
     const study = planTaskToStudyBlock(
       task,
       taskIndex,

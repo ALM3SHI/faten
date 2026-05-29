@@ -21,6 +21,14 @@ import { api } from "@/lib/api";
 
 export type PlanPriority = "high" | "medium" | "low";
 
+export type PlanTaskType =
+  | "study"
+  | "exam"
+  | "quiz"
+  | "assignment"
+  | "project"
+  | "other";
+
 export interface PlanTask {
   title: string;
   courseCode: string;
@@ -30,6 +38,14 @@ export interface PlanTask {
   suggestedTime: string;    // HH:MM 24-hour
   priority: PlanPriority;
   reason: string;
+  /**
+   * Optional calendar date ("YYYY-MM-DD", local) turning this task into a
+   * dated "registered event". When unset the task is a normal recurring
+   * weekly study session (legacy behavior, AI-generated tasks never set it).
+   */
+  targetDate?: string;
+  /** Optional event category — only meaningful for dated events. */
+  taskType?: PlanTaskType;
 }
 
 export interface PlanDailySummary {
@@ -86,7 +102,18 @@ interface GeneratePlanApiResponse {
 // unlikely. If they happen, both rows toggle together, which is
 // acceptable degradation.
 export function taskKey(t: PlanTask): string {
-  return `${t.suggestedDay}|${t.suggestedTime}|${t.courseCode}`;
+  // Dated events get the date folded into their identity so two events for
+  // the same course/time/weekday in different weeks don't collide. Normal
+  // weekly sessions keep the exact legacy 3-part key, so previously persisted
+  // `completed` entries (and AI tasks) stay byte-compatible.
+  return t.targetDate
+    ? `${t.suggestedDay}|${t.suggestedTime}|${t.courseCode}|${t.targetDate}`
+    : `${t.suggestedDay}|${t.suggestedTime}|${t.courseCode}`;
+}
+
+/** A task is a user-registered dated event when it carries a targetDate. */
+export function isDatedEvent(t: PlanTask): boolean {
+  return typeof t.targetDate === "string" && t.targetDate.trim().length > 0;
 }
 
 // ── Store ─────────────────────────────────────────────────────────────
@@ -151,6 +178,9 @@ export const usePlanStore = create<PlanState>()(
         const completedSet = new Set(cur.completed);
         const backlog =
           (cur.plan?.tasks ?? [])
+            // Dated events are user-owned, not AI review sessions — never feed
+            // them into the regeneration prompt.
+            .filter((t) => !isDatedEvent(t))
             .filter((t) => !completedSet.has(taskKey(t)))
             .map((t) => ({
               title: t.title,
@@ -174,13 +204,19 @@ export const usePlanStore = create<PlanState>()(
             throw new Error("استجابة غير متوقعة من الخادم.");
           }
 
+          // Preserve manually registered dated events across regeneration —
+          // the AI replaces only its own review sessions, not user events.
+          const datedEvents = (cur.plan?.tasks ?? []).filter(isDatedEvent);
+          const preservedKeys = new Set(datedEvents.map(taskKey));
+          const mergedTasks = [...data.plan.tasks, ...datedEvents];
+
           set({
-            plan: data.plan,
+            plan: { ...data.plan, tasks: mergedTasks },
             model: data.model,
             generatedAt: data.generatedAt,
-            // Fresh plan → reset completions; the old task keys may
-            // not match the new ones anyway.
-            completed: [],
+            // Reset AI-task completions (their keys change anyway) but keep
+            // completion state for any preserved dated events.
+            completed: cur.completed.filter((k) => preservedKeys.has(k)),
             isGenerating: false,
           });
         } catch (err) {

@@ -130,6 +130,17 @@ export function validatePlanTaskPlacement(
     if (excludeTaskKey && otherKey === excludeTaskKey) continue;
     if (other.suggestedDay?.trim() !== day) continue;
 
+    // Two dated events on the same weekday but different calendar dates occupy
+    // different weeks → never conflict. (A dated event vs a weekly recurring
+    // session still conflicts, since the weekly session recurs every week.)
+    if (
+      task.targetDate &&
+      other.targetDate &&
+      task.targetDate !== other.targetDate
+    ) {
+      continue;
+    }
+
     const otherStart = other.suggestedTime?.trim();
     if (!otherStart) continue;
     const otherEnd = endTimeFromStartAndDuration(

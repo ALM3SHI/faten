@@ -1,8 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { WeeklyScheduleGrid } from "@/components/schedule/WeeklyScheduleGrid";
-import { buildPlanTimetableGrid, type StudyGridBlock } from "@/lib/schedule-grid";
+import {
+  buildPlanTimetableGrid,
+  currentWeekRange,
+  weekdayNameFromDate,
+  type StudyGridBlock,
+  type WeekRange,
+} from "@/lib/schedule-grid";
 import type { PlanTask } from "@/store/planStore";
 import { useScheduleStore } from "@/store/scheduleStore";
 
@@ -28,9 +34,23 @@ export function PlanTimetable({
 }: PlanTimetableProps) {
   const schedule = useScheduleStore((s) => s.schedule);
 
+  // Compute "now" only after mount so SSR and the first client render agree
+  // (no hydration mismatch). Until then weekRange is undefined → dated events
+  // are not filtered, matching the server render.
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+
+  const weekRange: WeekRange | undefined = useMemo(
+    () => (now ? currentWeekRange(now) : undefined),
+    [now],
+  );
+  const todayColumn = now ? weekdayNameFromDate(now) : null;
+
   const { gridMap, hiddenStudyCount } = useMemo(
-    () => buildPlanTimetableGrid(schedule, tasks, completed),
-    [schedule, tasks, completed],
+    () => buildPlanTimetableGrid(schedule, tasks, completed, { weekRange }),
+    [schedule, tasks, completed, weekRange],
   );
 
   const hasPlanTasks = tasks.length > 0;
@@ -50,6 +70,7 @@ export function PlanTimetable({
       interactiveStudy={interactiveStudy && hasPlanTasks}
       onEditStudyBlock={onEditStudyBlock}
       onDeleteStudyBlock={onDeleteStudyBlock}
+      todayColumn={todayColumn}
     />
   );
 }

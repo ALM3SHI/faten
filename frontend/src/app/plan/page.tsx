@@ -17,6 +17,7 @@ import {
   GraduationCap,
   Coffee,
   Plus,
+  CalendarClock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/lib/toast";
@@ -33,6 +34,7 @@ import {
 } from "@/store/planStore";
 import { PlanTimetable } from "@/components/plan/PlanTimetable";
 import { StudySessionDialog } from "@/components/plan/StudySessionDialog";
+import { RegisteredEventsDialog } from "@/components/plan/RegisteredEventsDialog";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 
 function safeMinutes(value: unknown): number {
@@ -72,6 +74,7 @@ export default function PlanPage() {
   const [sessionDialogMode, setSessionDialogMode] = useState<"add" | "edit">("add");
   const [editingTask, setEditingTask] = useState<PlanTask | null>(null);
   const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [eventsDialogOpen, setEventsDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ key: string; title: string } | null>(
     null,
   );
@@ -146,6 +149,23 @@ export default function PlanPage() {
     setEditingKey(block.taskKey);
     setSessionDialogOpen(true);
   };
+
+  // Edit/delete entry points used by the registered-events dialog (it holds
+  // the PlanTask directly rather than a grid block).
+  const openEditTask = (task: PlanTask) => {
+    setEventsDialogOpen(false);
+    setSessionDialogMode("edit");
+    setEditingTask(task);
+    setEditingKey(taskKey(task));
+    setSessionDialogOpen(true);
+  };
+
+  const openDeleteTask = (task: PlanTask) => {
+    setEventsDialogOpen(false);
+    setDeleteTarget({ key: taskKey(task), title: task.title });
+  };
+
+  const datedEventCount = existingTasks.filter((t) => !!t.targetDate).length;
 
   const openDeleteSession = (block: StudyGridBlock) => {
     const task = existingTasks[block.taskIndex];
@@ -315,15 +335,31 @@ export default function PlanPage() {
                 <p className="text-xs text-muted-foreground">
                   أضف أو عدّل جلسات المذاكرة يدوياً على الجدول
                 </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={openAddSession}
-                  className="rounded-xl gap-2.5 h-11 px-5 text-base font-bold border-violet-500/40 hover:bg-violet-500/15 shadow-sm"
-                >
-                  <Plus className="w-5 h-5" />
-                  إضافة جلسة
-                </Button>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setEventsDialogOpen(true)}
+                    className="rounded-xl gap-2.5 h-11 px-5 text-base font-bold border-uqu-accent/40 hover:bg-uqu-accent/15 shadow-sm"
+                  >
+                    <CalendarClock className="w-5 h-5" />
+                    الأحداث المسجلة
+                    {datedEventCount > 0 && (
+                      <span className="min-w-5 h-5 px-1.5 rounded-full bg-uqu-accent/25 text-uqu-accent text-xs font-mono inline-flex items-center justify-center">
+                        {datedEventCount}
+                      </span>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={openAddSession}
+                    className="rounded-xl gap-2.5 h-11 px-5 text-base font-bold border-violet-500/40 hover:bg-violet-500/15 shadow-sm"
+                  >
+                    <Plus className="w-5 h-5" />
+                    إضافة جلسة
+                  </Button>
+                </div>
               </div>
               <PlanTimetable
                 tasks={plan?.tasks}
@@ -396,6 +432,14 @@ export default function PlanPage() {
         initialTask={editingTask ?? undefined}
         courses={currentCourses}
         onSubmit={handleSessionSubmit}
+      />
+
+      <RegisteredEventsDialog
+        open={eventsDialogOpen}
+        onOpenChange={setEventsDialogOpen}
+        tasks={existingTasks}
+        onEdit={openEditTask}
+        onDelete={openDeleteTask}
       />
 
       <ConfirmDialog

@@ -59,6 +59,8 @@ export interface WeeklyScheduleGridProps {
   interactiveStudy?: boolean;
   onEditStudyBlock?: (study: StudyGridBlock) => void;
   onDeleteStudyBlock?: (study: StudyGridBlock) => void;
+  /** Arabic weekday name of "today" — that column gets a subtle highlight. */
+  todayColumn?: string | null;
   className?: string;
 }
 
@@ -75,6 +77,7 @@ export function WeeklyScheduleGrid({
   interactiveStudy = false,
   onEditStudyBlock,
   onDeleteStudyBlock,
+  todayColumn = null,
   className,
 }: WeeklyScheduleGridProps) {
   const hasAnyBlock = [...gridMap.values()].some((c) => c.kind === "head");
@@ -117,9 +120,18 @@ export function WeeklyScheduleGrid({
                 {days.map((day) => (
                   <th
                     key={day}
-                    className="bg-card border border-foreground/10 p-2.5 text-sm font-bold"
+                    className={cn(
+                      "bg-card border border-foreground/10 p-2.5 text-sm font-bold",
+                      day === todayColumn &&
+                        "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/40",
+                    )}
                   >
                     {day}
+                    {day === todayColumn && (
+                      <span className="mr-1 text-[10px] font-medium text-uqu-accent/80">
+                        • اليوم
+                      </span>
+                    )}
                   </th>
                 ))}
               </tr>
@@ -131,6 +143,7 @@ export function WeeklyScheduleGrid({
                     {time.start}
                   </td>
                   {days.map((day) => {
+                    const isToday = day === todayColumn;
                     const cell: CellState =
                       gridMap.get(cellKey(day, rowIdx)) ?? { kind: "empty" };
                     if (cell.kind === "covered") return null;
@@ -162,6 +175,7 @@ export function WeeklyScheduleGrid({
                       <EmptyGridCell
                         key={`${day}-${rowIdx}`}
                         rowHeightPx={rowHeightPx}
+                        isToday={isToday}
                       />
                     );
                   })}
@@ -190,10 +204,19 @@ function studyCourseDisplayName(study: StudyGridBlock): string | null {
   return name || null;
 }
 
-function EmptyGridCell({ rowHeightPx }: { rowHeightPx: number }) {
+function EmptyGridCell({
+  rowHeightPx,
+  isToday,
+}: {
+  rowHeightPx: number;
+  isToday?: boolean;
+}) {
   return (
     <td
-      className="border border-foreground/10 p-1.5 align-top bg-transparent"
+      className={cn(
+        "border border-foreground/10 p-1.5 align-top",
+        isToday ? "bg-uqu-accent/[0.04]" : "bg-transparent",
+      )}
       style={{ height: rowHeightPx, minHeight: rowHeightPx }}
     >
       <div className="w-full h-full" style={{ minHeight: Math.max(44, rowHeightPx - 8) }} />
