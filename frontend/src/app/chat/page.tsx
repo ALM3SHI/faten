@@ -1,8 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Sparkles, User as UserIcon, ChevronDown, Timer, Calculator, X, History, Settings, MapPin, LayoutDashboard, CalendarDays, Trash2, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -14,11 +13,6 @@ import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AIService, Message as AIMessage } from "@/lib/ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { ConnectedPomodoro } from "@/components/connected-pomodoro";
-import { ConnectedGPA } from "@/components/connected-gpa";
-import { ConnectedMap } from "@/components/connected-map";
-import { ConnectedDashboard } from "@/components/connected-dashboard";
-import { ConnectedPlan } from "@/components/connected-plan";
 import { ChatInput } from "@/components/chat-input";
 import { ChatHistoryDrawer } from "@/components/chat-history-drawer";
 import {
@@ -26,7 +20,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useWorkspaceStore, ChatMessage as Message } from "@/store/workspaceStore";
 import { useChatHistoryStore } from "@/store/chatHistoryStore";
@@ -40,62 +33,6 @@ export default function ChatPage() {
     </Suspense>
   );
 }
-
-function CollapsibleWidget({ title, icon: Icon, onClose, onDragStart, onDragEnd, stretch = false, children }: {
-  title: string, icon: any, onClose: () => void,
-  onDragStart: (e: React.DragEvent) => void,
-  onDragEnd: (e: React.DragEvent) => void,
-  stretch?: boolean,
-  children: React.ReactNode
-}) {
-  const [isOpen, setIsOpen] = useState(true);
-  return (
-    <div className={cn(
-      "bg-card/80 backdrop-blur-xl border border-foreground/10 rounded-[32px] overflow-hidden shadow-2xl flex flex-col w-full",
-      stretch && isOpen ? "flex-1 min-h-0" : "h-fit shrink-0"
-    )}>
-      <div
-        draggable
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        className={cn("flex items-center justify-between p-5 cursor-grab active:cursor-grabbing hover:bg-foreground/5 transition-colors shrink-0", isOpen ? "border-b border-foreground/10" : "")}
-      >
-        <div className="flex items-center gap-3 pointer-events-none">
-          <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center">
-            <Icon className="w-4 h-4 text-[#0066cc]" />
-          </div>
-          <span className="font-bold text-foreground text-[15px]">{title}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onClose(); }} className="h-8 w-8 rounded-full hover:bg-foreground/5 text-muted hover:text-red-400 shrink-0 p-0 transition-colors">
-            <X className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="h-8 w-8 rounded-full hover:bg-foreground/5 text-muted hover:text-foreground shrink-0 p-0 transition-colors">
-            <ChevronDown className={cn("w-5 h-5 transition-transform", isOpen ? "rotate-180" : "rotate-0")} />
-          </Button>
-        </div>
-      </div>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            key="content"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className={cn("overflow-hidden", stretch ? "flex-1 flex flex-col min-h-0" : "")}
-          >
-            <div className={cn("p-4", stretch ? "flex-1 flex flex-col min-h-0" : "")}>
-              {children}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-export type Density = "single" | "compact";
 
 const NEW_CHAT_WELCOME =
   "أهلاً بك من جديد! بدأنا محادثة جديدة. كيف يمكنني مساعدتك؟";
@@ -186,89 +123,6 @@ function NavigationCTA({ actions }: { actions: SuggestedNavigation[] }) {
   );
 }
 
-function DropZone({ zoneId, tools, isDragging, removeTool, handleDragStart, handleDragEnd, handleDrop }: {
-  zoneId: 'left' | 'right',
-  tools: string[],
-  isDragging: boolean,
-  removeTool: (t: string, z: 'left' | 'right') => void,
-  handleDragStart: (e: React.DragEvent, t: string, z: 'left' | 'right') => void,
-  handleDragEnd: (e: React.DragEvent) => void,
-  handleDrop: (e: React.DragEvent, z: 'left' | 'right') => void
-}) {
-  // Strict 2-state density. Cap is enforced in the store (MAX_WIDGETS_PER_ZONE = 2)
-  // so we never see more than two tools in a single column.
-  const density: Density = tools.length === 1 ? "single" : "compact";
-  const showHitbox = isDragging && tools.length === 0;
-
-  return (
-    <motion.div
-      layout
-      initial={false}
-      animate={{
-        width: tools.length > 0 || showHitbox ? 380 : 0,
-        opacity: tools.length > 0 || showHitbox ? 1 : 0,
-      }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className={cn(
-        // Strict containment — no scrollbars, ever. Auto-Spill in the Zustand store
-        // guarantees a column can never receive a third widget, so overflow-hidden
-        // never needs to clip anything in practice.
-        "h-full shrink-0 flex flex-col gap-4 py-4 transition-colors overflow-hidden",
-        tools.length > 0
-          ? "bg-transparent border-none"
-          : showHitbox
-            ? "border-2 border-dashed border-foreground/10 bg-foreground/5 rounded-3xl"
-            : "pointer-events-none"
-      )}
-      onDragEnter={(e) => e.preventDefault()}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => handleDrop(e, zoneId)}
-    >
-      <AnimatePresence mode="popLayout">
-        {tools.map((tool) => {
-          const isGpa = tool === "gpa";
-          return (
-            <motion.div
-              key={tool}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className={isGpa ? "flex-1 flex flex-col min-h-0 w-full" : "w-full h-fit shrink-0"}
-            >
-              {tool === "pomodoro" && (
-                <CollapsibleWidget title="مؤقت بومودورو" icon={Timer} onClose={() => removeTool("pomodoro", zoneId)} onDragStart={(e) => handleDragStart(e, "pomodoro", zoneId)} onDragEnd={handleDragEnd}>
-                  <ConnectedPomodoro density={density} />
-                </CollapsibleWidget>
-              )}
-              {tool === "gpa" && (
-                <CollapsibleWidget title="حاسبة المعدل" icon={Calculator} onClose={() => removeTool("gpa", zoneId)} onDragStart={(e) => handleDragStart(e, "gpa", zoneId)} onDragEnd={handleDragEnd} stretch>
-                  <ConnectedGPA density={density} />
-                </CollapsibleWidget>
-              )}
-              {tool === "map" && (
-                <CollapsibleWidget title="خريطة الحرم" icon={MapPin} onClose={() => removeTool("map", zoneId)} onDragStart={(e) => handleDragStart(e, "map", zoneId)} onDragEnd={handleDragEnd}>
-                  <ConnectedMap density={density} />
-                </CollapsibleWidget>
-              )}
-              {tool === "dashboard" && (
-                <CollapsibleWidget title="لوحة البيانات" icon={LayoutDashboard} onClose={() => removeTool("dashboard", zoneId)} onDragStart={(e) => handleDragStart(e, "dashboard", zoneId)} onDragEnd={handleDragEnd}>
-                  <ConnectedDashboard density={density} />
-                </CollapsibleWidget>
-              )}
-              {tool === "plan" && (
-                <CollapsibleWidget title="الخطة الدراسية" icon={CalendarDays} onClose={() => removeTool("plan", zoneId)} onDragStart={(e) => handleDragStart(e, "plan", zoneId)} onDragEnd={handleDragEnd}>
-                  <ConnectedPlan density={density} />
-                </CollapsibleWidget>
-              )}
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
 function ChatPageContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("query");
@@ -279,13 +133,6 @@ function ChatPageContent() {
     setChatInputDraft: setInput,
     chatMessages: messages,
     setChatMessages: setMessages,
-    leftTools,
-    rightTools,
-    addTool,
-    removeTool,
-    moveTool,
-    isDragging, setIsDragging,
-    isWorkspaceEnabled, setIsWorkspaceEnabled
   } = useWorkspaceStore();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -352,27 +199,6 @@ function ChatPageContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQuery, hasInitialized]);
-
-  const handleDragStart = (e: React.DragEvent, tool: string, sourceZone: 'left' | 'right') => {
-    e.dataTransfer.setData("toolId", tool);
-    e.dataTransfer.setData("sourceZone", sourceZone);
-    setIsDragging(true);
-  };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent, targetZone: 'left' | 'right') => {
-    e.preventDefault();
-    setIsDragging(false);
-    const toolId = e.dataTransfer.getData("toolId");
-    const sourceZone = e.dataTransfer.getData("sourceZone") as 'left' | 'right';
-
-    if (!toolId || sourceZone === targetZone) return;
-
-    moveTool(toolId, sourceZone, targetZone);
-  };
 
   const handleSend = async (overrideInput?: string) => {
     const textToSend = typeof overrideInput === "string" ? overrideInput : input;
@@ -445,97 +271,17 @@ function ChatPageContent() {
     }
   };
 
-  const handleQuickAction = async (action: string) => {
-    if (action === "pomodoro") {
-      handleSend("أريد بدء جلسة بومودورو للتركيز على المذاكرة");
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: "bot",
-          content: "تم إعداد مؤقت بومودورو في مساحة العمل. ركز جيداً! 🎯",
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        addTool("pomodoro", "left");
-      }, 1000);
-    } else if (action === "gpa") {
-      handleSend("أريد حساب معدلي المتوقع لهذا الفصل");
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: "bot",
-          content: "تم فتح حاسبة المعدل التفاعلية في مساحة العمل. أدخل درجاتك المتوقعة! 📊",
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        addTool("gpa", "left");
-      }, 1000);
-    } else if (action === "map") {
-      handleSend("أريد رؤية خريطة القاعات في الحرم الجامعي");
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: "bot",
-          content: "تم فتح خريطة القاعات. يمكنك البحث عن أي قاعة أو معمل وتحديد وجهتك! 🗺️",
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        addTool("map", "left");
-      }, 1000);
-    } else if (action === "dashboard") {
-      handleSend("اعرض لوحة البيانات الأكاديمية");
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: "bot",
-          content: "تم فتح لوحة البيانات. هذه نظرة سريعة على معدلك وجلسات تركيزك والمحاضرة القادمة. 🏠",
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        addTool("dashboard", "left");
-      }, 1000);
-    } else if (action === "plan") {
-      handleSend("اعرض خطتي الدراسية لهذا الفصل");
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          role: "bot",
-          content: "تم فتح خطتك الدراسية. هذه نسبة الإنجاز في كل مقرر. 📅",
-          timestamp: new Date()
-        }]);
-        setIsLoading(false);
-        addTool("plan", "left");
-      }, 1000);
-    }
-  };
-
-  const noToolsActive = leftTools.length === 0 && rightTools.length === 0;
-  // Hide both drop zones entirely when the workspace is disabled. The chat
-  // center then takes its full max-width treatment as if no tools were open.
-  const workspaceVisible = isWorkspaceEnabled && (!noToolsActive || isDragging);
-
   return (
     <div className="h-screen flex flex-col bg-background text-foreground font-sans overflow-hidden" dir="rtl">
       <Navbar />
 
       <main className="flex-1 flex overflow-hidden w-full p-4 pt-20 gap-4">
 
-        {/* RIGHT DROP ZONE (Visual Right, DOM Index 0) */}
-        {isWorkspaceEnabled && (
-          <DropZone
-            zoneId="right"
-            tools={rightTools}
-            isDragging={isDragging}
-            removeTool={removeTool}
-            handleDragStart={handleDragStart}
-            handleDragEnd={handleDragEnd}
-            handleDrop={handleDrop}
-          />
-        )}
-
         {/* CHAT CENTER */}
         <motion.div
           layout
           initial={false}
-          className={cn(
-            "h-full flex flex-col relative transition-all duration-500",
-            workspaceVisible ? "flex-1 min-w-[300px]" : "w-full max-w-5xl mx-auto"
-          )}
+          className="h-full flex flex-col relative transition-all duration-500 w-full max-w-5xl mx-auto"
         >
           {/* Header — bot-identity block removed (Task 1). Minimal control bar
               keeps History + Settings accessible without burning vertical space. */}
@@ -561,16 +307,6 @@ function ChatPageContent() {
                 align="end"
                 className="min-w-[220px] bg-card/95 backdrop-blur-xl border border-foreground/10 text-foreground"
               >
-                <DropdownMenuItem
-                  onClick={() => setIsWorkspaceEnabled(!isWorkspaceEnabled)}
-                  className="gap-2 text-[13px] focus:bg-foreground/5 focus:text-foreground"
-                >
-                  {isWorkspaceEnabled
-                    ? <EyeOff className="w-4 h-4 text-muted" />
-                    : <Eye className="w-4 h-4 text-muted" />}
-                  <span>{isWorkspaceEnabled ? "إخفاء مساحات العمل" : "إظهار مساحات العمل"}</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-foreground/5" />
                 <DropdownMenuItem
                   onClick={() => setClearHistoryOpen(true)}
                   className="gap-2 text-[13px] text-red-500 focus:bg-red-500/10 focus:text-red-400"
@@ -677,56 +413,12 @@ function ChatPageContent() {
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0066cc] to-cyan-500 flex items-center justify-center shrink-0 animate-pulse mt-0.5">
                     <Sparkles className="w-4 h-4 text-foreground" />
                   </div>
-                  {/* Smart, stage-aware loading pill — rotates through
-                      "reading context / analyzing / planning / writing"
-                      so the user gets feedback during long tool calls
-                      instead of staring at three dots. */}
+                  {/* Loading pill — three-dot typing indicator only, no
+                      textual status copy. */}
                   <SmartLoadingIndicator />
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          {/* Quick Action Chips — single-row horizontal scroller. Dropping
-              `max-w-xl` + centering lets the row fill the available width,
-              and `justify-start` anchors the first chip at the visual start
-              (right edge in RTL). The trailing <div> after the 5th chip is
-              an RTL safe-padding spacer so the last item ("الخطة الدراسية")
-              never gets clipped by the viewport edge during the scroll. */}
-          <div className="absolute bottom-[88px] left-1/2 -translate-x-1/2 z-20 flex w-full overflow-x-auto whitespace-nowrap py-2 px-1 items-center justify-start gap-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <button
-              onClick={() => handleQuickAction("pomodoro")}
-              className="shrink-0 px-4 py-2 rounded-full bg-card/90 backdrop-blur-md border border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10 text-foreground text-xs font-bold transition-all active:scale-95 flex items-center gap-2 shadow-xl"
-            >
-              <span>⏱️</span> تشغيل بومودورو
-            </button>
-            <button
-              onClick={() => handleQuickAction("gpa")}
-              className="shrink-0 px-4 py-2 rounded-full bg-card/90 backdrop-blur-md border border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10 text-foreground text-xs font-bold transition-all active:scale-95 flex items-center gap-2 shadow-xl"
-            >
-              <span>📊</span> حساب المعدل
-            </button>
-            <button
-              onClick={() => handleQuickAction("map")}
-              className="shrink-0 px-4 py-2 rounded-full bg-card/90 backdrop-blur-md border border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10 text-foreground text-xs font-bold transition-all active:scale-95 flex items-center gap-2 shadow-xl"
-            >
-              <span>🗺️</span> خريطة القاعات
-            </button>
-            <button
-              onClick={() => handleQuickAction("dashboard")}
-              className="shrink-0 px-4 py-2 rounded-full bg-card/90 backdrop-blur-md border border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10 text-foreground text-xs font-bold transition-all active:scale-95 flex items-center gap-2 shadow-xl"
-            >
-              <span>🏠</span> لوحة البيانات
-            </button>
-            <button
-              onClick={() => handleQuickAction("plan")}
-              className="shrink-0 px-4 py-2 rounded-full bg-card/90 backdrop-blur-md border border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10 text-foreground text-xs font-bold transition-all active:scale-95 flex items-center gap-2 shadow-xl"
-            >
-              <span>📅</span> الخطة الدراسية
-            </button>
-            {/* RTL safe-padding spacer — prevents the last chip from being
-                clipped by the viewport's left edge during scroll. */}
-            <div className="shrink-0 w-2" aria-hidden />
           </div>
 
           {/* Floating Input Pill */}
@@ -739,19 +431,6 @@ function ChatPageContent() {
             />
           </div>
         </motion.div>
-
-        {/* LEFT DROP ZONE (Visual Left, DOM Index 2) */}
-        {isWorkspaceEnabled && (
-          <DropZone
-            zoneId="left"
-            tools={leftTools}
-            isDragging={isDragging}
-            removeTool={removeTool}
-            handleDragStart={handleDragStart}
-            handleDragEnd={handleDragEnd}
-            handleDrop={handleDrop}
-          />
-        )}
 
       </main>
 

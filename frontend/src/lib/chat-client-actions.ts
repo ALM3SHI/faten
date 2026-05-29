@@ -17,7 +17,6 @@
 import { useProfileStore } from "@/store/profileStore";
 import { usePlanStore, taskKey, type PlanTask, type PlanPriority } from "@/store/planStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
-import { useWorkspaceStore } from "@/store/workspaceStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 
 export type ClientActionType =
@@ -133,12 +132,16 @@ function dispatchUpdatePreferences(payload: Record<string, unknown>): boolean {
 }
 
 function dispatchOpenTool(payload: Record<string, unknown>): boolean {
+  // ⚠️ Intentional no-op. The chat workspace side-panels (Pomodoro / GPA /
+  // map / dashboard / plan widgets) were removed from the chat UI, so there
+  // is nothing to mount. We keep the OPEN_TOOL case + tool whitelist so the
+  // dispatcher stays in sync with the backend's ALLOWED_CLIENT_ACTION_TYPES,
+  // but we no longer mutate the workspace store. Users reach those features
+  // via the real pages (/pomodoro, /gpa, /locations, /dashboard, /plan),
+  // including the NAVIGATE CTA buttons rendered under bot messages.
   const tool = asString(payload.tool);
   if (!tool || !VALID_TOOLS.has(tool)) return false;
-  const zoneRaw = asString(payload.zone);
-  const zone: "left" | "right" = zoneRaw === "right" ? "right" : "left";
-  useWorkspaceStore.getState().addTool(tool, zone);
-  return true;
+  return false;
 }
 
 function dispatchNavigate(payload: Record<string, unknown>): boolean {
@@ -164,13 +167,23 @@ export function isSuggestedNavigation(action: ClientAction): boolean {
 }
 
 function dispatchStartPomodoro(payload: Record<string, unknown>): boolean {
-  const focusMinutes = clamp(asNumber(payload.focusMinutes) ?? 25, 5, 120);
+  // Honor the exact duration the student asked for. Bounds match the
+  // /pomodoro page's own editor (MIN_DURATION_MINUTES=1, MAX=180) so a
+  // request like "دقيقتين" (2 min) is NOT silently bumped up — the old
+  // floor of 5 was the cause of "2 min → 5 min". Falls back to the
+  // student's saved focus length (profile preferences) only when no
+  // duration is provided in the action.
+  const profileFocus = useProfileStore.getState().preferences.pomodoroFocus;
+  const requestedMinutes =
+    asNumber(payload.focusMinutes) ?? (profileFocus > 0 ? profileFocus : 25);
+  const focusMinutes = clamp(requestedMinutes, 1, 180);
   const taskTitle = asString(payload.taskTitle);
   const pomodoro = usePomodoroStore.getState();
   pomodoro.setMode("focus");
   pomodoro.setActiveTask({
     title: taskTitle ?? "جلسة تركيز",
     courseCode: asString(payload.courseCode) ?? "",
+    courseName: asString(payload.courseName),
     durationMinutes: focusMinutes,
     planTaskKey: `chat-action-${Date.now()}`,
   });
