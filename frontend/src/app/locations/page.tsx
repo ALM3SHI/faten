@@ -134,6 +134,17 @@ function LocationsContent() {
     setMode("browse");
   };
 
+  // ── Coordinates logging (for adding new entrance) ──────────────────
+  const handleMapClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    console.log(
+      `📍 إحداثيات المدخل: X: ${x.toFixed(2)}, Y: ${y.toFixed(2)}`
+    );
+  };
+
   // ── Navigation flow ──────────────────────────────────────────────
   const requestNavigation = () => {
     if (!selectedRoom) return;
@@ -358,6 +369,7 @@ function LocationsContent() {
             routeStart={navStartPoint}
             routeEnd={navEndPoint}
             onRoomClick={selectRoom}
+            onMapClick={handleMapClick}
           />
 
           {/* Status chip */}

@@ -127,7 +127,6 @@ function _resolveDefaultEntrance(): string | null {
 }
 
 export const DEFAULT_START_ROOM_ID: string | null = _resolveDefaultEntrance();
-
 // ── Sidebar grouping ──────────────────────────────────────────────────
 
 /**

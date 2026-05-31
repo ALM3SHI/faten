@@ -1,6 +1,36 @@
 {
   "mapData": [
     {
+      "id": "Room_MainEntrance",
+      "label": "المدخل الرئيسي",
+      "type": "other",
+      "color": "#10b981",
+      "shapeType": "polygon",
+      "points": "93.71,49.06 98.71,49.06 98.71,51.06 93.71,51.06",
+      "doors": [
+        {
+          "id": "door_1",
+          "x": 94.71,
+          "y": 50.06
+        }
+      ]
+    },
+    {
+      "id": "Room_SideEntrance",
+      "label": "المدخل الجانبي",
+      "type": "other",
+      "color": "#06b6d4",
+      "shapeType": "polygon",
+      "points": "79.23,72.19 81.23,72.19 81.23,74.19 79.23,74.19",
+      "doors": [
+        {
+          "id": "door_1",
+          "x": 80.23,
+          "y": 73.19
+        }
+      ]
+    },
+    {
       "id": "Room_1",
       "label": "قاعة 1",
       "type": "lab",
@@ -1104,7 +1134,7 @@
     },
     {
       "id": "Room_72",
-      "label": "قاعة 72",
+      "label": "قاعة 12-0.015",
       "type": "classroom",
       "color": "#38bdf8",
       "shapeType": "polygon",
@@ -1134,7 +1164,7 @@
     },
     {
       "id": "Room_74",
-      "label": "قاعة 74",
+      "label": "قاعة 12-1.016",
       "type": "classroom",
       "color": "#38bdf8",
       "shapeType": "polygon",
@@ -1149,7 +1179,7 @@
     },
     {
       "id": "Room_75",
-      "label": "قاعة 75",
+      "label": "قاعة 12-0.017",
       "type": "classroom",
       "color": "#38bdf8",
       "shapeType": "polygon",
@@ -1432,13 +1462,25 @@
         "y": 21.05,
         "type": "waypoint",
         "corridorId": "CL_MAIN"
+      
       },
       "n_113": {
         "x": 89.62,
         "y": 42.84,
         "type": "waypoint",
         "corridorId": "CL_MAIN"
-      },
+      },"n_main_door": {
+  "x": 94.71,
+  "y": 50.06,
+  "type": "waypoint",
+  "corridorId": "CL_MAIN"
+},
+"n_side_door": {
+  "x": 80.23,
+  "y": 73.19,
+  "type": "waypoint",
+  "corridorId": "CL_MAIN"
+},
       "n_114": {
         "x": 89.59,
         "y": 23.11,

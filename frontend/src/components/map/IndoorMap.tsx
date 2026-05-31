@@ -65,6 +65,7 @@ export interface IndoorMapProps {
   routeStart?: { x: number; y: number } | null;
   routeEnd?: { x: number; y: number } | null;
   onRoomClick?: (room: Room) => void;
+  onMapClick?: (e: React.MouseEvent<SVGSVGElement>) => void;
   /** Override the default `/base-map.jpg` if needed. */
   baseImageSrc?: string;
   className?: string;
@@ -89,6 +90,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
     routeStart,
     routeEnd,
     onRoomClick,
+    onMapClick,
     baseImageSrc = "/base-map.jpg",
     className,
   },
@@ -408,6 +410,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="xMidYMid meet"
+          onClick={onMapClick}
           style={{
             position: "absolute",
             top: 0,
@@ -432,6 +435,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
           </defs>
 
           {/* Rooms layer — corridors are non-interactive per legacy. */}
+          {/* Rooms layer — corridors are non-interactive per legacy. */}
           <g>
             {MAP_DATA.map((room) => {
               const corridor = !isSelectableRoom(room);
@@ -446,7 +450,9 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
                   />
                 );
               }
+              
               const selected = room.id === selectedRoomId;
+
               return (
                 <polygon
                   key={room.id}
