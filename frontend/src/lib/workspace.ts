@@ -5,7 +5,7 @@
  */
 
 import { api } from "@/lib/api";
-import { setStoreSyncEnabled } from "@/lib/firebase/sync";
+import { setStoreSyncEnabled, clearPendingPushTimers } from "@/lib/firebase/sync";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
@@ -346,6 +346,7 @@ export async function hydrateWorkspaceFromApi(): Promise<boolean> {
     console.warn("[workspace] API hydrate failed, will use Firestore fallback:", err);
     return false;
   } finally {
+    clearPendingPushTimers();
     setStoreSyncEnabled(true);
   }
 }
@@ -368,6 +369,7 @@ export async function refreshWorkspaceAfterChat(
     console.warn("[workspace] post-chat refresh failed:", err);
     return false;
   } finally {
+    clearPendingPushTimers();
     setStoreSyncEnabled(true);
   }
 }

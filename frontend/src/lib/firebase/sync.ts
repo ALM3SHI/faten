@@ -332,6 +332,10 @@ export async function hydrateUserWorkspace(uid: string): Promise<void> {
       });
     }
   } finally {
+    // Kill any debounced writes that were scheduled by subscribers
+    // during hydration — hydration is a read, so these carry identical
+    // data and would produce spurious updatedAt writes.
+    clearPendingPushTimers();
     // Hand sync back on regardless of partial failure — better to
     // resume pushing than to leave the user in a write-paused state.
     setStoreSyncEnabled(true);
@@ -526,12 +530,18 @@ export function attachStoreSync(): void {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Sign-out cleanup — pause sync and flush pending debounced pushes
-// so a queued write doesn't fire under the next user's UID.
+// Timer cleanup — cancel pending debounced pushes so they can't
+// fire after sync is re-enabled (e.g. after hydration or logout).
 // ─────────────────────────────────────────────────────────────────
+
+/** Cancel all pending debounced Firestore pushes. Safe to call at
+ *  any time — a no-op when no timers are pending. */
+export function clearPendingPushTimers(): void {
+  for (const t of timers.values()) clearTimeout(t);
+  timers.clear();
+}
 
 export function pauseSyncForLogout(): void {
   setStoreSyncEnabled(false);
-  for (const t of timers.values()) clearTimeout(t);
-  timers.clear();
+  clearPendingPushTimers();
 }
