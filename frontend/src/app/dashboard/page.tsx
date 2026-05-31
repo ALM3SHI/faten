@@ -51,6 +51,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { EmailVerificationReminder } from "@/components/email-verification-reminder";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -607,11 +608,13 @@ export default function DashboardPage() {
             <Link href="/profile">
               <Button className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 shadow-lg shadow-uqu-accent/20 gap-2">
                 <Settings className="w-4 h-4" />
-                البروفايل
+                الملف الشخصي
               </Button>
             </Link>
           </div>
         </div>
+
+        <EmailVerificationReminder />
 
         {/* ──────────────────────────────────────────────────────────
             Migration boundary — replaces ALL analytics if the backend
@@ -1055,7 +1058,7 @@ function MigrationBoundary({ detail }: { detail: string }) {
           </h2>
           <p className="text-base text-foreground leading-relaxed">
             بياناتك الحالية لا تتوافق مع نظام الـ 4 نقاط الجديد. يرجى الذهاب
-            للبروفايل وإعادة رفع السجل الأكاديمي.
+            للملف الشخصي وإعادة رفع السجل الأكاديمي.
           </p>
           <p className="text-xs text-muted font-mono leading-relaxed pt-2">
             {detail.slice(0, 220)}
@@ -1065,7 +1068,7 @@ function MigrationBoundary({ detail }: { detail: string }) {
           <Link href="/profile">
             <Button className="rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-bold shadow-lg shadow-amber-500/20 gap-2">
               <ArrowUpRight className="w-4 h-4" />
-              فتح صفحة البروفايل
+              فتح صفحة الملف الشخصي
             </Button>
           </Link>
           <Link href="/gpa">
@@ -1662,7 +1665,7 @@ function HighRoiCard({
           <p className="text-sm text-muted-foreground">
             {hasCurrentTerm
               ? "لا تتوفر بيانات كافية لحساب الرافعة الآن."
-              : "لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من البروفايل."}
+              : "لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من الملف الشخصي."}
           </p>
         </div>
       ) : (
@@ -2405,7 +2408,7 @@ function RoiSimulatorDialog({
           <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl text-center gap-2 p-6">
             <Zap className="w-8 h-8 text-muted" />
             <p className="text-sm text-muted-foreground">
-              لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من البروفايل.
+              لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من الملف الشخصي.
             </p>
           </div>
         ) : (
@@ -3221,7 +3224,7 @@ function DegreeProgressRing({ earned, total }: { earned: number; total: number }
       </div>
       {total === 0 && (
         <p className="text-[10px] text-amber-400/70 text-center leading-tight px-2">
-          أدخل عدد ساعات الخطة من البروفايل لمعرفة النسبة.
+          أدخل عدد ساعات الخطة من الملف الشخصي لمعرفة النسبة.
         </p>
       )}
     </div>

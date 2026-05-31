@@ -50,7 +50,7 @@ const NAV_PATH_META: Record<string, { label: string; icon: string }> = {
   "/dashboard":  { label: "فتح لوحة البيانات",          icon: "🏠" },
   "/locations":  { label: "فتح خريطة القاعات",          icon: "🗺️" },
   "/pomodoro":   { label: "فتح مؤقت البومودورو",        icon: "⏱️" },
-  "/profile":    { label: "فتح البروفايل",              icon: "👤" },
+  "/profile":    { label: "فتح الملف الشخصي",              icon: "👤" },
   "/transcript": { label: "فتح السجل الأكاديمي",        icon: "🎓" },
   "/schedule":   { label: "فتح الجدول الأسبوعي",        icon: "🗓️" },
 };

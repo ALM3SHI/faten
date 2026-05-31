@@ -623,7 +623,7 @@ function RequiredToGraduateCard({
         <p className="text-xs text-muted leading-relaxed">
           حدّد معدلاً مستهدفاً من{" "}
           <Link href="/profile" className="text-uqu-accent font-bold underline">
-            صفحة البروفايل
+            صفحة الملف الشخصي
           </Link>{" "}
           لرؤية المطلوب لتحقيقه.
         </p>
@@ -647,7 +647,7 @@ function RequiredToGraduateCard({
         <p className="text-xs text-muted leading-relaxed">
           أدخل عدد ساعات خطتك الأكاديمية في{" "}
           <Link href="/profile" className="text-uqu-accent font-bold underline">
-            صفحة البروفايل
+            صفحة الملف الشخصي
           </Link>{" "}
           (مثلاً 132) لحساب المعدل المطلوب لتحقيق الهدف عند التخرج.
         </p>

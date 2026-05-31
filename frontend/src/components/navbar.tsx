@@ -14,7 +14,7 @@ const navItems = [
   { name: "الخطة", href: "/plan" },
   { name: "بومودورو", href: "/pomodoro" },
   { name: "القاعات", href: "/locations" },
-  { name: "البروفايل", href: "/profile" },
+  { name: "الملف الشخصي", href: "/profile" },
 ];
 
 import { useAuth } from "@/components/auth-provider";

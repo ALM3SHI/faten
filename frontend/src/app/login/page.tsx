@@ -2,70 +2,28 @@
 
 import { useState } from "react";
 import { auth, googleProvider } from "@/lib/firebase";
-import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { LogIn, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { Mail, Lock, ArrowRight, Sparkles, Check, Circle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "@/lib/toast";
-
-// Denylist of commonly-leaked / trivially-sequential passwords that should
-// be rejected outright on sign-up, even if they meet the 8-char minimum.
-// Compared case-insensitively against the trimmed password.
-const WEAK_PASSWORDS = new Set([
-  "12345678",
-  "123456789",
-  "1234567890",
-  "123456",
-  "123123",
-  "111111",
-  "000000",
-  "qwerty",
-  "qwerty123",
-  "qwertyui",
-  "password",
-  "password1",
-  "password123",
-  "abc12345",
-  "iloveyou",
-  "admin123",
-]);
-
-const AUTH_ERROR_FALLBACK = "حدث خطأ أثناء تسجيل الدخول. حاول مرة أخرى.";
-
-const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  "auth/wrong-password": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-  "auth/invalid-credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-  "auth/user-not-found": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-  "auth/invalid-email": "عنوان البريد الإلكتروني غير صالح.",
-  "auth/email-already-in-use": "هذا البريد الإلكتروني مستخدم بالفعل.",
-  "auth/weak-password": "كلمة المرور ضعيفة جداً. استخدم كلمة مرور أقوى.",
-  "auth/too-many-requests": "محاولات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
-  "auth/popup-closed-by-user": "تم إلغاء تسجيل الدخول.",
-  "auth/network-request-failed": "تعذّر الاتصال. تحقق من الإنترنت وحاول مرة أخرى.",
-};
-
-function getAuthErrorCode(error: unknown): string | null {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    typeof (error as { code: unknown }).code === "string"
-  ) {
-    return (error as { code: string }).code;
-  }
-  return null;
-}
-
-function getArabicAuthError(error: unknown): string {
-  const code = getAuthErrorCode(error);
-  if (code && AUTH_ERROR_MESSAGES[code]) {
-    return AUTH_ERROR_MESSAGES[code];
-  }
-  return AUTH_ERROR_FALLBACK;
-}
+import {
+  getArabicAuthError,
+  getAuthErrorCode,
+  getPasswordRequirements,
+  SIGNUP_MESSAGES,
+  validateSignupEmail,
+  validateSignupPassword,
+} from "@/lib/signup-validation";
+import { EMAIL_VERIFICATION_MESSAGES } from "@/lib/email-verification";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -82,16 +40,18 @@ export default function LoginPage() {
     // Done BEFORE `setLoading(true)` so a validation failure doesn't
     // flash the loading state.
     if (!isLogin) {
-      if (password !== confirmPassword) {
-        toast.error("كلمات المرور غير متطابقة");
+      const emailError = validateSignupEmail(email);
+      if (emailError) {
+        toast.error(emailError);
         return;
       }
-      const normalized = password.trim();
-      if (
-        normalized.length < 8 ||
-        WEAK_PASSWORDS.has(normalized.toLowerCase())
-      ) {
-        toast.warning("كلمة المرور ضعيفة، يرجى استخدام حروف وأرقام أكثر تعقيداً");
+      if (password !== confirmPassword) {
+        toast.error(SIGNUP_MESSAGES.passwordMismatch);
+        return;
+      }
+      const passwordResult = validateSignupPassword(password);
+      if (!passwordResult.ok) {
+        toast.error(passwordResult.message);
         return;
       }
     }
@@ -101,11 +61,19 @@ export default function LoginPage() {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const credential = await createUserWithEmailAndPassword(auth, email, password);
+        try {
+          await sendEmailVerification(credential.user);
+          toast.success(EMAIL_VERIFICATION_MESSAGES.signupSuccess);
+        } catch {
+          toast.warning(
+            "تم إنشاء الحساب، لكن تعذّر إرسال رابط التحقق. يمكنك إعادة الإرسال من لوحة المعلومات.",
+          );
+        }
       }
       router.push("/dashboard");
     } catch (error: unknown) {
-      toast.error(getArabicAuthError(error));
+      toast.error(getArabicAuthError(error, isLogin ? "login" : "signup"));
     } finally {
       setLoading(false);
     }
@@ -243,6 +211,30 @@ export default function LoginPage() {
                   required
                 />
               </div>
+
+              {!isLogin && (
+                <ul
+                  className="space-y-1.5 rounded-xl bg-white/5 border border-white/5 px-4 py-3"
+                  aria-label="متطلبات كلمة المرور"
+                >
+                  {getPasswordRequirements(password).map((req) => (
+                    <li
+                      key={req.id}
+                      className={cn(
+                        "flex items-center gap-2 text-xs transition-colors",
+                        req.met ? "text-emerald-400/90" : "text-white/45",
+                      )}
+                    >
+                      {req.met ? (
+                        <Check className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                      ) : (
+                        <Circle className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                      )}
+                      <span>{req.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
               {/* Sign-up only: confirm-password field. Identical styling
                   to the password input above so it slots into the form
