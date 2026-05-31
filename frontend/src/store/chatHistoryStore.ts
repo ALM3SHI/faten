@@ -32,6 +32,8 @@ export interface ChatThread {
 }
 
 interface ChatHistoryState {
+  /** Firebase UID that owns this persisted snapshot; null = untrusted legacy cache. */
+  ownerUid: string | null;
   threads: ChatThread[];
   activeId: string | null;
   hasHydrated: boolean;
@@ -78,6 +80,7 @@ function newId(): string {
 export const useChatHistoryStore = create<ChatHistoryState>()(
   persist(
     (set, get) => ({
+      ownerUid: null,
       threads: [],
       activeId: null,
       hasHydrated: false,
@@ -133,11 +136,15 @@ export const useChatHistoryStore = create<ChatHistoryState>()(
         }));
       },
 
-      clearAll: () => set({ threads: [], activeId: null }),
+      clearAll: () => set({ ownerUid: null, threads: [], activeId: null }),
     }),
     {
       name: "uqu_chat_history_v1",
-      partialize: (s) => ({ threads: s.threads, activeId: s.activeId }),
+      partialize: (s) => ({
+        ownerUid: s.ownerUid,
+        threads: s.threads,
+        activeId: s.activeId,
+      }),
       // Date objects don't survive JSON round-trips — restore them.
       onRehydrateStorage: () => (state, error) => {
         if (error || !state) return;

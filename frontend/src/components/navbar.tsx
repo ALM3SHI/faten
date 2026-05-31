@@ -23,7 +23,7 @@ import { User } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const profileName = useProfileStore((s) => s.basic.name.trim());
   const [scrolled, setScrolled] = useState(false);
   // Source of truth on the client is the `.dark` class set by the inline
@@ -112,7 +112,12 @@ export function Navbar() {
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
 
-            {user ? (
+            {authLoading ? (
+              <div
+                className="h-1.5 w-8 rounded-full bg-muted-foreground/30 animate-pulse"
+                aria-hidden
+              />
+            ) : user ? (
               <Link href="/profile">
                 <Button variant="ghost" size="sm" className="rounded-xl gap-2 hover:bg-foreground/5">
                   <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">

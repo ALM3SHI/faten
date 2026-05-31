@@ -11,7 +11,9 @@ import {
 } from '@/lib/firebase/sync';
 import {
   clearAuthenticatedUidTracking,
+  clearUserStores,
   purgePersistedDataIfAccountSwitched,
+  setStoresOwnerUid,
 } from '@/lib/auth-utils';
 import { hydrateWorkspaceFromApi } from '@/lib/workspace';
 import { fetchPomodoroStats } from '@/lib/pomodoro';
@@ -42,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user);
       if (user) {
         purgePersistedDataIfAccountSwitched(user.uid);
+        setStoresOwnerUid(user.uid);
 
         // Sync with Firestore
         const docRef = doc(db, 'users', user.uid);
@@ -84,6 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Logout: stop sync immediately so any in-flight debounced pushes
         // don't fire under a stale or missing UID.
         pauseSyncForLogout();
+        clearUserStores();
         clearAuthenticatedUidTracking();
         setProfile(null);
       }

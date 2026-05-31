@@ -35,6 +35,8 @@ export interface ScheduleSlot {
 }
 
 interface ScheduleState {
+  /** Firebase UID that owns this persisted snapshot; null = untrusted legacy cache. */
+  ownerUid: string | null;
   schedule: ScheduleSlot[];
   /** ISO timestamp of the last successful parse — drives the "last updated" badge. */
   lastUpdated: string | null;
@@ -48,6 +50,7 @@ interface ScheduleState {
 export const useScheduleStore = create<ScheduleState>()(
   persist(
     (set, get) => ({
+      ownerUid: null,
       schedule: [],
       lastUpdated: null,
 
@@ -59,6 +62,7 @@ export const useScheduleStore = create<ScheduleState>()(
 
       clearSchedule: () =>
         set({
+          ownerUid: null,
           schedule: [],
           lastUpdated: null,
         }),
@@ -72,7 +76,11 @@ export const useScheduleStore = create<ScheduleState>()(
     {
       name: "uqu_schedule_v1",
       // Only persist the data fields — derived selectors are recomputed at runtime.
-      partialize: (s) => ({ schedule: s.schedule, lastUpdated: s.lastUpdated }),
+      partialize: (s) => ({
+        ownerUid: s.ownerUid,
+        schedule: s.schedule,
+        lastUpdated: s.lastUpdated,
+      }),
     },
   ),
 );

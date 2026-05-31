@@ -75,13 +75,7 @@ function getPersistedStores(): PersistedStore[] {
       label: "schedule",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       persist: (useScheduleStore as any).persist,
-      // scheduleStore doesn't expose a reset; setSchedule([]) works.
-      reset: () => {
-        const s = useScheduleStore.getState() as unknown as {
-          setSchedule?: (slots: unknown[]) => void;
-        };
-        s.setSchedule?.([]);
-      },
+      reset: () => useScheduleStore.getState().clearSchedule(),
     },
     {
       label: "plan",
@@ -129,6 +123,56 @@ function getTrackedAuthUid(): string | null {
   }
 }
 
+/** True when any persisted user store holds data beyond empty defaults. */
+function hasPersistedUserPayload(): boolean {
+  const profile = useProfileStore.getState();
+  if (profile.lastUpdated !== null) return true;
+  if (
+    profile.basic.name.trim() ||
+    profile.basic.major.trim() ||
+    profile.basic.studentId.trim()
+  ) {
+    return true;
+  }
+
+  const transcript = useTranscriptStore.getState();
+  if (transcript.lastUpdated !== null || transcript.completedCourses.length > 0) {
+    return true;
+  }
+
+  if (useScheduleStore.getState().schedule.length > 0) return true;
+  if (usePlanStore.getState().plan !== null) return true;
+  if (useChatHistoryStore.getState().threads.length > 0) return true;
+
+  return false;
+}
+
+/**
+ * Returns true when local persisted caches may be shown for `currentUid`.
+ * Missing `ownerUid` with existing payload is treated as untrusted legacy data.
+ */
+export function validateStoredOwnerUid(currentUid: string): boolean {
+  const ownerUid = useProfileStore.getState().ownerUid;
+  if (ownerUid === currentUid) return true;
+  if (ownerUid !== null && ownerUid !== currentUid) return false;
+  // ownerUid is null — only trust empty caches.
+  return !hasPersistedUserPayload();
+}
+
+/** Stamp every persisted user store with the active Firebase UID. */
+export function setStoresOwnerUid(uid: string): void {
+  useProfileStore.setState({ ownerUid: uid });
+  useTranscriptStore.setState({ ownerUid: uid });
+  useScheduleStore.setState({ ownerUid: uid });
+  usePlanStore.setState({ ownerUid: uid });
+  useChatHistoryStore.setState({ ownerUid: uid });
+}
+
+/** Wipe user-owned persisted slots; theme and other preserved keys stay. */
+export function clearUserStores(): void {
+  clearAllAppData();
+}
+
 function setTrackedAuthUid(uid: string | null): void {
   if (typeof window === "undefined") return;
   try {
@@ -150,10 +194,15 @@ function setTrackedAuthUid(uid: string | null): void {
 export function purgePersistedDataIfAccountSwitched(nextUid: string): boolean {
   const prevUid = getTrackedAuthUid();
   if (prevUid !== null && prevUid !== nextUid) {
-    clearAllAppData();
+    clearUserStores();
     const pomodoro = usePomodoroStore.getState();
     pomodoro.setCompletedSessions(0);
     pomodoro.setCurrentStreak(0);
+    setTrackedAuthUid(nextUid);
+    return true;
+  }
+  if (!validateStoredOwnerUid(nextUid)) {
+    clearUserStores();
     setTrackedAuthUid(nextUid);
     return true;
   }

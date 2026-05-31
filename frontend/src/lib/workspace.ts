@@ -99,7 +99,7 @@ export async function saveProfileToBackend(
 
 export type TranscriptSaveSlice = Omit<
   ReturnType<typeof useTranscriptStore.getState>,
-  "setTranscript" | "clearTranscript" | "hasTranscript"
+  "setTranscript" | "clearTranscript" | "hasTranscript" | "ownerUid"
 >;
 
 export interface TranscriptSaveResponse {

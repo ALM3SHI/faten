@@ -119,6 +119,8 @@ export function isDatedEvent(t: PlanTask): boolean {
 // ── Store ─────────────────────────────────────────────────────────────
 
 interface PlanState {
+  /** Firebase UID that owns this persisted snapshot; null = untrusted legacy cache. */
+  ownerUid: string | null;
   plan: StudyPlan | null;
   model: string | null;
   generatedAt: string | null;
@@ -149,6 +151,7 @@ interface PlanState {
 export const usePlanStore = create<PlanState>()(
   persist(
     (set, get) => ({
+      ownerUid: null,
       plan: null,
       model: null,
       generatedAt: null,
@@ -291,6 +294,7 @@ export const usePlanStore = create<PlanState>()(
 
       clearPlan: () =>
         set({
+          ownerUid: null,
           plan: null,
           model: null,
           generatedAt: null,
@@ -303,6 +307,7 @@ export const usePlanStore = create<PlanState>()(
     {
       name: "uqu_ai_plan_v1",
       partialize: (s) => ({
+        ownerUid: s.ownerUid,
         plan: s.plan,
         model: s.model,
         generatedAt: s.generatedAt,

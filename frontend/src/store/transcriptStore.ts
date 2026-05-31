@@ -19,6 +19,8 @@ import type { EnrichedCourse, ParsedTranscript } from "@/lib/transcript-parser";
 export type { EnrichedCourse, ParsedTranscript };
 
 interface TranscriptState {
+  /** Firebase UID that owns this persisted snapshot; null = untrusted legacy cache. */
+  ownerUid: string | null;
   // Identity
   name: string | null;
   nameEn: string | null;
@@ -46,6 +48,7 @@ interface TranscriptState {
 export const useTranscriptStore = create<TranscriptState>()(
   persist(
     (set, get) => ({
+      ownerUid: null,
       name: null,
       nameEn: null,
       studentId: null,
@@ -81,6 +84,7 @@ export const useTranscriptStore = create<TranscriptState>()(
 
       clearTranscript: () =>
         set({
+          ownerUid: null,
           name: null,
           nameEn: null,
           studentId: null,

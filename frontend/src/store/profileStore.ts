@@ -56,6 +56,8 @@ export interface ProfilePreferences {
 }
 
 export interface ProfileState {
+  /** Firebase UID that owns this persisted snapshot; null = untrusted legacy cache. */
+  ownerUid: string | null;
   basic: ProfileBasic;
   goals: ProfileGoals;
   preferences: ProfilePreferences;
@@ -84,6 +86,7 @@ const VALID_LEARNING: LearningStyle[] = ["visual", "auditory", "kinesthetic", "r
 export const useProfileStore = create<ProfileState>()(
   persist(
     (set) => ({
+      ownerUid: null,
       basic: DEFAULT_BASIC,
       goals: DEFAULT_GOALS,
       preferences: DEFAULT_PREFS,
@@ -109,6 +112,7 @@ export const useProfileStore = create<ProfileState>()(
 
       resetProfile: () =>
         set({
+          ownerUid: null,
           basic: DEFAULT_BASIC,
           goals: DEFAULT_GOALS,
           preferences: DEFAULT_PREFS,
@@ -118,6 +122,7 @@ export const useProfileStore = create<ProfileState>()(
     {
       name: "uqu_profile_v3",
       partialize: (s) => ({
+        ownerUid: s.ownerUid,
         basic: s.basic,
         goals: s.goals,
         preferences: s.preferences,
@@ -132,6 +137,7 @@ export const useProfileStore = create<ProfileState>()(
         const p = (persisted as Partial<ProfileState>) ?? {};
         return {
           ...current,
+          ownerUid: p.ownerUid ?? null,
           basic: { ...DEFAULT_BASIC, ...(p.basic ?? {}) },
           goals: { ...DEFAULT_GOALS, ...(p.goals ?? {}) },
           preferences: { ...DEFAULT_PREFS, ...(p.preferences ?? {}) },

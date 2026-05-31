@@ -123,7 +123,7 @@ export async function syncProfile(
 export async function syncTranscript(
   uid: string,
   data: Omit<ReturnType<typeof useTranscriptStore.getState>,
-    "setTranscript" | "clearTranscript" | "hasTranscript">,
+    "setTranscript" | "clearTranscript" | "hasTranscript" | "ownerUid">,
 ) {
   await setDoc(
     doc(db, "users", uid, "academic_record", "main"),
