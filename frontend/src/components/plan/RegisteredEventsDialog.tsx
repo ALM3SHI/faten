@@ -99,7 +99,7 @@ export function RegisteredEventsDialog({
       <DialogContent
         className={cn(
           "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-2xl",
-          "bg-card border border-border shadow-2xl backdrop-blur-xl",
+          "!bg-card border border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95",
           "[&_[data-slot=dialog-close]]:text-muted-foreground [&_[data-slot=dialog-close]]:hover:text-foreground",
         )}
         dir="rtl"
@@ -117,7 +117,7 @@ export function RegisteredEventsDialog({
 
         <div className="px-6 pb-6 pt-2 space-y-2.5 max-h-[min(60vh,480px)] overflow-y-auto">
           {events.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border bg-secondary/50 dark:border-white/10 dark:bg-white/[0.02] px-4 py-10 text-center text-sm text-muted-foreground">
+            <div className="rounded-xl border border-dashed border-border bg-background px-4 py-10 text-center text-sm text-muted-foreground dark:border-white/10 dark:bg-white/[0.02]">
               لا توجد أحداث مسجلة بعد. أضف جلسة وحدّد لها تاريخاً لتظهر هنا.
             </div>
           ) : (
@@ -131,7 +131,7 @@ export function RegisteredEventsDialog({
               return (
                 <div
                   key={`${iso}-${task.suggestedTime}-${task.courseCode}-${task.title}`}
-                  className="rounded-xl border border-border bg-secondary/80 dark:border-white/10 dark:bg-[#1c1c1c] p-3.5 space-y-2"
+                  className="rounded-xl border border-border bg-background dark:border-white/10 dark:bg-[#1c1c1c] p-3.5 space-y-2"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1 space-y-1">
@@ -140,7 +140,7 @@ export function RegisteredEventsDialog({
                           {task.title}
                         </h4>
                         {typeLabel && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-foreground/5 border border-border text-muted-foreground dark:bg-white/5 dark:border-white/10 shrink-0">
+                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-secondary/40 border border-border text-muted-foreground dark:bg-white/5 dark:border-white/10 shrink-0">
                             {typeLabel}
                           </span>
                         )}

@@ -660,15 +660,15 @@ export default function DashboardPage() {
                     value={hydrated ? currentGpa.toFixed(2) : "—"}
                     subtitle="من أصل 4.00"
                     footer="اضغط لمعرفة التفاصيل"
-                    icon={<TrendingUp className="w-5 h-5 text-emerald-500" />}
+                    icon={<TrendingUp className="w-5 h-5 text-emerald-700 dark:text-emerald-500" />}
                     color="emerald"
                     delay="delay-0"
                   />
                 </DialogTrigger>
-                <DialogContent className="glass border-foreground/10 sm:max-w-md">
+                <DialogContent className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-emerald-500" />
+                      <TrendingUp className="w-5 h-5 text-emerald-700 dark:text-emerald-500" />
                       تفاصيل المعدل الحالي
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground">
@@ -678,7 +678,7 @@ export default function DashboardPage() {
                   <div className="space-y-3 py-3">
                     <KvRow label="الساعات المكتسبة" value={`${earnedHours} ساعة`} />
                     <KvRow label="المواد المنجزة" value={`${completedCourses.length} مادة`} />
-                    <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex justify-between items-center">
+                    <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-400 dark:border-emerald-400/20 flex justify-between items-center">
                       <span className="font-bold">المعدل التراكمي:</span>
                       <span className="font-black text-xl">{currentGpa.toFixed(2)}</span>
                     </div>
@@ -704,15 +704,15 @@ export default function DashboardPage() {
                         : "ساعة مكتسبة"
                     }
                     footer="اضغط لمعاينة التقدم"
-                    icon={<BookOpen className="w-5 h-5 text-cyan-500" />}
+                    icon={<BookOpen className="w-5 h-5 text-cyan-700 dark:text-cyan-500" />}
                     color="cyan"
                     delay="delay-100"
                   />
                 </DialogTrigger>
-                <DialogContent className="glass border-foreground/10 sm:max-w-lg">
+                <DialogContent className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 sm:max-w-lg">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                      <BookOpen className="w-5 h-5 text-cyan-500" />
+                      <BookOpen className="w-5 h-5 text-cyan-700 dark:text-cyan-500" />
                       تقدم الساعات
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground">
@@ -763,7 +763,7 @@ export default function DashboardPage() {
                     }
                   />
                 </DialogTrigger>
-                <DialogContent className="glass border-foreground/10 sm:max-w-md">
+                <DialogContent className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 sm:max-w-md">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold flex items-center gap-2">
                       <Target className="w-5 h-5 text-uqu-accent" />
@@ -1115,11 +1115,11 @@ function CumulativeGpaCard({
           className={cn(
             "text-[10px]",
             badgeStatus === "achieved" || badgeStatus === "feasible"
-              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+              ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20"
               : badgeStatus === "stretch"
-                ? "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/20"
+                ? "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/30 dark:border-amber-400/20"
                 : badgeStatus === "impossible"
-                  ? "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20"
+                  ? "bg-rose-500/10 text-rose-800 dark:text-rose-400 border-rose-500/30 dark:border-rose-400/20"
                   : "bg-foreground/5 text-muted border-foreground/10",
           )}
         >
@@ -1310,7 +1310,7 @@ function StrengthsRadarCard({
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <RadarIcon className="w-5 h-5 text-emerald-400" />
+            <RadarIcon className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
             مصفوفة الـDNA الأكاديمي
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -1320,7 +1320,7 @@ function StrengthsRadarCard({
         {data.length > 0 && (
           <Badge
             variant="outline"
-            className="text-[10px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            className="text-[10px] bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20"
           >
             {data.length} مجالات
           </Badge>
@@ -1445,7 +1445,7 @@ function StrengthsRadarCard({
       </div>
 
       {dominantGap && (
-        <div className="mt-4 p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-200 text-[11px] leading-relaxed">
+        <div className="mt-4 p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/30 text-amber-800 dark:text-amber-200 dark:border-amber-400/20 text-[11px] leading-relaxed">
           <strong className="font-black">أبرز فجوة:</strong>{" "}
           <span className="font-bold">{dominantGap.category}</span> —
           أنت عند{" "}
@@ -1539,7 +1539,7 @@ function UnreliableWarning({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-1.5 px-2 py-1 rounded-md bg-amber-500/[0.08] border border-amber-500/25 text-amber-200 text-[10px] font-bold leading-snug",
+        "flex items-start gap-1.5 px-2 py-1 rounded-md bg-amber-500/[0.08] border border-amber-500/30 text-amber-800 dark:text-amber-200 dark:border-amber-400/20 text-[10px] font-bold leading-snug",
         className,
       )}
     >
@@ -1609,27 +1609,27 @@ function DnaBarRow({
       {!row.isReliable && <UnreliableWarning />}
       {/* Student bar (neon green) */}
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-emerald-300 font-bold w-12">كفاءتك</span>
+        <span className="text-[10px] text-emerald-800 dark:text-emerald-300 font-bold w-12">كفاءتك</span>
         <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-to-l from-emerald-400 to-cyan-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
             style={{ width: `${Math.min(100, (row.student / 4) * 100)}%` }}
           />
         </div>
-        <span className="text-[10px] font-mono font-black text-emerald-300 w-10 text-right">
+        <span className="text-[10px] font-mono font-black text-emerald-800 dark:text-emerald-300 w-10 text-right">
           {row.student.toFixed(2)}
         </span>
       </div>
       {/* Market bar (electric blue) */}
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-sky-300 font-bold w-12">السوق</span>
+        <span className="text-[10px] text-sky-800 dark:text-sky-300 font-bold w-12">السوق</span>
         <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-to-l from-sky-400 to-indigo-400 shadow-[0_0_8px_rgba(56,189,248,0.5)]"
             style={{ width: `${Math.min(100, (row.market / 4) * 100)}%` }}
           />
         </div>
-        <span className="text-[10px] font-mono font-black text-sky-300 w-10 text-right">
+        <span className="text-[10px] font-mono font-black text-sky-800 dark:text-sky-300 w-10 text-right">
           {row.market.toFixed(2)}
         </span>
       </div>
@@ -1658,7 +1658,7 @@ function HighRoiCard({
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-400" />
+            <Zap className="w-5 h-5 text-amber-700 dark:text-amber-400" />
             روافع المعدل
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -1704,7 +1704,7 @@ function RoiRow({ course, rank }: { course: HighRoiCourse; rank: number }) {
         className={cn(
           "w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border",
           rank === 1
-            ? "bg-amber-500/15 text-amber-300 border-amber-500/30 shadow-[0_0_18px_rgba(245,158,11,0.18)]"
+            ? "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30 shadow-[0_0_18px_rgba(245,158,11,0.18)]"
             : "bg-foreground/5 text-muted border-foreground/10",
         )}
       >
@@ -1723,14 +1723,14 @@ function RoiRow({ course, rank }: { course: HighRoiCourse; rank: number }) {
           </span>
           <span className="text-muted">
             أقصى مساهمة:{" "}
-            <span className="font-mono font-bold text-amber-300">
+            <span className="font-mono font-bold text-amber-800 dark:text-amber-300">
               {course.max_point_contribution.toFixed(2)}
             </span>
           </span>
           {course.projected_delta > 0 && (
             <span className="text-muted">
               رفعة محتملة:{" "}
-              <span className="font-mono font-bold text-emerald-300">
+              <span className="font-mono font-bold text-emerald-800 dark:text-emerald-300">
                 +{course.projected_delta.toFixed(2)}
               </span>
             </span>
@@ -1767,8 +1767,8 @@ function AdherenceCard({
     emerald: {
       ring: "stroke-emerald-400",
       glow: "drop-shadow(0 0 8px hsla(160,80%,50%,0.5))",
-      pill: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
-      icon: "text-emerald-400",
+      pill: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
+      icon: "text-emerald-700 dark:text-emerald-400",
     },
     uqu: {
       ring: "stroke-uqu-accent",
@@ -1779,8 +1779,8 @@ function AdherenceCard({
     rose: {
       ring: "stroke-rose-400",
       glow: "drop-shadow(0 0 8px hsla(0,80%,60%,0.4))",
-      pill: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-      icon: "text-rose-400",
+      pill: "bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/30",
+      icon: "text-rose-700 dark:text-rose-400",
     },
   } as const;
 
@@ -1952,7 +1952,7 @@ function SkillsRadarDialogContent({
     >
       <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
         <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <RadarIcon className="w-6 h-6 text-emerald-400" />
+          <RadarIcon className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
           مصفوفة الـDNA الأكاديمي — تفاصيل المجالات
         </DialogTitle>
         <DialogDescription className="text-muted-foreground text-sm">
@@ -1977,10 +1977,10 @@ function SkillsRadarDialogContent({
                 const gapTone = !d.isReliable
                   ? "text-muted"
                   : d.skillGap > 0.5
-                    ? "text-rose-300"
+                    ? "text-rose-800 dark:text-rose-300"
                     : d.skillGap > 0.05
-                      ? "text-amber-300"
-                      : "text-emerald-300";
+                      ? "text-amber-800 dark:text-amber-300"
+                      : "text-emerald-800 dark:text-emerald-300";
                 return (
                   <button
                     key={d.category}
@@ -2010,7 +2010,7 @@ function SkillsRadarDialogContent({
                     <div className="flex items-center justify-between text-[10px] text-muted mt-0.5">
                       <span>{d.courseCount} مادة · {d.creditHours} ساعة</span>
                       {!d.isReliable && (
-                        <span className="text-amber-300/80 font-bold">
+                        <span className="text-amber-800/90 dark:text-amber-300/80 font-bold">
                           عيّنة صغيرة
                         </span>
                       )}
@@ -2096,7 +2096,7 @@ function SkillsRadarDialogContent({
                             </span>
                           </div>
                           <div className="col-span-3 text-left">
-                            <span className="font-mono font-black text-emerald-300">
+                            <span className="font-mono font-black text-emerald-800 dark:text-emerald-300">
                               {c.contribution.toFixed(2)}
                             </span>
                             <span className="text-[10px] text-muted font-mono mr-1">
@@ -2338,9 +2338,9 @@ function RoiSimulatorDialog({
 
   const projectionTone =
     delta >= 0.05
-      ? { glow: "hsl(160, 95%, 55%)", text: "text-emerald-300" }
+      ? { glow: "hsl(160, 95%, 55%)", text: "text-emerald-700 dark:text-emerald-300" }
       : delta <= -0.05
-        ? { glow: "hsl(0, 80%, 60%)", text: "text-rose-300" }
+        ? { glow: "hsl(0, 80%, 60%)", text: "text-rose-700 dark:text-rose-300" }
         : { glow: "hsl(245, 78%, 62%)", text: "text-uqu-accent" };
 
   const resetAll = () =>
@@ -2348,12 +2348,12 @@ function RoiSimulatorDialog({
 
   return (
     <DialogContent
-      className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(820px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(820px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
         <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <Zap className="w-6 h-6 text-amber-400" />
+          <Zap className="w-6 h-6 text-amber-700 dark:text-amber-400" />
           محاكي السيناريوهات — ماذا لو؟
         </DialogTitle>
         <DialogDescription className="text-muted-foreground text-sm">
@@ -2365,7 +2365,7 @@ function RoiSimulatorDialog({
       <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
         {/* HERO — projected cumulative GPA, glowing, updates instantly */}
         <div
-          className="relative rounded-3xl border border-foreground/10 bg-gradient-to-l from-uqu-accent/[0.08] via-cyan-500/[0.06] to-emerald-500/[0.08] p-6 text-center overflow-hidden"
+          className="relative rounded-3xl border border-border dark:border-foreground/10 bg-gradient-to-l from-uqu-accent/[0.08] via-cyan-500/[0.06] to-emerald-500/[0.08] p-6 text-center overflow-hidden"
           style={{
             boxShadow: `0 0 40px -10px ${projectionTone.glow}`,
           }}
@@ -2400,8 +2400,8 @@ function RoiSimulatorDialog({
         {/* AI strategy banner */}
         {leverageCourse && (
           <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/[0.06] border border-amber-500/25">
-            <Sparkles className="w-5 h-5 text-amber-300 shrink-0 mt-0.5" />
-            <p className="text-[12.5px] text-amber-200 leading-relaxed">
+            <Sparkles className="w-5 h-5 text-amber-700 dark:text-amber-300 shrink-0 mt-0.5" />
+            <p className="text-[12.5px] text-amber-800 dark:text-amber-200 leading-relaxed">
               <span className="font-black">استراتيجية ذكية:</span>{" "}
               لتحقيق أعلى قفزة، لا تتنازل عن{" "}
               <span className="font-mono font-black bg-amber-500/20 px-1.5 py-0.5 rounded">
@@ -2409,7 +2409,7 @@ function RoiSimulatorDialog({
               </span>{" "}
               في مادة{" "}
               <span className="font-black">{leverageCourse.name}</span>{" "}
-              <span className="text-amber-200/70 font-normal">
+              <span className="text-amber-700/80 dark:text-amber-200/70 font-normal">
                 ({leverageCourse.credits} ساعات — أعلى ثقل في فصلك).
               </span>
             </p>
@@ -2418,8 +2418,8 @@ function RoiSimulatorDialog({
 
         {/* Per-course pickers */}
         {roster.length === 0 ? (
-          <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl text-center gap-2 p-6">
-            <Zap className="w-8 h-8 text-muted" />
+          <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-border dark:border-foreground/10 rounded-2xl text-center gap-2 p-6">
+            <Zap className="w-8 h-8 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من الملف الشخصي.
             </p>
@@ -2427,7 +2427,7 @@ function RoiSimulatorDialog({
         ) : (
           <div className="space-y-2">
             <div className="flex items-baseline justify-between gap-2 flex-wrap">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-muted">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">
                 مواد الفصل الحالي ({roster.length})
               </h4>
               <div className="flex items-center gap-3 text-[10px] font-mono text-muted">
@@ -2463,7 +2463,7 @@ function RoiSimulatorDialog({
           </div>
         )}
 
-        <p className="text-[10px] text-muted leading-relaxed pt-1 border-t border-foreground/10">
+        <p className="text-[10px] text-muted-foreground leading-relaxed pt-1 border-t border-border dark:border-foreground/10">
           الحساب:{" "}
           <span className="font-mono">
             projected = (current_gpa × earned + Σ(grade × credits)) / (earned + Σcredits)
@@ -2488,7 +2488,7 @@ function RoiSimRow({
   const contribution = points * course.credits;
   const tone = gradeTone(pick);
   return (
-    <div className="grid grid-cols-12 items-center px-3 py-2.5 rounded-xl bg-foreground/5 border border-foreground/10 text-[12px] gap-2">
+    <div className="grid grid-cols-12 items-center px-3 py-2.5 rounded-xl bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10 text-[12px] gap-2">
       <div className="col-span-6 min-w-0">
         <div className="font-bold truncate">{course.name}</div>
         <div className="text-[10px] font-mono text-muted mt-0.5">{course.code}</div>
@@ -2518,7 +2518,7 @@ function RoiSimRow({
           <span className="w-2 h-2 absolute left-2 pointer-events-none opacity-50 border-l-2 border-b-2 border-current rotate-[-45deg]" />
         </div>
       </div>
-      <div className="col-span-2 text-left font-mono font-black text-amber-300">
+      <div className="col-span-2 text-left font-mono font-black text-amber-800 dark:text-amber-300">
         {contribution.toFixed(2)}
       </div>
     </div>
@@ -2548,12 +2548,12 @@ function TaskRolloverDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(640px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+        className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(640px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
         dir="rtl"
       >
         <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
           <DialogTitle className="text-xl font-black flex items-center gap-3">
-            <ListChecks className="w-6 h-6 text-amber-300" />
+            <ListChecks className="w-6 h-6 text-amber-800 dark:text-amber-300" />
             ترحيل المهام المتأخرة
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm">
@@ -2568,7 +2568,7 @@ function TaskRolloverDialog({
             </div>
           ) : (
             <>
-              <div className="text-[11px] font-black uppercase tracking-widest text-amber-300">
+              <div className="text-[11px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-300">
                 {overdue.length} مهمة متأخرة
               </div>
               <div className="space-y-1.5">
@@ -2642,10 +2642,10 @@ function AdherenceDialogContent({
 }) {
   return (
     <DialogContent
-      className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(760px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(760px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
         <DialogTitle className="text-xl font-black flex items-center gap-3">
           <ListChecks className="w-6 h-6 text-uqu-accent" />
           تحليل الانضباط الدراسي
@@ -2661,10 +2661,10 @@ function AdherenceDialogContent({
         {overdueTasks.length > 0 && (
           <div className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.04] p-4 space-y-3">
             <div className="flex items-baseline justify-between gap-2 flex-wrap">
-              <h4 className="text-[12px] font-black uppercase tracking-widest text-amber-300">
+              <h4 className="text-[12px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-300">
                 مهام متأخرة من الأيام السابقة (Overdue)
               </h4>
-              <span className="text-[10px] font-mono text-amber-300/70">
+              <span className="text-[10px] font-mono text-amber-700/80 dark:text-amber-300/70">
                 {overdueTasks.length} مهمة
               </span>
             </div>
@@ -2672,7 +2672,7 @@ function AdherenceDialogContent({
               {overdueTasks.map((t, i) => (
                 <div
                   key={`${t.suggestedDay}-${t.suggestedTime}-${i}`}
-                  className="flex items-center gap-3 p-2 rounded-lg bg-foreground/5 border border-foreground/10 text-[11px]"
+                  className="flex items-center gap-3 p-2 rounded-lg bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10 text-[11px]"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_hsl(40,90%,60%)] shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -2687,7 +2687,7 @@ function AdherenceDialogContent({
             <Button
               onClick={onOpenRollover}
               variant="outline"
-              className="w-full rounded-xl glass border-amber-500/30 text-amber-200 hover:bg-amber-500/10 gap-2"
+              className="w-full rounded-xl border-amber-500/30 text-amber-800 dark:text-amber-200 hover:bg-amber-500/10 gap-2"
             >
               <ArrowUpRight className="w-4 h-4" />
               ترحيل البقايا إلى الأسبوع الجديد
@@ -2709,8 +2709,8 @@ function AdherenceDialogContent({
 
         {/* Weekly per-day adherence chart */}
         {!hasPlan || total === 0 ? (
-          <div className="h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl gap-2 text-center p-6">
-            <Activity className="w-8 h-8 text-muted" />
+          <div className="h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-border dark:border-foreground/10 rounded-2xl gap-2 text-center p-6">
+            <Activity className="w-8 h-8 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               ولّد خطتك الذكية أولاً لاستعراض توزيع الانضباط.
             </p>
@@ -2731,29 +2731,29 @@ function AdherenceDialogContent({
                   data={perDay}
                   margin={{ top: 10, right: 12, left: 12, bottom: 0 }}
                 >
-                  <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+                  <CartesianGrid stroke="var(--color-chart-grid)" vertical={false} />
                   <XAxis
                     dataKey="day"
-                    tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 11, fontWeight: 700 }}
+                    tick={{ fill: "var(--muted-text)", fontSize: 11, fontWeight: 700 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
                     domain={[0, 100]}
-                    tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 10 }}
+                    tick={{ fill: "var(--muted-text)", fontSize: 10 }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={(v) => `${v}%`}
                   />
                   <Tooltip
-                    cursor={{ stroke: "rgba(255,255,255,0.12)", strokeWidth: 1 }}
+                    cursor={{ stroke: "var(--color-chart-grid)", strokeWidth: 1 }}
                     contentStyle={{
-                      background: "rgba(10,10,10,0.92)",
-                      border: "1px solid rgba(255,255,255,0.10)",
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
                       borderRadius: 12,
-                      backdropFilter: "blur(8px)",
                       padding: "8px 12px",
                       fontSize: 12,
+                      color: "var(--foreground)",
                     }}
                     formatter={(value, name, props) => {
                       const num = typeof value === "number" ? value : Number(value);
@@ -2772,7 +2772,7 @@ function AdherenceDialogContent({
                     stroke="hsl(245, 78%, 62%)"
                     strokeWidth={3}
                     dot={{ r: 4, fill: "hsl(245, 78%, 62%)", strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: "#fff", stroke: "hsl(245, 78%, 62%)", strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: "var(--card)", stroke: "hsl(245, 78%, 62%)", strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -2783,10 +2783,10 @@ function AdherenceDialogContent({
               {perDay.map((d) => (
                 <div
                   key={d.day}
-                  className="flex items-center gap-3 p-2.5 rounded-xl bg-foreground/5 border border-foreground/10"
+                  className="flex items-center gap-3 p-2.5 rounded-xl bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10"
                 >
                   <span className="text-[12px] font-bold w-20">{d.day}</span>
-                  <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
+                  <div className="flex-1 h-2 rounded-full bg-secondary/40 dark:bg-foreground/5 overflow-hidden">
                     <div
                       className="h-full rounded-full bg-gradient-to-l from-uqu-accent to-cyan-400"
                       style={{ width: `${d.pct}%` }}
@@ -2801,7 +2801,7 @@ function AdherenceDialogContent({
           </div>
         )}
 
-        <p className="text-[10px] text-muted leading-relaxed pt-1 border-t border-foreground/10">
+        <p className="text-[10px] text-muted-foreground leading-relaxed pt-1 border-t border-border dark:border-foreground/10">
           ملاحظة: التتبع التاريخي عبر الفصول الدراسية سيُتاح في إصدار قادم — حالياً
           نعرض توزيع الانضباط على خطتك الحالية فقط.
         </p>
@@ -2823,12 +2823,14 @@ function DialogStat({
   mono?: boolean;
 }) {
   const tone = {
-    emerald: "bg-emerald-500/10 border-emerald-500/25 text-emerald-300",
-    sky: "bg-sky-500/10 border-sky-500/25 text-sky-300",
-    amber: "bg-amber-500/10 border-amber-500/25 text-amber-300",
-    rose: "bg-rose-500/10 border-rose-500/25 text-rose-300",
+    emerald:
+      "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
+    sky: "bg-sky-500/10 border-sky-500/30 text-sky-800 dark:text-sky-300 dark:border-sky-400/20",
+    amber:
+      "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300 dark:border-amber-400/20",
+    rose: "bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-300 dark:border-rose-400/20",
     uqu: "bg-uqu-accent/10 border-uqu-accent/25 text-uqu-accent",
-    muted: "bg-foreground/5 border-foreground/10 text-foreground",
+    muted: "bg-background border-border text-foreground dark:bg-foreground/5 dark:border-foreground/10",
   }[accent];
   return (
     <div className={cn("p-3 rounded-xl border text-center", tone)}>
@@ -2983,7 +2985,7 @@ function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
             if (e.key === "Enter") handleSave();
           }}
           placeholder={`0.00 – ${maxPossible.toFixed(2)}`}
-          className="flex-1 bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2.5 text-sm font-mono font-black text-foreground outline-none focus:border-uqu-accent/50 focus:ring-1 focus:ring-uqu-accent/30 transition-all"
+          className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm font-mono font-black text-foreground outline-none focus:border-uqu-accent/50 focus:ring-1 focus:ring-uqu-accent/30 transition-all dark:bg-foreground/5 dark:border-foreground/10"
         />
         <Button
           onClick={handleSave}
@@ -2997,22 +2999,22 @@ function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
       {/* Validation messages — ordered by severity. The amber "max possible"
           warning is the headline fix for Bug #5. */}
       {exceedsMax && (
-        <p className="text-[11px] text-amber-300 font-bold flex items-center gap-1.5 leading-relaxed">
+        <p className="text-[11px] text-amber-800 dark:text-amber-300 font-bold flex items-center gap-1.5 leading-relaxed">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           أقصى معدل ممكن رياضياً هو{" "}
           <span className="font-mono font-black">{maxPossible.toFixed(2)}</span>
-          <span className="text-amber-300/70 font-normal">
+          <span className="text-amber-700/80 dark:text-amber-300/70 font-normal">
             (بافتراض A+ في كل ساعة متبقية)
           </span>
         </p>
       )}
       {belowZero && (
-        <p className="text-[11px] text-rose-300 font-bold">
+        <p className="text-[11px] text-rose-700 dark:text-rose-300 font-bold">
           القيمة لا يمكن أن تكون سالبة.
         </p>
       )}
       {savedAt && parsed === targetGpa && (
-        <p className="text-[11px] text-emerald-300 font-bold flex items-center gap-1.5">
+        <p className="text-[11px] text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1.5">
           <CheckCircle2 className="w-3.5 h-3.5" />
           تم تحديث الهدف إلى {targetGpa.toFixed(2)}
         </p>
@@ -3048,17 +3050,20 @@ function StatCard({
   extraSubtext?: string;
 }) {
   const colorMap = {
-    emerald: "bg-emerald-500/10 border-emerald-500/20 text-emerald-500",
+    emerald:
+      "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300 dark:border-emerald-400/20",
     uqu: "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent",
-    cyan: "bg-cyan-500/10 border-cyan-500/20 text-cyan-500",
-    rose: "bg-rose-500/10 border-rose-500/20 text-rose-500",
+    cyan:
+      "bg-cyan-500/10 border-cyan-500/30 text-cyan-700 dark:text-cyan-300 dark:border-cyan-400/20",
+    rose:
+      "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300 dark:border-rose-400/20",
   } as const;
 
   const textColors = {
-    emerald: "text-emerald-500",
+    emerald: "text-emerald-800 dark:text-emerald-300",
     uqu: "text-uqu-accent",
-    cyan: "text-cyan-500",
-    rose: "text-rose-500",
+    cyan: "text-cyan-800 dark:text-cyan-300",
+    rose: "text-rose-800 dark:text-rose-300",
   } as const;
 
   return (
@@ -3095,7 +3100,7 @@ function StatCard({
 
 function KvRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="p-3 rounded-xl bg-foreground/5 border border-foreground/10 flex justify-between items-center">
+    <div className="p-3 rounded-xl bg-background border border-border flex justify-between items-center dark:bg-foreground/5 dark:border-foreground/10">
       <span className="text-muted-foreground text-sm font-bold">{label}:</span>
       <span className={cn("font-bold", mono && "font-mono")}>{value}</span>
     </div>
@@ -3114,7 +3119,7 @@ function KvTile({
   const tone =
     accent === "uqu"
       ? "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent"
-      : "bg-foreground/5 border-foreground/10 text-foreground";
+      : "bg-background border-border text-foreground dark:bg-foreground/5 dark:border-foreground/10";
   return (
     <div className={cn("p-3 rounded-xl border", tone)}>
       <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">{label}</div>
@@ -3136,7 +3141,7 @@ function TargetGpaCallout({
 }) {
   if (status === "unknown") {
     return (
-      <div className="p-4 rounded-xl bg-foreground/5 border border-foreground/10 text-sm text-muted">
+      <div className="p-4 rounded-xl bg-background border border-border text-sm text-muted-foreground dark:bg-foreground/5 dark:border-foreground/10">
         حدّد هدفاً وارفع سجلك الأكاديمي حتى نستطيع حساب المطلوب.
       </div>
     );
@@ -3144,7 +3149,7 @@ function TargetGpaCallout({
 
   if (status === "achieved") {
     return (
-      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm leading-relaxed">
+      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
         🎉 وصلت لهدفك بالفعل! حافظ على مستواك الحالي في الفصل القادم.
       </div>
     );
@@ -3152,7 +3157,7 @@ function TargetGpaCallout({
 
   if (status === "impossible") {
     return (
-      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-sm leading-relaxed">
+      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-200 text-sm leading-relaxed">
         ⚠️ المطلوب{" "}
         <strong className="font-black font-mono">{required.toFixed(2)}</strong> وهو فوق سقف الـ
         4.00. غيّر الهدف لقيمة قابلة للتحقيق، أو تابع التقدم على فصلين أو أكثر.
@@ -3162,7 +3167,7 @@ function TargetGpaCallout({
 
   const accent =
     status === "stretch"
-      ? "bg-amber-500/10 border-amber-500/30 text-amber-200"
+      ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-200"
       : "bg-uqu-accent/10 border-uqu-accent/30 text-foreground";
 
   return (
@@ -3198,7 +3203,7 @@ function DegreeProgressRing({ earned, total }: { earned: number; total: number }
             cy="80"
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.06)"
+            className="stroke-border dark:stroke-white/10"
             strokeWidth={stroke}
           />
           <circle
@@ -3236,7 +3241,7 @@ function DegreeProgressRing({ earned, total }: { earned: number; total: number }
         ساعة
       </div>
       {total === 0 && (
-        <p className="text-[10px] text-amber-400/70 text-center leading-tight px-2">
+        <p className="text-[10px] text-amber-800/90 dark:text-amber-400/70 text-center leading-tight px-2">
           أدخل عدد ساعات الخطة من الملف الشخصي لمعرفة النسبة.
         </p>
       )}
@@ -3248,13 +3253,13 @@ function RecentCourseRow({ course }: { course: EnrichedCourse }) {
   const grade = course.grade || "—";
   const tone = gradeTone(grade);
   return (
-    <div className="flex items-center gap-2.5 p-2 rounded-lg bg-foreground/5 border border-foreground/10">
+    <div className="flex items-center gap-2.5 p-2 rounded-lg bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10">
       {/* PRIMARY: credit hours — big, monospaced, glowing accent tile. */}
       <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/25 flex flex-col items-center justify-center shrink-0">
-        <span className="text-[15px] font-black font-mono text-cyan-300 leading-none">
+        <span className="text-[15px] font-black font-mono text-cyan-700 dark:text-cyan-300 leading-none">
           {course.creditHours}
         </span>
-        <span className="text-[8px] font-bold text-cyan-300/60 mt-0.5">
+        <span className="text-[8px] font-bold text-cyan-700/70 dark:text-cyan-300/60 mt-0.5">
           ساعة
         </span>
       </div>
@@ -3280,12 +3285,12 @@ function RecentCourseRow({ course }: { course: EnrichedCourse }) {
 }
 
 function gradeTone(g: string): string {
-  if (g === "A+" || g === "A") return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
-  if (g === "B+" || g === "B") return "bg-cyan-500/15 text-cyan-300 border-cyan-500/30";
-  if (g === "C+" || g === "C") return "bg-amber-500/15 text-amber-300 border-amber-500/30";
-  if (g === "D+" || g === "D") return "bg-orange-500/15 text-orange-300 border-orange-500/30";
-  if (g === "F" || g === "DN") return "bg-rose-500/15 text-rose-300 border-rose-500/30";
-  return "bg-foreground/5 text-muted border-foreground/10";
+  if (g === "A+" || g === "A") return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30";
+  if (g === "B+" || g === "B") return "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30";
+  if (g === "C+" || g === "C") return "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30";
+  if (g === "D+" || g === "D") return "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30";
+  if (g === "F" || g === "DN") return "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30";
+  return "bg-secondary/40 text-muted-foreground border-border dark:bg-foreground/5 dark:text-muted dark:border-foreground/10";
 }
 
 function ChartSkeleton() {
@@ -3342,14 +3347,14 @@ function AcademicCalendarCard() {
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-sky-400" />
+            <CalendarDays className="w-5 h-5 text-sky-700 dark:text-sky-400" />
             التقويم الجامعي
           </h3>
-          <p className="text-xs text-sky-300/80 font-medium mt-1">
+          <p className="text-xs text-sky-800/90 dark:text-sky-300/80 font-medium mt-1">
             اليوم: {todayStr || "يتم التحميل..."}
           </p>
         </div>
-        <Badge variant="outline" className="text-[10px] bg-sky-500/10 text-sky-400 border-sky-500/20 px-2.5 py-1 rounded-full">
+        <Badge variant="outline" className="text-[10px] bg-sky-500/10 text-sky-800 dark:text-sky-400 border-sky-500/30 dark:border-sky-400/20 px-2.5 py-1 rounded-full">
           الأحداث القادمة
         </Badge>
       </div>
@@ -3402,10 +3407,10 @@ function AcademicCalendarCard() {
 function AcademicCalendarDialogContent() {
   return (
     <DialogContent
-      className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(700px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(700px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
         <DialogTitle className="text-xl font-black flex items-center gap-3">
           <CalendarClock className="w-6 h-6 text-sky-400" />
           التقويم الجامعي لعام 1447 / 1448 هـ
@@ -3430,7 +3435,7 @@ function AcademicCalendarDialogContent() {
               {termData.events.map((ev, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-3 rounded-xl bg-foreground/5 border border-foreground/10 hover:border-sky-500/30 transition-colors"
+                  className="flex items-center gap-4 p-3 rounded-xl bg-background border border-border hover:border-sky-500/30 transition-colors dark:bg-foreground/5 dark:border-foreground/10"
                 >
                   <div className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
                   <div className="flex-1 min-w-0">

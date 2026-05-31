@@ -465,8 +465,8 @@ export default function GPAPage() {
                     </button>
                   }
                 />
-                <DialogContent className="glass border-foreground/10 sm:max-w-[min(1100px,calc(100%-2rem))] max-h-[88vh] flex flex-col p-0 bg-card/95 backdrop-blur-2xl rounded-[28px]">
-                  <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
+                <DialogContent className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 sm:max-w-[min(1100px,calc(100%-2rem))] max-h-[88vh] flex flex-col p-0 rounded-[28px]">
+                  <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
                     <DialogTitle className="text-xl font-black flex items-center gap-3">
                       <GraduationCap className="w-6 h-6 text-uqu-accent" />
                       السجل الأكاديمي التفصيلي
@@ -734,7 +734,7 @@ function SemesterBentoCard({
   items: EnrichedCourse[];
 }) {
   return (
-    <div className="rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors p-4 md:p-5 flex flex-col gap-3">
+    <div className="rounded-2xl bg-background border border-border hover:border-border dark:bg-foreground/5 dark:border-foreground/10 dark:hover:border-foreground/10 transition-colors p-4 md:p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h4 className="text-sm font-black truncate">{label}</h4>
@@ -756,7 +756,7 @@ function SemesterBentoCard({
         {items.map((c) => (
           <div
             key={`${label}-${c.code}`}
-            className="flex items-center gap-2 p-2 rounded-lg bg-foreground/5 border border-foreground/10"
+            className="flex items-center gap-2 p-2 rounded-lg bg-secondary/40 border border-border dark:bg-foreground/5 dark:border-foreground/10"
           >
             <div className="flex-1 min-w-0">
               <div className="text-[12px] font-bold truncate">

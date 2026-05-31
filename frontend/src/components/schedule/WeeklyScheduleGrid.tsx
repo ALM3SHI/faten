@@ -21,28 +21,34 @@ const DAY_COL_MIN_PX = 145;
 
 const STUDY_PRIORITY_STYLES: Record<
   PlanPriority,
-  { border: string; bg: string; inner: string; chip: string; dot: string }
+  { border: string; bg: string; inner: string; chip: string; dot: string; subtext: string }
 > = {
   high: {
-    border: "border-rose-500/40",
-    bg: "bg-rose-500/[0.06]",
-    inner: "bg-rose-500/20 border-rose-500/45 text-rose-50",
-    chip: "bg-rose-500/25 text-rose-200",
-    dot: "bg-rose-400",
+    border: "border-rose-300 dark:border-rose-500/40",
+    bg: "bg-rose-50 dark:bg-rose-500/[0.06]",
+    inner:
+      "bg-rose-100 border-rose-300 text-rose-900 dark:bg-rose-500/20 dark:border-rose-500/45 dark:text-rose-100",
+    chip: "bg-rose-200/90 text-rose-900 dark:bg-rose-500/25 dark:text-rose-200",
+    dot: "bg-rose-600 dark:bg-rose-400",
+    subtext: "text-rose-800/80 dark:text-rose-200/80",
   },
   medium: {
-    border: "border-violet-500/40",
-    bg: "bg-violet-500/[0.06]",
-    inner: "bg-violet-500/20 border-violet-500/45 text-violet-50",
-    chip: "bg-violet-500/25 text-violet-200",
-    dot: "bg-violet-400",
+    border: "border-violet-300 dark:border-violet-500/40",
+    bg: "bg-violet-50 dark:bg-violet-500/[0.06]",
+    inner:
+      "bg-violet-100 border-violet-300 text-violet-900 dark:bg-violet-500/20 dark:border-violet-500/45 dark:text-violet-100",
+    chip: "bg-violet-200/90 text-violet-900 dark:bg-violet-500/25 dark:text-violet-200",
+    dot: "bg-violet-600 dark:bg-violet-400",
+    subtext: "text-violet-800/80 dark:text-violet-200/80",
   },
   low: {
-    border: "border-emerald-500/35",
-    bg: "bg-emerald-500/[0.05]",
-    inner: "bg-emerald-500/15 border-emerald-500/40 text-emerald-50",
-    chip: "bg-emerald-500/20 text-emerald-200",
-    dot: "bg-emerald-400",
+    border: "border-emerald-300 dark:border-emerald-500/35",
+    bg: "bg-emerald-50 dark:bg-emerald-500/[0.05]",
+    inner:
+      "bg-emerald-100 border-emerald-300 text-emerald-900 dark:bg-emerald-500/15 dark:border-emerald-500/40 dark:text-emerald-100",
+    chip: "bg-emerald-200/90 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200",
+    dot: "bg-emerald-600 dark:bg-emerald-400",
+    subtext: "text-emerald-800/80 dark:text-emerald-200/80",
   },
 };
 
@@ -306,25 +312,21 @@ function StudySpanningCell({
     >
       <div
         className={cn(
-          "group h-full w-full rounded-lg border p-3 flex flex-col gap-2 relative overflow-hidden transition-opacity",
+          "group h-full w-full rounded-lg border p-2.5 flex flex-col gap-1.5 relative overflow-hidden transition-opacity min-h-[44px]",
           p.inner,
           study.done && "opacity-55",
         )}
       >
-        <div className="flex items-start justify-between gap-2 shrink-0">
-          {courseLabel ? (
-            <span
-              className={cn(
-                "text-xs font-semibold truncate flex-1 leading-snug",
-                study.done && "line-through opacity-70",
-              )}
-            >
-              {courseLabel}
-            </span>
-          ) : (
-            <span className="flex-1" />
-          )}
-          <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-start justify-between gap-1.5 shrink-0 min-w-0">
+          <div
+            className={cn(
+              "text-[13px] font-bold leading-snug line-clamp-2 flex-1 min-w-0",
+              study.done && "line-through opacity-70",
+            )}
+          >
+            {study.title}
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
             {interactive && onEdit && (
               <button
                 type="button"
@@ -332,10 +334,10 @@ function StudySpanningCell({
                   e.stopPropagation();
                   onEdit(study);
                 }}
-                className="w-7 h-7 rounded-md border border-violet-300/40 flex items-center justify-center text-violet-200/90 hover:bg-violet-500/25 transition-colors"
+                className="w-6 h-6 rounded-md border border-violet-400/50 flex items-center justify-center text-violet-700 hover:bg-violet-500/15 transition-colors dark:border-violet-300/40 dark:text-violet-200/90 dark:hover:bg-violet-500/25"
                 aria-label="تعديل الجلسة"
               >
-                <Pencil className="w-3.5 h-3.5" />
+                <Pencil className="w-3 h-3" />
               </button>
             )}
             {interactive && onDelete && (
@@ -345,10 +347,10 @@ function StudySpanningCell({
                   e.stopPropagation();
                   onDelete(study);
                 }}
-                className="w-7 h-7 rounded-md border border-rose-400/35 flex items-center justify-center text-rose-200/90 hover:bg-rose-500/20 transition-colors"
+                className="w-6 h-6 rounded-md border border-rose-400/50 flex items-center justify-center text-rose-700 hover:bg-rose-500/15 transition-colors dark:border-rose-400/35 dark:text-rose-200/90 dark:hover:bg-rose-500/20"
                 aria-label="حذف الجلسة"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3 h-3" />
               </button>
             )}
             {onToggle && (
@@ -359,32 +361,40 @@ function StudySpanningCell({
                   onToggle(study.taskKey);
                 }}
                 className={cn(
-                  "w-7 h-7 rounded-full border flex items-center justify-center transition-all",
+                  "w-6 h-6 rounded-full border flex items-center justify-center transition-all shrink-0",
                   study.done
-                    ? "bg-violet-500 border-violet-400 text-white"
-                    : "border-violet-300/50 hover:border-violet-300 text-violet-200/80",
+                    ? "bg-violet-600 border-violet-500 text-white dark:bg-violet-500 dark:border-violet-400 dark:text-white"
+                    : "border-violet-400/60 text-violet-700 hover:border-violet-500 hover:bg-violet-500/10 dark:border-violet-300/50 dark:text-violet-200/80 dark:hover:border-violet-300",
                 )}
                 aria-label={study.done ? "إلغاء الإتمام" : "وضع علامة منجز"}
               >
-                {study.done && <CheckCircle2 className="w-4 h-4" />}
+                {study.done && <CheckCircle2 className="w-3.5 h-3.5" />}
               </button>
             )}
           </div>
         </div>
-        <div
-          className={cn(
-            "text-sm font-bold leading-snug line-clamp-3",
-            study.done && "line-through opacity-70",
-          )}
-        >
-          {study.title}
-        </div>
-        <div className="mt-auto flex items-center justify-between gap-1 text-[11px] font-mono opacity-80">
-          <span>
+        {courseLabel && (
+          <div
+            className={cn(
+              "text-[10px] font-semibold truncate leading-tight",
+              p.subtext,
+              study.done && "line-through opacity-70",
+            )}
+          >
+            {courseLabel}
+          </div>
+        )}
+        <div className="mt-auto flex items-center justify-between gap-1 text-[10px] font-mono pt-0.5">
+          <span className="truncate shrink min-w-0 opacity-90">
             {study.start_time}–{study.end_time}
           </span>
-          <span className={cn("px-2 py-0.5 rounded shrink-0 inline-flex items-center gap-1", p.chip)}>
-            <span className={cn("w-1.5 h-1.5 rounded-full", p.dot)} />
+          <span
+            className={cn(
+              "px-1.5 py-0.5 rounded shrink-0 inline-flex items-center gap-1 text-[9px] font-sans font-bold",
+              p.chip,
+            )}
+          >
+            <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", p.dot)} />
             {priorityLabel} · {study.durationMinutes}د
           </span>
         </div>

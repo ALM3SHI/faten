@@ -243,7 +243,7 @@ export function StudySessionDialog({
   };
 
   const fieldClass =
-    "h-9 w-full rounded-lg border border-border bg-input px-2.5 text-sm text-foreground dark:border-white/10 dark:bg-[#1c1c1c]";
+    "h-9 w-full rounded-lg border border-border bg-background px-2.5 text-sm text-foreground dark:border-white/10 dark:bg-[#1c1c1c]";
   const selectClass = fieldClass;
   const inputClass = cn(fieldClass, "placeholder:text-muted-foreground");
 
@@ -252,7 +252,7 @@ export function StudySessionDialog({
       <DialogContent
         className={cn(
           "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-2xl",
-          "bg-card border border-border shadow-2xl backdrop-blur-xl",
+          "!bg-card border border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95",
           "[&_[data-slot=dialog-close]]:text-muted-foreground [&_[data-slot=dialog-close]]:hover:text-foreground",
         )}
         dir="rtl"

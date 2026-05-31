@@ -185,7 +185,7 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
       </header>
 
       {state.kind === "error" && (
-        <Card className="p-4 border-rose-500/40 bg-rose-500/10 text-rose-400 rounded-2xl text-sm">
+        <Card className="p-4 border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-300 dark:border-rose-400/20 rounded-2xl text-sm">
           {state.message}
         </Card>
       )}
@@ -291,7 +291,7 @@ function SummaryView({
             <h2 className="text-2xl font-black tracking-tight">السجل الأكاديمي</h2>
             <Badge
               variant="outline"
-              className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px]"
+              className="bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20 text-[10px]"
             >
               <ShieldCheck className="w-3 h-3 ml-1" />
               محفوظ
@@ -478,7 +478,7 @@ function ReviewView({
         <div>
           <h2 className="text-2xl font-black tracking-tight mb-1">مواد الترم الحالي</h2>
           <p className="text-sm text-muted-foreground">
-            تم استخراج <strong className="text-emerald-400">{currentCourses.length}</strong> مادة
+            تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{currentCourses.length}</strong> مادة
             من السجل (دقة {parsed.confidence}%). راجعها وأكّدها للمتابعة.
           </p>
           <p className="text-xs text-muted-foreground/90 leading-relaxed mt-2 max-w-xl">
@@ -576,9 +576,12 @@ function StatTile({
   accent: "emerald" | "cyan" | "violet";
 }) {
   const tone = {
-    emerald: "bg-emerald-500/10 border-emerald-500/20 text-emerald-300",
-    cyan: "bg-uqu-cyan/10 border-uqu-cyan/20 text-uqu-cyan",
-    violet: "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent",
+    emerald:
+      "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
+    cyan:
+      "bg-cyan-500/10 border-cyan-500/30 text-cyan-800 dark:text-cyan-300 dark:border-cyan-400/20",
+    violet:
+      "bg-uqu-accent/10 border-uqu-accent/30 text-purple-800 dark:text-uqu-accent dark:border-uqu-accent/20",
   }[accent];
   return (
     <div className={cn("p-3 rounded-xl border", tone)}>
@@ -605,14 +608,18 @@ function InsightCard({
 }) {
   const tone = {
     emerald: {
-      ring: "border-emerald-500/20 bg-emerald-500/[0.04]",
-      chip: "bg-emerald-500/10 border-emerald-500/25 text-emerald-200",
-      icon: "text-emerald-400 bg-emerald-500/10",
+      ring: "border-emerald-500/30 bg-emerald-500/[0.04] dark:border-emerald-500/20",
+      chip:
+        "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
+      icon:
+        "text-emerald-800 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 dark:border-emerald-400/20",
     },
     rose: {
-      ring: "border-rose-500/20 bg-rose-500/[0.04]",
-      chip: "bg-rose-500/10 border-rose-500/25 text-rose-200",
-      icon: "text-rose-400 bg-rose-500/10",
+      ring: "border-rose-500/30 bg-rose-500/[0.04] dark:border-rose-500/20",
+      chip:
+        "bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-300 dark:border-rose-400/20",
+      icon:
+        "text-rose-800 dark:text-rose-400 bg-rose-500/10 border border-rose-500/30 dark:border-rose-400/20",
     },
   }[accent];
 

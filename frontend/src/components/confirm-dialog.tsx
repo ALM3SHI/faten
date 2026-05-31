@@ -40,15 +40,15 @@ export function ConfirmDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="gap-5 p-6 sm:max-w-md"
+        className="gap-5 p-6 sm:max-w-md shadow-2xl"
         dir="rtl"
         showCloseButton={false}
       >
         <DialogHeader className="gap-3 text-right sm:text-right">
           <DialogTitle
             className={cn(
-              "text-lg font-bold leading-snug",
-              destructive && "text-red-500 dark:text-red-400",
+              "text-lg font-bold leading-snug text-foreground",
+              destructive && "text-red-600 dark:text-red-400",
             )}
           >
             {title}
@@ -65,7 +65,7 @@ export function ConfirmDialog({
             className={cn(
               "h-10 min-w-[5rem] px-5 rounded-xl text-sm font-bold",
               destructive &&
-                "bg-red-600 text-white hover:bg-red-500 border-red-600 shadow-lg shadow-red-900/25 dark:bg-red-600 dark:hover:bg-red-500",
+                "bg-red-600 text-white hover:bg-red-700 border-red-600 shadow-md shadow-red-900/20 dark:bg-red-600 dark:hover:bg-red-500 dark:shadow-red-900/25",
             )}
             onClick={handleConfirm}
           >
@@ -74,7 +74,7 @@ export function ConfirmDialog({
           <Button
             type="button"
             variant="outline"
-            className="h-10 min-w-[5rem] px-5 rounded-xl text-sm"
+            className="h-10 min-w-[5rem] px-5 rounded-xl text-sm font-medium bg-background border-border text-foreground hover:bg-secondary/80 hover:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
             onClick={() => onOpenChange(false)}
           >
             {cancelLabel}
