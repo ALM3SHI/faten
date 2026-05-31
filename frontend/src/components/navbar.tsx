@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { name: "اللوحة", href: "/dashboard" },
@@ -26,10 +27,6 @@ export function Navbar() {
   const { user, loading: authLoading } = useAuth();
   const profileName = useProfileStore((s) => s.basic.name.trim());
   const [scrolled, setScrolled] = useState(false);
-  // Source of truth on the client is the `.dark` class set by the inline
-  // boot script in app/layout.tsx. We mirror that into local state on mount
-  // so React-rendered icons (Sun/Moon) match the actual document state.
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -38,27 +35,10 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync local state with whatever the pre-hydration script applied.
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
-    setTheme(isDark ? "dark" : "light");
-  }, []);
-
   // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
-
-  const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-    try {
-      localStorage.setItem("uqu-theme", next);
-    } catch {
-      // localStorage may be unavailable (private mode, etc.) — non-fatal.
-    }
-  };
 
   return (
     <>
@@ -103,14 +83,7 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
+            <ThemeToggle />
 
             {authLoading ? (
               <div

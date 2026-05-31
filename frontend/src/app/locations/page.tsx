@@ -345,7 +345,7 @@ function LocationsContent() {
         </aside>
 
         {/* ── Map ────────────────────────────────────────────────── */}
-        <div className="flex-1 relative bg-[#020202] min-h-0">
+        <div className="flex-1 relative bg-muted/30 dark:bg-[#020202] min-h-0">
           <div className="absolute inset-0 pointer-events-none opacity-30">
             <div className="aurora-blob w-[1000px] h-[1000px] -top-96 -right-96 bg-uqu-accent/20 blur-[180px]" />
             <div className="aurora-blob w-[800px] h-[800px] -bottom-64 -left-64 bg-uqu-cyan/20 blur-[180px]" />
@@ -362,7 +362,7 @@ function LocationsContent() {
 
           {/* Status chip */}
           <div className="absolute top-6 right-6 z-10">
-            <div className="px-3 py-2 rounded-xl glass border border-foreground/10 flex items-center gap-2 backdrop-blur-md">
+            <div className="px-3 py-2 rounded-xl bg-card border border-border text-foreground shadow-sm flex items-center gap-2 backdrop-blur-md dark:glass dark:border-foreground/10">
               <div className="w-2 h-2 rounded-full bg-uqu-cyan animate-pulse" />
               <span className="text-[10px] font-bold text-foreground uppercase tracking-widest">
                 Nav Engine · A*
@@ -376,7 +376,7 @@ function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.zoomBy(1.25)}
-              className="rounded-xl glass border-foreground/10 w-10 h-10"
+              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
               aria-label="تكبير"
             >
               <Plus className="w-4 h-4" />
@@ -385,7 +385,7 @@ function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.zoomBy(0.8)}
-              className="rounded-xl glass border-foreground/10 w-10 h-10"
+              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
               aria-label="تصغير"
             >
               <Minus className="w-4 h-4" />
@@ -394,7 +394,7 @@ function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.resetView()}
-              className="rounded-xl glass border-foreground/10 w-10 h-10"
+              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
               aria-label="إعادة الضبط"
             >
               <Maximize2 className="w-4 h-4" />
@@ -557,7 +557,7 @@ function SelectedRoomCard({
         className="w-full h-10 rounded-xl text-muted hover:text-foreground hover:bg-foreground/5 gap-2 font-bold border border-foreground/10"
       >
         <X className="w-4 h-4" />
-        ✕ عودة للقائمة
+        عودة للقائمة
       </Button>
 
       <Card className="p-5 rounded-2xl bg-uqu-accent/10 border-uqu-accent/30 space-y-5 shadow-[0_0_24px_-6px_hsla(245,78%,62%,0.55)]">
@@ -586,13 +586,13 @@ function SelectedRoomCard({
           <Tile label="نقطة الدخول" value={`${room.doors?.length ?? 0} باب`} />
         </div>
 
-        {/* Start point chip */}
-        <div className="p-3 rounded-xl bg-black/30 border border-foreground/10 text-[11px] space-y-1">
-          <div className="text-[10px] text-muted font-bold uppercase tracking-wider">
+        {/* Start point chip — matches Tile styling above */}
+        <div className="p-2.5 rounded-xl bg-foreground/5 border border-foreground/10">
+          <div className="text-[10px] text-muted mb-0.5 font-bold uppercase tracking-wider">
             نقطة البداية
           </div>
           <div className="flex items-center justify-between gap-2">
-            <span className="font-bold truncate">
+            <span className="text-[12px] font-bold truncate">
               {startRoom?.label || "—"}
             </span>
             <button

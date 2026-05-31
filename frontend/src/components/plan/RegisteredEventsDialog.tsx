@@ -37,9 +37,9 @@ const PRIORITY_LABEL: Record<PlanPriority, string> = {
 };
 
 const PRIORITY_CHIP: Record<PlanPriority, string> = {
-  high: "bg-rose-500/20 text-rose-200 border-rose-500/40",
-  medium: "bg-violet-500/20 text-violet-200 border-violet-500/40",
-  low: "bg-emerald-500/15 text-emerald-200 border-emerald-500/40",
+  high: "bg-rose-500/20 text-rose-700 dark:text-rose-200 border-rose-500/40",
+  medium: "bg-violet-500/20 text-violet-700 dark:text-violet-200 border-violet-500/40",
+  low: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-200 border-emerald-500/40",
 };
 
 const TASK_TYPE_LABEL: Record<PlanTaskType, string> = {
@@ -65,10 +65,10 @@ function remainingLabel(iso: string): string {
 function remainingTone(iso: string): string {
   const n = daysUntil(iso);
   if (n === null) return "text-muted-foreground";
-  if (n < 0) return "text-rose-300";
-  if (n === 0) return "text-amber-300";
-  if (n <= 3) return "text-amber-200/90";
-  return "text-emerald-200/90";
+  if (n < 0) return "text-rose-700 dark:text-rose-300";
+  if (n === 0) return "text-amber-800 dark:text-amber-300";
+  if (n <= 3) return "text-amber-800 dark:text-amber-200/90";
+  return "text-emerald-700 dark:text-emerald-200/90";
 }
 
 function formatDate(iso: string): string {
@@ -99,7 +99,7 @@ export function RegisteredEventsDialog({
       <DialogContent
         className={cn(
           "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-2xl",
-          "!bg-[#151515] border border-white/10 shadow-2xl backdrop-blur-xl",
+          "bg-card border border-border shadow-2xl backdrop-blur-xl",
           "[&_[data-slot=dialog-close]]:text-muted-foreground [&_[data-slot=dialog-close]]:hover:text-foreground",
         )}
         dir="rtl"
@@ -117,7 +117,7 @@ export function RegisteredEventsDialog({
 
         <div className="px-6 pb-6 pt-2 space-y-2.5 max-h-[min(60vh,480px)] overflow-y-auto">
           {events.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-10 text-center text-sm text-muted-foreground">
+            <div className="rounded-xl border border-dashed border-border bg-secondary/50 dark:border-white/10 dark:bg-white/[0.02] px-4 py-10 text-center text-sm text-muted-foreground">
               لا توجد أحداث مسجلة بعد. أضف جلسة وحدّد لها تاريخاً لتظهر هنا.
             </div>
           ) : (
@@ -131,7 +131,7 @@ export function RegisteredEventsDialog({
               return (
                 <div
                   key={`${iso}-${task.suggestedTime}-${task.courseCode}-${task.title}`}
-                  className="rounded-xl border border-white/10 bg-[#1c1c1c] p-3.5 space-y-2"
+                  className="rounded-xl border border-border bg-secondary/80 dark:border-white/10 dark:bg-[#1c1c1c] p-3.5 space-y-2"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1 space-y-1">
@@ -140,7 +140,7 @@ export function RegisteredEventsDialog({
                           {task.title}
                         </h4>
                         {typeLabel && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-muted-foreground shrink-0">
+                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-foreground/5 border border-border text-muted-foreground dark:bg-white/5 dark:border-white/10 shrink-0">
                             {typeLabel}
                           </span>
                         )}
@@ -153,7 +153,7 @@ export function RegisteredEventsDialog({
                       <button
                         type="button"
                         onClick={() => onEdit(task)}
-                        className="w-8 h-8 rounded-md border border-violet-300/40 flex items-center justify-center text-violet-200/90 hover:bg-violet-500/25 transition-colors"
+                        className="w-8 h-8 rounded-md border border-violet-300/40 flex items-center justify-center text-violet-700 dark:text-violet-200/90 hover:bg-violet-500/25 transition-colors"
                         aria-label="تعديل الحدث"
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -161,7 +161,7 @@ export function RegisteredEventsDialog({
                       <button
                         type="button"
                         onClick={() => onDelete(task)}
-                        className="w-8 h-8 rounded-md border border-rose-400/35 flex items-center justify-center text-rose-200/90 hover:bg-rose-500/20 transition-colors"
+                        className="w-8 h-8 rounded-md border border-rose-400/35 flex items-center justify-center text-rose-700 dark:text-rose-200/90 hover:bg-rose-500/20 transition-colors"
                         aria-label="حذف الحدث"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

@@ -250,10 +250,10 @@ const UQU_CALENDAR = [
 // دالة مساعدة لتلوين نوع الحدث
 function getEventTone(type: string) {
   switch (type) {
-    case "holiday": return "bg-rose-500/15 text-rose-300 border-rose-500/30";
-    case "exam": return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+    case "holiday": return "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30";
+    case "exam": return "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30";
     case "system": return "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30";
-    default: return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+    default: return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30";
   }
 }
 
@@ -935,16 +935,16 @@ function AgenticInterventionBanner({ action }: { action: AgenticAction }) {
           ring: "border-rose-500/40",
           bg: "from-rose-500/[0.10] via-fuchsia-500/[0.08] to-uqu-accent/[0.10]",
           pulse: "bg-rose-500",
-          chipBg: "bg-rose-500/15 text-rose-200 border-rose-500/30",
-          icon: "text-rose-300",
+          chipBg: "bg-rose-500/15 text-rose-700 dark:text-rose-200 border-rose-500/30",
+          icon: "text-rose-700 dark:text-rose-300",
         }
       : action.severity === "medium"
         ? {
             ring: "border-amber-500/40",
             bg: "from-amber-500/[0.10] via-orange-500/[0.06] to-uqu-accent/[0.08]",
             pulse: "bg-amber-500",
-            chipBg: "bg-amber-500/15 text-amber-200 border-amber-500/30",
-            icon: "text-amber-300",
+            chipBg: "bg-amber-500/15 text-amber-800 dark:text-amber-200 border-amber-500/30",
+            icon: "text-amber-800 dark:text-amber-300",
           }
         : {
             ring: "border-uqu-accent/40",
@@ -970,7 +970,7 @@ function AgenticInterventionBanner({ action }: { action: AgenticAction }) {
       <div className="relative flex items-start gap-4 flex-wrap md:flex-nowrap">
         {/* Pulsing status dot + icon */}
         <div className="shrink-0 relative">
-          <div className="w-12 h-12 rounded-2xl bg-black/40 border border-foreground/10 flex items-center justify-center backdrop-blur-md">
+          <div className="w-12 h-12 rounded-2xl bg-foreground/5 dark:bg-black/40 border border-foreground/10 flex items-center justify-center backdrop-blur-md">
             <Sparkles className={cn("w-6 h-6", severityTone.icon)} />
           </div>
           <span
@@ -1008,7 +1008,7 @@ function AgenticInterventionBanner({ action }: { action: AgenticAction }) {
               {action.scheduled_tasks.map((t, i) => (
                 <span
                   key={`${t.suggestedDay}-${t.suggestedTime}-${i}`}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/30 border border-foreground/10 text-[11px] font-bold"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 dark:bg-black/30 border border-foreground/10 text-[11px] font-bold"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_hsl(160,95%,55%)]" />
                   {t.suggestedDay} · {t.suggestedTime}
@@ -1050,7 +1050,7 @@ function MigrationBoundary({ detail }: { detail: string }) {
     <Card className="glass p-10 md:p-14 rounded-[32px] border-amber-500/30 bg-amber-500/[0.04] animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="max-w-2xl mx-auto text-center space-y-6">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center">
-          <AlertCircle className="w-8 h-8 text-amber-300" />
+          <AlertCircle className="w-8 h-8 text-amber-800 dark:text-amber-300" />
         </div>
         <div className="space-y-3">
           <h2 className="text-2xl md:text-3xl font-black">
@@ -1101,7 +1101,7 @@ function CumulativeGpaCard({
   badgeStatus: "achieved" | "feasible" | "stretch" | "impossible" | "unknown";
 }) {
   return (
-    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
+    <Card className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
@@ -1115,11 +1115,11 @@ function CumulativeGpaCard({
           className={cn(
             "text-[10px]",
             badgeStatus === "achieved" || badgeStatus === "feasible"
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
               : badgeStatus === "stretch"
-                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                ? "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/20"
                 : badgeStatus === "impossible"
-                  ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                  ? "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20"
                   : "bg-foreground/5 text-muted border-foreground/10",
           )}
         >
@@ -1166,20 +1166,28 @@ function CumulativeGpaCard({
                   </feMerge>
                 </filter>
               </defs>
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
               <XAxis dataKey="semester" hide />
               <YAxis domain={[0, 4]} hide />
               <Tooltip
-                cursor={{ stroke: "rgba(255,255,255,0.12)", strokeWidth: 1 }}
+                cursor={{
+                  stroke: "color-mix(in oklab, var(--foreground) 15%, transparent)",
+                  strokeWidth: 1,
+                }}
                 contentStyle={{
-                  background: "rgba(10,10,10,0.92)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: 12,
                   backdropFilter: "blur(8px)",
                   padding: "8px 12px",
                   fontSize: 12,
+                  color: "var(--popover-foreground)",
                 }}
-                labelStyle={{ color: "rgba(255,255,255,0.5)", fontSize: 10, marginBottom: 4 }}
+                labelStyle={{
+                  color: "var(--muted-text)",
+                  fontSize: 10,
+                  marginBottom: 4,
+                }}
                 formatter={(value, name) => {
                   const num = typeof value === "number" ? value : Number(value);
                   const label = name === "cumulativeGpa" ? "تراكمي" : "فصلي";
@@ -1189,7 +1197,7 @@ function CumulativeGpaCard({
               <Line
                 type="monotone"
                 dataKey="semesterGpa"
-                stroke="rgba(255,255,255,0.25)"
+                stroke="color-mix(in oklab, var(--foreground) 35%, transparent)"
                 strokeWidth={1.5}
                 strokeDasharray="3 3"
                 dot={false}
@@ -1202,7 +1210,12 @@ function CumulativeGpaCard({
                 strokeWidth={3}
                 filter="url(#gpaGlowFilter)"
                 dot={{ r: 4, fill: "hsl(245, 78%, 62%)", strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: "#fff", stroke: "hsl(245, 78%, 62%)", strokeWidth: 2 }}
+                activeDot={{
+                  r: 6,
+                  fill: "var(--background)",
+                  stroke: "hsl(245, 78%, 62%)",
+                  strokeWidth: 2,
+                }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -1210,18 +1223,18 @@ function CumulativeGpaCard({
       </div>
 
       {series.length >= 2 && (
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-foreground/10 text-[11px] flex-wrap gap-2">
-          <span className="text-muted font-mono">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border dark:border-foreground/10 text-[11px] flex-wrap gap-2">
+          <span className="text-muted-foreground font-mono">
             {series[0].semester} → {series[series.length - 1].semester}
           </span>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5">
               <span className="w-2.5 h-0.5 rounded-full bg-uqu-accent" />
-              <span className="text-muted font-bold">تراكمي</span>
+              <span className="text-muted-foreground font-bold">تراكمي</span>
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-2.5 h-0.5 rounded-full bg-white/30 [background-image:repeating-linear-gradient(90deg,white_0_2px,transparent_2px_4px)]" />
-              <span className="text-muted font-bold">فصلي</span>
+              <span className="w-2.5 h-0.5 rounded-full bg-foreground/35 dark:bg-white/30 [background-image:repeating-linear-gradient(90deg,var(--foreground)_0_2px,transparent_2px_4px)] dark:[background-image:repeating-linear-gradient(90deg,white_0_2px,transparent_2px_4px)]" />
+              <span className="text-muted-foreground font-bold">فصلي</span>
             </span>
           </div>
         </div>
@@ -2207,7 +2220,7 @@ function DecisionLogRow({ row, index }: { row: DecisionLogEntry; index: number }
       ? "bg-rose-400 shadow-[0_0_6px_hsla(0,80%,60%,0.6)]"
       : row.severity === "warn"
         ? "bg-amber-400 shadow-[0_0_6px_hsla(40,90%,60%,0.6)]"
-        : "bg-white/30";
+        : "bg-foreground/20 dark:bg-white/30";
   return (
     <div className={cn("p-3 rounded-xl border flex gap-3 items-start", tone)}>
       <div className="flex flex-col items-center pt-0.5 gap-1 shrink-0">
@@ -3364,13 +3377,13 @@ function AcademicCalendarCard() {
               {/* التواريخ المرتبة والمفصولة بصرياً */}
               <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px]">
                 {/* كبسولة التاريخ الهجري */}
-                <span className="inline-flex items-center gap-1.5 bg-black/30 dark:bg-background/40 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono">
+                <span className="inline-flex items-center gap-1.5 bg-foreground/5 dark:bg-black/30 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono">
                   <span className="text-[9px] font-sans font-black text-amber-400/90 bg-amber-400/10 px-1 rounded-sm">هـ</span>
                   <span className="text-foreground/90 font-bold">{ev.hijri}</span>
                 </span>
 
                 {/* كبسولة التاريخ الميلادي */}
-                <span className="inline-flex items-center gap-1.5 bg-black/30 dark:bg-background/40 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono" dir="ltr">
+                <span className="inline-flex items-center gap-1.5 bg-foreground/5 dark:bg-black/30 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono" dir="ltr">
                   <span className="text-foreground/90 font-bold">{ev.date}</span>
                   <span className="text-[9px] font-sans font-black text-sky-400/90 bg-sky-400/10 px-1 rounded-sm">م</span>
                 </span>

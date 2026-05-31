@@ -370,10 +370,6 @@ export default function PlanPage() {
                 onEditStudyBlock={openEditSession}
                 onDeleteStudyBlock={openDeleteSession}
               />
-
-              {!plan && (
-                <EmptyState onGenerate={handleGenerate} disabled={!canGenerate} />
-              )}
             </section>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 w-full">
@@ -492,37 +488,6 @@ function LoadingState() {
           />
         ))}
       </div>
-    </Card>
-  );
-}
-
-function EmptyState({
-  onGenerate,
-  disabled,
-}: {
-  onGenerate: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <Card className="glass rounded-[32px] border-dashed border-foreground/10 p-12 flex flex-col items-center text-center gap-5">
-      <div className="w-16 h-16 rounded-2xl bg-uqu-accent/10 border border-uqu-accent/30 flex items-center justify-center text-uqu-accent">
-        <Wand2 className="w-7 h-7" />
-      </div>
-      <div className="space-y-2 max-w-md">
-        <h3 className="text-lg font-bold">جاهز لتوليد جلسات المراجعة الأسبوعية</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          سيستخدم المساعد موادك ومحاضراتك وتفضيلاتك لاقتراح جلسات مراجعة موزّعة على الأسبوع —
-          ويمكنك إضافة جلسات يدوياً لاحقاً.
-        </p>
-      </div>
-      <Button
-        onClick={onGenerate}
-        disabled={disabled}
-        className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-5 font-bold"
-      >
-        <Sparkles className="w-4 h-4" />
-        توليد جلسات المراجعة
-      </Button>
     </Card>
   );
 }

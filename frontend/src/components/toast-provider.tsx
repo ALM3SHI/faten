@@ -15,7 +15,7 @@ const VARIANT_STYLES: Record<ToastVariant, string> = {
   success:
     "bg-emerald-500/10 border-emerald-500/30 text-emerald-100 dark:text-emerald-100",
   error: "bg-rose-500/10 border-rose-500/30 text-rose-200",
-  warning: "bg-amber-500/10 border-amber-500/30 text-amber-100",
+  warning: "bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-100",
   info: "bg-uqu-accent/10 border-uqu-accent/30 text-foreground",
 };
 

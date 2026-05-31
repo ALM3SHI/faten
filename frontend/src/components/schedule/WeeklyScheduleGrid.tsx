@@ -249,7 +249,7 @@ function LectureSpanningCell({
         className={cn(
           "h-full w-full rounded-lg border p-3 flex flex-col gap-1.5 relative overflow-hidden",
           isLab
-            ? "bg-amber-500/15 border-amber-500/40 text-amber-100"
+            ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
             : "bg-[#0066cc]/15 border-[#0066cc]/40 text-foreground",
         )}
       >
@@ -260,7 +260,7 @@ function LectureSpanningCell({
           <span>
             {slot.start_time}–{slot.end_time}
           </span>
-          <span className="px-2 py-0.5 rounded bg-black/30 shrink-0">
+          <span className="px-2 py-0.5 rounded bg-foreground/10 dark:bg-black/30 shrink-0">
             {isLab ? "عملي" : "نظري"}
             {duration > 1 ? ` · ${duration}س` : ""}
           </span>

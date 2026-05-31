@@ -564,7 +564,7 @@ function SpanningSlotCell({
         className={cn(
           "group h-full w-full rounded-lg border p-2 flex flex-col gap-1 relative overflow-hidden",
           isLab
-            ? "bg-amber-500/15 border-amber-500/40 text-amber-100"
+            ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
             : "bg-[#0066cc]/15 border-[#0066cc]/40 text-foreground",
         )}
       >
@@ -574,7 +574,7 @@ function SpanningSlotCell({
           </span>
           <button
             onClick={onRemove}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-rose-300 hover:text-rose-200"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-rose-700 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200"
             aria-label="حذف"
           >
             <Trash2 className="w-3 h-3" />
@@ -587,7 +587,7 @@ function SpanningSlotCell({
           <span>
             {slot.start_time}–{slot.end_time}
           </span>
-          <span className="px-1.5 py-0.5 rounded bg-black/30">
+          <span className="px-1.5 py-0.5 rounded bg-foreground/10 dark:bg-black/30">
             {isLab ? "عملي" : "نظري"} · {duration}س
           </span>
         </div>
@@ -718,7 +718,7 @@ function PendingPlacementDialog({
                 onChange={(e) => setRoom(e.target.value)}
                 placeholder="1.042"
                 dir="ltr"
-                className="w-full bg-black/40 border border-foreground/10 rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50"
+                className="w-full bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50 dark:bg-black/40 dark:border-foreground/10"
               />
             </div>
             <div>
@@ -730,7 +730,7 @@ function PendingPlacementDialog({
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="25"
                   dir="ltr"
-                  className="w-full bg-black/40 border border-foreground/10 rounded-xl pr-8 pl-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50"
+                  className="w-full bg-input border border-border rounded-xl pr-8 pl-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50 dark:bg-black/40 dark:border-foreground/10"
                 />
               </div>
             </div>
@@ -773,7 +773,7 @@ function TypeChoice({
         active
           ? accent === "blue"
             ? "bg-[#0066cc]/15 border-[#0066cc]/50 text-[#0066cc]"
-            : "bg-amber-500/15 border-amber-500/50 text-amber-300"
+            : "bg-amber-500/15 border-amber-500/50 text-amber-800 dark:text-amber-300"
           : "bg-foreground/5 border-foreground/10 text-muted hover:border-foreground/10",
       )}
     >

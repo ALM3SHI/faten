@@ -288,7 +288,7 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
         className={cn(
           "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
           isLab
-            ? "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+            ? "bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30"
             : "bg-[#0066cc]/15 text-[#0066cc] border border-[#0066cc]/30",
         )}
       >
@@ -318,7 +318,7 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
             className={cn(
               "px-1.5 py-0.5 rounded text-[9px] font-bold",
               isLab
-                ? "bg-amber-500/15 text-amber-300"
+                ? "bg-amber-500/15 text-amber-800 dark:text-amber-300"
                 : "bg-[#0066cc]/15 text-[#0066cc]",
             )}
           >

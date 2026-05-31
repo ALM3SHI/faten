@@ -91,11 +91,11 @@ function shortSemesterLabel(semester: string): string {
 function gradeBadgeTone(grade: string | null): string {
   if (!grade) return "bg-foreground/5 text-muted border-foreground/10";
   const g = grade.toUpperCase();
-  if (g === "A+" || g === "A") return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
-  if (g === "B+" || g === "B") return "bg-cyan-500/15 text-cyan-300 border-cyan-500/30";
-  if (g === "C+" || g === "C") return "bg-amber-500/15 text-amber-300 border-amber-500/30";
-  if (g === "D+" || g === "D") return "bg-orange-500/15 text-orange-300 border-orange-500/30";
-  if (g === "F" || g === "DN") return "bg-rose-500/15 text-rose-300 border-rose-500/30";
+  if (g === "A+" || g === "A") return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30";
+  if (g === "B+" || g === "B") return "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30";
+  if (g === "C+" || g === "C") return "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30";
+  if (g === "D+" || g === "D") return "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30";
+  if (g === "F" || g === "DN") return "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30";
   return "bg-foreground/5 text-muted border-foreground/10";
 }
 
@@ -656,11 +656,11 @@ function RequiredToGraduateCard({
   }
 
   const toneByStatus = {
-    achieved: "bg-emerald-500/10 border-emerald-500/20 text-emerald-300",
-    complete: "bg-emerald-500/10 border-emerald-500/20 text-emerald-300",
+    achieved: "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
+    complete: "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
     feasible: "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent",
-    stretch: "bg-amber-500/10 border-amber-500/20 text-amber-300",
-    impossible: "bg-rose-500/10 border-rose-500/20 text-rose-300",
+    stretch: "bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300",
+    impossible: "bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300",
   } as const;
 
   const headlineByStatus = {
@@ -681,7 +681,7 @@ function RequiredToGraduateCard({
         <h3 className="text-sm font-extrabold tracking-wide opacity-90">
           المعدل المطلوب للأترام المتبقية
         </h3>
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center border border-foreground/10 bg-black/20">
+        <div className="w-11 h-11 rounded-2xl flex items-center justify-center border border-foreground/10 bg-foreground/5 dark:bg-black/20">
           <Target className="w-6 h-6" />
         </div>
       </div>
@@ -837,7 +837,7 @@ function MockCourseRow({
             placeholder="CODE"
             className="w-20 bg-foreground/5 rounded px-1.5 py-0.5 text-[10px] font-mono text-muted outline-none focus:bg-foreground/5"
           />
-          <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30">
             افتراضية
           </span>
         </div>

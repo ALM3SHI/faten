@@ -70,7 +70,7 @@ export function EmailVerificationReminder() {
           <div className="shrink-0 w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center">
             <Mail className="w-5 h-5 text-amber-400" />
           </div>
-          <p className="text-sm font-medium text-amber-100/90 leading-relaxed pt-2 sm:pt-0 sm:py-2">
+          <p className="text-sm font-medium text-amber-900 dark:text-amber-100/90 leading-relaxed pt-2 sm:pt-0 sm:py-2">
             {EMAIL_VERIFICATION_MESSAGES.dashboardReminder}
           </p>
         </div>
@@ -82,7 +82,7 @@ export function EmailVerificationReminder() {
             size="sm"
             disabled={resending || refreshing}
             onClick={handleResend}
-            className="rounded-xl border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 text-amber-100"
+            className="rounded-xl border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 text-amber-900 dark:text-amber-100"
           >
             {resending ? "جاري الإرسال..." : "إعادة إرسال رابط التحقق"}
           </Button>
@@ -92,7 +92,7 @@ export function EmailVerificationReminder() {
             size="sm"
             disabled={resending || refreshing}
             onClick={handleRefresh}
-            className="rounded-xl border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 text-amber-100 gap-2"
+            className="rounded-xl border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/15 text-amber-900 dark:text-amber-100 gap-2"
           >
             <RefreshCw className={refreshing ? "w-4 h-4 animate-spin" : "w-4 h-4"} />
             {refreshing ? "جاري التحديث..." : "تحققت من البريد، تحديث الحالة"}

@@ -195,19 +195,19 @@ export default function LandingPage() {
       <section className="py-32 bg-background border-t border-foreground/10">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center mb-20 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">قوة مذهلة. <br/><span className="text-[#a1a1a6]">في تصميم بسيط.</span></h2>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">قوة مذهلة. <br/><span className="text-muted-foreground dark:text-[#a1a1a6]">في تصميم بسيط.</span></h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Card 1: GPA Tracker */}
             <div className="lg:col-span-2">
-              <div className="bg-[#161618] rounded-[24px] border border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/10 group cursor-default">
+              <div className="bg-card rounded-[24px] border border-border shadow-sm dark:bg-[#161618] dark:border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/20 dark:hover:border-foreground/10 group cursor-default">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-8">
                   {/* CSS Circular Progress Ring representing GPA */}
-                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full bg-card shrink-0">
+                  <div className="relative w-24 h-24 flex items-center justify-center rounded-full bg-background dark:bg-card shrink-0">
                     <svg className="w-24 h-24 transform -rotate-90">
-                      <circle cx="48" cy="48" r="44" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-white/5" />
+                      <circle cx="48" cy="48" r="44" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-foreground/10 dark:text-white/5" />
                       <circle cx="48" cy="48" r="44" stroke="currentColor" strokeWidth="6" fill="transparent" strokeDasharray="276" strokeDashoffset="14" className="text-[#0066cc] transition-all duration-1000 ease-out group-hover:strokeDashoffset-0" />
                     </svg>
                     <div className="absolute flex flex-col items-center justify-center">
@@ -217,7 +217,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h3 className="text-3xl font-bold tracking-tight text-foreground mb-3">حساب المعدل</h3>
-                    <p className="text-[#a1a1a6] text-lg leading-relaxed">
+                    <p className="text-muted-foreground dark:text-[#a1a1a6] text-lg leading-relaxed">
                       تتبع مسارك الأكاديمي بدقة متناهية وتوقع معدلك القادم بناءً على السيناريوهات المختلفة قبل وقوعها.
                     </p>
                   </div>
@@ -227,7 +227,7 @@ export default function LandingPage() {
             
             {/* Card 2: Pomodoro */}
             <div className="lg:col-span-1">
-              <div className="bg-[#161618] rounded-[24px] border border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-center transition-all hover:scale-[1.02] hover:border-foreground/10 cursor-default">
+              <div className="bg-card rounded-[24px] border border-border shadow-sm dark:bg-[#161618] dark:border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-center transition-all hover:scale-[1.02] hover:border-foreground/20 dark:hover:border-foreground/10 cursor-default">
                 {/* CSS Digital Timer */}
                 <div className="bg-card rounded-xl py-3 px-6 flex items-center gap-4 mb-8 border border-foreground/10 shadow-inner">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
@@ -235,7 +235,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">بومودورو</h3>
-                  <p className="text-[#a1a1a6] text-lg leading-relaxed">
+                  <p className="text-muted-foreground dark:text-[#a1a1a6] text-lg leading-relaxed">
                     نظم وقت المذاكرة بفترات تركيز عميقة.
                   </p>
                 </div>
@@ -244,7 +244,7 @@ export default function LandingPage() {
             
             {/* Card 3: Campus Blueprint */}
             <div className="lg:col-span-1">
-              <div className="bg-[#161618] rounded-[24px] border border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/10 relative overflow-hidden cursor-default group">
+              <div className="bg-card rounded-[24px] border border-border shadow-sm dark:bg-[#161618] dark:border-foreground/10 p-12 h-full flex flex-col items-start text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/20 dark:hover:border-foreground/10 relative overflow-hidden cursor-default group">
                 {/* SVG Blueprint Floor Plan */}
                 <div className="relative w-full h-32 mb-8 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
                   <svg viewBox="0 0 200 120" className="w-full h-full" stroke="currentColor" fill="none" strokeWidth="1">
@@ -287,7 +287,7 @@ export default function LandingPage() {
                 
                 <div className="relative z-10 w-full text-right">
                   <h3 className="text-2xl font-bold tracking-tight text-foreground mb-3">خرائط ذكية</h3>
-                  <p className="text-[#a1a1a6] text-[15px] leading-relaxed">
+                  <p className="text-muted-foreground dark:text-[#a1a1a6] text-[15px] leading-relaxed">
                     مخططات تفاعلية داخلية لمباني الجامعة. وداعاً للضياع في الأروقة.
                   </p>
                 </div>
@@ -296,7 +296,7 @@ export default function LandingPage() {
 
             {/* Card 4: Dashboard */}
             <div className="lg:col-span-2">
-              <div className="bg-[#161618] rounded-[24px] border border-foreground/10 p-12 h-full flex flex-col md:flex-row items-center text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/10 relative overflow-hidden cursor-default group">
+              <div className="bg-card rounded-[24px] border border-border shadow-sm dark:bg-[#161618] dark:border-foreground/10 p-12 h-full flex flex-col md:flex-row items-center text-right justify-between transition-all hover:scale-[1.02] hover:border-foreground/20 dark:hover:border-foreground/10 relative overflow-hidden cursor-default group">
                 {/* CSS Dashboard Micro-UI */}
                 <div className="w-full md:w-[45%] flex flex-col gap-4 p-4 bg-card rounded-xl border border-foreground/10 shadow-2xl mb-8 md:mb-0 ml-0 md:ml-8 transform group-hover:translate-y-[-5px] transition-transform">
                   <div className="flex gap-2">
@@ -304,34 +304,34 @@ export default function LandingPage() {
                     <div className="w-16 h-2 rounded-full bg-foreground/5" />
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-[#272729] rounded-lg p-3 border border-foreground/10 flex flex-col gap-1 items-end">
-                      <div className="text-[10px] text-muted">المعدل</div>
+                    <div className="bg-secondary dark:bg-[#272729] rounded-lg p-3 border border-border dark:border-foreground/10 flex flex-col gap-1 items-end">
+                      <div className="text-[10px] text-muted-foreground">المعدل</div>
                       <div className="text-sm font-bold text-foreground">3.84</div>
                     </div>
-                    <div className="bg-[#272729] rounded-lg p-3 border border-foreground/10 flex flex-col gap-1 items-end">
-                      <div className="text-[10px] text-muted">الغياب</div>
+                    <div className="bg-secondary dark:bg-[#272729] rounded-lg p-3 border border-border dark:border-foreground/10 flex flex-col gap-1 items-end">
+                      <div className="text-[10px] text-muted-foreground">الغياب</div>
                       <div className="text-sm font-bold text-foreground">0 h</div>
                     </div>
-                    <div className="bg-[#272729] rounded-lg p-3 border border-foreground/10 flex flex-col gap-1 items-end">
-                      <div className="text-[10px] text-muted">المهام</div>
+                    <div className="bg-secondary dark:bg-[#272729] rounded-lg p-3 border border-border dark:border-foreground/10 flex flex-col gap-1 items-end">
+                      <div className="text-[10px] text-muted-foreground">المهام</div>
                       <div className="text-sm font-bold text-foreground">12</div>
                     </div>
                   </div>
-                  <div className="h-16 bg-[#272729] rounded-lg border border-foreground/10 flex items-end gap-1 p-2 pt-4">
+                  <div className="h-16 bg-secondary dark:bg-[#272729] rounded-lg border border-border dark:border-foreground/10 flex items-end gap-1 p-2 pt-4">
                     <div className="flex-1 bg-[#0066cc]/40 h-[30%] rounded-t-sm" />
                     <div className="flex-1 bg-[#0066cc]/60 h-[50%] rounded-t-sm" />
                     <div className="flex-1 bg-[#0066cc]/80 h-[80%] rounded-t-sm" />
                     <div className="flex-1 bg-[#0066cc] h-[100%] rounded-t-sm" />
                     <div className="flex-1 bg-[#0066cc]/50 h-[60%] rounded-t-sm" />
                   </div>
-                  <div className="w-full bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-lg p-2 text-[10px] text-center font-medium mt-1">
+                  <div className="w-full bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-500/20 rounded-lg p-2 text-[10px] text-center font-medium mt-1">
                     طلب مساعدة أكاديمية
                   </div>
                 </div>
                 
                 <div className="relative z-10 w-full md:w-[50%] ml-auto text-right flex flex-col items-end">
                   <h3 className="text-3xl font-bold tracking-tight text-foreground mb-4">لوحة تحكم متكاملة</h3>
-                  <p className="text-[#a1a1a6] text-lg leading-relaxed text-right">
+                  <p className="text-muted-foreground dark:text-[#a1a1a6] text-lg leading-relaxed text-right">
                     كل بياناتك الأكاديمية في مكان واحد. راقب مستواك، تتبع غياباتك، وقم بإدارة مهامك اليومية من خلال لوحة معلومات مصممة لتمنحك السيطرة الكاملة.
                   </p>
                 </div>

@@ -243,7 +243,7 @@ export function StudySessionDialog({
   };
 
   const fieldClass =
-    "h-9 w-full rounded-lg border border-white/10 bg-[#1c1c1c] px-2.5 text-sm text-foreground";
+    "h-9 w-full rounded-lg border border-border bg-input px-2.5 text-sm text-foreground dark:border-white/10 dark:bg-[#1c1c1c]";
   const selectClass = fieldClass;
   const inputClass = cn(fieldClass, "placeholder:text-muted-foreground");
 
@@ -252,7 +252,7 @@ export function StudySessionDialog({
       <DialogContent
         className={cn(
           "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-2xl",
-          "!bg-[#151515] border border-white/10 shadow-2xl backdrop-blur-xl",
+          "bg-card border border-border shadow-2xl backdrop-blur-xl",
           "[&_[data-slot=dialog-close]]:text-muted-foreground [&_[data-slot=dialog-close]]:hover:text-foreground",
         )}
         dir="rtl"
@@ -429,7 +429,7 @@ export function StudySessionDialog({
                   onChange={(e) =>
                     setForm((f) => ({ ...f, targetDate: e.target.value }))
                   }
-                  className={cn(inputClass, "font-mono [color-scheme:dark]")}
+                  className={cn(inputClass, "font-mono")}
                 />
               </div>
               <div className="space-y-1.5">
@@ -476,7 +476,7 @@ export function StudySessionDialog({
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-start gap-3 border-t border-white/10 px-6 py-4 mt-1 shrink-0">
+          <div className="flex flex-row items-center justify-start gap-3 border-t border-border dark:border-white/10 px-6 py-4 mt-1 shrink-0">
             <Button
               type="submit"
               className="h-9 px-4 rounded-xl text-sm font-bold bg-uqu-accent hover:bg-uqu-accent/90 text-foreground shadow-[0_0_16px_-4px_hsla(245,78%,62%,0.5)]"
@@ -486,7 +486,7 @@ export function StudySessionDialog({
             <Button
               type="button"
               variant="outline"
-              className="h-9 px-4 rounded-xl text-sm font-medium border-white/10 bg-transparent hover:bg-white/5 text-foreground"
+              className="h-9 px-4 rounded-xl text-sm font-medium border-border bg-transparent hover:bg-foreground/5 text-foreground dark:border-white/10 dark:hover:bg-white/5"
               onClick={() => onOpenChange(false)}
             >
               إلغاء
