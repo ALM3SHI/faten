@@ -16,7 +16,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
-  Hand,
   ArrowLeft,
   Save,
   X,
@@ -250,13 +249,12 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
     >
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1 flex items-center gap-2">
-            <Hand className="w-6 h-6 text-uqu-accent" />
-            البناء اليدوي للجدول
+          <h2 className="text-2xl font-black tracking-tight mb-1">
+            بناء الجدول الدراسي
           </h2>
           <p className="text-sm text-muted-foreground">
             اسحب المواد من اليمين وأفلتها على الخلية المناسبة. يمكنك سحب نفس المادة عدة مرات
-            للنظري والعملي على أوقات مختلفة. المواد ذات الساعتين فأكثر تمتد على عدة خانات تلقائياً.
+            للنظري والعملي على أوقات مختلفة.
           </p>
         </div>
         <div className="flex gap-2">

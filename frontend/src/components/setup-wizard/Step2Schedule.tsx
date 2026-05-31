@@ -47,9 +47,9 @@ type ViewMode = "summary" | "selection" | "vision" | "manual";
  *   • Returning user (useScheduleStore.schedule already populated):
  *     Land on the SummaryView showing the saved timetable grouped by day.
  *     They can confirm and move to Step 3, or click "إعادة بناء الجدول"
- *     to drop into the Vision/Manual selection cards.
+ *     to open the manual builder directly.
  *   • First-time setup (store empty):
- *     Land directly on the SelectionView (Vision card vs Manual card).
+ *     Land directly on ManualScheduleBuilder.
  *
  * The Summary view's "Next" button reuses the existing schedule slots
  * and passes "manual" as the source — the schedule isn't being rebuilt,
@@ -60,32 +60,25 @@ export function Step2Schedule({ currentCourses, onBack, onDone }: Step2Props) {
   // Pull the saved schedule (committed in a previous wizard run) from the
   // store. We deliberately do NOT subscribe to lastUpdated changes —
   // editing the schedule mid-wizard goes through local state in
-  // ManualScheduleBuilder / VisionUpload, not the store.
+  // ManualScheduleBuilder, not the store.
   const savedSchedule = useScheduleStore((s) => s.schedule);
   const savedLastUpdated = useScheduleStore((s) => s.lastUpdated);
 
   // Initial view: summary if we already have a saved schedule, otherwise
-  // the selection cards. useState init function — runs once on mount.
+  // the manual builder. useState init function — runs once on mount.
   const [mode, setMode] = useState<ViewMode>(() =>
-    savedSchedule.length > 0 ? "summary" : "selection",
+    savedSchedule.length > 0 ? "summary" : "manual",
   );
 
-  // ── Vision sub-flow ─────────────────────────────────────────────
-  if (mode === "vision") {
-    return (
-      <VisionUpload
-        onBack={() => setMode(savedSchedule.length > 0 ? "summary" : "selection")}
-        onDone={(slots) => onDone(slots, "vision")}
-      />
-    );
-  }
+  const backFromManual = () =>
+    savedSchedule.length > 0 ? setMode("summary") : onBack();
 
-  // ── Manual sub-flow ─────────────────────────────────────────────
+  // ── Manual sub-flow (default for first-time setup) ────────────────
   if (mode === "manual") {
     return (
       <ManualScheduleBuilder
         currentCourses={currentCourses}
-        onBack={() => setMode(savedSchedule.length > 0 ? "summary" : "selection")}
+        onBack={backFromManual}
         onSave={(slots) => onDone(slots, "manual")}
       />
     );
@@ -97,22 +90,20 @@ export function Step2Schedule({ currentCourses, onBack, onDone }: Step2Props) {
       <SummaryView
         schedule={savedSchedule}
         lastUpdated={savedLastUpdated}
-        onRebuild={() => setMode("selection")}
+        onRebuild={() => setMode("manual")}
         onNext={() => onDone(savedSchedule, "manual")}
         onBackToStep1={onBack}
       />
     );
   }
 
-  // ── Selection view (Vision vs Manual cards) ─────────────────────
+  // Legacy selection/vision modes — unreachable from the wizard UI; fall
+  // back to manual so stale state never surfaces the AI chooser.
   return (
-    <SelectionView
+    <ManualScheduleBuilder
       currentCourses={currentCourses}
-      hasSavedSchedule={savedSchedule.length > 0}
-      onVision={() => setMode("vision")}
-      onManual={() => setMode("manual")}
-      onBackToSummary={() => setMode("summary")}
-      onBackToStep1={onBack}
+      onBack={backFromManual}
+      onSave={(slots) => onDone(slots, "manual")}
     />
   );
 }

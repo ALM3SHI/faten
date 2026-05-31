@@ -167,7 +167,7 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
 function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => void }) {
   const labels: Array<{ n: WizardStep; title: string; sub: string }> = [
     { n: 1, title: "السجل الأكاديمي", sub: "استخراج مواد الترم الحالي" },
-    { n: 2, title: "الجدول الدراسي", sub: "تحليل بصري أو بناء يدوي" },
+    { n: 2, title: "الجدول الدراسي", sub: "بناء الجدول يدوياً" },
     { n: 3, title: "اكتمل الإعداد", sub: "حفظ والمتابعة" },
   ];
 

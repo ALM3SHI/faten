@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, ArrowLeft, BookOpen, CalendarDays, Eye, Hand } from "lucide-react";
+import { CheckCircle2, ArrowLeft, BookOpen, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import type { ScheduleSource } from "./SetupWizard";
@@ -18,7 +18,7 @@ interface Step3Props {
  * earlier) so backing out at any prior step leaves the stores untouched.
  * After commit, we push to the dashboard.
  */
-export function Step3Complete({ source, slotsCount, coursesCount, onCommit }: Step3Props) {
+export function Step3Complete({ slotsCount, coursesCount, onCommit }: Step3Props) {
   const router = useRouter();
 
   const handleSave = () => {
@@ -43,15 +43,9 @@ export function Step3Complete({ source, slotsCount, coursesCount, onCommit }: St
         <CheckCircle2 className="w-12 h-12 text-emerald-400" />
       </motion.div>
 
-      <div className="space-y-2 max-w-md">
-        <h2 className="text-3xl md:text-4xl font-black tracking-tight">
-          🎉 تم إعداد ملفك الأكاديمي بنجاح!
-        </h2>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          كل شيء جاهز. ستجد الآن لوحة المعلومات الذكية ممتلئة ببياناتك،
-          وحاسبة المعدل والبومودورو يعرفان مواد الترم الحالي.
-        </p>
-      </div>
+      <h2 className="text-3xl md:text-4xl font-black tracking-tight max-w-md">
+        تم إعداد ملفك الأكاديمي بنجاح!
+      </h2>
 
       <div className="grid grid-cols-2 gap-3 w-full max-w-md">
         <StatPill
@@ -65,16 +59,6 @@ export function Step3Complete({ source, slotsCount, coursesCount, onCommit }: St
           value={String(slotsCount)}
         />
       </div>
-
-      {source && (
-        <div className="text-[11px] text-muted flex items-center gap-2">
-          {source === "vision" ? <Eye className="w-3 h-3" /> : <Hand className="w-3 h-3" />}
-          الجدول بُني عبر:{" "}
-          <span className="font-bold text-muted">
-            {source === "vision" ? "التحليل البصري الذكي" : "البناء اليدوي"}
-          </span>
-        </div>
-      )}
 
       <Button
         onClick={handleSave}
