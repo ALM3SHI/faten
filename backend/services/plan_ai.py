@@ -465,6 +465,20 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
             )
         msg = completion.choices[0].message
         text = (msg.content or "").strip()
+
+        usage = getattr(completion, "usage", None)
+        prompt_tokens = getattr(usage, "prompt_tokens", 0) if usage else 0
+        completion_tokens = getattr(usage, "completion_tokens", 0) if usage else 0
+        total_tokens = getattr(usage, "total_tokens", 0) if usage else 0
+
+        logger.info(
+            "[plan_ai] cost_log | provider=openai | model=%s | prompt_tokens=%d | completion_tokens=%d | total_tokens=%d",
+            settings.OPENAI_MODEL,
+            prompt_tokens,
+            completion_tokens,
+            total_tokens,
+        )
+
         if not text:
             raise HTTPException(
                 status_code=502,
@@ -576,6 +590,20 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
             )
         msg = completion.choices[0].message
         text = (msg.content or "").strip()
+
+        usage = getattr(completion, "usage", None)
+        prompt_tokens = getattr(usage, "prompt_tokens", 0) if usage else 0
+        completion_tokens = getattr(usage, "completion_tokens", 0) if usage else 0
+        total_tokens = getattr(usage, "total_tokens", 0) if usage else 0
+
+        logger.info(
+            "[plan_ai] cost_log | provider=llama | model=%s | prompt_tokens=%d | completion_tokens=%d | total_tokens=%d",
+            settings.LLAMA_MODEL,
+            prompt_tokens,
+            completion_tokens,
+            total_tokens,
+        )
+
         if not text:
             raise HTTPException(
                 status_code=502,

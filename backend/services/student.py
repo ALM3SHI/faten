@@ -68,7 +68,7 @@ def academic_record_completed_courses(record: dict) -> list[dict]:
     return record.get("completedCourses") or []
 
 
-async def load_student_context(user_id: str, db) -> dict:
+async def load_student_context(user_id: str, db, required_blocks: list[str] | None = None) -> dict:
     """Load full student context from Firestore without blocking the event loop.
 
     Runs each Firestore SDK call in the default thread-pool executor
@@ -117,9 +117,20 @@ async def load_student_context(user_id: str, db) -> dict:
         return [d.to_dict() for d in snaps]
 
     user_data = await loop.run_in_executor(None, _fetch_user)
-    transcript = await loop.run_in_executor(None, _fetch_transcript)
-    semesters = await loop.run_in_executor(None, _fetch_semesters)
-    upcoming_exams = await loop.run_in_executor(None, _fetch_exams)
+    
+    # Selectively fetch heavy components based on required_blocks
+    transcript = None
+    semesters = []
+    upcoming_exams = []
+    
+    # If required_blocks is None, load everything (backward compatibility)
+    # Otherwise, check explicitly
+    if required_blocks is None or "full_transcript" in required_blocks or "recent_grades" in required_blocks or "gpa_summary" in required_blocks:
+        transcript = await loop.run_in_executor(None, _fetch_transcript)
+        semesters = await loop.run_in_executor(None, _fetch_semesters)
+        
+    if required_blocks is None or "exams" in required_blocks:
+        upcoming_exams = await loop.run_in_executor(None, _fetch_exams)
 
     academic_record = (
         ws["transcript"] if transcript_has_data(ws.get("transcript")) else {}

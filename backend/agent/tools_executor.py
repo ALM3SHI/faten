@@ -1653,18 +1653,19 @@ async def execute_tool(
                 return 0.92
             return SequenceMatcher(None, a, b).ratio()
 
-        # Output-only HTML sanitizer. Some course fields (e.g. grading_policy)
-        # are stored with literal "<br>" tags; show a clean Arabic separator
-        # instead of raw HTML. This NEVER touches Firestore — it only cleans
-        # the dict copy returned to the chat. Arabic comma is used (not a
-        # newline) so values stay intact inside Markdown table cells.
-        _BR_RE = _re.compile(r"<\s*br\s*/?\s*>", _re.IGNORECASE)
+        # Output-only HTML sanitizer.
+        _BR_RE = _re.compile(r"<\s*br\s*/?\s*>|&lt;\s*br\s*/?\s*&gt;", _re.IGNORECASE)
 
         def _clean_str(s: str) -> str:
-            cleaned = _BR_RE.sub("، ", str(s))
+            text = str(s)
+            if _BR_RE.search(text):
+                # Convert <br> variants into markdown bullets
+                cleaned = "\n- " + _BR_RE.sub("\n- ", text)
+            else:
+                cleaned = text
             cleaned = _re.sub(r"(\s*،\s*)+", "، ", cleaned)  # collapse dup seps
             cleaned = _re.sub(r"[ \t]+", " ", cleaned)
-            return cleaned.strip().strip("،").strip()
+            return cleaned.strip()
 
         def _sanitize(obj):
             """Recursively clean HTML line breaks from strings in a dict/list."""

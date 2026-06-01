@@ -22,6 +22,32 @@ import logging
 from datetime import date, datetime
 from openai import AsyncOpenAI, APIError, APIStatusError, APIConnectionError, APITimeoutError
 
+# Pricing per 1M tokens in USD
+PRICE_MAP = {
+    "gpt-4o": {"prompt": 5.0, "completion": 15.0},
+    "gpt-4o-2024-05-13": {"prompt": 5.0, "completion": 15.0},
+    "gpt-4o-2024-08-06": {"prompt": 2.5, "completion": 10.0},
+    "gpt-4o-mini": {"prompt": 0.15, "completion": 0.60},
+    "gpt-4o-mini-2024-07-18": {"prompt": 0.15, "completion": 0.60},
+    "gpt-3.5-turbo": {"prompt": 0.50, "completion": 1.50},
+    "gpt-3.5-turbo-0125": {"prompt": 0.50, "completion": 1.50},
+    "gpt-4-turbo": {"prompt": 10.0, "completion": 30.0},
+    "gpt-4-turbo-preview": {"prompt": 10.0, "completion": 30.0},
+    "gpt-4-1106-preview": {"prompt": 10.0, "completion": 30.0},
+    "gpt-4-0125-preview": {"prompt": 10.0, "completion": 30.0},
+}
+
+def estimate_cost(model: str, prompt_tokens: int, completion_tokens: int) -> float | None:
+    rates = PRICE_MAP.get(model)
+    if not rates:
+        for k, v in PRICE_MAP.items():
+            if model.startswith(k):
+                rates = v
+                break
+    if not rates:
+        return None
+    return (prompt_tokens * rates["prompt"] / 1_000_000) + (completion_tokens * rates["completion"] / 1_000_000)
+
 from config import get_settings
 from agent.tools_schema import TOOLS_SCHEMA
 from agent.tools_executor import execute_tool
@@ -130,7 +156,7 @@ def get_openai_client() -> AsyncOpenAI:
     )
 
 
-async def _call_model(client, model_name, messages, with_tools: bool):
+async def _call_model(client, model_name, messages, with_tools: bool, tools_override: list | None = None):
     """Single completion call. Logs the exact error on failure."""
     try:
         kwargs = dict(
@@ -141,7 +167,7 @@ async def _call_model(client, model_name, messages, with_tools: bool):
             max_tokens=8192,
         )
         if with_tools:
-            kwargs["tools"] = TOOLS_SCHEMA
+            kwargs["tools"] = tools_override if tools_override is not None else TOOLS_SCHEMA
             kwargs["tool_choice"] = "auto"
         return await client.chat.completions.create(**kwargs)
     except APIStatusError as e:
@@ -188,6 +214,9 @@ async def run_agent_loop(
     user_id: str,
     db,
     client: AsyncOpenAI | None = None,
+    with_tools_enabled: bool = True,
+    override_model: str | None = None,
+    tools_override: list | None = None,
 ) -> dict:
     """Run the agentic loop with tool calling.
 
@@ -204,7 +233,7 @@ async def run_agent_loop(
         client = get_openai_client()
     all_messages = list(messages)  # shallow copy
     actions_log: list[dict] = []
-    model_name = settings.OPENAI_MODEL
+    model_name = override_model or settings.OPENAI_MODEL
 
     # Extract the system prompt for the Gemini fallback (first message if role=system)
     system_prompt_for_fallback = ""
@@ -213,6 +242,15 @@ async def run_agent_loop(
             system_prompt_for_fallback = m.get("content", "")
             break
 
+    summary_stats = {
+        "total_model_calls": 0,
+        "total_prompt_tokens": 0,
+        "total_completion_tokens": 0,
+        "total_tokens": 0,
+        "tools_used": False,
+        "estimated_cost_usd": 0.0,
+    }
+
     logger.info(
         "[AGENT] Starting loop — model=%s msgs=%d user=%s",
         model_name, len(all_messages), user_id,
@@ -220,8 +258,9 @@ async def run_agent_loop(
 
     for i in range(MAX_ITERATIONS):
         # ── Call the model ──
+        used_tools = with_tools_enabled
         try:
-            completion = await _call_model(client, model_name, all_messages, with_tools=True)
+            completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
         except Exception as first_err:
             # Only retry without tools when the failure was specifically the
             # tools schema being rejected. For auth / network / 5xx we want
@@ -238,7 +277,8 @@ async def run_agent_loop(
                 type(first_err).__name__,
             )
             try:
-                completion = await _call_model(client, model_name, all_messages, with_tools=False)
+                used_tools = False
+                completion = await _call_model(client, model_name, all_messages, with_tools=False, tools_override=tools_override)
             except Exception as second_err:
                 logger.error("[AGENT] Retry without tools also failed: %s", second_err)
                 # Both NVIDIA calls failed — try Gemini as last resort
@@ -250,10 +290,41 @@ async def run_agent_loop(
         choice = completion.choices[0]
         message = choice.message
 
+        # ── Usage tracking ──
+        usage = getattr(completion, "usage", None)
+        prompt_tokens = getattr(usage, "prompt_tokens", 0) if usage else 0
+        completion_tokens = getattr(usage, "completion_tokens", 0) if usage else 0
+        total_tokens = getattr(usage, "total_tokens", 0) if usage else 0
+        num_tool_calls = len(message.tool_calls) if message.tool_calls else 0
+
+        summary_stats["total_model_calls"] += 1
+        summary_stats["total_prompt_tokens"] += prompt_tokens
+        summary_stats["total_completion_tokens"] += completion_tokens
+        summary_stats["total_tokens"] += total_tokens
+        if num_tool_calls > 0:
+            summary_stats["tools_used"] = True
+
+        cost = estimate_cost(model_name, prompt_tokens, completion_tokens)
+        if cost is not None and summary_stats["estimated_cost_usd"] is not None:
+            summary_stats["estimated_cost_usd"] += cost
+        elif cost is None:
+            summary_stats["estimated_cost_usd"] = None
+
+        logger.info(
+            "[AGENT] cost_log | feature=chat | model=%s | iter=%d | with_tools=%s | tools_returned=%d | prompt_tokens=%d | completion_tokens=%d | total_tokens=%d",
+            model_name,
+            i,
+            used_tools,
+            num_tool_calls,
+            prompt_tokens,
+            completion_tokens,
+            total_tokens,
+        )
+
         logger.info(
             "[AGENT] iter=%d finish=%s tool_calls=%d content_len=%d",
             i, choice.finish_reason,
-            len(message.tool_calls) if message.tool_calls else 0,
+            num_tool_calls,
             len(message.content or ""),
         )
 
@@ -296,15 +367,15 @@ async def run_agent_loop(
                     )
                     fallback = await _gemini_fallback(all_messages, system_prompt_for_fallback)
                     if fallback:
-                        return {"content": fallback, "actions_log": [], "reasoning": None}
+                        return _finalize_and_return({"content": fallback, "actions_log": [], "reasoning": None}, summary_stats, model_name)
                     # If Gemini also fails, return the primary model's deflection rather than nothing
                     logger.warning("[AGENT] Gemini fallback also returned nothing — returning primary model text")
 
-            return {
+            return _finalize_and_return({
                 "content": content,
                 "actions_log": actions_log,
                 "reasoning": None,
-            }
+            }, summary_stats, model_name)
 
         # ── Execute requested tools ──
         for tool_call in message.tool_calls:
@@ -408,8 +479,24 @@ async def run_agent_loop(
             last_assistant_text = m["content"]
             break
     logger.warning("[AGENT] Hit MAX_ITERATIONS=%d — returning last assistant turn", MAX_ITERATIONS)
-    return {
+    return _finalize_and_return({
         "content": last_assistant_text or "تم استنفاد عدد محاولات المحرك. حاول إعادة صياغة طلبك بشكل أبسط.",
         "actions_log": actions_log,
         "reasoning": None,
-    }
+    }, summary_stats, model_name)
+
+
+def _finalize_and_return(result_dict: dict, stats: dict, model_name: str) -> dict:
+    est_cost = stats["estimated_cost_usd"]
+    logger.info(
+        "[AGENT] cost_summary | feature=chat | model=%s | total_calls=%d | total_prompt=%d | "
+        "total_completion=%d | total_tokens=%d | tools_used=%s | est_cost_usd=%s",
+        model_name,
+        stats["total_model_calls"],
+        stats["total_prompt_tokens"],
+        stats["total_completion_tokens"],
+        stats["total_tokens"],
+        stats["tools_used"],
+        f"{est_cost:.6f}" if est_cost is not None else "null",
+    )
+    return result_dict
