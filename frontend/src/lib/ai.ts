@@ -97,8 +97,13 @@ export async function executeClientTool(name: string, args: any, backendData: an
 
     case 'change_theme': {
       const theme = args.theme || 'auto';
-      document.body.setAttribute('data-theme', theme);
-      Storage.set(STORAGE_KEYS.THEME, theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add("dark");
+        try { localStorage.setItem("uqu-theme", "dark"); } catch (e) {}
+      } else {
+        document.documentElement.classList.remove("dark");
+        try { localStorage.setItem("uqu-theme", "light"); } catch (e) {}
+      }
       return backendData;
     }
 
