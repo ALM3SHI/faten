@@ -62,7 +62,61 @@ from services.workspace import (
     load_plan_for_tool_mutation_sync,
     study_plan_payload_for_agent,
     upsert_plan_current_sync,
+    load_workspace_sync,
 )
+
+def _time_to_minutes(time_str: str) -> int:
+    """Convert HH:MM to minutes since midnight."""
+    if not time_str or ":" not in time_str:
+        return -1
+    try:
+        parts = time_str.split(":")
+        return int(parts[0]) * 60 + int(parts[1][:2])
+    except (ValueError, TypeError):
+        return -1
+
+def _check_time_conflict(target_date: str, start_time: str, duration_mins: int, schedule: list, active_plan_tasks: list, suggested_day: str = None) -> str | None:
+    """Check if the proposed time range overlaps with any lecture or existing task."""
+    start_mins = _time_to_minutes(start_time)
+    if start_mins < 0:
+        return None
+    end_mins = start_mins + duration_mins
+
+    target_day = suggested_day
+    if target_date:
+        try:
+            dt = datetime.fromisoformat(target_date)
+            ar_days = ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"]
+            target_day = ar_days[dt.weekday()]
+        except Exception:
+            pass
+
+    # Check lectures
+    if target_day:
+        for lec in schedule:
+            if lec.get("day") == target_day:
+                lec_start_raw = lec.get("start_time") or lec.get("startTime") or ""
+                lec_end_raw = lec.get("end_time") or lec.get("endTime") or ""
+                lec_name = lec.get("course_name") or lec.get("subject") or lec.get("courseName") or "محاضرة مسجلة"
+                
+                lec_start = _time_to_minutes(lec_start_raw)
+                lec_end = _time_to_minutes(lec_end_raw)
+                
+                if lec_start >= 0 and lec_end >= 0:
+                    if max(start_mins, lec_start) < min(end_mins, lec_end):
+                        return f"تعارض مع محاضرة {lec_name} من {lec_start_raw} إلى {lec_end_raw}."
+
+    # Check active plan tasks
+    for task in active_plan_tasks:
+        if task.get("targetDate") == target_date or (target_day and task.get("suggestedDay") == target_day and not task.get("targetDate")):
+            t_start = _time_to_minutes(task.get("suggestedTime", task.get("time", "")))
+            t_dur = _to_int(task.get("durationMinutes", task.get("duration", 0)), 0)
+            if t_start >= 0 and t_dur > 0:
+                t_end = t_start + t_dur
+                if max(start_mins, t_start) < min(end_mins, t_end):
+                    return f"تعارض مع جلسة مذاكرة أخرى ({task.get('title', 'سابقة')}) في نفس الوقت."
+    return None
+
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -208,6 +262,53 @@ async def execute_tool(
                 "client_only": True,
                 "message": f"نوع إجراء غير معروف: {action_type}. الأنواع المسموح بها: {sorted(ALLOWED_CLIENT_ACTION_TYPES)}",
             }
+        if action_type == "ADD_TASK":
+            target_date = payload.get("targetDate")
+            suggested_time = payload.get("suggestedTime")
+            suggested_day = payload.get("suggestedDay")
+            duration = _to_int(payload.get("durationMinutes"), 25)
+            course_code = str(payload.get("courseCode") or "").strip()
+            
+            loop = __import__('asyncio').get_running_loop()
+            ws = await loop.run_in_executor(None, load_workspace_sync, user_id, db)
+            
+            # Course Validation
+            if course_code and course_code != "OTHER":
+                transcript = ws.get("transcript", {})
+                current_courses = transcript.get("currentCourses", [])
+                valid_codes = set()
+                for c in current_courses:
+                    if isinstance(c, dict):
+                        code = c.get("code") or c.get("course_code") or c.get("courseCode")
+                        if code:
+                            valid_codes.add(str(code).upper())
+                    elif isinstance(c, str):
+                        valid_codes.add(c.upper())
+                
+                if course_code.upper() not in valid_codes:
+                    payload["courseCode"] = "OTHER"
+                    payload["courseName"] = "أخرى"
+            elif not course_code:
+                payload["courseCode"] = "OTHER"
+                payload["courseName"] = "أخرى"
+            
+            # Time Conflict Validation
+            if suggested_time and (target_date or suggested_day):
+                schedule_data = ws.get("schedule", {}).get("schedule", []) if isinstance(ws.get("schedule"), dict) else ws.get("schedule", [])
+                
+                plan_section = ws.get("plan", {})
+                active_plan_tasks = []
+                if isinstance(plan_section, dict) and isinstance(plan_section.get("plan"), dict):
+                    active_plan_tasks = plan_section["plan"].get("tasks", [])
+                
+                conflict = _check_time_conflict(target_date, suggested_time, duration, schedule_data, active_plan_tasks, suggested_day)
+                if conflict:
+                    return {
+                        "success": False,
+                        "client_only": True,
+                        "message": f"عذراً، {conflict} يرجى اقتراح وقت آخر.",
+                    }
+
         return {
             "success": True,
             "client_only": True,

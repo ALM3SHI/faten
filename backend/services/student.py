@@ -189,5 +189,6 @@ async def load_student_context(user_id: str, db) -> dict:
         "transcript": transcript,
         "upcoming_exams": upcoming_exams,
         "active_plan": active_plan,
+        "schedule": ws.get("schedule", {}).get("schedule", []) if isinstance(ws.get("schedule"), dict) else ws.get("schedule", []),
         "notifications": ws.get("notifications") or [],
     }

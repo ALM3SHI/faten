@@ -81,6 +81,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             ctx["active_plan"],
             client_context=client_ctx_dict,
             academic_record=ctx.get("academic_record"),
+            schedule=ctx.get("schedule"),
         )
         logger.debug("[chat] system_prompt length = %d chars", len(system_prompt))
 

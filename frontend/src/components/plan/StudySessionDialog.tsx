@@ -21,7 +21,7 @@ import {
 import type { EnrichedCourse } from "@/lib/transcript-parser";
 import type { PlanPriority, PlanTask, PlanTaskType } from "@/store/planStore";
 
-const CUSTOM_COURSE = "__custom__";
+const CUSTOM_COURSE = "OTHER";
 
 const PRIORITY_OPTIONS: { value: PlanPriority; label: string }[] = [
   { value: "high", label: "عالية" },
@@ -169,24 +169,24 @@ export function StudySessionDialog({
     }
 
     if (form.courseSelect === "") {
-      setFieldError("اختر المادة من القائمة أو اختر «مادة مخصصة».");
+      setFieldError("اختر المادة من القائمة أو اختر «أخرى».");
       return;
     }
 
     const isCustom = form.courseSelect === CUSTOM_COURSE;
     const courseCode = isCustom
-      ? form.customCode.trim()
-      : (selectedCourse?.code ?? form.customCode.trim());
+      ? "OTHER"
+      : (selectedCourse?.code ?? "");
     if (!courseCode) {
-      setFieldError("أدخل رمز المادة المخصصة.");
+      setFieldError("حدث خطأ في تحديد المادة.");
       return;
     }
 
     const courseName = isCustom
-      ? form.customName.trim() || null
+      ? "أخرى"
       : selectedCourse
         ? selectedCourse.nameAr || selectedCourse.nameEn || selectedCourse.name
-        : form.customName.trim() || null;
+        : null;
 
     // Day comes from the date when one is attached, otherwise it must be picked.
     const targetDate = form.targetDate.trim() || undefined;
@@ -296,37 +296,11 @@ export function StudySessionDialog({
                     {c.code} — {c.nameAr || c.nameEn || c.name}
                   </option>
                 ))}
-                <option value={CUSTOM_COURSE}>مادة مخصصة</option>
+                <option value={CUSTOM_COURSE}>أخرى</option>
               </select>
             </div>
 
-            {form.courseSelect === CUSTOM_COURSE && (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="study-code">رمز المادة</Label>
-                  <Input
-                    id="study-code"
-                    value={form.customCode}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, customCode: e.target.value }))
-                    }
-                    placeholder="CS101"
-                    className={cn(inputClass, "font-mono")}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="study-name">اسم المادة (اختياري)</Label>
-                  <Input
-                    id="study-name"
-                    value={form.customName}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, customName: e.target.value }))
-                    }
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            )}
+
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1.5">

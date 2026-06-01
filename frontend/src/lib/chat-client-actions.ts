@@ -76,6 +76,7 @@ function dispatchAddTask(payload: Record<string, unknown>): boolean {
     ? (priorityRaw as PlanPriority)
     : "medium";
   const reason = asString(payload.reason) ?? "أُضيفت من المساعد الذكي";
+  const targetDate = asString(payload.targetDate);
 
   const task: PlanTask = {
     title,
@@ -84,6 +85,7 @@ function dispatchAddTask(payload: Record<string, unknown>): boolean {
     durationMinutes,
     suggestedDay,
     suggestedTime,
+    targetDate: targetDate || undefined,
     priority,
     reason,
   };

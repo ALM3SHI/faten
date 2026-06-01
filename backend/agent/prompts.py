@@ -89,6 +89,7 @@ def build_system_prompt(
     active_plan: dict | None = None,
     client_context: dict | None = None,
     academic_record: dict | None = None,
+    schedule: list | None = None,
 ) -> str:
     """Build a hyper-contextual system prompt.
 
@@ -292,6 +293,11 @@ def build_system_prompt(
 • جدولة جلسة مذاكرة واحدة لاحقاً (بزمن مقترح) → emit_client_action(ADD_TASK).
 • جدولة عدة جلسات (4 مثلاً) → emit_client_action(ADD_TASK) مرة لكل جلسة
   (أربع tool_calls في نفس الرد، بأوقات مختلفة).
+  
+  ⚠️ قواعد هامة لأداة ADD_TASK:
+  1. يجب استنتاج targetDate داخلياً بصيغة YYYY-MM-DD إذا أشار الطالب ليوم محدد (مثل "بكرة" أو "يوم الأحد القادم") وإرساله في حمولة الإجراء.
+  2. إذا لم يحدد الطالب يوماً أو وقتاً أو مادة، اسأله لطلب المعلومات الناقصة ولا تستدعِ الأداة بشكل عشوائي.
+  3. للمهام العامة أو المهام خارج المقررات الجامعية، استخدم `courseCode: "OTHER"` و `courseName: "أخرى"`.
 • تشغيل مؤقت بومودورو الآن لمدة محددة → emit_client_action(START_POMODORO).
 • خطة دراسية شاملة لمادة → create_study_plan.
 • خطة فصلية كاملة → generate_semester_master_plan.
@@ -646,6 +652,21 @@ ADD_TASK ×4، لأن START_POMODORO يبدأ مؤقتاً واحداً فقط �
                 prompt += f"  📌 {ex}\n"
     else:
         prompt += "\n✅ لا توجد اختبارات قادمة مسجلة.\n"
+
+    # ══════════════════════════════════════════════════
+    #  BLOCK 7.5: User Schedule (Lectures/Classes)
+    # ══════════════════════════════════════════════════
+    if schedule:
+        prompt += "\n═══ 🏫 جدول المحاضرات الأسبوعي ═══\n"
+        prompt += "⚠️ يجب تجنب هذه الأوقات تماماً عند اقتراح أوقات المذاكرة:\n"
+        for lec in schedule:
+            subject = lec.get("course_name") or lec.get("subject") or lec.get("courseName") or "محاضرة"
+            day = lec.get("day") or "—"
+            start = lec.get("start_time") or lec.get("startTime") or "—"
+            end = lec.get("end_time") or lec.get("endTime") or "—"
+            prompt += f"  • {subject}: يوم {day} من {start} إلى {end}\n"
+    else:
+        prompt += "\n✅ لا توجد محاضرات مسجلة في الجدول.\n"
 
     # ══════════════════════════════════════════════════
     #  BLOCK 8: Active Study Plan Status

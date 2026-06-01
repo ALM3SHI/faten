@@ -285,7 +285,13 @@ export function planTaskToStudyBlock(
   taskIndex: number,
   done: boolean,
 ): StudyGridBlock | null {
-  const day = task.suggestedDay?.trim();
+  let day = task.suggestedDay?.trim();
+  if (task.targetDate) {
+    const d = parseLocalDate(task.targetDate);
+    if (d) {
+      day = weekdayNameFromDate(d);
+    }
+  }
   const start = task.suggestedTime?.trim();
   if (!day || !start) return null;
 

@@ -140,7 +140,7 @@ TOOLS_SCHEMA: list[dict] = [
                         "type": "object",
                         "description": (
                             "حمولة الإجراء. مثال لـADD_TASK: "
-                            "{title, courseCode, durationMinutes, suggestedDay, suggestedTime, priority}. "
+                            "{title, courseCode, courseName, durationMinutes, suggestedDay, suggestedTime, targetDate, priority}. "
                             "مثال لـUPDATE_TARGET_GPA: {target} على مقياس 4.00."
                         ),
                     },
