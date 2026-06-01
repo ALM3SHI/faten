@@ -52,7 +52,6 @@ The experience is **RTL-first** (Arabic UI) with a modern glassmorphism design, 
 - 📅 **UQU Academic Calendar** — 1447/1448 Hijri calendar with date-aware "next 3 events" on the dashboard
 - 📊 **Backend analytics** — GPA math, target analysis, and chart series computed server-side (`POST /api/analytics/dashboard`)
 - 🔐 **Firebase Auth** — Google sign-in, Firestore sync, bearer-token API auth
-- 🔔 **Proactive notifications** — daily CRON at 8:00 AM Riyadh
 
 ---
 
@@ -118,7 +117,7 @@ flowchart TB
 | **Backend** | FastAPI, Uvicorn, Pydantic v2, APScheduler, pdfplumber |
 | **Database** | Firebase Firestore |
 | **Auth** | Firebase Auth (Google provider) |
-| **AI** | OpenAI-compatible chat API, Google Gemini (plans/vision), Groq Whisper (optional STT) |
+| **AI** | OpenAI-compatible chat API, Google Gemini (plans/vision) |
 | **Navigation** | Custom A* engine (MinHeap PQ), SVG polygon overlay, percentage-based coordinates |
 
 ---
@@ -217,7 +216,6 @@ npm run dev
 | `OPENAI_MODEL` | — | Model id (default: `gpt-4o`) |
 | `GEMINI_API_KEY` | — | Plan generator & schedule OCR |
 | `LLAMA_API_KEY` | — | Alternative plan-generation provider |
-| `GROQ_API_KEY` | — | High-quality Arabic STT in chat |
 | `FIREBASE_CREDENTIALS_PATH` | ✅ | Path to Firebase Admin JSON |
 | `NEXT_PUBLIC_AGENT_BASE_URL` | — | Backend URL for the frontend (default: `:8000`) |
 
@@ -287,8 +285,6 @@ The backend agent (`backend/agent/`) runs a **tool-augmented loop**:
 |------|---------|
 | `get_calendar_info` | Query UQU 1447/1448 academic calendar (date-aware context) |
 | `analyze_transcript` | Deep transcript insights |
-| `predict_gpa_pathway` | What-if GPA projections |
-| `generate_semester_master_plan` | Full semester study plan |
 | `navigate_to_page` | Deep-link student to `/gpa`, `/locations`, etc. |
 | `emit_client_action` | Real-time Zustand mutations (tasks, GPA target, pomodoro) |
 | `get_course_info` | Course metadata lookup |
@@ -334,10 +330,8 @@ Faten/
 | `/api/nav/route` | POST | Server-side indoor routing |
 | `/api/nav/status` | GET | Navigation engine health |
 | `/api/student-context` | GET | Full student Firestore snapshot |
-| `/api/stt/transcribe` | POST | Speech-to-text (Groq Whisper) |
 | `/docs` | GET | Interactive Swagger UI |
 
-> Many legacy `/api/sync-*` and `/api/firebase/*` write routes return **410 Gone** — the frontend now writes through dedicated REST routers with Firebase bearer auth.
 
 ---
 
