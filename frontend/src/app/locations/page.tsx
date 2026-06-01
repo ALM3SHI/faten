@@ -56,6 +56,7 @@ function LocationsContent() {
 
   // ── State ────────────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState("");
+  const [pickStartQuery, setPickStartQuery] = useState("");
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [navStartRoom, setNavStartRoom] = useState<string | null>(
     DEFAULT_START_ROOM_ID,
@@ -102,6 +103,25 @@ function LocationsContent() {
       )
       .slice(0, 30);
   }, [searchQuery, selectable]);
+
+  const pickStartFiltered = useMemo(() => {
+    const q = pickStartQuery.trim();
+    if (!q) return [];
+    const needle = q.toLowerCase();
+    return selectable
+      .filter(
+        (r) =>
+          r.label?.toLowerCase().includes(needle) ||
+          r.id?.toLowerCase().includes(needle),
+      )
+      .slice(0, 50);
+  }, [pickStartQuery, selectable]);
+
+  const openPickStart = () => {
+    setPickStartQuery("");
+    setExpanded((prev) => ({ ...prev, قاعات: true }));
+    setMode("pickStart");
+  };
 
   // ── URL ?target= deep-link → auto-select + auto-route ────────────
   useEffect(() => {
@@ -151,7 +171,7 @@ function LocationsContent() {
     // Default start is the main entrance; if it's missing, drop into
     // picker mode immediately so the user must choose.
     if (!navStartRoom) {
-      setMode("pickStart");
+      openPickStart();
       return;
     }
     runFindPath(navStartRoom, selectedRoom.id);
@@ -273,8 +293,14 @@ function LocationsContent() {
             {mode === "pickStart" ? (
               // 1. Start-picker takes over the whole body.
               <PickStart
-                query={searchQuery}
-                results={searchQuery.trim() ? filtered : selectable.slice(0, 12)}
+                query={pickStartQuery}
+                onQueryChange={setPickStartQuery}
+                grouped={grouped}
+                searchResults={pickStartFiltered}
+                expanded={expanded}
+                onToggleGroup={(g) =>
+                  setExpanded((prev) => ({ ...prev, [g]: !prev[g] }))
+                }
                 currentStartId={navStartRoom}
                 onPick={(roomId) => {
                   setNavStartRoom(roomId);
@@ -295,7 +321,7 @@ function LocationsContent() {
                   startRoom={startRoom}
                   stats={routeStats}
                   onCancel={cancelNavigation}
-                  onChangeStart={() => setMode("pickStart")}
+                  onChangeStart={openPickStart}
                 />
                 {navError && (
                   <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-300 p-3 text-xs flex items-start gap-2">
@@ -313,7 +339,7 @@ function LocationsContent() {
                   room={selectedRoom}
                   startRoom={startRoom}
                   onNavigate={requestNavigation}
-                  onChangeStart={() => setMode("pickStart")}
+                  onChangeStart={openPickStart}
                   onClear={clearSelection}
                 />
                 {navError && (
@@ -707,17 +733,27 @@ function ActiveRoutePanel({
 
 function PickStart({
   query,
-  results,
+  onQueryChange,
+  grouped,
+  searchResults,
+  expanded,
+  onToggleGroup,
   currentStartId,
   onPick,
   onCancel,
 }: {
   query: string;
-  results: Room[];
+  onQueryChange: (q: string) => void;
+  grouped: Map<RoomGroup, Room[]>;
+  searchResults: Room[];
+  expanded: Record<RoomGroup, boolean>;
+  onToggleGroup: (g: RoomGroup) => void;
   currentStartId: string | null;
   onPick: (roomId: string) => void;
   onCancel: () => void;
 }) {
+  const isSearching = query.trim().length > 0;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
@@ -727,7 +763,7 @@ function PickStart({
             اختر نقطة البداية
           </h3>
           <p className="text-[11px] text-muted">
-            اختر القاعة أو المدخل الذي ستنطلق منه.
+            ابحث أو اختر أي قاعة أو مدخل كنقطة انطلاق.
           </p>
         </div>
         <button
@@ -739,11 +775,30 @@ function PickStart({
         </button>
       </div>
 
+      <div className="relative">
+        <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
+          placeholder="ابحث عن قاعة، مكتب، أو مدخل..."
+          className="pr-10 rounded-xl glass border-foreground/10"
+          aria-label="بحث نقطة البداية"
+          autoFocus
+        />
+        {query && (
+          <button
+            onClick={() => onQueryChange("")}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
+            aria-label="مسح البحث"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       {(() => {
-        // Local-const capture so TS narrows the module-level
-        // `string | null` for the click handler.
         const defaultId = DEFAULT_START_ROOM_ID;
-        if (!defaultId) return null;
+        if (!defaultId || isSearching) return null;
         return (
           <button
             onClick={() => onPick(defaultId)}
@@ -765,25 +820,21 @@ function PickStart({
         );
       })()}
 
-      <div className="space-y-1.5">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted px-1 mt-1">
-          {query.trim() ? "نتائج البحث" : "اختيارات مقترحة"}
-        </div>
-        {results.length === 0 ? (
-          <p className="text-xs text-muted-foreground py-3 text-center">
-            لا توجد نتائج.
-          </p>
-        ) : (
-          results.map((r) => (
-            <RoomRow
-              key={r.id}
-              room={r}
-              selected={r.id === currentStartId}
-              onClick={() => onPick(r.id)}
-            />
-          ))
-        )}
-      </div>
+      {isSearching ? (
+        <SearchResults
+          results={searchResults}
+          selectedId={currentStartId}
+          onSelect={(r) => onPick(r.id)}
+        />
+      ) : (
+        <GroupedList
+          grouped={grouped}
+          expanded={expanded}
+          onToggleGroup={onToggleGroup}
+          selectedId={currentStartId}
+          onSelect={(r) => onPick(r.id)}
+        />
+      )}
     </div>
   );
 }
