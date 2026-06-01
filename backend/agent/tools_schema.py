@@ -113,8 +113,7 @@ TOOLS_SCHEMA: list[dict] = [
                 "نفّذ إجراءً مباشرًا على واجهة الطالب (تعديل المخزن المحلي). "
                 "استخدمها عندما يطلب الطالب تغييراً يجب أن يظهر فوراً على لوحة التحكم/المعدل/البومودورو. "
                 "الأنواع المسموح بها: ADD_TASK, TOGGLE_TASK_DONE, UPDATE_TARGET_GPA, "
-                "UPDATE_BASIC_PROFILE, UPDATE_PREFERENCES, OPEN_TOOL, NAVIGATE, START_POMODORO. "
-                "⚠️ ملاحظة: OPEN_TOOL مُهمَل ولم يعد له أي أثر (اللوحات الجانبية أُزيلت من الدردشة) — "
+                "UPDATE_BASIC_PROFILE, UPDATE_PREFERENCES, NAVIGATE, START_POMODORO. "
                 "لأي طلب فتح/تشغيل/عرض صفحة ميزة (المعدل، الخطة، اللوحة، القاعات، البومودورو) "
                 "استخدم NAVIGATE بالمسار الصحيح (مثل {path: '/pomodoro'}) لإنشاء زر انتقال، "
                 "ولا تطرح أسئلة متابعة عن المادة/المدة إلا إذا طلب الطالب جلسة بومودورو مخصصة صراحةً."
@@ -130,7 +129,7 @@ TOOLS_SCHEMA: list[dict] = [
                             "UPDATE_TARGET_GPA",
                             "UPDATE_BASIC_PROFILE",
                             "UPDATE_PREFERENCES",
-                            "OPEN_TOOL",
+
                             "NAVIGATE",
                             "START_POMODORO",
                         ],

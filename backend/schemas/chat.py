@@ -55,7 +55,7 @@ class ClientAction(BaseModel):
     """A structured directive for the frontend to mutate a Zustand store.
 
     Emitted by the agent via the `emit_client_action` tool. Each action
-    has a discriminator `type` (e.g. ADD_TASK, UPDATE_TARGET_GPA, OPEN_TOOL)
+    has a discriminator `type` (e.g. ADD_TASK, UPDATE_TARGET_GPA, NAVIGATE)
     and an opaque `payload` validated by the frontend dispatcher.
     """
     type: str

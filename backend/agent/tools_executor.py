@@ -223,7 +223,6 @@ ALLOWED_CLIENT_ACTION_TYPES: frozenset[str] = frozenset({
     "UPDATE_TARGET_GPA",   # payload: { target }  — UQU 4.00 scale
     "UPDATE_BASIC_PROFILE",# payload: { name?, major?, studentId?, totalPlanHours? }
     "UPDATE_PREFERENCES",  # payload: subset of ProfilePreferences
-    "OPEN_TOOL",           # payload: { tool: "pomodoro"|"gpa"|"map"|"dashboard"|"plan", zone?: "left"|"right" }
     "NAVIGATE",            # payload: { path }
     "START_POMODORO",      # payload: { focusMinutes?, breakMinutes?, taskTitle? }
 })

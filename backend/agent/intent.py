@@ -51,6 +51,11 @@ INTENT_MAP = {
         "needs_tools": True,
         "direct_response": None
     },
+    "NAVIGATION": {
+        "required_blocks": [],
+        "needs_tools": False,
+        "direct_response": True
+    },
 }
 
 def classify_intent_heuristic(messages: list) -> dict:
@@ -69,9 +74,53 @@ def classify_intent_heuristic(messages: list) -> dict:
     last_assistant_msg = next((m for m in reversed(messages) if getattr(m, 'role', m.get('role', '') if isinstance(m, dict) else '') == 'assistant'), None)
     if last_assistant_msg:
         ast_content = (last_assistant_msg.content if hasattr(last_assistant_msg, 'content') else last_assistant_msg.get('content', '')).lower()
-        continuation_phrases = ["حدد المادة", "أي مادة", "كم المدة", "الوقت", "تحديد الموضوع", "اي مادة", "حدد لي"]
-        if any(p in ast_content for p in continuation_phrases) and len(msg.split()) <= 6:
+        
+        # SCHEDULE_TASK continuation tightening
+        schedule_task_prompts = [
+            "أضف جلسة", "جلسة مذاكرة", "مهمة مذاكرة", "كم مدة الجلسة", 
+            "ما وقت الجلسة", "حدد وقت", "حدد مدة", "اختر المادة للجلسة", 
+            "أي مادة للجلسة", "كم المدة"
+        ]
+        if any(p in ast_content for p in schedule_task_prompts) and len(msg.split()) <= 6:
             return {"intent": "SCHEDULE_TASK", "source": "heuristic_continuation"}
+            
+        # NAVIGATION context_confirmation
+        nav_clarify_phrases = [
+            "هل تقصد صفحة", "هل تريد فتح صفحة", "هل تريد الذهاب إلى",
+            "هل تقصد الانتقال إلى", "فتح صفحة"
+        ]
+        nav_affirmative = [
+            "ايوه", "إيوه", "أيوه", "نعم", "اي", "تمام", "صحيح", "يب", "yes", "ok"
+        ]
+        
+        if any(p in ast_content for p in nav_clarify_phrases) and msg_cleaned in nav_affirmative:
+            nav_targets = {
+                "/pomodoro": ["بومودورو", "pomodoro"],
+                "/plan": ["الخطة", "plan"],
+                "/gpa": ["المعدل", "gpa", "حاسبة المعدل"],
+                "/map": ["القاعات", "الخريطة", "map"],
+                "/chat": ["الدردشة", "الشات", "chat"],
+                "/dashboard": ["اللوحة", "الداشبورد", "dashboard"],
+                "/profile": ["الملف الشخصي", "البروفايل", "profile"]
+            }
+            matched_route = None
+            matched_label = None
+            for route, keywords in nav_targets.items():
+                if any(kw in ast_content for kw in keywords):
+                    matched_route = route
+                    matched_label = keywords[0]
+                    break
+            
+            if matched_route:
+                return {
+                    "intent": "NAVIGATION",
+                    "source": "context_confirmation",
+                    "route": matched_route,
+                    "label": matched_label,
+                    "required_blocks": [],
+                    "needs_tools": False,
+                    "direct_response": True
+                }
     
     greeting_exact_matches = {
         "سلام", "السلام", "السلام عليكم", "عليكم السلام", 
@@ -82,6 +131,49 @@ def classify_intent_heuristic(messages: list) -> dict:
     
     if msg_cleaned in greeting_exact_matches:
         return {"intent": "GREETING", "source": "heuristic"}
+
+    nav_verbs = [
+        "افتح", "فتح", "خذني", "وديني", "روح", "انتقل", 
+        "شغل", "ابدأ", "وريني", "اعرض", "show", "open", "go to"
+    ]
+    has_nav_verb = any(v in msg_cleaned for v in nav_verbs)
+    if has_nav_verb:
+        nav_targets = {
+            "/plan": ["الخطة", "خطة", "جدول المذاكرة", "جلسات المراجعة", "plan"],
+            "/gpa": ["المعدل", "حساب المعدل", "gpa"],
+            "/chat": ["الدردشة", "الشات", "المحادثة", "فطن", "chat"],
+            "/pomodoro": ["بومودورو", "المؤقت", "جلسة تركيز", "pomodoro"],
+            "/map": ["القاعات", "الخريطة", "الماب", "map"],
+            "/dashboard": ["اللوحة", "الرئيسية", "الداشبورد", "dashboard"],
+            "/profile": ["الملف الشخصي", "البروفايل", "profile"]
+        }
+        matched_route = None
+        matched_label = None
+        for route, keywords in nav_targets.items():
+            if any(kw in msg_cleaned for kw in keywords):
+                matched_route = route
+                matched_label = keywords[0]  # first arabic term as label
+                break
+        
+        if matched_route:
+            return {
+                "intent": "NAVIGATION",
+                "source": "heuristic",
+                "route": matched_route,
+                "label": matched_label,
+                "required_blocks": [],
+                "needs_tools": False,
+                "direct": True
+            }
+        else:
+            return {
+                "intent": "NAVIGATION",
+                "source": "heuristic_ambiguous",
+                "required_blocks": [],
+                "needs_tools": False,
+                "direct": False
+            }
+
 
     general_qa_patterns = [
         r'من أنت', r'ما هو فطن', r'وش تقدر تسوي', r'ما هي جامعة أم القرى',
@@ -217,5 +309,7 @@ async def classify_intent(messages: list, openai_client: AsyncOpenAI) -> dict:
         "source": result["source"],
         "required_blocks": mapped["required_blocks"],
         "needs_tools": mapped["needs_tools"],
-        "direct_response": mapped["direct_response"]
+        "direct_response": mapped["direct_response"],
+        "route": result.get("route"),
+        "label": result.get("label")
     }

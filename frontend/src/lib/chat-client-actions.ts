@@ -25,7 +25,7 @@ export type ClientActionType =
   | "UPDATE_TARGET_GPA"
   | "UPDATE_BASIC_PROFILE"
   | "UPDATE_PREFERENCES"
-  | "OPEN_TOOL"
+
   | "NAVIGATE"
   | "START_POMODORO";
 
@@ -133,18 +133,7 @@ function dispatchUpdatePreferences(payload: Record<string, unknown>): boolean {
   return true;
 }
 
-function dispatchOpenTool(payload: Record<string, unknown>): boolean {
-  // ⚠️ Intentional no-op. The chat workspace side-panels (Pomodoro / GPA /
-  // map / dashboard / plan widgets) were removed from the chat UI, so there
-  // is nothing to mount. We keep the OPEN_TOOL case + tool whitelist so the
-  // dispatcher stays in sync with the backend's ALLOWED_CLIENT_ACTION_TYPES,
-  // but we no longer mutate the workspace store. Users reach those features
-  // via the real pages (/pomodoro, /gpa, /locations, /dashboard, /plan),
-  // including the NAVIGATE CTA buttons rendered under bot messages.
-  const tool = asString(payload.tool);
-  if (!tool || !VALID_TOOLS.has(tool)) return false;
-  return false;
-}
+
 
 function dispatchNavigate(payload: Record<string, unknown>): boolean {
   // ⚠️ Intentional no-op. Auto-navigation hijacks the user's reading
@@ -213,7 +202,7 @@ export function dispatchClientAction(action: ClientAction): boolean {
     case "UPDATE_TARGET_GPA":    return dispatchUpdateTargetGpa(payload);
     case "UPDATE_BASIC_PROFILE": return dispatchUpdateBasicProfile(payload);
     case "UPDATE_PREFERENCES":   return dispatchUpdatePreferences(payload);
-    case "OPEN_TOOL":            return dispatchOpenTool(payload);
+
     case "NAVIGATE":             return dispatchNavigate(payload);
     case "START_POMODORO":       return dispatchStartPomodoro(payload);
     default:

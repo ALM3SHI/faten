@@ -60,10 +60,85 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             intent_info["intent"], intent_info.get("source", "unknown"), intent_info["required_blocks"], bool(intent_info["direct_response"])
         )
 
+        client_actions = []
         content = ""
         actions_log = []
+        
+        conv_id = request.conversationId or f"conv_{int(time.time() * 1000)}"
+        now_iso = datetime.now(timezone.utc).isoformat()
+        
+        # ── Handle Navigation Fast Path ──
+        if intent_info["intent"] == "NAVIGATION":
+            if intent_info.get("route"):
+                route = intent_info["route"]
+                label = intent_info.get("label", "")
+                content = f"تفضل، فتحت لك {label}." if label else f"تفضل، تم فتح الصفحة."
+                
+                client_actions.append({
+                    "type": "NAVIGATE",
+                    "payload": {"path": route}
+                })
+                
+                source = intent_info.get("source", "unknown")
+                logger.info(f"[chat] Direct navigation response | source={source} | route={route} | cost=0")
+                
+                # Persist directly and return early
+                user_ref = db.collection("users").document(user_id)
+                if last_user_msg:
+                    user_ref.collection("chat_history").document(conv_id).collection("messages").add({
+                        "role": "user", "content": last_user_msg.content, "timestamp": now_iso
+                    })
+                user_ref.collection("chat_history").document(conv_id).collection("messages").add({
+                    "role": "assistant", "content": content, "actions": [], "timestamp": now_iso
+                })
+                user_ref.collection("chat_history").document(conv_id).set({
+                    "lastMessage": content[:120], "updatedAt": now_iso, "messageCount": Increment(2)
+                }, merge=True)
+                
+                return ChatResponse(
+                    success=True, message=content, actions=[], client_actions=client_actions, conversationId=conv_id
+                )
+                
+            elif intent_info.get("source") == "heuristic_ambiguous":
+                # Do not load context, use a tiny prompt
+                from agent.prompts import NAVIGATION_AMBIGUOUS_PROMPT
+                system_prompt = NAVIGATION_AMBIGUOUS_PROMPT
+                
+                logger.info("[chat] Calling gpt-4o-mini for ambiguous navigation | cost=tiny")
+                result = await run_agent_loop(
+                    [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": last_user_text}
+                    ], 
+                    user_id, 
+                    db, 
+                    openai_client, 
+                    with_tools_enabled=False,
+                    override_model="gpt-4o-mini"
+                )
+                content = result["content"]
+                
+                # Assume the LLM might return a route (if it figures it out), but usually it asks a question.
+                # If it's a question, there's no tool call, so no client_actions.
+                # Just proceed to saving the message.
+                
+                user_ref = db.collection("users").document(user_id)
+                if last_user_msg:
+                    user_ref.collection("chat_history").document(conv_id).collection("messages").add({
+                        "role": "user", "content": last_user_msg.content, "timestamp": now_iso
+                    })
+                user_ref.collection("chat_history").document(conv_id).collection("messages").add({
+                    "role": "assistant", "content": content, "actions": [], "timestamp": now_iso
+                })
+                user_ref.collection("chat_history").document(conv_id).set({
+                    "lastMessage": content[:120], "updatedAt": now_iso, "messageCount": Increment(2)
+                }, merge=True)
+                
+                return ChatResponse(
+                    success=True, message=content, actions=[], client_actions=[], conversationId=conv_id
+                )
 
-        if intent_info["direct_response"]:
+        if intent_info["direct_response"] and isinstance(intent_info["direct_response"], str):
             # Direct response (e.g. GREETING), bypass context loading and OpenAI
             content = intent_info["direct_response"]
             logger.info("[chat] Using direct backend response for intent=%s", intent_info["intent"])
@@ -251,7 +326,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                     error_type=error_type,
                 )
 
-        # ── Persist chat history ──
+        # ── Persist chat history (standard path) ──
         conv_id = request.conversationId or f"conv_{int(time.time() * 1000)}"
         user_ref = db.collection("users").document(user_id)
         now_iso = datetime.now(timezone.utc).isoformat()
@@ -287,7 +362,6 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
         # The frontend dispatcher (lib/chat-client-actions.ts) only needs the
         # structured directives; the full actions_log (with raw tool args /
         # results) stays available for debugging and history audit.
-        client_actions: list[dict] = []
         for log_entry in actions_log:
             try:
                 if log_entry.get("tool") != "emit_client_action":

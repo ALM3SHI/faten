@@ -81,6 +81,24 @@ def _subject_family(code: str, name: str) -> str:
         return "اللغات"
     return "أخرى"
 
+NAVIGATION_AMBIGUOUS_PROMPT = """You are a route resolver for Faten academic assistant.
+The user wants to navigate inside the app, but the target page is unclear.
+Available routes:
+* /dashboard: اللوحة
+* /gpa: المعدل
+* /plan: الخطة
+* /chat: الدردشة
+* /pomodoro: البومودورو
+* /map: القاعات
+* /profile: الملف الشخصي
+
+If the target is clear, you must ONLY ask a short confirmation question in Arabic.
+If unclear, ask one short clarification question in Arabic.
+Do not include links or routes in your response.
+Do not answer academic questions here.
+Do not load student data.
+Do not use tools.
+"""
 
 def build_system_prompt(
     user_data: dict | None = None,
@@ -767,8 +785,6 @@ def build_system_prompt(
 emit_client_action(type=NAVIGATE) للمسار الصحيح. الواجهة تحوّل ذلك تلقائياً إلى
 زر CTA قابل للنقر تحت ردّك (لا تنتقل الصفحة إلا بنقر الطالب).
 
-⛔ ممنوع OPEN_TOOL: نوع الإجراء OPEN_TOOL لم يعد له أثر (اللوحات أُزيلت). لا تستخدمه
-أبداً. استخدم NAVIGATE بدلاً منه دائماً.
 
 ⛔ ممنوع الأسئلة الزائدة: أوامر الانتقال لا تحتاج أي استفسار. لا تسأل عن المادة أو
 المدة أو المهمة عند طلب فتح صفحة. فقط ردّ باختصار وأصدر NAVIGATE.
