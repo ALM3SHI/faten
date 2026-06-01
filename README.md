@@ -88,16 +88,12 @@ flowchart TB
 
     subgraph AI["External AI Providers"]
         OpenAI[OpenAI-compatible LLM]
-        Gemini[Gemini · Plans & Vision]
-        Groq[Groq Whisper · STT]
     end
 
     Client <-->|Bearer Token + REST| Backend
     Client <-->|Auth + Realtime Sync| Cloud
     Backend <-->|Admin SDK| Cloud
     Backend --> OpenAI
-    Backend --> Gemini
-    Backend --> Groq
 ```
 
 ### Data flow (simplified)
@@ -117,7 +113,7 @@ flowchart TB
 | **Backend** | FastAPI, Uvicorn, Pydantic v2, APScheduler, pdfplumber |
 | **Database** | Firebase Firestore |
 | **Auth** | Firebase Auth (Google provider) |
-| **AI** | OpenAI-compatible chat API, Google Gemini (plans/vision) |
+| **AI** | OpenAI-compatible chat API (plans/vision) |
 | **Navigation** | Custom A* engine (MinHeap PQ), SVG polygon overlay, percentage-based coordinates |
 
 ---
@@ -212,14 +208,11 @@ npm run dev
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
-| `OPENAI_API_KEY` | ✅ | Primary LLM for the chat agent |
+| `OPENAI_API_KEY` | ✅ | Primary LLM for the chat agent and Plan generator|
 | `OPENAI_MODEL` | — | Model id (default: `gpt-4o`) |
-| `GEMINI_API_KEY` | — | Plan generator & schedule OCR |
-| `LLAMA_API_KEY` | — | Alternative plan-generation provider |
 | `FIREBASE_CREDENTIALS_PATH` | ✅ | Path to Firebase Admin JSON |
 | `NEXT_PUBLIC_AGENT_BASE_URL` | — | Backend URL for the frontend (default: `:8000`) |
 
-> **Security:** Never commit `.env`, `serviceAccountKey.json`, or API keys. They are listed in `.gitignore`.
 
 ---
 
