@@ -1490,15 +1490,71 @@ async def execute_tool(
             if query_type == "search":
                 if not query:
                     return {"success": False, "message": "يجب تحديد كلمة البحث"}
+                
+                def _norm_cal(s: str) -> str:
+                    if not s: return ""
+                    s = str(s).lower()
+                    s = re.sub(r"[\u064B-\u065F\u0640]", "", s)
+                    s = re.sub(r"[أإآ]", "ا", s)
+                    s = s.replace("ة", "ه").replace("ى", "ي")
+                    return s.strip()
+
+                nq = _norm_cal(query)
+                nq_target = nq
+                if any(x in nq for x in ["الاختبارات العامه", "اختبارات عامه", "المتطلبات العامه", "اختبارات المتطلبات"]):
+                    nq_target = _norm_cal("اختبارات المتطلبات العامة والعملية")
+                elif any(x in nq for x in ["الاختبارات النهائيه", "اختبارات نهائيه"]):
+                    nq_target = _norm_cal("الاختبارات النهائية")
+                elif "نهايه العام" in nq and "اجازه" in nq:
+                    nq_target = _norm_cal("إجازة نهاية العام الدراسي")
+                elif "اجازه الخريف" in nq:
+                    nq_target = _norm_cal("إجازة الخريف")
+                elif "بدايه الفصل" in nq:
+                    nq_target = _norm_cal("بداية الفصل الدراسي")
+                elif "الاعتذار" in nq:
+                    nq_target = _norm_cal("الاعتذار عن الدراسة")
+
+                today = datetime.now().date()
+                def parse_start_date(date_str):
+                    try:
+                        year_match = re.search(r'\d{4}', date_str)
+                        year = year_match.group(0) if year_match else str(today.year)
+                        dm_match = re.search(r'\d{1,2}\s+[A-Za-z]+', date_str)
+                        if dm_match:
+                            first_date = dm_match.group(0)
+                            full_match = re.search(first_date + r'\s+\d{4}', date_str)
+                            full_date_str = full_match.group(0) if full_match else f"{first_date} {year}"
+                            return datetime.strptime(full_date_str, "%d %b %Y").date()
+                    except Exception:
+                        pass
+                    return None
+
+                matched_events = []
                 for term in UQU_CALENDAR:
                     for event in term.get("events", []):
-                        # البحث في العنوان أو النوع أو التاريخ
-                        if (query in event.get("title", "").lower() or 
-                            query in event.get("type", "").lower() or 
-                            query in event.get("date", "").lower() or 
-                            query in event.get("hijri", "").lower()):
-                            results.append(event)
-                message = f"تم العثور على {len(results)} حدث"
+                        e_title = _norm_cal(event.get("title", ""))
+                        e_type = _norm_cal(event.get("type", ""))
+                        e_date = _norm_cal(event.get("date", ""))
+                        e_hijri = _norm_cal(event.get("hijri", ""))
+                        
+                        if (nq_target in e_title or nq_target in e_type or nq in e_title or nq in e_type or nq in e_date or nq in e_hijri):
+                            event_date = parse_start_date(event.get("date", ""))
+                            matched_events.append((event, event_date, term.get("term", "")))
+
+                upcoming_results = []
+                past_results = []
+                for ev, ev_date, term_name in matched_events:
+                    ev_copy = dict(ev)
+                    ev_copy["term_name"] = term_name
+                    if ev_date and ev_date >= today:
+                        upcoming_results.append(ev_copy)
+                    else:
+                        past_results.append(ev_copy)
+                
+                results = upcoming_results + past_results
+                results = results[:4]
+                
+                message = f"تم العثور على {len(results)} حدث مطابق"
 
             elif query_type == "by_type":
                 if not event_type:

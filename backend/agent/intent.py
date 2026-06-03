@@ -5,11 +5,32 @@ from openai import AsyncOpenAI
 
 logger = logging.getLogger(__name__)
 
+
+def is_short_or_ambiguous(text: str) -> bool:
+    """Return True when the message is too short or vague for standalone
+    heuristic classification.  This gates the context-aware LLM classifier
+    so it is only invoked for probable follow-up replies."""
+    cleaned = text.strip()
+    words = cleaned.split()
+    # Very short messages (1-4 words) are almost always follow-ups
+    if len(words) <= 4:
+        return True
+    # A bare course code like "CS3402"
+    if len(words) == 1 and re.match(r'^[a-zA-Z]{2,4}\d{3,4}$', cleaned):
+        return True
+    return False
+
+
 INTENT_MAP = {
     "GREETING": {
         "required_blocks": [],
         "needs_tools": False,
         "direct_response": "أهلاً بك! معك فطن، مرشدك الأكاديمي. كيف يمكنني مساعدتك اليوم؟"
+    },
+    "ACADEMIC_CALENDAR": {
+        "required_blocks": [],
+        "needs_tools": True,
+        "direct_response": None
     },
     "GENERAL_QA": {
         "required_blocks": [],
@@ -199,7 +220,7 @@ def classify_intent_heuristic(messages: list) -> dict:
     schedule_patterns = [
         r'أضف مهمة', r'جلسة مذاكرة', r'حط لي مهمة', r'سجل جلسة', r'تعارض',
         r'أضف اختبار', r'بومودورو', r'متى محاضرتي', r'عندي اختبار', r'في الخطة',
-        r'اضف مهمة', r'اضف جلسة'
+        r'اضف مهمة', r'اضف جلسة', r'أضف جلسة'
     ]
     if any(re.search(p, msg) for p in schedule_patterns):
         return {"intent": "SCHEDULE_TASK", "source": "heuristic"}
@@ -230,11 +251,26 @@ def classify_intent_heuristic(messages: list) -> dict:
     if any(w in msg for w in ['سجل', 'مستوى', 'تقييم', 'نقاط ضعف']):
         return {"intent": "FULL_ACADEMIC_ANALYSIS", "source": "heuristic"}
 
+    course_code_regex = r'[a-zA-Z]{2,4}\s*\d{3,4}'
+    has_course_code = bool(re.search(course_code_regex, msg))
+
+    academic_calendar_patterns = [
+        r'التقويم الجامعي', r'إجازة', r'إجازات', r'بداية الفصل', r'نهاية العام',
+        r'الاختبارات النهائية', r'اختبارات المتطلبات العامة', r'المتطلبات العامة والعملية',
+        r'إجازة الخريف', r'اليوم الوطني', r'الاعتذار عن الدراسة', r'1447', r'1448',
+        r'موعد الاختبارات', r'مواعيد الاختبارات', r'الاختبارات العامة', r'الاختبارات العامه',
+        r'اختبارات عامة', r'اختبارات عامه', r'اختبارات المتطلبات', r'المتطلبات العامة',
+        r'المتطلبات العامه', r'المتطلبات العامه والعمليه', r'الاختبارات العملية',
+        r'الاختبارات العمليه', r'متى الاختبارات', r'متى موعد الاختبار',
+        r'متى موعد الاختبارات', r'موعد الاختبار'
+    ]
+    if any(re.search(p, msg) for p in academic_calendar_patterns) and not has_course_code:
+        return {"intent": "ACADEMIC_CALENDAR", "source": "heuristic"}
+
     course_info_patterns = [
         r'مادة', r'اختبار', r'ميد', r'فاينل', r'درجات', r'توزيع', r'موعد'
     ]
-    course_code_regex = r'[a-zA-Z]{2,4}\s*\d{3,4}'
-    if any(re.search(p, msg) for p in course_info_patterns) or re.search(course_code_regex, msg):
+    if any(re.search(p, msg) for p in course_info_patterns) or has_course_code:
         return {"intent": "COURSE_INFO", "source": "heuristic"}
 
     return {"intent": "UNKNOWN", "source": "heuristic"}
@@ -252,6 +288,7 @@ Classify the user's message into EXACTLY ONE of the following intents:
 - SCHEDULE_TASK: Asking to add a study task, schedule a session, start a pomodoro, or check for schedule conflicts.
 - PLAN_OR_STUDY_ADVICE: Asking for general study advice, time management, or organizing their study plan.
 - FULL_ACADEMIC_ANALYSIS: Asking for a deep, comprehensive analysis of their entire academic record, all past courses, and broad strengths/weaknesses.
+- ACADEMIC_CALENDAR: questions about the general Umm Al-Qura University academic calendar, university holidays, semester starts, final exam periods, midterm periods, withdrawal periods, national day holiday, or academic year 1447/1448 dates. Includes informal Arabic phrasing such as "الاختبارات العامه", "موعد الاختبارات", "متى الاختبارات", and "اختبارات المتطلبات".
 - COURSE_INFO: Asking for course details, syllabus, project, midterm, final, exam dates, or grading policy of a specific course (e.g. by course code or name).
 
 Return ONLY a JSON object with a single key "intent".
@@ -279,31 +316,152 @@ Example: {"intent": "GREETING"}
         return {"intent": "UNKNOWN", "source": "gpt-4o-mini"}
 
 
+# ---------------------------------------------------------------------------
+# Context-aware classifier for short / ambiguous follow-up replies
+# ---------------------------------------------------------------------------
+
+CONTEXT_CLASSIFIER_PROMPT = """You are a short-message intent classifier for an Arabic university assistant chatbot.
+You receive the last few messages of a conversation plus a short user reply.
+Your job is to determine what the user meant based ONLY on the conversation context.
+
+Allowed intents:
+SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, GPA_QUERY,
+FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
+
+Rules:
+- If the assistant previously asked for a missing field for a study session or task
+  (course name, time, date, or duration) and the user provides it → SCHEDULE_TASK
+- If the assistant asked to confirm a page and the user confirms → NAVIGATION
+  (include "route" if determinable: /pomodoro, /plan, /gpa, /map, /chat, /dashboard, /profile)
+- If the assistant asked which course/material and the user names one → COURSE_INFO
+  UNLESS the assistant message clearly mentioned a study task or session → then SCHEDULE_TASK
+- If the assistant asked whether the user means GPA or full academic record
+  and the user answers with the full record → FULL_ACADEMIC_ANALYSIS
+- If the assistant asked whether the user means GPA or full academic record
+  and the user answers with GPA → GPA_QUERY
+- If the context is unclear or insufficient → UNKNOWN
+
+Return ONLY valid JSON:
+{"intent": "...", "is_continuation": true or false, "route": "/path or null", "reason": "short reason"}
+"""
+
+
+async def classify_with_context_llm(
+    messages: list, openai_client: AsyncOpenAI
+) -> dict:
+    """Classify a short/ambiguous user reply using the last few conversation
+    messages as context.  Sends NO student profile, transcript, schedule,
+    plan, exams, Firestore data, or full system prompt — only visible
+    chat messages and a tiny classifier prompt."""
+    try:
+        # Extract the last 4 visible messages (user + assistant only)
+        recent: list[dict] = []
+        for m in messages:
+            if isinstance(m, dict):
+                role = m.get('role', '')
+                content = m.get('content', '')
+            else:
+                role = getattr(m, 'role', '')
+                content = getattr(m, 'content', '')
+            if role in ('user', 'assistant') and content:
+                recent.append({"role": role, "content": content})
+        # Keep only the last 4
+        recent = recent[-4:]
+
+        if not recent:
+            return {"intent": "UNKNOWN", "source": "context_classifier"}
+
+        api_messages = [
+            {"role": "system", "content": CONTEXT_CLASSIFIER_PROMPT},
+            *recent,
+        ]
+
+        response = await openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=api_messages,
+            temperature=0.0,
+            max_tokens=80,
+            response_format={"type": "json_object"},
+        )
+        raw = response.choices[0].message.content or "{}"
+        data = json.loads(raw)
+
+        intent = data.get("intent", "UNKNOWN")
+        if intent not in INTENT_MAP:
+            intent = "UNKNOWN"
+
+        logger.info(
+            "[intent] context_classifier result — intent=%s is_continuation=%s route=%s reason=%s",
+            intent,
+            data.get("is_continuation"),
+            data.get("route"),
+            data.get("reason", "")[:80],
+        )
+
+        return {
+            "intent": intent,
+            "source": "context_classifier",
+            "is_continuation": data.get("is_continuation", False),
+            "route": data.get("route"),
+            "reason": data.get("reason"),
+        }
+    except Exception as e:
+        logger.warning("[intent] context classifier failed: %s", e)
+        return {"intent": "UNKNOWN", "source": "context_classifier"}
+
+
 async def classify_intent(messages: list, openai_client: AsyncOpenAI) -> dict:
-    # 1. Try heuristic
+    # 1. Try heuristic (fast, deterministic, 0 tokens)
     result = classify_intent_heuristic(messages)
-    
-    # Extract last user text for LLM
-    last_user_msg = next((m for m in reversed(messages) if getattr(m, 'role', m.get('role', '') if isinstance(m, dict) else '') == 'user'), None)
-    message_text = (last_user_msg.content if hasattr(last_user_msg, 'content') else last_user_msg.get('content', '')) if last_user_msg else ""
-    
-    # 2. If unknown, use LLM
+
+    # Extract last user text for downstream classifiers
+    last_user_msg = next(
+        (m for m in reversed(messages)
+         if (getattr(m, 'role', m.get('role', '') if isinstance(m, dict) else '') == 'user')),
+        None,
+    )
+    message_text = (
+        (last_user_msg.content if hasattr(last_user_msg, 'content')
+         else last_user_msg.get('content', ''))
+        if last_user_msg else ""
+    )
+
+    # 2. Context-aware classifier for short/ambiguous follow-ups
+    #    Only invoked when:
+    #    a) heuristics returned UNKNOWN
+    #    b) the user message is short/ambiguous
+    #    c) there is at least one assistant message providing context
+    if result["intent"] == "UNKNOWN" and message_text and is_short_or_ambiguous(message_text):
+        has_assistant = any(
+            (m.get('role') if isinstance(m, dict) else getattr(m, 'role', '')) == 'assistant'
+            for m in messages
+        )
+        if has_assistant:
+            logger.info(
+                "[intent] heuristic=UNKNOWN, message is short/ambiguous (%r) — trying context classifier",
+                message_text[:60],
+            )
+            result = await classify_with_context_llm(messages, openai_client)
+
+    # 3. Standalone LLM fallback (no conversation context, just the message)
     if result["intent"] == "UNKNOWN" and message_text:
         result = await classify_intent_llm(message_text, openai_client)
-        
-    # 3. Safe fallback if LLM also fails
+
+    # 4. Safe hard fallback if everything failed
     if result["intent"] == "UNKNOWN":
-        if len(message_text.split()) <= 4 and not any(w in message_text for w in ['معدل', 'خطة', 'جدول', 'سجل', 'مادة']):
+        if len(message_text.split()) <= 4 and not any(
+            w in message_text for w in ['معدل', 'خطة', 'جدول', 'سجل', 'مادة']
+        ):
             result["intent"] = "GENERAL_QA"
             result["source"] = "fallback"
         else:
             result["intent"] = "PLAN_OR_STUDY_ADVICE"
             result["source"] = "fallback"
 
-    # 4. Map intent to required blocks and tools
+    # 5. Map intent to required blocks and tools
     intent = result["intent"]
     mapped = INTENT_MAP[intent]
-    
+
     return {
         "intent": intent,
         "source": result["source"],
@@ -311,5 +469,6 @@ async def classify_intent(messages: list, openai_client: AsyncOpenAI) -> dict:
         "needs_tools": mapped["needs_tools"],
         "direct_response": mapped["direct_response"],
         "route": result.get("route"),
-        "label": result.get("label")
+        "label": result.get("label"),
+        "is_continuation": result.get("is_continuation", False),
     }
