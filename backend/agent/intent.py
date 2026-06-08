@@ -67,6 +67,11 @@ INTENT_MAP = {
         "needs_tools": True,
         "direct_response": None
     },
+    "SEMESTER_QUERY": {
+        "required_blocks": ["profile_basic", "gpa_summary", "full_transcript"],
+        "needs_tools": True,
+        "direct_response": None
+    },
     "COURSE_INFO": {
         "required_blocks": ["profile_basic", "current_courses"],
         "needs_tools": True,
@@ -232,6 +237,15 @@ def classify_intent_heuristic(messages: list) -> dict:
     if any(re.search(p, msg) for p in gpa_improvement_patterns):
         return {"intent": "GPA_IMPROVEMENT", "source": "heuristic"}
 
+    semester_query_patterns = [
+        r'الترم الماضي', r'الفصل الماضي', r'الفصل السابق', r'الترم السابق',
+        r'الفصل الأول', r'الفصل الثاني', r'الترم الأول', r'الترم الثاني',
+        r'مواد الترم', r'موادي الفصل', r'معدلي الفصل', r'معدل الفصل',
+        r'1445', r'1446', r'1447', r'last semester', r'previous semester'
+    ]
+    if any(re.search(p, msg) for p in semester_query_patterns):
+        return {"intent": "SEMESTER_QUERY", "source": "heuristic"}
+
     gpa_query_patterns = [
         r'كم معدلي', r'وش معدلي', r'احسب معدلي', r'الساعات المجتازة', r'معدلي الحالي'
     ]
@@ -287,6 +301,7 @@ Classify the user's message into EXACTLY ONE of the following intents:
 - GPA_IMPROVEMENT: Asking how to improve their GPA, what grades they need, or which subjects to focus on.
 - SCHEDULE_TASK: Asking to add a study task, schedule a session, start a pomodoro, or check for schedule conflicts.
 - PLAN_OR_STUDY_ADVICE: Asking for general study advice, time management, or organizing their study plan.
+- SEMESTER_QUERY: Asking about courses, grades, or GPA for a specific past or previous semester (e.g., last semester, Term 1 1445).
 - FULL_ACADEMIC_ANALYSIS: Asking for a deep, comprehensive analysis of their entire academic record, all past courses, and broad strengths/weaknesses.
 - ACADEMIC_CALENDAR: questions about the general Umm Al-Qura University academic calendar, university holidays, semester starts, final exam periods, midterm periods, withdrawal periods, national day holiday, or academic year 1447/1448 dates. Includes informal Arabic phrasing such as "الاختبارات العامه", "موعد الاختبارات", "متى الاختبارات", and "اختبارات المتطلبات".
 - COURSE_INFO: Asking for course details, syllabus, project, midterm, final, exam dates, or grading policy of a specific course (e.g. by course code or name).
@@ -326,7 +341,7 @@ Your job is to determine what the user meant based ONLY on the conversation cont
 
 Allowed intents:
 SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, GPA_QUERY,
-FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
+SEMESTER_QUERY, FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
 
 Rules:
 - If the assistant previously asked for a missing field for a study session or task

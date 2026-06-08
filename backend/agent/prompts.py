@@ -246,6 +246,8 @@ def build_system_prompt(
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT, ACTION_TOOL_PROMPT])
     elif intent == "FULL_ACADEMIC_ANALYSIS":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT, FULL_ANALYSIS_PROTOCOL_PROMPT])
+    elif intent == "SEMESTER_QUERY":
+        sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT])
     elif intent == "COURSE_INFO":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, COURSE_INFO_PROMPT])
     else:
@@ -548,6 +550,53 @@ def build_system_prompt(
             prompt += "💪 فئات قوية (≥ 3.5/4): " + "، ".join(
                 f"{f[0]} ({f[2]:.2f})" for f in strong_families
             ) + ".\n"
+
+    # ══════════════════════════════════════════════════
+    #  BLOCK 5.6: Semester Detail Ledger (For SEMESTER_QUERY)
+    # ══════════════════════════════════════════════════
+    if intent == "SEMESTER_QUERY" and completed_for_ledger:
+        prompt += f"\n═══ تفاصيل المواد والفصول (مخصص لسؤال الطالب) ═══\n"
+        sem_groups = {}
+        for c in completed_for_ledger:
+            sem = c.get("semester") or c.get("semesterEn") or c.get("semesterAr") or "فصل غير محدد"
+            sem_groups.setdefault(sem, []).append(c)
+            
+        for sem, lst in sem_groups.items():
+            sem_gpa = "—"
+            sem_earned = "—"
+            if transcript and transcript.get("semesters"):
+                for s_data in transcript["semesters"]:
+                    s_name = s_data.get("name") or s_data.get("nameAr") or s_data.get("nameEn") or ""
+                    if sem and s_name and (sem in s_name or s_name in sem):
+                        sem_gpa = s_data.get("gpa", "—")
+                        sem_earned = s_data.get("earnedHours", "—")
+                        break
+            
+            # Compute SGPA if missing but we have grade points and credit hours
+            if sem_gpa == "—":
+                pts = 0.0
+                hrs = 0
+                for c in lst:
+                    gp = c.get("gradePoints")
+                    ch = c.get("credit_hours") or c.get("creditHours") or 3
+                    if gp is not None:
+                        try:
+                            pts += float(gp) * int(ch)
+                            hrs += int(ch)
+                        except (ValueError, TypeError):
+                            pass
+                if hrs > 0:
+                    sem_gpa = f"{round(pts / hrs, 2)}"
+                    sem_earned = f"{hrs}"
+                    
+            prompt += f"\nفصل: {sem} (المعدل الفصلي: {sem_gpa} | الساعات المكتسبة: {sem_earned})\n"
+            for c in lst:
+                code = c.get("code", "—")
+                name = c.get("nameAr") or c.get("nameEn") or c.get("name") or "—"
+                grade = c.get("grade", "—")
+                ch = c.get("credit_hours") or c.get("creditHours") or 3
+                prompt += f"  • {code} — {name} — {grade} — {ch}س\n"
+        prompt += "\n⚠️ اعتمد على هذه القائمة للإجابة عن أسئلة تخص مواد أو معدل فصل معين بدقة.\n"
 
     # ══════════════════════════════════════════════════
     #  BLOCK 6: Academic Strengths & Weaknesses

@@ -183,6 +183,9 @@ async def load_student_context(user_id: str, db, required_blocks: list[str] | No
             transcript["courses"] = completed
 
     # ── Merge semesters into transcript ──
+    if not semesters and academic_record and academic_record.get("semesters"):
+        semesters = academic_record.get("semesters")
+        
     if transcript and not transcript.get("semesters") and semesters:
         transcript["semesters"] = semesters
     elif not transcript and semesters:
