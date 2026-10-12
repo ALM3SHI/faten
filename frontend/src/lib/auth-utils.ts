@@ -29,6 +29,7 @@ import { useProfileStore } from "@/store/profileStore";
 import { useScheduleStore } from "@/store/scheduleStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
+import { useAttendanceStore } from "@/store/attendanceStore";
 import { STORAGE_KEYS } from "@/lib/core";
 
 /** Tab-scoped last Firebase UID — survives refresh, cleared on logout tracking reset. */
@@ -81,6 +82,12 @@ function getPersistedStores(): PersistedStore[] {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       persist: (usePlanStore as any).persist,
       reset: () => usePlanStore.getState().clearPlan(),
+    },
+    {
+      label: "attendance",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      persist: (useAttendanceStore as any).persist,
+      reset: () => useAttendanceStore.getState().clearAttendance(),
     },
     {
       label: "chat-history",
@@ -142,6 +149,7 @@ function hasPersistedUserPayload(): boolean {
   if (useScheduleStore.getState().schedule.length > 0) return true;
   if (usePlanStore.getState().plan !== null) return true;
   if (useChatHistoryStore.getState().threads.length > 0) return true;
+  if (useAttendanceStore.getState().lastUpdated !== null) return true;
 
   return false;
 }
@@ -165,6 +173,7 @@ export function setStoresOwnerUid(uid: string): void {
   useScheduleStore.setState({ ownerUid: uid });
   usePlanStore.setState({ ownerUid: uid });
   useChatHistoryStore.setState({ ownerUid: uid });
+  useAttendanceStore.setState({ ownerUid: uid });
 }
 
 /** Wipe user-owned persisted slots; theme and other preserved keys stay. */

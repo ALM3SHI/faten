@@ -15,6 +15,7 @@ const navItems = [
   { name: "الدردشة", href: "/chat" },
   { name: "المعدل", href: "/gpa" },
   { name: "الخطة", href: "/plan" },
+  { name: "الغياب", href: "/attendance" },
   { name: "بومودورو", href: "/pomodoro" },
   { name: "القاعات", href: "/locations" },
   { name: "المجتمع", href: "/community" },

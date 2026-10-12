@@ -228,6 +228,11 @@ def build_system_prompt(
 - حوّل أي <br> أو مسافات HTML متبقية إلى أسطر جديدة أو قائمة نقطية.
 """
 
+    NEWS_PROMPT = """═══ 📰 أخبار الجامعة (get_university_news) ═══
+- استدعِ get_university_news ثم اعرض أبرز العناوين كقائمة نقطية: العنوان، التاريخ، والرابط.
+- لا تخترع أخباراً ولا تلخّص ما لم يرد في نتيجة الأداة. إن فشلت الأداة فأحِل الطالب إلى https://uqu.edu.sa/App/News
+"""
+
     REGULATIONS_PROMPT = """═══ ⚖️ اللوائح الجامعية (search_regulations) — مصدر الحقيقة الوحيد للأحكام النظامية ═══
 - استدعِ search_regulations أولاً لأي سؤال نظامي، ولا تجب من معرفتك العامة أبداً.
 - أجب فقط بما تنص عليه المواد المُرجَعة. إذا لم تنص صراحة على الحالة فقل ذلك بوضوح.
@@ -264,6 +269,8 @@ def build_system_prompt(
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT])
     elif intent == "COURSE_INFO":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, COURSE_INFO_PROMPT])
+    elif intent == "UNIVERSITY_NEWS":
+        sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, NEWS_PROMPT])
     elif intent == "REGULATIONS":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, REGULATIONS_PROMPT])
     else:

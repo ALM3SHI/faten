@@ -13,6 +13,9 @@
  *   users/{uid}/academic_record/schedule     ← weekly timetable doc
  *     ├─ schedule[], lastUpdated
  *
+ *   users/{uid}/academic_record/attendance   ← absence tracker doc
+ *     ├─ courses{code: {entries[], totalOverride}}, lastUpdated
+ *
  *   users/{uid}/plan/current                 ← active AI plan doc
  *     ├─ plan, model, generatedAt, completed[]
  *
@@ -54,6 +57,7 @@ import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";
 import { usePlanStore } from "@/store/planStore";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
+import { useAttendanceStore } from "@/store/attendanceStore";
 
 // ─────────────────────────────────────────────────────────────────
 // Sync gating — pause pushes while we're pulling, to prevent loops.
@@ -144,6 +148,19 @@ export async function syncSchedule(
   );
 }
 
+export async function syncAttendance(
+  uid: string,
+  data: {
+    courses: ReturnType<typeof useAttendanceStore.getState>["courses"];
+    lastUpdated: string | null;
+  },
+) {
+  await setDoc(
+    doc(db, "users", uid, "academic_record", "attendance"),
+    { ...data, updatedAt: serverTimestamp() },
+  );
+}
+
 export async function syncPlan(
   uid: string,
   data: {
@@ -209,14 +226,26 @@ export async function hydrateUserWorkspace(uid: string): Promise<void> {
   // see setState() and immediately try to push the same data back.
   setStoreSyncEnabled(false);
   try {
-    const [profileSnap, transcriptSnap, scheduleSnap, planSnap, chatsSnap] =
+    const [profileSnap, transcriptSnap, scheduleSnap, planSnap, chatsSnap, attendanceSnap] =
       await Promise.all([
         getDoc(doc(db, "users", uid)),
         getDoc(doc(db, "users", uid, "academic_record", "main")),
         getDoc(doc(db, "users", uid, "academic_record", "schedule")),
         getDoc(doc(db, "users", uid, "plan", "current")),
         getDocs(collection(db, "users", uid, "chats")),
+        // Optional doc — a failure here must not break the rest of hydration.
+        getDoc(doc(db, "users", uid, "academic_record", "attendance")).catch(() => null),
       ]);
+
+    // ── Attendance ──
+    if (attendanceSnap?.exists()) {
+      const d = attendanceSnap.data() as Record<string, unknown>;
+      useAttendanceStore.setState({
+        courses:
+          (d.courses as ReturnType<typeof useAttendanceStore.getState>["courses"]) ?? {},
+        lastUpdated: (d.lastUpdated as string | null) ?? null,
+      });
+    }
 
     // ── Profile ──
     if (profileSnap.exists()) {
@@ -428,6 +457,17 @@ export function attachStoreSync(): void {
           await syncSchedule(uid, slice);
         }
       }),
+    );
+  });
+
+  // ── Attendance — direct Firestore (owner-only rules cover the path) ──
+  useAttendanceStore.subscribe((state) => {
+    const uid = currentUid();
+    if (!uid) return;
+    if (state.lastUpdated == null) return;
+    const slice = { courses: state.courses, lastUpdated: state.lastUpdated };
+    debouncedPush(`attendance:${uid}`, () =>
+      safeRun("pushAttendance", () => syncAttendance(uid, slice)),
     );
   });
 

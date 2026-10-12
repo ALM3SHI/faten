@@ -27,3 +27,14 @@ def test_navigation_targets_existing_pages():
     import agent.intent as intent_module
     src = open(intent_module.__file__, encoding="utf-8").read()
     assert '"/map"' not in src  # retired route — the page is /locations
+
+
+@pytest.mark.parametrize("msg", ["وش آخر أخبار الجامعة؟", "اخبار الجامعه اليوم", "ايش الاخبار", "أحدث الإعلانات"])
+def test_news_questions_route_to_news(msg):
+    assert classify_intent_heuristic([{"role": "user", "content": msg}])["intent"] == "UNIVERSITY_NEWS"
+
+
+def test_news_prompt_is_built():
+    from agent.prompts import build_system_prompt
+    p = build_system_prompt(None, None, None, None, intent="UNIVERSITY_NEWS")
+    assert "get_university_news" in p

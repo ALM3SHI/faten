@@ -630,4 +630,23 @@ TOOLS_SCHEMA: list[dict] = [
         },
     },
 
-]
+    # ── University news (official RSS, read-only) ──
+    {
+        "type": "function",
+        "function": {
+            "name": "get_university_news",
+            "description": (
+                "أحدث أخبار وإعلانات جامعة أم القرى من موقعها الرسمي (عناوين، تاريخ، رابط). "
+                "استخدمها عند سؤال الطالب عن آخر الأخبار أو الإعلانات أو المستجدات في الجامعة."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "limit": {"type": "integer", "description": "عدد الأخبار (1-10)، الافتراضي 5"}
+                },
+                "required": [],
+            },
+        },
+    },
+
+]

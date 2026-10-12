@@ -11,6 +11,7 @@ Endpoints:
   POST /api/onboarding/save-profile — DEPRECATED (410, Phase 4C.1); dead write logic removed 4C.2
   GET  /api/student-context      — Fetch full Firestore data for frontend
   POST /api/mark-notification-read — Mark notification as read
+  GET  /api/news                 — University headlines (public, cached RSS)
   CRON                           — Daily proactive notifications (8 AM Riyadh)
 ================================================================
 
@@ -47,6 +48,7 @@ from routers.stt import router as stt_router
 from routers.workspace import router as workspace_router
 from routers.cron import router as cron_router
 from routers.community import router as community_router
+from routers.news import router as news_router
 
 # ── Import CRON tasks ──
 from tasks.cron import daily_notifications_cron
@@ -156,6 +158,7 @@ app.include_router(stt_router)
 app.include_router(workspace_router)
 app.include_router(cron_router)
 app.include_router(community_router)
+app.include_router(news_router)
 
 
 # ── Health Check ──

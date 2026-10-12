@@ -8,7 +8,7 @@ from schemas.chat import ChatRequest
 
 client = TestClient(main.app)  # no `with` → lifespan (Firebase init) is skipped
 
-PUBLIC = {"/health", "/api/cron/daily-notifications"}
+PUBLIC = {"/health", "/api/cron/daily-notifications", "/api/news"}
 
 
 def _api_routes():

@@ -38,6 +38,11 @@ INTENT_MAP = {
         "needs_tools": True,
         "direct_response": None
     },
+    "UNIVERSITY_NEWS": {
+        "required_blocks": [],
+        "needs_tools": True,
+        "direct_response": None
+    },
     "GENERAL_QA": {
         "required_blocks": [],
         "needs_tools": False,
@@ -274,6 +279,14 @@ def classify_intent_heuristic(messages: list) -> dict:
     course_code_regex = r'[a-zA-Z]{2,4}\s*\d{3,4}'
     has_course_code = bool(re.search(course_code_regex, msg))
 
+    news_patterns = [
+        r'(آخر|اخر|أحدث|احدث|جديد)\s*(ال)?(أخبار|اخبار|إعلانات|اعلانات|مستجدات)',
+        r'(أخبار|اخبار|إعلانات|اعلانات|مستجدات)\s*(ال)?(جامعة|جامعه|الجامعة|الجامعه)',
+        r'(وش|ايش|إيش|ماهي|ما هي)\s*(ال)?(أخبار|اخبار)',
+    ]
+    if any(re.search(p, msg) for p in news_patterns):
+        return {"intent": "UNIVERSITY_NEWS", "source": "heuristic"}
+
     academic_calendar_patterns = [
         r'التقويم الجامعي', r'إجازة', r'إجازات', r'بداية الفصل', r'نهاية العام',
         r'الاختبارات النهائية', r'اختبارات المتطلبات العامة', r'المتطلبات العامة والعملية',
@@ -317,6 +330,7 @@ async def classify_intent_llm(message: str, openai_client: AsyncOpenAI) -> dict:
 Classify the user's message into EXACTLY ONE of the following intents:
 
 - GREETING: Simple greetings or hellos. DO NOT classify ambiguous, random, or out-of-scope messages as GREETING.
+- UNIVERSITY_NEWS: Asking for the latest Umm Al-Qura University news, announcements or updates (e.g. "وش آخر أخبار الجامعة").
 - GENERAL_QA: General questions about the assistant, its capabilities, or the university. If the message is out of the academic scope (e.g., politics, religion, medicine, random chat, unclear messages), classify it as GENERAL_QA.
 - PROFILE_QUERY: Asking about their own name, major, or basic profile data.
 - REGULATIONS: Questions about official university rules: absence limits and exam deprivation (حرمان), withdrawal, postponement, academic warnings and dismissal, re-enrollment, transfer and course equivalency, make-up exams, grade appeals, honors, graduation requirements, course load limits.
@@ -363,7 +377,7 @@ You receive the last few messages of a conversation plus a short user reply.
 Your job is to determine what the user meant based ONLY on the conversation context.
 
 Allowed intents:
-SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, REGULATIONS, GPA_QUERY,
+SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, REGULATIONS, UNIVERSITY_NEWS, GPA_QUERY,
 SEMESTER_QUERY, FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
 
 Rules:

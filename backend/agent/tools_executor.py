@@ -1807,6 +1807,15 @@ async def execute_tool(
         from services.regulations import search_regulations
         return search_regulations(str(args.get("query", "")))
 
+    # ── University news (official RSS, read-only) ──
+    elif tool_name == "get_university_news":
+        from services.news import get_news
+        limit = max(1, min(10, _to_int(args.get("limit"), 5)))
+        data = await get_news(limit)
+        if not data["items"]:
+            return {"success": False, "message": "تعذّر جلب أخبار الجامعة حالياً. الموقع الرسمي: https://uqu.edu.sa/App/News"}
+        return {"success": True, "items": data["items"], "source": "https://uqu.edu.sa/App/News"}
+
     # ── Unknown tool ──
     else:
         return {"success": False, "message": f"أداة غير معروفة: {tool_name}"}

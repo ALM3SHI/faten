@@ -43,8 +43,12 @@ import {
   Activity,
   CalendarDays,
   CalendarClock,
+  CalendarPlus,
 } from "lucide-react";
+import { buildAcademicCalendarIcs, downloadIcs } from "@/lib/ics";
 import { Navbar } from "@/components/navbar";
+import { UniversityNewsCard } from "@/components/dashboard/university-news-card";
+import { AttendanceSummaryCard } from "@/components/dashboard/attendance-summary-card";
 import { EmailVerificationReminder } from "@/components/email-verification-reminder";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -836,6 +840,13 @@ export default function DashboardPage() {
                     onOpenRollover={() => setRolloverOpen(true)}
                   />
                 </Dialog>
+              </div>
+            </div>
+            {/* ╔═══ STUDENT TOOLS · Attendance + University news ═══╗ */}
+            <div className="grid lg:grid-cols-3 gap-6 mt-6">
+              <AttendanceSummaryCard />
+              <div className="lg:col-span-2">
+                <UniversityNewsCard />
               </div>
             </div>
             {/* Soft error footer — non-migration server/network failures.
@@ -2785,6 +2796,14 @@ function AcademicCalendarDialogContent() {
         <DialogDescription className="text-muted-foreground text-sm">
           جميع الأحداث الأكاديمية والأنظمة بناءً على التقويم المعتمد لجامعة أم القرى.
         </DialogDescription>
+        <button
+          type="button"
+          onClick={() => downloadIcs(buildAcademicCalendarIcs(), "uqu-academic-calendar-1448.ics")}
+          className="mt-3 self-start inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl bg-uqu-accent text-white hover:bg-uqu-accent/90"
+        >
+          <CalendarPlus className="w-4 h-4" />
+          أضف التقويم لجوالي (مع تذكير قبل المواعيد المهمة)
+        </button>
       </DialogHeader>
 
       <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">

@@ -15,7 +15,7 @@ describe("normalizePath", () => {
 });
 
 describe("isProtectedPath", () => {
-  it.each(["/dashboard", "/chat/", "/gpa", "/plan", "/profile", "/schedule", "/transcript", "/community/"])(
+  it.each(["/dashboard", "/chat/", "/gpa", "/plan", "/profile", "/schedule", "/transcript", "/community/", "/attendance/"])(
     "%s needs a signed-in user",
     (p) => expect(isProtectedPath(p)).toBe(true),
   );

@@ -15,12 +15,20 @@ import {
   Trash2,
   Clock,
   MapPin,
+  CalendarPlus,
+  Moon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useScheduleStore, WEEK_DAYS, type ScheduleSlot } from "@/store/scheduleStore";
 import { fetchWithAuth } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { getCurrentTerm, weekdayIndex } from "@/lib/academic-term";
+import { buildScheduleIcs, downloadIcs } from "@/lib/ics";
+import { dateOfWeekday, prayerDuringLecture, prayerTimesFor, toMinutes, type PrayerTime } from "@/lib/prayer-times";
+import { toast } from "@/lib/toast";
+
+const PRAYER_PREF_KEY = "uqu_show_prayers";
 
 type ParseState =
   | { kind: "idle" }
@@ -32,6 +40,23 @@ export default function SchedulePage() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [parseState, setParseState] = useState<ParseState>({ kind: "idle" });
+
+  const [showPrayers, setShowPrayers] = useState(false);
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowPrayers(localStorage.getItem(PRAYER_PREF_KEY) === "1");
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem(PRAYER_PREF_KEY, showPrayers ? "1" : "0");
+    } catch {
+      /* storage unavailable */
+    }
+  }, [showPrayers]);
 
   const existingSchedule = useScheduleStore((s) => s.schedule);
   const lastUpdated = useScheduleStore((s) => s.lastUpdated);
@@ -128,7 +153,28 @@ export default function SchedulePage() {
                   </span>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPrayers((v) => !v)}
+                  aria-pressed={showPrayers}
+                  className={cn(
+                    "rounded-xl glass border-foreground/10 gap-2",
+                    showPrayers && "border-emerald-500/30 text-emerald-600 dark:text-emerald-400",
+                  )}
+                >
+                  <Moon className="w-4 h-4" />
+                  {showPrayers ? "إخفاء أوقات الصلاة" : "أوقات الصلاة"}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => exportToCalendar(slotsToRender)}
+                  className="rounded-xl gap-2 bg-uqu-accent hover:bg-uqu-accent/90 text-white"
+                >
+                  <CalendarPlus className="w-4 h-4" />
+                  أضف لتقويم جوالي
+                </Button>
                 <input
                   type="file"
                   id="schedule-upload"
@@ -173,7 +219,7 @@ export default function SchedulePage() {
               </Card>
             )}
 
-            <ScheduleGrid slots={slotsToRender} />
+            <ScheduleGrid slots={slotsToRender} showPrayers={showPrayers} />
           </div>
         )}
       </main>
@@ -255,14 +301,54 @@ function ErrorCard({ message, onRetry }: { message: string; onRetry: () => void 
   );
 }
 
+// ── Calendar export ─────────────────────────────────────────────────
+function exportToCalendar(slots: ScheduleSlot[]) {
+  const term = getCurrentTerm(new Date());
+  if (!term || slots.length === 0) {
+    toast.error("ما فيه جدول نصدّره.");
+    return;
+  }
+  downloadIcs(buildScheduleIcs(slots, term), "faten-schedule.ics");
+  toast.success("تم تنزيل الملف — افتحه وأضفه لتقويمك (آيفون: يضاف مباشرة · جوجل: من الإعدادات ← استيراد).");
+}
+
 // ── Weekly grid ─────────────────────────────────────────────────────
-function ScheduleGrid({ slots }: { slots: ScheduleSlot[] }) {
+type DayItem =
+  | { kind: "slot"; slot: ScheduleSlot; prayer: PrayerTime | null; at: number }
+  | { kind: "prayer"; prayer: PrayerTime; at: number };
+
+function ScheduleGrid({ slots, showPrayers }: { slots: ScheduleSlot[]; showPrayers: boolean }) {
+  // Prayer times for each weekday of the current week (client clock).
+  const [today, setToday] = useState<Date | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setToday(new Date());
+  }, []);
+  const prayersByDay = useMemo(() => {
+    const map = new Map<string, PrayerTime[]>();
+    if (!today) return map;
+    for (const day of WEEK_DAYS) {
+      map.set(day, prayerTimesFor(dateOfWeekday(today, weekdayIndex(day)), ["dhuhr", "asr", "maghrib"]));
+    }
+    return map;
+  }, [today]);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
       {WEEK_DAYS.map((day) => {
         const daySlots = slots
           .filter((s) => s.day === day)
           .sort((a, b) => a.start_time.localeCompare(b.start_time));
+        const prayers = showPrayers ? prayersByDay.get(day) ?? [] : [];
+        const items: DayItem[] = [
+          ...daySlots.map((slot) => ({
+            kind: "slot" as const,
+            slot,
+            prayer: prayers.find((p) => prayerDuringLecture(p.time, slot.start_time, slot.end_time)) ?? null,
+            at: toMinutes(slot.start_time),
+          })),
+          ...prayers.map((prayer) => ({ kind: "prayer" as const, prayer, at: toMinutes(prayer.time) })),
+        ].sort((a, b) => a.at - b.at);
         return (
           <Card key={day} className="glass border-foreground/10 rounded-3xl overflow-hidden flex flex-col">
             <div className="p-4 border-b border-foreground/10 bg-foreground/5 flex items-center justify-between">
@@ -272,20 +358,41 @@ function ScheduleGrid({ slots }: { slots: ScheduleSlot[] }) {
               </span>
             </div>
             <div className="p-3 flex flex-col gap-2 min-h-[120px]">
-              {daySlots.length === 0 ? (
+              {daySlots.length === 0 && prayers.length === 0 ? (
                 <p className="text-center text-xs text-muted-foreground my-auto">لا محاضرات</p>
               ) : (
-                daySlots.map((s, i) => <SlotCard key={`${day}-${i}`} slot={s} />)
+                items.map((it, i) =>
+                  it.kind === "slot" ? (
+                    <SlotCard key={`${day}-s${i}`} slot={it.slot} prayer={it.prayer} />
+                  ) : (
+                    <PrayerRow key={`${day}-p${i}`} prayer={it.prayer} />
+                  ),
+                )
               )}
             </div>
           </Card>
         );
       })}
+      {showPrayers && (
+        <p className="col-span-full text-[11px] text-muted-foreground text-center">
+          أوقات الصلاة لهذا الأسبوع بتوقيت مكة المكرمة (تقويم أم القرى).
+        </p>
+      )}
     </div>
   );
 }
 
-function SlotCard({ slot }: { slot: ScheduleSlot }) {
+function PrayerRow({ prayer }: { prayer: PrayerTime }) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/5 border border-emerald-500/15 text-[11px] text-emerald-700 dark:text-emerald-300 font-bold">
+      <Moon className="w-3 h-3" />
+      صلاة {prayer.name}
+      <span className="mr-auto font-mono">{prayer.time}</span>
+    </div>
+  );
+}
+
+function SlotCard({ slot, prayer }: { slot: ScheduleSlot; prayer?: PrayerTime | null }) {
   const isLab = slot.type === "عملي";
   return (
     <div
@@ -323,6 +430,12 @@ function SlotCard({ slot }: { slot: ScheduleSlot }) {
           </span>
         )}
       </div>
+      {prayer && (
+        <div className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+          <Moon className="w-3 h-3" />
+          صلاة {prayer.name} {prayer.time} أثناء المحاضرة
+        </div>
+      )}
     </div>
   );
 }
