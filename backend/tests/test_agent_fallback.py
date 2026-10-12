@@ -11,9 +11,9 @@ from agent import loop
 from config import get_settings
 
 
-def _overloaded():
+def _overloaded(status=503):
     req = httpx.Request("POST", "https://example.test/v1/chat/completions")
-    resp = httpx.Response(503, request=req, json={"error": {"message": "The model is overloaded."}})
+    resp = httpx.Response(status, request=req, json={"error": {"message": "The model is overloaded."}})
     return APIStatusError("The model is overloaded.", response=resp, body=None)
 
 
@@ -34,7 +34,7 @@ class FakeClient:
     async def _create(self, **kw):
         self.calls.append(kw["model"])
         if kw["model"] in self.fail_models:
-            raise _overloaded()
+            raise getattr(self, "error", _overloaded)()
         return _completion(f"answer from {kw['model']}")
 
 
@@ -72,3 +72,27 @@ def test_both_models_down_still_raises():
             _run(client)
     finally:
         loop._gemini_fallback = orig
+
+
+def test_quota_exhausted_main_model_falls_back_too():
+    s = get_settings()
+    client = FakeClient(fail_models=[s.llm_model])
+    client.error = lambda: _overloaded(429)
+    out = _run(client)
+    assert client.calls == [s.llm_model, s.llm_fast_model]
+    assert s.llm_fast_model in out["content"]
+
+
+def test_auth_errors_do_not_trigger_fallback():
+    s = get_settings()
+    client = FakeClient(fail_models=[s.llm_model])
+    client.error = lambda: _overloaded(401)
+    with pytest.raises(APIStatusError):
+        _run(client)
+    assert client.calls == [s.llm_model]
+
+
+def test_client_retries_are_short():
+    from services.llm import make_llm_client
+    c = make_llm_client()
+    assert c.max_retries == 1

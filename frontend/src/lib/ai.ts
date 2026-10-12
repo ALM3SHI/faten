@@ -3,7 +3,7 @@
  * Handles AI Chat interaction, Client-side Tools, and Markdown Rendering.
  */
 
-import { fetchWithAuth } from './api';
+import { fetchRawWithAuth, fetchWithAuth } from './api';
 import { Storage, STORAGE_KEYS } from './core'; // STORAGE_KEYS.THEME only (Phase 4C.5)
 import {
   buildClientContext,
@@ -14,6 +14,7 @@ import {
 import { refreshWorkspaceAfterChat } from './workspace';
 import { executeCalendarTool, formatCalendarResults } from './calendar-tool';
 import { applyAgentResults } from './agent-results';
+import { parseSse } from './sse';
 
 export interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -143,6 +144,35 @@ function safeBuildContext(): ClientContextSnapshot | undefined {
  * data. Structured `client_actions` returned by the agent are dispatched
  * into the Zustand stores before the response is handed back to the page.
  */
+/** Side effects of a chat reply: client tools, store mutations, refreshes. */
+async function postProcessChatResponse(data: ChatResponse): Promise<void> {
+  // Legacy server-tool channel (navigate_to_page, change_theme, ...).
+  if (data.actions) {
+    for (const action of data.actions) {
+      await executeClientTool(action.tool, action.args, action.result);
+    }
+  }
+
+  // Results of server-side student tools (e.g. record_absence) → local stores.
+  applyAgentResults(data.actions);
+
+  // New structured client-action channel (Zustand mutations).
+  if (data.client_actions && data.client_actions.length > 0) {
+    dispatchClientActions(data.client_actions);
+  }
+
+  // Server tools (update_profile, add_course, plan mutations, …) write
+  // Firestore but do not patch Zustand — re-hydrate from GET /api/workspace.
+  if (data.success && !data.error_type) {
+    await refreshWorkspaceAfterChat(data.actions);
+  }
+}
+
+export interface ChatStreamHandlers {
+  onToken?: (text: string) => void;
+  onStatus?: (tool: string) => void;
+}
+
 export const AIService = {
   async chat(
     messages: Message[],
@@ -166,32 +196,69 @@ export const AIService = {
         }),
       });
 
-      // Legacy server-tool channel (navigate_to_page, change_theme, ...).
-      if (data.actions) {
-        for (const action of data.actions) {
-          await executeClientTool(action.tool, action.args, action.result);
-        }
-      }
-
-      // Results of server-side student tools (e.g. record_absence) → local stores.
-      applyAgentResults(data.actions);
-
-      // New structured client-action channel (Zustand mutations).
-      if (data.client_actions && data.client_actions.length > 0) {
-        dispatchClientActions(data.client_actions);
-      }
-
-      // Server tools (update_profile, add_course, plan mutations, …) write
-      // Firestore but do not patch Zustand — re-hydrate from GET /api/workspace.
-      if (data.success && !data.error_type) {
-        await refreshWorkspaceAfterChat(data.actions);
-      }
+      await postProcessChatResponse(data);
 
       return data;
     } catch (error: any) {
       console.error('[AI] Chat error:', error);
       throw error;
     }
+  },
+
+  /**
+   * Same as chat(), but streams the answer: `onToken` receives text as it
+   * is generated and `onStatus` the tool being run ("__reset__" = discard
+   * the text shown so far). Falls back to the regular endpoint when
+   * streaming is unavailable, so callers never need two code paths.
+   */
+  async chatStream(
+    messages: Message[],
+    opts: { conversationId?: string | null; clientContext?: ClientContextSnapshot } & ChatStreamHandlers,
+  ): Promise<ChatResponse> {
+    const trimmedMessages = messages.filter((m) => m.role !== 'system').slice(-10);
+    const clientContext = opts.clientContext ?? safeBuildContext();
+    const fallback = () => AIService.chat(messages, { conversationId: opts.conversationId, clientContext });
+
+    let res: Response;
+    try {
+      res = await fetchRawWithAuth('/api/chat/stream', {
+        method: 'POST',
+        body: JSON.stringify({
+          messages: trimmedMessages,
+          conversationId: opts.conversationId ?? null,
+          client_context: clientContext,
+        }),
+      });
+    } catch {
+      return fallback();
+    }
+    if (res.status === 404 || res.status === 405 || !res.body) return fallback();
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `HTTP error! status: ${res.status}`);
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let final: ChatResponse | null = null;
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (value) buffer += decoder.decode(value, { stream: true });
+      if (done) buffer += decoder.decode() + '\n\n';
+      const { events, rest } = parseSse(buffer);
+      buffer = rest;
+      for (const ev of events) {
+        if (ev.type === 'token' && ev.text) opts.onToken?.(ev.text);
+        else if (ev.type === 'status' && ev.tool) opts.onStatus?.(ev.tool);
+        else if (ev.type === 'done') final = ev.response as ChatResponse;
+        else if (ev.type === 'error') throw new Error(ev.message || 'حدث خطأ أثناء الرد');
+      }
+      if (done) break;
+    }
+    if (!final) throw new Error('انقطع الاتصال قبل اكتمال الرد. حاول مرة أخرى.');
+    await postProcessChatResponse(final);
+    return final;
   },
 
   /**

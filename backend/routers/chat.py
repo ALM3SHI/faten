@@ -5,11 +5,14 @@ UQU Academic Assistant — Chat Router
 Converts: exports.chat from index.js lines 164-230
 """
 
+import asyncio
+import json
 import time
 import logging
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from google.cloud.firestore_v1 import Increment
 from openai import AsyncOpenAI
 
@@ -48,7 +51,67 @@ async def chat(
     return await _chat_logic(body, user_id, http_request.app.state.openai_client)
 
 
-async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOpenAI):
+# ── Streaming variant (Server-Sent Events) ──────────────────────────
+# Same logic as /api/chat; events:
+#   {"type":"status","tool":"search_regulations"}   a tool is running
+#   {"type":"status","tool":"__reset__"}            drop text streamed so far
+#   {"type":"token","text":"…"}                     answer text delta
+#   {"type":"done","response":{…ChatResponse…}}     final, authoritative
+@router.post("/api/chat/stream")
+async def chat_stream(
+    body: ChatRequest,
+    http_request: Request,
+    user_id: str = Depends(get_current_user),
+):
+    queue: asyncio.Queue = asyncio.Queue()
+
+    async def on_token(text: str) -> None:
+        await queue.put({"type": "token", "text": text})
+
+    async def on_status(tool: str) -> None:
+        await queue.put({"type": "status", "tool": tool})
+
+    async def run() -> None:
+        try:
+            try:
+                consume_ai_credits(user_id, COST_CHAT)
+            except QuotaExceeded:
+                resp = ChatResponse(
+                    success=True,
+                    message=QUOTA_EXCEEDED_MESSAGE,
+                    conversationId=body.conversationId or f"conv_{int(time.time() * 1000)}",
+                    error_type="quota_exceeded",
+                )
+            else:
+                resp = await _chat_logic(body, user_id, http_request.app.state.openai_client, on_token, on_status)
+            await queue.put({"type": "done", "response": resp.model_dump(mode="json")})
+        except Exception as exc:  # never leave the client hanging
+            logger.exception("[chat-stream] failed")
+            detail = getattr(exc, "detail", None) or "حدث خطأ غير متوقع في الخادم."
+            await queue.put({"type": "error", "message": str(detail)})
+        finally:
+            await queue.put(None)
+
+    async def events():
+        task = asyncio.create_task(run())
+        try:
+            while True:
+                item = await queue.get()
+                if item is None:
+                    break
+                yield f"data: {json.dumps(item, ensure_ascii=False, default=str)}\n\n"
+        finally:
+            if not task.done():
+                task.cancel()
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOpenAI, on_token=None, on_status=None):
     """Main AI Agent logic — shared by both routes.
 
     Mirrors: exports.chat from index.js lines 164-230
@@ -262,7 +325,9 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                     openai_client, 
                     with_tools_enabled=with_tools,
                     override_model=override_model,
-                    tools_override=tools_override
+                    tools_override=tools_override,
+                    on_token=on_token,
+                    on_status=on_status,
                 )
                 content = result["content"]
                 actions_log = result["actions_log"]

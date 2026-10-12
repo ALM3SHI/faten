@@ -69,6 +69,11 @@ def make_llm_client(**client_kwargs: Any) -> LLMClient:
     """Create a client for the configured provider."""
     settings = get_settings()
     base_url = GEMINI_OPENAI_BASE_URL if settings.ai_provider == "gemini" else None
+    # The SDK's default (2 retries with backoff that honours Retry-After)
+    # can stall a reply for ~30 s on a 429. One quick retry, then the agent
+    # loop switches to the fast model instead.
+    client_kwargs.setdefault("max_retries", 1)
+    client_kwargs.setdefault("timeout", 60.0)
     client = AsyncOpenAI(
         # The SDK refuses an empty key at construction time; a placeholder
         # lets the server boot and the call fail later with a clear 401.

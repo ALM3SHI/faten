@@ -8,6 +8,15 @@ async function getAuthToken() {
   return await user.getIdToken();
 }
 
+/** Like fetchWithAuth but returns the raw Response (for streaming bodies). */
+export async function fetchRawWithAuth(path: string, options: RequestInit = {}): Promise<Response> {
+  const token = await getAuthToken();
+  const headers = new Headers(options.headers || {});
+  headers.set("Content-Type", "application/json");
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+  return fetch(`${AGENT_BASE_URL}${path}`, { ...options, headers });
+}
+
 export async function fetchWithAuth(path: string, options: RequestInit = {}) {
   const token = await getAuthToken();
   const headers = new Headers(options.headers || {});

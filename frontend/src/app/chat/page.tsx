@@ -9,6 +9,7 @@ import type { ChatResponse } from "@/lib/ai";
 import type { SuggestedNavigation } from "@/store/workspaceStore";
 import { BotMarkdown } from "@/components/bot-markdown";
 import { extractCitations } from "@/lib/citations";
+import { toolStatusLabel } from "@/lib/sse";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -208,6 +209,33 @@ function ChatPageContent() {
     }
   }, [messages]);
 
+  // ── Live streaming state (text arrives token by token) ──
+  const [streamText, setStreamText] = useState("");
+  const [streamStatus, setStreamStatus] = useState<string | null>(null);
+  const streamBufRef = useRef("");
+  const flushRef = useRef<number | null>(null);
+  const scheduleStreamFlush = () => {
+    if (flushRef.current !== null) return;
+    flushRef.current = requestAnimationFrame(() => {
+      flushRef.current = null;
+      setStreamText(streamBufRef.current);
+      if (streamBufRef.current) setStreamStatus(null);
+    });
+  };
+  const resetStream = () => {
+    if (flushRef.current !== null) cancelAnimationFrame(flushRef.current);
+    flushRef.current = null;
+    streamBufRef.current = "";
+    setStreamText("");
+    setStreamStatus(null);
+  };
+
+  useEffect(() => {
+    if (streamText && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [streamText]);
+
   const handleSend = async (overrideInput?: string) => {
     const textToSend = typeof overrideInput === "string" ? overrideInput : input;
     if (!textToSend.trim() || isLoading) return;
@@ -231,9 +259,21 @@ function ChatPageContent() {
       }));
       history.push({ role: "user", content: textToSend });
 
-      const response = await AIService.chat(history, {
+      const response = await AIService.chatStream(history, {
         conversationId,
+        onToken: (t) => {
+          streamBufRef.current += t;
+          scheduleStreamFlush();
+        },
+        onStatus: (tool) => {
+          // Text streamed before a tool call (or before a retry) is a
+          // preamble — clear it and show what the agent is doing instead.
+          streamBufRef.current = "";
+          setStreamText("");
+          setStreamStatus(tool === "__reset__" ? null : toolStatusLabel(tool));
+        },
       });
+      resetStream();
       if (response.conversationId) setConversationId(response.conversationId);
 
       const botMessage: Message = {
@@ -255,6 +295,7 @@ function ChatPageContent() {
       saveActiveThread(finalMessages, response.conversationId ?? null);
       setIsLoading(false);
     } catch (error) {
+      resetStream();
       console.error("Chat error:", error);
       // Surface the real server-side message when we can — the previous
       // generic "خطأ في الاتصال" hid the actual cause (missing API key,
@@ -432,9 +473,21 @@ function ChatPageContent() {
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-uqu-accent to-cyan-500 flex items-center justify-center shrink-0 animate-pulse mt-0.5">
                     <Sparkles className="w-4 h-4 text-foreground" />
                   </div>
-                  {/* Loading pill — three-dot typing indicator only, no
-                      textual status copy. */}
-                  <SmartLoadingIndicator />
+                  {streamText ? (
+                    <div className="max-w-[85%] px-4 py-3 text-[15px] leading-relaxed rounded-2xl rounded-tl-sm bg-card border border-foreground/10 text-foreground text-right">
+                      <BotMarkdown content={streamText} />
+                      <span aria-hidden className="inline-block w-1.5 h-4 align-middle bg-uqu-accent/70 animate-pulse rounded-sm" />
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1.5 items-start">
+                      <SmartLoadingIndicator />
+                      {streamStatus && (
+                        <span className="text-[12px] text-muted-foreground px-2" aria-live="polite">
+                          {streamStatus}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

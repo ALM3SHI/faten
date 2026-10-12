@@ -51,6 +51,7 @@ def estimate_cost(model: str, prompt_tokens: int, completion_tokens: int) -> flo
 from config import get_settings
 from agent.tools_schema import TOOLS_SCHEMA
 from agent.tools_executor import execute_tool
+from agent.streaming import collect_stream
 
 logger = logging.getLogger(__name__)
 
@@ -122,8 +123,21 @@ def _is_deflection(text: str, actions_were_taken: bool) -> tuple[bool, str | Non
     return False, None
 
 
+RESET_STATUS = "__reset__"  # tells a streaming client to drop the text shown so far
+
+
+async def _notify(on_status, value: str) -> None:
+    if on_status is None:
+        return
+    try:
+        await on_status(value)
+    except Exception:  # a UI hint must never break the loop
+        pass
+
+
 def _is_overloaded_error(err: Exception) -> bool:
-    """Provider-side, temporary failures (model overloaded / 5xx / timeout).
+    """Provider-side failures worth retrying on another model
+    (rate limit / overloaded / 5xx / timeout).
 
     The OpenAI SDK has already retried these with backoff by the time we see
     them, so the useful next step is a different (lighter) model.
@@ -131,7 +145,9 @@ def _is_overloaded_error(err: Exception) -> bool:
     if isinstance(err, (APITimeoutError, APIConnectionError)):
         return True
     if isinstance(err, APIStatusError):
-        return err.status_code in (500, 502, 503, 504)
+        # 429 = this model's quota/rate limit is used up. On Gemini each model
+        # has its own quota, so the lighter model usually still has room.
+        return err.status_code in (429, 500, 502, 503, 504)
     low = str(err).lower()
     return "overloaded" in low or "unavailable" in low
 
@@ -168,8 +184,12 @@ def get_openai_client():
     return make_llm_client()
 
 
-async def _call_model(client, model_name, messages, with_tools: bool, tools_override: list | None = None):
-    """Single completion call. Logs the exact error on failure."""
+async def _call_model(client, model_name, messages, with_tools: bool, tools_override: list | None = None, on_token=None):
+    """Single completion call. Logs the exact error on failure.
+
+    With `on_token`, the call is streamed: text deltas are forwarded as they
+    arrive and the result is reassembled into the non-streamed shape.
+    """
     try:
         kwargs = dict(
             model=model_name,
@@ -181,7 +201,10 @@ async def _call_model(client, model_name, messages, with_tools: bool, tools_over
         if with_tools:
             kwargs["tools"] = tools_override if tools_override is not None else TOOLS_SCHEMA
             kwargs["tool_choice"] = "auto"
-        return await client.chat.completions.create(**kwargs)
+        if on_token is None:
+            return await client.chat.completions.create(**kwargs)
+        stream = await client.chat.completions.create(stream=True, **kwargs)
+        return await collect_stream(stream, on_token)
     except APIStatusError as e:
         logger.error(
             "[AGENT] OpenAI returned HTTP %s — body=%s",
@@ -229,8 +252,15 @@ async def run_agent_loop(
     with_tools_enabled: bool = True,
     override_model: str | None = None,
     tools_override: list | None = None,
+    on_token=None,
+    on_status=None,
 ) -> dict:
     """Run the agentic loop with tool calling.
+
+    Optional streaming hooks: `on_token(text)` receives answer text as it is
+    generated; `on_status(tool_name)` is awaited before each tool runs. The
+    returned `content` is always authoritative (fallbacks may replace text
+    that was already streamed).
 
     `client` should be the long-lived AsyncOpenAI instance from app.state
     (passed in by the chat router). If omitted, a fresh client is created
@@ -273,7 +303,7 @@ async def run_agent_loop(
         used_tools = with_tools_enabled
         try:
             try:
-                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
+                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override, on_token=on_token)
             except Exception as busy_err:
                 fast_model = settings.llm_fast_model
                 if not (_is_overloaded_error(busy_err) and fast_model and fast_model != model_name):
@@ -283,7 +313,8 @@ async def run_agent_loop(
                     model_name, type(busy_err).__name__, fast_model,
                 )
                 model_name = fast_model
-                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
+                await _notify(on_status, RESET_STATUS)
+                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override, on_token=on_token)
         except Exception as first_err:
             # Only retry without tools when the failure was specifically the
             # tools schema being rejected. For auth / network / 5xx we want
@@ -301,7 +332,8 @@ async def run_agent_loop(
             )
             try:
                 used_tools = False
-                completion = await _call_model(client, model_name, all_messages, with_tools=False, tools_override=tools_override)
+                await _notify(on_status, RESET_STATUS)
+                completion = await _call_model(client, model_name, all_messages, with_tools=False, tools_override=tools_override, on_token=on_token)
             except Exception as second_err:
                 logger.error("[AGENT] Retry without tools also failed: %s", second_err)
                 # Both OpenAI calls failed — try Gemini as last resort
@@ -398,6 +430,7 @@ async def run_agent_loop(
         # ── Execute requested tools ──
         for tool_call in message.tool_calls:
             tool_name = tool_call.function.name
+            await _notify(on_status, tool_name)
             args: dict = {}
             json_err: str | None = None
             try:
