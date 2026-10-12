@@ -30,6 +30,7 @@ import { useScheduleStore } from "@/store/scheduleStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
 import { useAttendanceStore } from "@/store/attendanceStore";
+import { useStudyStore } from "@/store/studyStore";
 import { STORAGE_KEYS } from "@/lib/core";
 
 /** Tab-scoped last Firebase UID — survives refresh, cleared on logout tracking reset. */
@@ -88,6 +89,12 @@ function getPersistedStores(): PersistedStore[] {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       persist: (useAttendanceStore as any).persist,
       reset: () => useAttendanceStore.getState().clearAttendance(),
+    },
+    {
+      label: "study",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      persist: (useStudyStore as any).persist,
+      reset: () => useStudyStore.getState().clearPacks(),
     },
     {
       label: "chat-history",

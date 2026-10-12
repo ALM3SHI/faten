@@ -1,0 +1,223 @@
+[
+  {
+    "id": "reg-deprivation",
+    "q": "كم نسبة الغياب اللي تحرمني من الاختبار النهائي؟",
+    "tools": [
+      "search_regulations"
+    ],
+    "keywords": [
+      "15",
+      "١٥"
+    ]
+  },
+  {
+    "id": "reg-withdraw",
+    "q": "ابغى انسحب من مادة، وش الشروط؟",
+    "tools": [
+      "search_regulations"
+    ],
+    "keywords": [
+      "انسحاب",
+      "الانسحاب"
+    ]
+  },
+  {
+    "id": "reg-dismissal",
+    "q": "متى يفصلوني من الجامعة بسبب المعدل؟",
+    "tools": [
+      "search_regulations"
+    ],
+    "keywords": [
+      "إنذار",
+      "انذار",
+      "الإنذار"
+    ]
+  },
+  {
+    "id": "reg-honors",
+    "q": "وش شروط مرتبة الشرف الأولى؟",
+    "tools": [
+      "search_regulations"
+    ],
+    "keywords": [
+      "3.75",
+      "٣٫٧٥",
+      "3,75"
+    ]
+  },
+  {
+    "id": "reg-coop",
+    "q": "كم عدد ساعات التدريب التعاوني الفعلية؟",
+    "tools": [
+      "search_regulations"
+    ],
+    "keywords": [
+      "ساعة",
+      "ساعات"
+    ]
+  },
+  {
+    "id": "cal-withdraw-date",
+    "q": "متى فترة الانسحاب من المقررات هذا الفصل؟",
+    "tools": [
+      "get_calendar_info"
+    ],
+    "keywords": [
+      "نوفمبر",
+      "November"
+    ]
+  },
+  {
+    "id": "cal-finals",
+    "q": "متى تبدأ الاختبارات النهائية؟",
+    "tools": [
+      "get_calendar_info"
+    ],
+    "keywords": [
+      "ديسمبر",
+      "December",
+      "27"
+    ]
+  },
+  {
+    "id": "cal-national-day",
+    "q": "متى إجازة اليوم الوطني؟",
+    "tools": [
+      "get_calendar_info"
+    ],
+    "keywords": [
+      "سبتمبر",
+      "September",
+      "23"
+    ]
+  },
+  {
+    "id": "day-tomorrow",
+    "q": "وش عندي محاضرات بكرة؟",
+    "tools": [
+      "get_day_schedule"
+    ],
+    "keywords": [
+      "تعلم الآلة",
+      "10:00"
+    ]
+  },
+  {
+    "id": "day-prayer",
+    "q": "متى صلاة الظهر اليوم بتوقيت مكة؟",
+    "tools": [
+      "get_day_schedule"
+    ],
+    "keywords": [
+      "12:0",
+      "١٢"
+    ]
+  },
+  {
+    "id": "att-remaining",
+    "q": "كم باقي لي غياب في تعلم الآلة قبل الحرمان؟",
+    "tools": [
+      "get_attendance_status"
+    ],
+    "keywords": [
+      "باقي",
+      "تبقى",
+      "يتبقى",
+      "متبقي"
+    ]
+  },
+  {
+    "id": "att-deprived",
+    "q": "غبت كثير في مشروع التخرج، هل أنا محروم؟",
+    "tools": [
+      "get_attendance_status"
+    ],
+    "keywords": [
+      "حرمان",
+      "محروم",
+      "تجاوز"
+    ]
+  },
+  {
+    "id": "att-record",
+    "q": "سجّل غيابي اليوم في أمن الشبكات بدون عذر",
+    "tools": [
+      "record_absence"
+    ],
+    "keywords": [
+      "سجل",
+      "سجّل",
+      "تم"
+    ]
+  },
+  {
+    "id": "news",
+    "q": "وش آخر أخبار الجامعة؟",
+    "tools": [
+      "get_university_news"
+    ],
+    "keywords": [
+      "روّاد",
+      "رواد",
+      "الاختبارات"
+    ]
+  },
+  {
+    "id": "gpa-target",
+    "q": "كم أحتاج أجيب هالترم عشان يوصل معدلي التراكمي 3.5؟",
+    "tools": [
+      "predict_gpa_pathway"
+    ],
+    "keywords": [
+      "3.5"
+    ]
+  },
+  {
+    "id": "course-reviews",
+    "q": "هل مادة CS4510 صعبة؟ وش يقولون الطلاب عنها؟",
+    "tools": [
+      "get_course_reviews",
+      "get_course_info"
+    ],
+    "keywords": [
+      "CS4510",
+      "تعلم"
+    ]
+  },
+  {
+    "id": "mem-remember",
+    "q": "ترى أنا أشتغل دوام جزئي بالليل فما أقدر أذاكر بعد العشاء",
+    "tools": [
+      "remember_fact"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "mem-forget",
+    "q": "انسى موضوع إني أشتغل بالليل، خلاص تركت الدوام",
+    "tools": [
+      "forget_fact"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "grad-progress",
+    "q": "كم باقي لي ساعات وأتخرج؟",
+    "tools": [
+      "get_graduation_progress"
+    ],
+    "keywords": [
+      "36",
+      "ساعة"
+    ]
+  },
+  {
+    "id": "identity",
+    "q": "مين أنت ووش تقدر تسوي؟",
+    "tools": [],
+    "keywords": [
+      "فطن"
+    ],
+    "no_tools": true
+  }
+]

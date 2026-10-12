@@ -255,3 +255,31 @@ def resolve_day(value: str | None, today: dt.date | None = None) -> dt.date:
         ahead = (wd - js_weekday(today)) % 7
         return today + dt.timedelta(days=ahead)
     return today
+
+
+# ── Graduation progress (mirror of frontend/src/lib/graduation.ts) ──
+FAST_LOAD, COMFORT_LOAD = 18, 14
+
+
+def graduation_progress(plan_hours, earned_hours, current_hours) -> dict | None:
+    try:
+        plan = float(plan_hours)
+        earned = float(earned_hours)
+    except (TypeError, ValueError):
+        return None
+    if plan <= 0 or earned < 0:
+        return None
+    in_progress = max(0.0, float(current_hours or 0))
+    remaining = max(0.0, plan - earned)
+    after = max(0.0, remaining - in_progress)
+    return {
+        "plan_hours": int(plan),
+        "earned_hours": int(earned),
+        "this_term_hours": int(in_progress),
+        "remaining_hours": int(remaining),
+        "remaining_after_this_term": int(after),
+        "percent": min(100, round(earned / plan * 100)),
+        "terms_after_this_one": {"min": math.ceil(after / FAST_LOAD), "max": math.ceil(after / COMFORT_LOAD)},
+        "graduates_this_term": remaining > 0 and after == 0,
+        "assumption": f"العبء الدراسي بين {COMFORT_LOAD} و{FAST_LOAD} ساعة للفصل",
+    }

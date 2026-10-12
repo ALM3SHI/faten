@@ -95,12 +95,12 @@ export default function SchedulePage() {
       // and plan generator pick it up unchanged.
       setSchedule(slots);
       setParseState({ kind: "success", schedule: slots });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Schedule vision error:", error);
       setParseState({
         kind: "error",
         message:
-          error?.message ||
+          (error instanceof Error && error.message) ||
           "تعذّر تحليل الجدول. تأكد من أن الملف PDF صالح وحاول مرة أخرى.",
       });
     }

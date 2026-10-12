@@ -76,7 +76,6 @@ export function WeeklyScheduleGrid({
   timeSlots = HOURLY_24_SLOTS,
   rowHeightPx = PLAN_CELL_HEIGHT_PX,
   title = "الجدول الأسبوعي",
-  subtitle,
   emptyHint,
   hiddenStudyCount = 0,
   onToggleStudy,

@@ -129,6 +129,7 @@ function LocationsContent() {
     if (!target) return;
     const room = MAP_DATA.find((r) => r.id === target);
     if (!room || !isSelectableRoom(room)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deep link ?target= selects a room once
     setSelectedRoom(room);
     // give the map a tick to fit before centering
     requestAnimationFrame(() => mapRef.current?.panToRoom(room.id));

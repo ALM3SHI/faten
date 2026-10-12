@@ -4,6 +4,7 @@
  * hydrateUserWorkspace) while direct Firestore sync remains as fallback.
  */
 
+import type { ChatMessage } from "@/store/workspaceStore";
 import { api } from "@/lib/api";
 import { setStoreSyncEnabled, clearPendingPushTimers } from "@/lib/firebase/sync";
 import { useProfileStore } from "@/store/profileStore";
@@ -319,7 +320,7 @@ export function applyWorkspaceToStores(
       role: m.role === "bot" || m.role === "assistant" ? "bot" : "user",
       content: m.content ?? "",
       timestamp: parseMessageTimestamp(m.timestamp),
-      actions: m.actions,
+      actions: m.actions as ChatMessage["actions"],
     })),
   }));
 

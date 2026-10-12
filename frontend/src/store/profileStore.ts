@@ -69,6 +69,13 @@ export interface ProfileState {
   resetProfile: () => void;
 }
 
+/** Shape of the pre-v3 localStorage profile (only the fields we migrate). */
+interface LegacyProfile {
+  basic?: Partial<ProfileBasic>;
+  goals?: Partial<typeof DEFAULT_GOALS>;
+  preferences?: { studyStyle?: string; focusDuration?: number };
+}
+
 const DEFAULT_BASIC: ProfileBasic = { name: "", major: "", studentId: "", totalPlanHours: "" };
 const DEFAULT_GOALS: ProfileGoals = { currentGpa: 0, targetGpa: 0 };
 const DEFAULT_PREFS: ProfilePreferences = {
@@ -151,7 +158,7 @@ export const useProfileStore = create<ProfileState>()(
         if (error || !state) return;
         if (state.lastUpdated !== null) return;
 
-        const legacy = Storage.get<any>(STORAGE_KEYS.PROFILE, null);
+        const legacy = Storage.get<LegacyProfile | null>(STORAGE_KEYS.PROFILE, null);
         if (!legacy) return;
 
         const legacyStyle = legacy?.preferences?.studyStyle;
@@ -162,7 +169,9 @@ export const useProfileStore = create<ProfileState>()(
           goals: { ...DEFAULT_GOALS, ...(legacy.goals ?? {}) },
           preferences: {
             ...DEFAULT_PREFS,
-            ...(VALID_LEARNING.includes(legacyStyle) ? { learningStyle: legacyStyle } : {}),
+            ...(legacyStyle && (VALID_LEARNING as string[]).includes(legacyStyle)
+              ? { learningStyle: legacyStyle as LearningStyle }
+              : {}),
             ...(typeof legacyFocus === "number" && legacyFocus > 0
               ? { pomodoroFocus: legacyFocus }
               : {}),

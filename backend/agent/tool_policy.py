@@ -28,7 +28,10 @@ SAFE_TOOLS = frozenset({
     "get_university_news",
     "get_attendance_status",
     "get_day_schedule",
+    "get_graduation_progress",
     "record_absence",
+    "remember_fact",
+    "forget_fact",
     "navigate_to_page",
     "change_theme",
 })

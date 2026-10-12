@@ -28,6 +28,7 @@ import {
   type ProfilePreferences,
 } from "@/store/profileStore";
 import { SetupWizard } from "@/components/setup-wizard/SetupWizard";
+import { PrivacyCard } from "@/components/profile/privacy-card";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!dirty) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror the store into the form until the user edits
       setDraft({
         basic: storeBasic,
         goals: storeGoals,
@@ -410,6 +412,7 @@ export default function ProfilePage() {
               ))}
             </div>
           </Card>
+          <PrivacyCard />
         </div>
       </main>
 

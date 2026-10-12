@@ -16,6 +16,7 @@ const navItems = [
   { name: "المعدل", href: "/gpa" },
   { name: "الخطة", href: "/plan" },
   { name: "الغياب", href: "/attendance" },
+  { name: "المذاكرة", href: "/study" },
   { name: "بومودورو", href: "/pomodoro" },
   { name: "القاعات", href: "/locations" },
   { name: "المجتمع", href: "/community" },
@@ -41,6 +42,7 @@ export function Navbar() {
 
   // Close mobile menu on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- close the mobile menu after navigation
     setMobileOpen(false);
   }, [pathname]);
 

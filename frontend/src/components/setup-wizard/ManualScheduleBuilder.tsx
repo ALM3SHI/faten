@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -121,10 +122,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
   }, []);
 
   // Portal-mount flag — see the original comment in DragOverlay below.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   const activeCourse = activeCourseCode
     ? currentCourses.find((c) => c.code === activeCourseCode) ?? null
@@ -619,6 +617,7 @@ function PendingPlacementDialog({
   // Clamp the selected duration if it exceeds what the grid can fit.
   useEffect(() => {
     if (extraHours > pending.maxHours - 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clamp when the available range shrinks
       setExtraHours(pending.maxHours - 1);
     }
   }, [pending.maxHours, extraHours]);

@@ -252,8 +252,10 @@ def build_system_prompt(
 - غياب الطالب نفسه وكم باقي له ← get_attendance_status. وإذا طلب صراحة تسجيل غياب ← record_absence.
 - «وش عندي اليوم/بكرة؟» أو أوقات الصلاة ← get_day_schedule.
 - كم يحتاج ليصل لمعدل معيّن ← predict_gpa_pathway (لا تحسب المعدل بنفسك).
+- كم باقي على تخرجه ← get_graduation_progress.
 - معلومات مقرر ← get_course_info، وآراء الطلاب فيه ← get_course_reviews.
 - أخبار الجامعة ← get_university_news.
+- إذا ذكر الطالب معلومة دائمة عن نفسه تفيد نصيحتك لاحقاً (هدف، ظرف، تفضيل دراسة) ← remember_fact. وإذا طلب نسيانها ← forget_fact.
 - الأرقام التي ترجعها الأدوات محسوبة بدقة: انقلها كما هي. وإذا أرجعت الأداة success=false فاشرح السبب ووجّه الطالب للصفحة المناسبة.
 """
 

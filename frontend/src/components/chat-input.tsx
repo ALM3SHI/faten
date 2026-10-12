@@ -5,6 +5,26 @@ import { Mic, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AIService } from "@/lib/ai";
 
+// Minimal typings for the browser Web Speech API (not in lib.dom for all browsers).
+interface SpeechResultEvent {
+  resultIndex: number;
+  results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }>;
+}
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((e: SpeechResultEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  start(): void;
+  stop(): void;
+}
+type SpeechWindow = {
+  SpeechRecognition?: new () => SpeechRecognitionLike;
+  webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+};
+
 interface ChatInputProps {
   value: string;
   onChange: (v: string) => void;
@@ -36,7 +56,7 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
   const chunksRef = useRef<Blob[]>([]);
 
   // Fallback SpeechRecognition path
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   // The SpeechRecognition handlers close over `value` at start time.
   // Keep a ref so each onresult appends onto the freshest text.
@@ -65,17 +85,15 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
 
   // ── Path 2: Web Speech API fallback ──────────────────────────────
   const startSpeechRecognitionFallback = (): boolean => {
-    const Ctor: any =
-      typeof window !== "undefined"
-        ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-        : null;
+    const w = typeof window !== "undefined" ? (window as unknown as SpeechWindow) : null;
+    const Ctor = w ? w.SpeechRecognition || w.webkitSpeechRecognition : undefined;
     if (!Ctor) return false;
 
     const rec = new Ctor();
     rec.lang = "ar-SA";
     rec.continuous = true;
     rec.interimResults = false;
-    rec.onresult = (event: any) => {
+    rec.onresult = (event: SpeechResultEvent) => {
       let finalText = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) finalText += event.results[i][0].transcript;

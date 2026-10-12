@@ -27,8 +27,9 @@ os.environ.setdefault("ENABLE_INTERNAL_SCHEDULER", "false")
 
 # ── In-memory Firestore ──────────────────────────────────────────
 class _Snap:
-    def __init__(self, path, data):
+    def __init__(self, path, data, store=None):
         self.id = path[-1]
+        self.reference = _Doc(store, path) if store is not None else None
         self._data = None if data is None else dict(data)
         self.exists = data is not None
 
@@ -41,7 +42,7 @@ class _Doc:
         self._store, self.path, self.id = store, path, path[-1]
 
     def get(self, transaction=None):
-        return _Snap(self.path, self._store.get(self.path))
+        return _Snap(self.path, self._store.get(self.path), self._store)
 
     def set(self, data, merge=False):
         if merge and self.path in self._store:
@@ -75,14 +76,21 @@ class _Col:
 
     def stream(self):
         snaps = [
-            _Snap(p, d) for p, d in self._store.items()
+            _Snap(p, d, self._store) for p, d in self._store.items()
             if len(p) == len(self.path) + 1 and p[:-1] == self.path
+            and all(d.get(f) == v for f, v in getattr(self, "_filters", []))
         ]
         if self._order:
             snaps.sort(key=lambda s: (s._data or {}).get(self._order) or 0, reverse=self._desc)
         return snaps[: self._limit] if self._limit else snaps
 
     get = stream
+
+    def where(self, field, op, value):
+        assert op == "=="
+        col = _Col(self._store, self.path, self._order, self._desc, self._limit)
+        col._filters = [*getattr(self, "_filters", []), (field, value)]
+        return col
 
     def add(self, data):
         doc = _Doc(self._store, self.path + (f"auto{len(self._store)}",))
@@ -110,6 +118,12 @@ class FakeFirestore:
 
     def transaction(self):
         return _Tx()
+
+    def recursive_delete(self, ref):
+        doomed = [p for p in self.store if p[: len(ref.path)] == ref.path]
+        for p in doomed:
+            del self.store[p]
+        return len(doomed)
 
 
 @pytest.fixture

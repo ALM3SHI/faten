@@ -1,7 +1,8 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
-import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft, FileText, ExternalLink } from "lucide-react";
+import { useHydrated } from "@/lib/use-hydrated";
+import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft, FileText, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +11,8 @@ import type { SuggestedNavigation } from "@/store/workspaceStore";
 import { BotMarkdown } from "@/components/bot-markdown";
 import { extractCitations } from "@/lib/citations";
 import { toolStatusLabel } from "@/lib/sse";
+import { useBackendStatus } from "@/lib/backend-status";
+import { api } from "@/lib/api";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -157,7 +160,7 @@ function ChatPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
   const scrollRef = useRef<HTMLDivElement>(null);
   const clearAllThreads = useChatHistoryStore((s) => s.clearAll);
   const activeId = useChatHistoryStore((s) => s.activeId);
@@ -196,9 +199,6 @@ function ChatPageContent() {
     [activeId, deleteThread, resetToNewConversation],
   );
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -208,6 +208,19 @@ function ChatPageContent() {
       });
     }
   }, [messages]);
+
+  // ── Server wake-up (free hosting sleeps when idle) ──
+  const backendStatus = useBackendStatus((st) => st.status);
+  const [slowReply, setSlowReply] = useState(false);
+  useEffect(() => {
+    if (!isLoading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSlowReply(false);
+      return;
+    }
+    const t = setTimeout(() => setSlowReply(true), 8000);
+    return () => clearTimeout(t);
+  }, [isLoading]);
 
   // ── Live streaming state (text arrives token by token) ──
   const [streamText, setStreamText] = useState("");
@@ -322,6 +335,7 @@ function ChatPageContent() {
   // Auto-send a query passed in the URL (?q=...) once, after handleSend exists.
   useEffect(() => {
     if (initialQuery && !hasInitialized) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot guard for the URL query
       setHasInitialized(true);
       setTimeout(() => {
         handleSend(initialQuery);
@@ -383,6 +397,13 @@ function ChatPageContent() {
             className="flex-1 overflow-y-auto pb-32 px-6 flex flex-col gap-5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full"
             dir="rtl"
           >
+            {(backendStatus === "waking" || backendStatus === "down") && (
+                <div className="mx-auto max-w-md text-center text-[12.5px] px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300" role="status">
+                  {backendStatus === "waking"
+                    ? "⏳ جارٍ تجهيز المساعد… أول استخدام بعد فترة هدوء قد يأخذ حتى دقيقة."
+                    : "تعذّر الوصول للمساعد حالياً. تحقق من اتصالك وحاول بعد قليل."}
+                </div>
+              )}
             <AnimatePresence initial={false}>
               {messages.map((msg, idx) => {
                 const isBot = msg.role === "bot";
@@ -441,6 +462,16 @@ function ChatPageContent() {
                         )}
                       </div>
                       {isBot && !isError && <SourceCards content={msg.content} actions={msg.actions} />}
+                      {isBot && !isError && idx > 0 && messages[idx - 1]?.role === "user" && (
+                        <ReplyFeedback
+                          msg={msg}
+                          question={messages[idx - 1].content}
+                          conversationId={conversationId}
+                          onRated={(rating) =>
+                            setMessages((prev) => prev.map((m, i) => (i === idx ? { ...m, feedback: rating } : m)))
+                          }
+                        />
+                      )}
                       {/* Manual navigation CTAs — only rendered if the
                           agent suggested a destination. Click is the
                           ONLY way the page changes. */}
@@ -481,9 +512,9 @@ function ChatPageContent() {
                   ) : (
                     <div className="flex flex-col gap-1.5 items-start">
                       <SmartLoadingIndicator />
-                      {streamStatus && (
+                      {(streamStatus || slowReply) && (
                         <span className="text-[12px] text-muted-foreground px-2" aria-live="polite">
-                          {streamStatus}
+                          {streamStatus ?? "⏳ الخادم يصحى بعد فترة هدوء — أول رد قد يأخذ حتى دقيقة."}
                         </span>
                       )}
                     </div>
@@ -586,6 +617,92 @@ function SourceCards({ content, actions }: { content: string; actions?: unknown 
           </span>
         );
       })}
+    </div>
+  );
+}
+
+// ── 👍/👎 on a reply ────────────────────────────────────────────────
+function ReplyFeedback({
+  msg,
+  question,
+  conversationId,
+  onRated,
+}: {
+  msg: Message;
+  question: string;
+  conversationId: string | null;
+  onRated: (rating: "up" | "down" | null) => void;
+}) {
+  const [askWhy, setAskWhy] = useState(false);
+  const [comment, setComment] = useState("");
+  const [sent, setSent] = useState(false);
+  const tools = Array.isArray(msg.actions)
+    ? msg.actions.map((a: { tool?: string }) => a?.tool).filter((t): t is string => typeof t === "string")
+    : [];
+
+  const send = async (rating: "up" | "down" | null, note = "") => {
+    onRated(rating);
+    try {
+      await api.post("/api/feedback", {
+        rating,
+        question: question.slice(0, 2000),
+        answer: msg.content.slice(0, 20000),
+        comment: note,
+        conversationId,
+        tools,
+      });
+    } catch {
+      /* rating is best-effort */
+    }
+  };
+
+  const click = (rating: "up" | "down") => {
+    const next = msg.feedback === rating ? null : rating;
+    setSent(false);
+    setAskWhy(next === "down");
+    void send(next);
+  };
+
+  return (
+    <div className="flex flex-col gap-1.5 items-start">
+      <div className="flex items-center gap-1" role="group" aria-label="قيّم الرد">
+        {(["up", "down"] as const).map((r) => (
+          <button
+            key={r}
+            type="button"
+            onClick={() => click(r)}
+            aria-pressed={msg.feedback === r}
+            aria-label={r === "up" ? "رد مفيد" : "رد غير مفيد"}
+            className={cn(
+              "p-1.5 rounded-lg transition-colors text-muted-foreground hover:bg-foreground/5",
+              msg.feedback === r && (r === "up" ? "text-emerald-500 bg-emerald-500/10" : "text-rose-500 bg-rose-500/10"),
+            )}
+          >
+            {r === "up" ? <ThumbsUp className="w-3.5 h-3.5" /> : <ThumbsDown className="w-3.5 h-3.5" />}
+          </button>
+        ))}
+        {sent && <span className="text-[11px] text-muted-foreground mr-1">شكراً، وصلت ملاحظتك.</span>}
+      </div>
+      {askWhy && !sent && (
+        <form
+          className="flex items-center gap-2 w-full max-w-sm"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void send("down", comment.trim());
+            setSent(true);
+            setAskWhy(false);
+          }}
+        >
+          <input
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            maxLength={1000}
+            placeholder="وش كان الخطأ؟ (اختياري)"
+            className="flex-1 min-w-0 h-8 px-3 rounded-lg bg-card border border-foreground/10 text-[12.5px] focus:outline-none focus:border-uqu-accent/50"
+          />
+          <button type="submit" className="h-8 px-3 rounded-lg bg-uqu-accent text-white text-[12px] font-bold">إرسال</button>
+        </form>
+      )}
     </div>
   );
 }

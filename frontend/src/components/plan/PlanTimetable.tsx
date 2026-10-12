@@ -39,6 +39,7 @@ export function PlanTimetable({
   // are not filtered, matching the server render.
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- "now" must come from the visitor's clock, after hydration
     setNow(new Date());
   }, []);
 

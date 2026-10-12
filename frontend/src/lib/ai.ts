@@ -23,8 +23,9 @@ export interface Message {
 
 export interface AIAction {
   tool: string;
-  args: any;
-  result: any;
+  // Tool payloads are free-form JSON produced by the model/tools.
+  args: Record<string, unknown>;
+  result: Record<string, unknown> | null;
 }
 
 /** Classified failure category from the backend chat router. `null` /
@@ -55,13 +56,26 @@ export interface ChatResponse {
 /**
  * Execute client-side tool effects (The "Hands" of the AI)
  */
-export async function executeClientTool(name: string, args: any, backendData: any) {
+/** Tools that run entirely on the server — nothing to do in the browser. */
+const SERVER_ONLY_TOOLS = new Set([
+  'search_regulations', 'get_university_news', 'get_attendance_status', 'record_absence',
+  'get_day_schedule', 'get_graduation_progress', 'remember_fact', 'forget_fact',
+  'get_course_info', 'get_course_reviews', 'get_student_data', 'analyze_transcript',
+  'get_gpa_history', 'predict_gpa_pathway', 'get_upcoming_exams',
+]);
+
+export async function executeClientTool(
+  name: string,
+  args: Record<string, unknown>,
+  backendData: Record<string, unknown> | null,
+) {
   if (!backendData) return { success: false, error: 'No backend result provided' };
+  if (SERVER_ONLY_TOOLS.has(name)) return backendData;
 
   switch (name) {
     case 'get_calendar_info': {
       // تنفيذ أداة التقويم الجامعي
-      const result = executeCalendarTool(args);
+      const result = executeCalendarTool(args as Parameters<typeof executeCalendarTool>[0]);
       const formattedResults = formatCalendarResults(result.data);
       return {
         ...backendData,
@@ -85,7 +99,7 @@ export async function executeClientTool(name: string, args: any, backendData: an
     }
 
     case 'add_upcoming_exam': {
-      const exams = Storage.get('uqu_exams', []) as any[];
+      const exams = Storage.get<Record<string, unknown>[]>('uqu_exams', []);
       const exam = { ...args, id: backendData.id || Date.now(), done: false, createdAt: new Date().toISOString() };
       exams.push(exam);
       Storage.set('uqu_exams', exams);
@@ -199,7 +213,7 @@ export const AIService = {
       await postProcessChatResponse(data);
 
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[AI] Chat error:', error);
       throw error;
     }
@@ -280,11 +294,11 @@ export const AIService = {
         body: form,
       });
       return (data?.text as string) ?? '';
-    } catch (err: any) {
+    } catch (err: unknown) {
       // 503 = endpoint deliberately disabled (no GROQ_API_KEY). Signal
       // the caller to use the browser fallback instead of bubbling an
       // error to the user.
-      const msg = String(err?.message ?? '');
+      const msg = err instanceof Error ? err.message : '';
       if (msg.includes('503') || msg.includes('غير مفعّلة')) return null;
       throw err;
     }

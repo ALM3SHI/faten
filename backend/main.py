@@ -49,6 +49,8 @@ from routers.workspace import router as workspace_router
 from routers.cron import router as cron_router
 from routers.community import router as community_router
 from routers.news import router as news_router
+from routers.account import router as account_router
+from routers.study import router as study_router
 
 # ── Import CRON tasks ──
 from tasks.cron import daily_notifications_cron
@@ -159,6 +161,8 @@ app.include_router(workspace_router)
 app.include_router(cron_router)
 app.include_router(community_router)
 app.include_router(news_router)
+app.include_router(account_router)
+app.include_router(study_router)
 
 
 # ── Health Check ──

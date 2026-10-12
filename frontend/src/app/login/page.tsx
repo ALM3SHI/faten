@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { safeNextPath } from "@/lib/routes";
 import { auth, googleProvider } from "@/lib/firebase";
@@ -296,7 +297,9 @@ export default function LoginPage() {
           </Card>
 
           <p className="text-center mt-6 text-[11px] text-muted-foreground dark:text-white/30 leading-relaxed px-8">
-            بالاستمرار، أنت توافق على شروط الخدمة وسياسة الخصوصية الخاصة بفطن — المساعد الأكاديمي لجامعة أم القرى.
+            بالاستمرار، أنت توافق على{" "}
+            <Link href="/privacy#terms" className="underline hover:text-foreground">شروط الاستخدام</Link> و{" "}
+            <Link href="/privacy" className="underline hover:text-foreground">سياسة الخصوصية</Link> الخاصة بفطن.
           </p>
         </div>
       </main>

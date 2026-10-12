@@ -145,10 +145,29 @@ def get_day_schedule(args: dict, user_id: str, db) -> dict:
     }
 
 
+def get_graduation_progress(args: dict, user_id: str, db) -> dict:
+    user = db.collection("users").document(user_id).get()
+    udata = (user.to_dict() or {}) if user.exists else {}
+    rec_snap = _record_ref(db, user_id, "main").get()
+    rec = (rec_snap.to_dict() or {}) if rec_snap.exists else {}
+    basic = udata.get("basic") or {}
+    profile = udata.get("profile") or {}
+    plan = basic.get("totalPlanHours") or profile.get("totalPlanHours") or rec.get("planHours")
+    earned = rec.get("earnedHours") if rec.get("earnedHours") is not None else profile.get("earnedHours")
+    current = sum(
+        float(c.get("creditHours") or c.get("credit_hours") or 0) for c in (rec.get("currentCourses") or [])
+    )
+    progress = st.graduation_progress(plan, earned, current)
+    if progress is None:
+        return {"success": False, "message": "لا أعرف ساعات خطة الطالب أو ساعاته المجتازة. اطلب منه رفع سجله الأكاديمي وتحديد ساعات الخطة من الملف الشخصي (/profile)."}
+    return {"success": True, **progress, "note": "تقدير بالساعات فقط؛ المقررات المتبقية بالتحديد يحددها المرشد الأكاديمي حسب الخطة الدراسية."}
+
+
 _TOOLS = {
     "get_attendance_status": get_attendance_status,
     "record_absence": record_absence,
     "get_day_schedule": get_day_schedule,
+    "get_graduation_progress": get_graduation_progress,
 }
 
 

@@ -128,3 +128,25 @@ def test_new_tools_are_registered():
     from agent.tools_schema import TOOLS_SCHEMA
     names = {t["function"]["name"] for t in TOOLS_SCHEMA}
     assert {"get_attendance_status", "record_absence", "get_day_schedule"} <= names
+
+
+def test_graduation_progress_matches_frontend():
+    p = st.graduation_progress(132, 96, 10)
+    assert (p["remaining_hours"], p["remaining_after_this_term"], p["percent"]) == (36, 26, 73)
+    assert p["terms_after_this_one"] == {"min": 2, "max": 2}
+    assert st.graduation_progress(136, 30, 16)["terms_after_this_one"] == {"min": 5, "max": 7}
+    assert st.graduation_progress(132, 120, 12)["graduates_this_term"] is True
+    assert st.graduation_progress(None, 50, 0) is None
+
+
+def test_graduation_tool_reads_profile_and_record(fake_db):
+    fake_db.store[("users", UID)] = {"basic": {"totalPlanHours": 132}}
+    fake_db.store[("users", UID, "academic_record", "main")] = {
+        "earnedHours": 96, "planHours": 999,
+        "currentCourses": [{"creditHours": 3}, {"creditHours": 3}, {"creditHours": 4}],
+    }
+    out = run("get_graduation_progress", {}, fake_db)
+    assert out["success"] and out["plan_hours"] == 132 and out["remaining_after_this_term"] == 26
+    fake_db.store[("users", UID)] = {}
+    del fake_db.store[("users", UID, "academic_record", "main")]
+    assert run("get_graduation_progress", {}, fake_db)["success"] is False

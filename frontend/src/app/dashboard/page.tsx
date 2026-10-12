@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -49,6 +50,7 @@ import { buildAcademicCalendarIcs, downloadIcs } from "@/lib/ics";
 import { Navbar } from "@/components/navbar";
 import { UniversityNewsCard } from "@/components/dashboard/university-news-card";
 import { AttendanceSummaryCard } from "@/components/dashboard/attendance-summary-card";
+import { GraduationCard } from "@/components/dashboard/graduation-card";
 import { EmailVerificationReminder } from "@/components/email-verification-reminder";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -262,13 +264,13 @@ export default function DashboardPage() {
   const [analyticsError, setAnalyticsError] = useState<AnalyticsError | null>(null);
 
   // ── Hydration guard ──────────────────────────────────────────────
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => setHydrated(true), []);
+  const hydrated = useHydrated();
 
   // ── Fetch effect ─────────────────────────────────────────────────
   useEffect(() => {
     if (!hydrated || authLoading || !user) return;
     if (completedCourses.length === 0 || currentGpa <= 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear stale analytics when the record empties
       setAnalyticsData(null);
       setAnalyticsError(null);
       return;
@@ -845,7 +847,8 @@ export default function DashboardPage() {
             {/* ╔═══ STUDENT TOOLS · Attendance + University news ═══╗ */}
             <div className="grid lg:grid-cols-3 gap-6 mt-6">
               <AttendanceSummaryCard />
-              <div className="lg:col-span-2">
+              <GraduationCard />
+              <div className="lg:col-span-1">
                 <UniversityNewsCard />
               </div>
             </div>
@@ -1675,6 +1678,7 @@ function RoiSimulatorDialog({
   // drop entries for codes that disappeared — preserve any picks the
   // user already chose.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reconcile picks with the live course list
     setPicks((prev) => {
       const next: Record<string, string> = {};
       let changed = false;
@@ -2332,6 +2336,7 @@ function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
   // chat agent fired an UPDATE_TARGET_GPA action while this dialog was
   // mounted) so the field never shows stale data.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- re-sync the field when the agent changes the target
     setDraft(targetGpa > 0 ? targetGpa.toFixed(2) : "");
   }, [targetGpa]);
 

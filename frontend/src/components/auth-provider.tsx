@@ -21,7 +21,8 @@ import { usePomodoroStore } from '@/store/pomodoroStore';
 
 interface AuthContextType {
   user: User | null;
-  profile: any | null;
+  /** Raw users/{uid} Firestore document (free-form). */
+  profile: Record<string, unknown> | null;
   loading: boolean;
 }
 
@@ -31,7 +32,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any | null>(null);
+  const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

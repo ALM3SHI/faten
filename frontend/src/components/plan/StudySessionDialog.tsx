@@ -105,6 +105,7 @@ export function StudySessionDialog({
 
   useEffect(() => {
     if (!open) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the form each time the dialog opens
     setFieldError(null);
     if (mode === "edit" && initialTask) {
       // EDIT mode pre-fills the existing task exactly as before.

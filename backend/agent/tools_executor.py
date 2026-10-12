@@ -1817,9 +1817,18 @@ async def execute_tool(
         return {"success": True, "items": data["items"], "source": "https://uqu.edu.sa/App/News"}
 
     # ── Student tools: attendance & daily schedule ──
-    elif tool_name in ("get_attendance_status", "record_absence", "get_day_schedule"):
+    elif tool_name in ("get_attendance_status", "record_absence", "get_day_schedule", "get_graduation_progress"):
         from services.agent_student_tools import run_student_tool
         return run_student_tool(tool_name, args, user_id, db)
+
+    # ── Long-term memory ──
+    elif tool_name == "remember_fact":
+        from services.memory import remember
+        return remember(db, user_id, str(args.get("text") or ""))
+
+    elif tool_name == "forget_fact":
+        from services.memory import forget
+        return forget(db, user_id, text=str(args.get("text") or "") or None)
 
     # ── Unknown tool ──
     else:

@@ -30,12 +30,13 @@ async def call_gemini(
     mime_type: str | None = None,
     timeout_seconds: float = 60.0,
     max_output_tokens: int | None = None,
+    model: str | None = None,
 ) -> Any:
     settings = get_settings()
     if not settings.GEMINI_API_KEY:
         raise HTTPException(status_code=503, detail="API Key missing")
 
-    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent"
+    url = f"{GEMINI_BASE}/{model or settings.GEMINI_MODEL}:generateContent"
 
     # Prepare parts
     parts = []

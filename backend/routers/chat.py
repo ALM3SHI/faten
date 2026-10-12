@@ -265,6 +265,12 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                 required_blocks=intent_info["required_blocks"],
                 intent=intent_info["intent"]
             )
+            # Long-term memory the student controls (see services/memory.py).
+            try:
+                from services.memory import load_items, prompt_block
+                system_prompt += prompt_block(load_items(db, user_id))
+            except Exception as mem_err:  # memory is optional — never fail the chat
+                logger.warning("[chat] memory load failed: %s", mem_err)
             logger.debug("[chat] system_prompt length = %d chars", len(system_prompt))
 
             # ── Trim conversation history to prevent context overflow ──

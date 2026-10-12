@@ -15,7 +15,7 @@ def _api_routes():
     for path, ops in main.app.openapi()["paths"].items():
         if path.startswith("/api/") and path not in PUBLIC:
             for method in ops:
-                yield method.upper(), path.replace("{code}", "CS4510").replace("{rid}", "a" * 20).replace("{thread_id}", "t1")
+                yield method.upper(), path.replace("{code}", "CS4510").replace("{rid}", "a" * 20).replace("{thread_id}", "t1").replace("{item_id}", "abcd1234")
 
 
 @pytest.mark.parametrize("method,path", list(_api_routes()))

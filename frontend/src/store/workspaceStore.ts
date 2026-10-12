@@ -34,12 +34,14 @@ export type ChatMessage = {
   role: "user" | "bot";
   content: string;
   timestamp: Date;
-  actions?: any[];
+  actions?: { tool?: string; args?: Record<string, unknown>; result?: unknown }[];
   /** Manual navigation suggestions attached to a bot reply. */
   suggestedActions?: SuggestedNavigation[];
   /** Non-null when this bubble represents an error/system warning
    *  rather than a normal model reply. */
   errorType?: ChatErrorType | null;
+  /** The student's 👍/👎 on this reply (local UI state). */
+  feedback?: "up" | "down" | null;
 };
 
 interface WorkspaceState {

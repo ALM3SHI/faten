@@ -80,12 +80,12 @@ export default function TranscriptParserPage() {
             ? { ...prev, analysis: response.analysis, isAnalyzing: false }
             : prev,
         );
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Advisor error:", err);
         // Sprint-4 Bug #2: explicitly catch Gemini quota exhaustion and
         // surface a graceful Arabic message + manual-entry fallback,
         // instead of leaving the user staring at a generic "تعذّر".
-        const raw = String(err?.message ?? err ?? "");
+        const raw = String(err instanceof Error ? err.message : err ?? "");
         const isQuota =
           /429|resource_exhausted|rate.?limit|quota|too many requests/i.test(raw);
         const friendly = isQuota
@@ -103,12 +103,12 @@ export default function TranscriptParserPage() {
             : prev,
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Local parsing error:", error);
       setIsParsing(false);
       setParsedData({
         error:
-          error?.message ||
+          (error instanceof Error && error.message) ||
           "تعذّر قراءة ملف PDF. تأكد من أنه سجل أكاديمي صالح وليس صورة ممسوحة.",
       });
     }

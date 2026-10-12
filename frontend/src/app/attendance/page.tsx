@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -53,11 +54,7 @@ function formatIso(iso: string): string {
 
 export default function AttendancePage() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   const schedule = useScheduleStore((s) => s.schedule);
   const currentCourses = useTranscriptStore((s) => s.currentCourses);

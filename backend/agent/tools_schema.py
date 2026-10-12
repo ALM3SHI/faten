@@ -706,4 +706,43 @@ TOOLS_SCHEMA: list[dict] = [
         },
     },
 
-]
+    # ── Long-term memory (student-controlled) ──
+    {
+        "type": "function",
+        "function": {
+            "name": "remember_fact",
+            "description": (
+                "احفظ معلومة دائمة ذكرها الطالب عن نفسه لتتذكرها في المحادثات القادمة: هدف (مثل: يبي يرفع معدله لـ 3.5)، "
+                "ظرف يؤثر على دراسته (يشتغل دوام جزئي، يسكن بعيد)، أو تفضيل (يذاكر بالليل، يفضّل الشرح المختصر). "
+                "لا تحفظ معلومات مؤقتة أو موجودة أصلاً في سجله، ولا أي معلومة صحية أو دينية أو مالية. اكتبها بجملة قصيرة بصيغة الغائب."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {"text": {"type": "string", "description": "المعلومة بجملة قصيرة، مثل: يعمل دواماً جزئياً مساءً"}},
+                "required": ["text"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "forget_fact",
+            "description": "احذف معلومة من ذاكرتك عن الطالب عندما يطلب ذلك أو عندما تتغير (مثل: ما عاد يشتغل). بدون نص تحذف كل الذاكرة.",
+            "parameters": {
+                "type": "object",
+                "properties": {"text": {"type": "string", "description": "جزء من نص المعلومة المراد حذفها"}},
+                "required": [],
+            },
+        },
+    },
+
+    {
+        "type": "function",
+        "function": {
+            "name": "get_graduation_progress",
+            "description": "كم باقي على تخرج الطالب: ساعات الخطة، المجتازة، المسجلة هذا الفصل، الباقية، والفصول المتوقعة. استخدمها لأسئلة مثل «كم باقي لي وأتخرج؟».",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+
+]

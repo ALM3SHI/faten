@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Play,
@@ -63,14 +64,15 @@ export default function PomodoroPage() {
   // SSR/hydration guard for the timer value — useProfileStore is
   // persisted, so the first paint can show stale defaults before
   // rehydration. Show "--:--" until the client takes over.
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => setHydrated(true), []);
+  const hydrated = useHydrated();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- drop an unsaved edit once the timer starts
     if (isRunning) setMinutesDraft(null);
   }, [isRunning]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- drop an unsaved edit when switching mode
     setMinutesDraft(null);
   }, [mode]);
 

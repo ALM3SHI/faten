@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 import { AuthProvider } from "@/components/auth-provider";
 import { ToastProvider } from "@/components/toast-provider";
 import { RouteGuard } from "@/components/route-guard";
+import { BackendWarmup } from "@/components/backend-warmup";
 import { BottomNav } from "@/components/bottom-nav";
 
 export default function RootLayout({
@@ -64,6 +65,7 @@ export default function RootLayout({
       <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
+            <BackendWarmup />
             <RouteGuard>{children}</RouteGuard>
             <BottomNav />
           </ToastProvider>

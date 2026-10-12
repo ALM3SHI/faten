@@ -223,6 +223,7 @@ export default function LandingPage() {
           <p className="leading-relaxed">
             مشروع طلابي مستقل، وليس جهة رسمية تابعة لجامعة أم القرى. المرجع النهائي هو عمادة القبول والتسجيل.
           </p>
+          <Link href="/privacy" className="shrink-0 underline hover:text-foreground">الخصوصية والشروط</Link>
         </div>
       </footer>
     </div>
