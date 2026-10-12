@@ -471,9 +471,13 @@ def build_system_prompt(
             prompt += f"\n═══ مسار المعدل عبر الفصول ({len(semesters_data)} فصل) ═══\n"
             gpas = []
             for sem in semesters_data:
-                sem_gpa = sem.get("gpa", 0)
-                gpas.append(float(sem_gpa))
-                prompt += f"  • {sem.get('name', 'فصل')}: {sem_gpa}\n"
+                sem_gpa = sem.get("gpa")
+                # A semester in progress has no GPA yet — show it, but keep it out of the trend.
+                try:
+                    gpas.append(float(sem_gpa))
+                except (TypeError, ValueError):
+                    sem_gpa = "—"
+                prompt += f"  • {sem.get('name') or 'فصل'}: {sem_gpa}\n"
 
             # Trend analysis
             if len(gpas) >= 2:
@@ -492,7 +496,7 @@ def build_system_prompt(
             prompt += f"\n═══ ملخص السجل ({len(transcript_courses)} مادة) ═══\n"
             by_grade: dict[str, int] = {}
             for c in transcript_courses:
-                g = c.get("grade", "غير محدد")
+                g = c.get("grade") or "غير محدد"  # in-progress courses have grade=None
                 by_grade[g] = by_grade.get(g, 0) + 1
             for g, n in sorted(by_grade.items()):
                 prompt += f"  • {g}: {n} مادة\n"
@@ -515,7 +519,7 @@ def build_system_prompt(
         # can compare e.g. "math family 1.83/4 vs CS family 3.21/4".
         families: dict[str, list[dict]] = {}
         for c in completed_for_ledger:
-            code = c.get("code", "")
+            code = c.get("code") or ""
             name = c.get("nameAr") or c.get("nameEn") or c.get("name") or ""
             fam = _subject_family(code, name)
             families.setdefault(fam, []).append(c)
@@ -552,9 +556,9 @@ def build_system_prompt(
                 f"متوسط الفئة {fam_gpa:.2f}/4.00\n"
             )
             for c in lst:
-                code = c.get("code", "—")
+                code = c.get("code") or "—"
                 name = c.get("nameAr") or c.get("nameEn") or c.get("name") or "—"
-                grade = c.get("grade", "—")
+                grade = c.get("grade") or "—"
                 ch = c.get("credit_hours") or c.get("creditHours") or 3
                 sem = c.get("semester") or c.get("semesterEn") or ""
                 gp = c.get("gradePoints")
@@ -614,9 +618,9 @@ def build_system_prompt(
                     
             prompt += f"\nفصل: {sem} (المعدل الفصلي: {sem_gpa} | الساعات المكتسبة: {sem_earned})\n"
             for c in lst:
-                code = c.get("code", "—")
+                code = c.get("code") or "—"
                 name = c.get("nameAr") or c.get("nameEn") or c.get("name") or "—"
-                grade = c.get("grade", "—")
+                grade = c.get("grade") or "—"
                 ch = c.get("credit_hours") or c.get("creditHours") or 3
                 prompt += f"  • {code} — {name} — {grade} — {ch}س\n"
         prompt += "\n⚠️ اعتمد على هذه القائمة للإجابة عن أسئلة تخص مواد أو معدل فصل معين بدقة.\n"
