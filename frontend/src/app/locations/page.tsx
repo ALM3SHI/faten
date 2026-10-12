@@ -244,7 +244,7 @@ function LocationsContent() {
 
   // ── Render ───────────────────────────────────────────────────────
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-background overflow-hidden">
       <Navbar />
 
       <main className="flex-1 flex flex-col md:flex-row pt-16 min-h-0">
@@ -324,7 +324,7 @@ function LocationsContent() {
                   onChangeStart={openPickStart}
                 />
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -343,7 +343,7 @@ function LocationsContent() {
                   onClear={clearSelection}
                 />
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -371,7 +371,7 @@ function LocationsContent() {
                   />
                 )}
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -398,15 +398,6 @@ function LocationsContent() {
             onMapClick={handleMapClick}
           />
 
-          {/* Status chip */}
-          <div className="absolute top-6 right-6 z-10">
-            <div className="px-3 py-2 rounded-xl bg-card border border-border text-foreground shadow-sm flex items-center gap-2 backdrop-blur-md dark:glass dark:border-foreground/10">
-              <div className="w-2 h-2 rounded-full bg-uqu-cyan animate-pulse" />
-              <span className="text-[10px] font-bold text-foreground uppercase tracking-widest">
-                Nav Engine · A*
-              </span>
-            </div>
-          </div>
 
           {/* Zoom controls */}
           <div className="absolute bottom-6 right-6 z-10 flex flex-col gap-2">
@@ -558,13 +549,13 @@ function RoomRow({
         <span className="text-[13px] font-bold truncate text-foreground">
           {room.label}
         </span>
-        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-foreground/5 text-muted shrink-0 font-mono">
-          {String(room.type)}
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-foreground/5 text-muted shrink-0">
+          {roomTypeAr(room.type)}
         </span>
       </div>
-      <div className="text-[10px] text-muted flex items-center gap-1 font-mono">
+      <div className="text-[11px] text-muted flex items-center gap-1">
         <MapPin className="w-3 h-3" />
-        {room.id}
+        الدور الأرضي
       </div>
     </button>
   );
@@ -609,7 +600,7 @@ function SelectedRoomCard({
               {room.label}
             </h3>
             <p className="text-[11px] text-uqu-accent font-bold font-mono mt-0.5">
-              {room.id} · {String(room.type)}
+              {roomTypeAr(room.type)}
             </p>
           </div>
         </div>
@@ -676,10 +667,10 @@ function ActiveRoutePanel({
   return (
     <Card className="p-5 rounded-2xl bg-emerald-500/10 border-emerald-500/30 space-y-4 shadow-[0_0_24px_-8px_rgba(52,211,153,0.5)]">
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-300 animate-pulse">
+        <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-700 dark:text-emerald-300 animate-pulse">
           <Navigation2 className="w-4 h-4" />
         </div>
-        <h3 className="font-bold text-emerald-300">المسار</h3>
+        <h3 className="font-bold text-emerald-700 dark:text-emerald-300">المسار</h3>
       </div>
 
       <div className="space-y-2">
@@ -861,6 +852,21 @@ function Tile({
 }
 
 // ── Page wrapper (Suspense for useSearchParams) ───────────────────────
+
+const ROOM_TYPE_AR: Record<string, string> = {
+  lab: "معمل",
+  office: "مكتب",
+  classroom: "قاعة دراسية",
+  amphitheater: "مدرج",
+  admin: "إداري",
+  library: "مكتبة",
+  mosque: "مصلى",
+  wc: "دورات مياه",
+  stairs: "درج",
+  corridor: "ممر",
+  other: "مرفق",
+};
+const roomTypeAr = (t: unknown) => ROOM_TYPE_AR[String(t)] ?? String(t);
 
 export default function LocationsPage() {
   return (

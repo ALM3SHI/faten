@@ -54,7 +54,7 @@ export function Step3Complete({ slotsCount, coursesCount, onCommit }: Step3Props
           value={String(coursesCount)}
         />
         <StatPill
-          icon={<CalendarDays className="w-4 h-4 text-[#0066cc]" />}
+          icon={<CalendarDays className="w-4 h-4 text-uqu-accent" />}
           label="محاضرات الأسبوع"
           value={String(slotsCount)}
         />
@@ -62,7 +62,7 @@ export function Step3Complete({ slotsCount, coursesCount, onCommit }: Step3Props
 
       <Button
         onClick={handleSave}
-        className="rounded-2xl bg-[#0066cc] hover:bg-[#005bb5] gap-2 px-8 py-6 text-base font-bold shadow-[0_0_24px_rgba(0,102,204,0.4)]"
+        className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-8 py-6 text-base font-bold shadow-[0_0_24px_hsla(245,78%,62%,0.4)]"
       >
         حفظ والذهاب للوحة القيادة
         <ArrowLeft className="w-5 h-5" />

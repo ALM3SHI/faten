@@ -26,11 +26,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
 } from "recharts";
 import {
   TrendingUp,
@@ -39,7 +34,6 @@ import {
   Flame,
   Target,
   LineChart as LineChartIcon,
-  Radar as RadarIcon,
   Zap,
   ListChecks,
   AlertCircle,
@@ -64,6 +58,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import {
+  ACADEMIC_YEAR_LABEL,
+  UQU_CALENDAR,
+  eventStart,
+  formatEventDateAr,
+  getUpcomingEvents,
+  isOngoing,
+  type CalendarEvent,
+} from "@/lib/uqu-calendar-data";
 import { useProfileStore } from "@/store/profileStore";
 import {
   useTranscriptStore,
@@ -173,11 +176,6 @@ type AnalyticsError = { kind: AnalyticsErrorKind; detail: string };
 // Small helpers
 // ──────────────────────────────────────────────────────────────────
 
-function arabicDayToday(): string {
-  return ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][
-    new Date().getDay()
-  ];
-}
 
 function extractYearKey(semester: string): number {
   const matches = semester.match(/\d{4}/g);
@@ -205,47 +203,6 @@ function classifyError(err: unknown): AnalyticsError {
   return { kind: "server", detail: msg };
 }
 
-// ──────────────────────────────────────────────────────────────────
-// بيانات التقويم الأكاديمي لجامعة أم القرى 1447 / 1448 هـ
-// ──────────────────────────────────────────────────────────────────
-const UQU_CALENDAR = [
-  {
-    term: "الفصل الدراسي الأول",
-    events: [
-      { title: "تأجيل الدراسة", date: "24 Aug - 30 Aug 2025", hijri: "01/03 - 07/03/1447", type: "system" },
-      { title: "بداية الفصل الدراسي الأول", date: "24 Aug 2025", hijri: "01/03/1447", type: "academic" },
-      { title: "الاعتذار عن الدراسة", date: "31 Aug - 01 Nov 2025", hijri: "08/03 - 10/05/1447", type: "system" },
-      { title: "إجازة اليوم الوطني", date: "23 Sep 2025", hijri: "01/04/1447", type: "holiday" },
-      { title: "الاختبارات النصفية", date: "19 Oct - 30 Oct 2025", hijri: "27/04 - 08/05/1447", type: "exam" },
-      { title: "الانسحاب من مقرر دراسي", date: "02 Nov - 15 Nov 2025", hijri: "11/05 - 24/05/1447", type: "system" },
-      { title: "إجازة الخريف", date: "20 Nov - 29 Nov 2025", hijri: "29/05 - 08/06/1447", type: "holiday" },
-      { title: "اختبارات المتطلبات العامة والعملية", date: "21 Dec - 25 Dec 2025", hijri: "01/07 - 05/07/1447", type: "exam" },
-      { title: "إعادة القيد للفصل الثاني", date: "21 Dec - 22 Jan 2026", hijri: "01/07 - 03/08/1447", type: "system" },
-      { title: "الاختبارات النهائية", date: "28 Dec - 08 Jan 2026", hijri: "08/07 - 19/07/1447", type: "exam" },
-      { title: "إجازة منتصف العام الدراسي", date: "08 Jan - 17 Jan 2026", hijri: "19/07 - 28/07/1447", type: "holiday" },
-    ],
-  },
-  {
-    term: "الفصل الدراسي الثاني",
-    events: [
-      { title: "تأجيل الدراسة", date: "18 Jan - 24 Jan 2026", hijri: "29/07 - 05/08/1447", type: "system" },
-      { title: "بداية الفصل الدراسي الثاني", date: "18 Jan 2026", hijri: "29/07/1447", type: "academic" },
-      { title: "الاعتذار عن الدراسة", date: "25 Jan - 18 Apr 2026", hijri: "06/08 - 01/11/1447", type: "system" },
-      { title: "إجازة يوم التأسيس", date: "22 Feb 2026", hijri: "05/09/1447", type: "holiday" },
-      { title: "إجازة عيد الفطر", date: "05 Mar - 28 Mar 2026", hijri: "16/09 - 09/10/1447", type: "holiday" },
-      { title: "الاختبارات النصفية", date: "05 Apr - 16 Apr 2026", hijri: "17/10 - 28/10/1447", type: "exam" },
-      { title: "التحويل بين الكليات والأقسام", date: "05 Apr - 18 Apr 2026", hijri: "17/10 - 01/11/1447", type: "system" },
-      { title: "الانسحاب من مقرر دراسي", date: "19 Apr - 02 May 2026", hijri: "02/11 - 15/11/1447", type: "system" },
-      { title: "إدخال رغبات التسكين", date: "03 May - 09 May 2026", hijri: "16/11 - 22/11/1447", type: "academic" },
-      { title: "إجازة عيد الأضحى", date: "14 May - 01 Jun 2026", hijri: "27/11 - 15/12/1447", type: "holiday" },
-      { title: "إعادة القيد للصيفي", date: "07 Jun - 30 Jun 2026", hijri: "21/12 - 15/01/1448", type: "system" },
-      { title: "اختبارات المتطلبات العامة والعملية", date: "07 Jun - 11 Jun 2026", hijri: "21/12 - 25/12/1447", type: "exam" },
-      { title: "الاختبارات النهائية", date: "14 Jun - 25 Jun 2026", hijri: "28/12 - 10/01/1448", type: "exam" },
-      { title: "التحويل الخارجي لجامعة أم القرى", date: "25 Jun - 04 Jul 2026", hijri: "10/01 - 19/01/1448", type: "system" },
-      { title: "إجازة نهاية العام الدراسي", date: "25 Jun 2026", hijri: "10/01/1448", type: "holiday" },
-    ],
-  },
-];
 
 // دالة مساعدة لتلوين نوع الحدث
 function getEventTone(type: string) {
@@ -886,7 +843,7 @@ export default function DashboardPage() {
                 The outer ternary already excludes "migration", so this branch
                 only sees `kind: "network" | "server"`. */}
             {analyticsError && (
-              <div className="mt-6 p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 text-rose-200 text-xs flex items-start gap-3">
+              <div className="mt-6 p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 text-rose-700 dark:text-rose-200 text-xs flex items-start gap-3">
                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>
                   {analyticsError.kind === "network"
@@ -1271,375 +1228,6 @@ function GpaTrendInsight({ text }: { text: string }) {
 // Middle Row — Strengths Radar
 // ──────────────────────────────────────────────────────────────────
 
-function StrengthsRadarCard({
-  data,
-  loading,
-}: {
-  data: {
-    category: string;
-    student: number;
-    market: number;
-    skillGap: number;
-    creditHours: number;
-    courseCount: number;
-    isReliable: boolean;
-    courses?: RadarCourseRef[];
-  }[];
-  loading: boolean;
-}) {
-  // Two polygons need ≥3 axes to read as a radar; otherwise fall back
-  // to the dual-bar list view further down.
-  const useChart = data.length >= 3;
-
-  // Surface the biggest skill gap as a tiny callout above the chart so
-  // the user immediately sees the most actionable insight even before
-  // hovering any spoke. Sprint-3: EXCLUDE unreliable categories (<9
-  // credits) — we won't tell the student "your weakness is Math" based
-  // on a single 2-credit lab.
-  const dominantGap = useMemo(() => {
-    const candidates = data.filter((d) => d.isReliable);
-    if (candidates.length === 0) return null;
-    const sorted = [...candidates].sort((a, b) => b.skillGap - a.skillGap);
-    const top = sorted[0];
-    if (top.skillGap <= 0.05) return null; // already at/above market — no callout
-    return top;
-  }, [data]);
-
-  return (
-    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div>
-          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <RadarIcon className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
-            مصفوفة الـDNA الأكاديمي
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            كفاءتك مقابل متطلبات سوق العمل (رؤية 2030).
-          </p>
-        </div>
-        {data.length > 0 && (
-          <Badge
-            variant="outline"
-            className="text-[10px] bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20"
-          >
-            {data.length} مجالات
-          </Badge>
-        )}
-      </div>
-
-      {/* Twin legend chips so users instantly grok which polygon is which. */}
-      {data.length > 0 && !loading && (
-        <div className="flex items-center gap-3 mb-4 text-[11px] flex-wrap">
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              className="w-3 h-3 rounded-sm border"
-              style={{
-                background: "hsla(160, 95%, 55%, 0.45)",
-                borderColor: "hsl(160, 95%, 55%)",
-                boxShadow: "0 0 10px hsla(160, 95%, 55%, 0.45)",
-              }}
-            />
-            <span className="font-bold text-foreground">كفاءتك</span>
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              className="w-3 h-3 rounded-sm border"
-              style={{
-                background: "hsla(210, 100%, 60%, 0.25)",
-                borderColor: "hsl(210, 100%, 60%)",
-                boxShadow: "0 0 10px hsla(210, 100%, 60%, 0.35)",
-              }}
-            />
-            <span className="font-bold text-foreground">طلب سوق العمل · رؤية 2030</span>
-          </span>
-        </div>
-      )}
-
-      <div className="flex-1 min-h-[260px]">
-        {loading ? (
-          <ChartSkeleton />
-        ) : data.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl p-8 text-center gap-2">
-            <RadarIcon className="w-8 h-8 text-muted" />
-            <p className="text-sm text-muted-foreground">
-              ارفع سجلك الأكاديمي حتى نحلّل مجالات قوّتك.
-            </p>
-          </div>
-        ) : useChart ? (
-          <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={data} cx="50%" cy="50%" outerRadius="60%">
-              <defs>
-                {/* Subtle glow on each polygon edge so the dual-radar
-                    reads as "alive" against the dark glass card. */}
-                <filter id="radarGlowGreen" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="2.5" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <filter id="radarGlowBlue" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="2.5" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <PolarGrid stroke="var(--color-chart-grid)" />
-              {/* Custom tick wraps each label in a glass pill (semantic
-                  surface) so it stays legible against the polygons in
-                  both light and dark themes. */}
-              <PolarAngleAxis
-                dataKey="category"
-                tick={CustomPolarTick}
-              />
-              <PolarRadiusAxis
-                angle={90}
-                domain={[0, 4]}
-                tick={{ fill: "var(--muted-text)", fontSize: 9 }}
-                tickCount={5}
-                stroke="var(--color-chart-grid)"
-              />
-              <Tooltip
-                cursor={{ stroke: "rgba(255,255,255,0.2)" }}
-                content={<SkillsDnaTooltip />}
-              />
-              {/* Market demand drawn FIRST so the student polygon sits
-                  on top. fillOpacity=0 keeps it as a pure dashed outline
-                  — overlapping student polygon stays crisp instead of
-                  muddying into the blue fill. */}
-              <Radar
-                name="market"
-                dataKey="market"
-                stroke="hsl(210, 100%, 65%)"
-                fill="hsl(210, 100%, 60%)"
-                fillOpacity={0}
-                strokeWidth={2}
-                strokeDasharray="4 3"
-                filter="url(#radarGlowBlue)"
-                isAnimationActive
-              />
-              <Radar
-                name="student"
-                dataKey="student"
-                stroke="hsl(160, 95%, 55%)"
-                fill="hsl(160, 95%, 55%)"
-                fillOpacity={0.35}
-                strokeWidth={2.5}
-                filter="url(#radarGlowGreen)"
-                dot={{ r: 3, fill: "hsl(160, 95%, 55%)", strokeWidth: 0 }}
-                isAnimationActive
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        ) : (
-          // Fallback list — fewer than 3 categories. Twin bars (student
-          // vs market) so the gap concept stays visible.
-          <div className="h-full flex flex-col justify-center gap-4">
-            {data.map((d) => (
-              <DnaBarRow key={d.category} row={d} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {dominantGap && (
-        <div className="mt-4 p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/30 text-amber-800 dark:text-amber-200 dark:border-amber-400/20 text-[11px] leading-relaxed">
-          <strong className="font-black">أبرز فجوة:</strong>{" "}
-          <span className="font-bold">{dominantGap.category}</span> —
-          أنت عند{" "}
-          <span className="font-mono font-bold">{dominantGap.student.toFixed(2)}</span>{" "}
-          والسوق يطلب{" "}
-          <span className="font-mono font-bold">{dominantGap.market.toFixed(2)}</span>{" "}
-          (فارق{" "}
-          <span className="font-mono font-bold">+{dominantGap.skillGap.toFixed(2)}</span>،
-          بناءً على {dominantGap.creditHours} ساعة معتمدة).
-        </div>
-      )}
-    </Card>
-  );
-}
-
-/** Custom glassmorphic tooltip that explains the skill-gap delta. */
-function SkillsDnaTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: Array<{ payload?: { category: string; student: number; market: number; skillGap: number; creditHours: number; isReliable: boolean } }>;
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  const row = payload[0]?.payload;
-  if (!row) return null;
-  const gap = row.skillGap;
-  const gapTone =
-    gap > 0.5
-      ? "text-rose-300"
-      : gap > 0.05
-        ? "text-amber-300"
-        : "text-emerald-300";
-  const gapLabel =
-    gap > 0.5
-      ? "فجوة كبيرة"
-      : gap > 0.05
-        ? "فجوة معتدلة"
-        : "متفوق على السوق";
-
-  return (
-    <div
-      className="rounded-xl px-3 py-2.5 text-[11px] min-w-[210px]"
-      style={{
-        background: "rgba(10, 10, 10, 0.92)",
-        backdropFilter: "blur(10px)",
-        border: "1px solid rgba(255,255,255,0.10)",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-      }}
-    >
-      <div className="font-black text-foreground text-[12px] mb-1.5">{row.category}</div>
-      <div className="flex items-center justify-between gap-3 mb-0.5">
-        <span className="text-emerald-300 inline-flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_hsl(160,95%,55%)]" />
-          كفاءتك
-        </span>
-        <span className="font-mono font-bold text-foreground">
-          {row.student.toFixed(2)} / 4.00
-        </span>
-      </div>
-      <div className="flex items-center justify-between gap-3 mb-1.5">
-        <span className="text-sky-300 inline-flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_6px_hsl(210,100%,60%)]" />
-          سوق العمل
-        </span>
-        <span className="font-mono font-bold text-foreground">
-          {row.market.toFixed(2)} / 4.00
-        </span>
-      </div>
-      <div className="pt-1.5 border-t border-foreground/10 flex items-center justify-between gap-3">
-        <span className={cn("font-bold", gapTone)}>{gapLabel}</span>
-        <span className={cn("font-mono font-black", gapTone)}>
-          {gap > 0 ? "+" : ""}{gap.toFixed(2)}
-        </span>
-      </div>
-      <div className="mt-1 text-[10px] text-muted font-mono">
-        {row.creditHours} ساعة معتمدة
-      </div>
-      {!row.isReliable && <UnreliableWarning className="mt-1.5" />}
-    </div>
-  );
-}
-
-/**
- * Small amber warning chip flagged on every surface that displays a
- * RadarCategoryPoint with `is_reliable === false`. Centralised so the
- * copy stays in sync between the tooltip, the dialog's category panel,
- * and the fallback bar rows.
- */
-function UnreliableWarning({ className }: { className?: string }) {
-  return (
-    <div
-      className={cn(
-        "flex items-start gap-1.5 px-2 py-1 rounded-md bg-amber-500/[0.08] border border-amber-500/30 text-amber-800 dark:text-amber-200 dark:border-amber-400/20 text-[10px] font-bold leading-snug",
-        className,
-      )}
-    >
-      <AlertCircle className="w-3 h-3 mt-0.5 shrink-0" />
-      <span>بيانات غير كافية لتقييم دقيق (&lt; 9 ساعات)</span>
-    </div>
-  );
-}
-
-/**
- * Custom Recharts PolarAngleAxis tick. Uses a `<foreignObject>` so the
- * label pill is rendered as ordinary HTML — Tailwind handles the styling
- * and `whitespace-nowrap` keeps the Arabic taxonomy on one line without
- * needing the brittle SVG width math the previous version did.
- *
- * The fixed-size foreignObject (140×30) is positioned relative to
- * Recharts' textAnchor signal so right/left/center spokes still nest
- * correctly off the outer radius.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomPolarTick = ({ payload, x, y, textAnchor }: any) => {
-  const isStart = textAnchor === "start";
-  const isEnd = textAnchor === "end";
-  // Provide a fixed bounding box for the HTML, then align content inside
-  const width = 140;
-  const height = 30;
-  const xOffset = isStart ? x : isEnd ? x - width : x - width / 2;
-  const yOffset = y - height / 2;
-
-  return (
-    <foreignObject x={xOffset} y={yOffset} width={width} height={height} className="overflow-visible">
-      <div className={`w-full h-full flex items-center ${isStart ? "justify-start" : isEnd ? "justify-end" : "justify-center"}`}>
-        {/* Pill background uses semantic tokens so it inverts cleanly:
-            light surface + light border in light mode, near-black pill in
-            dark mode (matches the original visual). */}
-        <div className="bg-card/90 border border-border dark:bg-black/80 dark:border-foreground/10 backdrop-blur-md px-2.5 py-1 rounded-md shadow-xl">
-          <span className="text-[9px] font-bold text-foreground whitespace-nowrap">
-            {payload.value}
-          </span>
-        </div>
-      </div>
-    </foreignObject>
-  );
-};
-
-function DnaBarRow({
-  row,
-}: {
-  row: {
-    category: string;
-    student: number;
-    market: number;
-    skillGap: number;
-    creditHours: number;
-    courseCount: number;
-    isReliable: boolean;
-  };
-}) {
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between text-[12px]">
-        <span className="font-bold text-foreground">{row.category}</span>
-        <span className="text-[10px] font-mono text-muted">
-          فجوة {row.skillGap > 0 ? "+" : ""}{row.skillGap.toFixed(2)}
-        </span>
-      </div>
-      {!row.isReliable && <UnreliableWarning />}
-      {/* Student bar (neon green) */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] text-emerald-800 dark:text-emerald-300 font-bold w-12">كفاءتك</span>
-        <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-gradient-to-l from-emerald-400 to-cyan-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"
-            style={{ width: `${Math.min(100, (row.student / 4) * 100)}%` }}
-          />
-        </div>
-        <span className="text-[10px] font-mono font-black text-emerald-800 dark:text-emerald-300 w-10 text-right">
-          {row.student.toFixed(2)}
-        </span>
-      </div>
-      {/* Market bar (electric blue) */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] text-sky-800 dark:text-sky-300 font-bold w-12">السوق</span>
-        <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-gradient-to-l from-sky-400 to-indigo-400 shadow-[0_0_8px_rgba(56,189,248,0.5)]"
-            style={{ width: `${Math.min(100, (row.market / 4) * 100)}%` }}
-          />
-        </div>
-        <span className="text-[10px] font-mono font-black text-sky-800 dark:text-sky-300 w-10 text-right">
-          {row.market.toFixed(2)}
-        </span>
-      </div>
-      <div className="text-[10px] text-muted font-mono">
-        {row.courseCount} مادة · {row.creditHours} ساعة معتمدة
-      </div>
-    </div>
-  );
-}
-
 // ──────────────────────────────────────────────────────────────────
 // Bottom Row — High-ROI Courses
 // ──────────────────────────────────────────────────────────────────
@@ -1910,212 +1498,6 @@ function AdherenceCard({
 // `<DialogTrigger render={<button … />}>` and the matching
 // `<DialogContent>` lives as its sibling, exactly mirroring the KPI
 // cards above.
-
-// ── 1. Skills Radar Dialog ───────────────────────────────────────
-function SkillsRadarDialogContent({
-  data,
-}: {
-  data: {
-    category: string;
-    student: number;
-    market: number;
-    skillGap: number;
-    creditHours: number;
-    courseCount: number;
-    isReliable: boolean;
-    courses: RadarCourseRef[];
-  }[];
-}) {
-  // Default-selected category: biggest gap AMONG reliable categories
-  // (Sprint-3 — same gating rule as the dominant-gap callout). Only
-  // falls back to including unreliable rows if literally every category
-  // is unreliable (fresh student with one elective per area).
-  const initialCategory = useMemo(() => {
-    if (data.length === 0) return null;
-    const reliable = data.filter((d) => d.isReliable);
-    const pool = reliable.length > 0 ? reliable : data;
-    return [...pool].sort((a, b) => b.skillGap - a.skillGap)[0]?.category ?? null;
-  }, [data]);
-  const [selected, setSelected] = useState<string | null>(initialCategory);
-
-  // Re-seed selection when the data refreshes (transcript re-upload).
-  useEffect(() => {
-    setSelected(initialCategory);
-  }, [initialCategory]);
-
-  const active = data.find((d) => d.category === selected) ?? data[0] ?? null;
-
-  return (
-    <DialogContent
-      className="glass border-foreground/10 bg-card/95 backdrop-blur-2xl rounded-[28px] p-0 sm:max-w-[min(900px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
-      dir="rtl"
-    >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
-        <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <RadarIcon className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
-          مصفوفة الـDNA الأكاديمي — تفاصيل المجالات
-        </DialogTitle>
-        <DialogDescription className="text-muted-foreground text-sm">
-          اختر مجالاً لاستعراض المواد المكتملة الداخلة في حسابه ونقطها المساهمة.
-        </DialogDescription>
-      </DialogHeader>
-
-      <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
-        {data.length === 0 ? (
-          <div className="text-center py-12 text-sm text-muted-foreground">
-            لا توجد بيانات سجل أكاديمي لاستعراضها.
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-[260px_1fr] gap-4">
-            {/* Category picker rail */}
-            <div className="space-y-1.5 md:max-h-[60vh] md:overflow-y-auto md:pr-1">
-              {data.map((d) => {
-                const isActive = d.category === selected;
-                // Unreliable categories get a muted gap tone — we don't
-                // want a red "high gap" pill drawing attention to a row
-                // the user shouldn't trust yet.
-                const gapTone = !d.isReliable
-                  ? "text-muted"
-                  : d.skillGap > 0.5
-                    ? "text-rose-800 dark:text-rose-300"
-                    : d.skillGap > 0.05
-                      ? "text-amber-800 dark:text-amber-300"
-                      : "text-emerald-800 dark:text-emerald-300";
-                return (
-                  <button
-                    key={d.category}
-                    onClick={() => setSelected(d.category)}
-                    className={cn(
-                      "w-full text-right rounded-2xl p-3 border transition-all",
-                      isActive
-                        ? "bg-uqu-accent/[0.08] border-uqu-accent/40 shadow-[0_0_18px_-6px_hsla(245,78%,62%,0.6)]"
-                        : "bg-foreground/5 border-foreground/10 hover:bg-foreground/5 hover:border-foreground/10",
-                      !d.isReliable && !isActive && "opacity-60",
-                    )}
-                  >
-                    <div className="flex items-baseline justify-between gap-2 mb-1">
-                      <span className="text-[13px] font-black truncate">
-                        {d.category}
-                      </span>
-                      <span className={cn("text-[10px] font-mono font-bold", gapTone)}>
-                        {d.skillGap > 0 ? "+" : ""}
-                        {d.skillGap.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-[10px] font-mono text-muted">
-                      <span>أنت {d.student.toFixed(2)}</span>
-                      <span className="text-muted">·</span>
-                      <span>سوق {d.market.toFixed(2)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] text-muted mt-0.5">
-                      <span>{d.courseCount} مادة · {d.creditHours} ساعة</span>
-                      {!d.isReliable && (
-                        <span className="text-amber-800/90 dark:text-amber-300/80 font-bold">
-                          عيّنة صغيرة
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Course breakdown for the active category */}
-            <div className="space-y-2 min-w-0">
-              {active ? (
-                <>
-                  <div className="p-4 rounded-2xl bg-gradient-to-l from-emerald-500/[0.06] via-cyan-500/[0.04] to-uqu-accent/[0.06] border border-foreground/10 mb-3 space-y-3">
-                    <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                      <h4 className="text-base font-black">{active.category}</h4>
-                      <span className="text-[10px] font-mono text-muted">
-                        {active.courses.length} مادة في هذا المجال
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 text-center">
-                      <DialogStat
-                        label="كفاءتك"
-                        value={active.student.toFixed(2)}
-                        accent="emerald"
-                      />
-                      <DialogStat
-                        label="سوق العمل"
-                        value={active.market.toFixed(2)}
-                        accent="sky"
-                      />
-                      <DialogStat
-                        label="الفجوة"
-                        value={`${active.skillGap > 0 ? "+" : ""}${active.skillGap.toFixed(2)}`}
-                        accent={
-                          active.skillGap > 0.5
-                            ? "rose"
-                            : active.skillGap > 0.05
-                              ? "amber"
-                              : "emerald"
-                        }
-                      />
-                    </div>
-                    {!active.isReliable && <UnreliableWarning />}
-                  </div>
-
-                  {active.courses.length === 0 ? (
-                    <div className="text-center py-8 text-xs text-muted-foreground">
-                      لا توجد مواد مكتملة في هذا المجال بعد.
-                    </div>
-                  ) : (
-                    <div className="space-y-1.5">
-                      <div className="grid grid-cols-12 px-3 text-[10px] font-black uppercase tracking-wider text-muted">
-                        <span className="col-span-5">المادة</span>
-                        <span className="col-span-2 text-center">ساعات</span>
-                        <span className="col-span-2 text-center">درجة</span>
-                        <span className="col-span-3 text-left">مساهمة نقطية</span>
-                      </div>
-                      {active.courses.map((c) => (
-                        <div
-                          key={`${c.code}-${c.semester}`}
-                          className="grid grid-cols-12 items-center px-3 py-2.5 rounded-xl bg-foreground/5 border border-foreground/10 text-[12px]"
-                        >
-                          <div className="col-span-5 min-w-0">
-                            <div className="font-bold truncate">
-                              {c.name || c.code}
-                            </div>
-                            <div className="text-[10px] font-mono text-muted">
-                              {c.semester}
-                            </div>
-                          </div>
-                          <div className="col-span-2 text-center font-mono font-bold text-foreground">
-                            {c.credits}
-                          </div>
-                          <div className="col-span-2 flex justify-center">
-                            <span
-                              className={cn(
-                                "px-2 py-0.5 rounded-md text-[11px] font-black font-mono border",
-                                gradeTone(c.grade || "—"),
-                              )}
-                            >
-                              {c.grade || "—"}
-                            </span>
-                          </div>
-                          <div className="col-span-3 text-left">
-                            <span className="font-mono font-black text-emerald-800 dark:text-emerald-300">
-                              {c.contribution.toFixed(2)}
-                            </span>
-                            <span className="text-[10px] text-muted font-mono mr-1">
-                              نقطة
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : null}
-            </div>
-          </div>
-        )}
-      </div>
-    </DialogContent>
-  );
-}
 
 // ── 2. Agentic Intervention Dialog (AI Decision Log) ─────────────
 function InterventionDialogContent({ action }: { action: AgenticAction }) {
@@ -3307,99 +2689,84 @@ function ChartSkeleton() {
 // مكونات كارد التقويم الأكاديمي
 // ──────────────────────────────────────────────────────────────────
 
+function eventTypeLabel(type: CalendarEvent["type"]): string {
+  return type === "holiday" ? "إجازة" : type === "exam" ? "اختبارات" : type === "system" ? "إجراء" : "أكاديمي";
+}
+
+/** "اليوم" / "غدًا" / "بعد 5 أيام" relative to today. */
+function daysUntilLabel(ev: CalendarEvent, today: Date): string {
+  const ms = eventStart(ev).getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const days = Math.round(ms / 86_400_000);
+  if (days <= 0) return "اليوم";
+  if (days === 1) return "غدًا";
+  if (days === 2) return "بعد يومين";
+  if (days <= 10) return `بعد ${days} أيام`;
+  return `بعد ${days} يومًا`;
+}
+
 function AcademicCalendarCard() {
-  const [todayStr, setTodayStr] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
-
+  // Computed on the client only — the page is statically exported, so
+  // "today" must come from the visitor's clock, not the build machine.
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
-    const today = new Date();
-    
-    // تنسيق تاريخ اليوم للعرض
-    setTodayStr(
-      new Intl.DateTimeFormat('ar-SA', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }).format(today)
-    );
-
-    const getEndDate = (dateStr: string) => {
-      const parts = dateStr.split("-");
-      return new Date(parts[parts.length - 1].trim());
-    };
-
-    const allEvents = UQU_CALENDAR.flatMap(term => term.events);
-    const startOfToday = new Date(today);
-    startOfToday.setHours(0, 0, 0, 0);
-
-    const upcoming = allEvents
-      .filter(ev => getEndDate(ev.date) >= startOfToday)
-      .sort((a, b) => getEndDate(a.date).getTime() - getEndDate(b.date).getTime())
-      .slice(0, 3);
-      
-    setUpcomingEvents(upcoming);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setNow(new Date());
   }, []);
+
+  const upcoming = now ? getUpcomingEvents(now).slice(0, 3) : [];
+  const todayStr = now
+    ? new Intl.DateTimeFormat("ar-SA", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now)
+    : "";
 
   return (
     <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden h-full flex flex-col">
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-sky-700 dark:text-sky-400" />
-            التقويم الجامعي
+            <CalendarDays className="w-5 h-5 text-uqu-cyan" />
+            التقويم الجامعي {ACADEMIC_YEAR_LABEL}
           </h3>
-          <p className="text-xs text-sky-800/90 dark:text-sky-300/80 font-medium mt-1">
-            اليوم: {todayStr || "يتم التحميل..."}
-          </p>
+          <p className="text-xs text-muted-foreground font-medium mt-1">{todayStr || "\u00a0"}</p>
         </div>
-        <Badge variant="outline" className="text-[10px] bg-sky-500/10 text-sky-800 dark:text-sky-400 border-sky-500/30 dark:border-sky-400/20 px-2.5 py-1 rounded-full">
-          الأحداث القادمة
-        </Badge>
       </div>
 
       <div className="space-y-3 flex-1">
-        {upcomingEvents.length === 0 ? (
-           <div className="flex flex-col items-center justify-center h-[120px] text-muted-foreground text-sm border-2 border-dashed border-foreground/10 rounded-2xl">
-             لا توجد أحداث أكاديمية قادمة.
-           </div>
+        {now && upcoming.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[120px] text-muted-foreground text-sm border-2 border-dashed border-foreground/10 rounded-2xl text-center px-4">
+            انتهت أحداث التقويم الحالي. سيُحدَّث فور صدور تقويم العام القادم.
+          </div>
         ) : (
-          upcomingEvents.map((ev, i) => (
-            <div 
-              key={i} 
-              className="p-4 rounded-2xl bg-foreground/5 border border-foreground/10 flex flex-col gap-2.5 hover:border-sky-500/20 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2" 
-              style={{ animationFillMode: "both", animationDelay: `${i * 100}ms` }}
-            >
-              {/* العنوان ونوع الحدث */}
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-[13.5px] font-black text-foreground leading-tight">{ev.title}</span>
-                <span className={cn("text-[9px] font-black px-2 py-0.5 rounded-md border shrink-0 uppercase tracking-wider", getEventTone(ev.type))}>
-                  {ev.type === "holiday" ? "إجازة" : ev.type === "exam" ? "اختبارات" : ev.type === "system" ? "نظام" : "أكاديمي"}
-                </span>
+          upcoming.map((ev) => {
+            const live = now ? isOngoing(ev, now) : false;
+            return (
+              <div
+                key={ev.title + ev.start}
+                className={cn(
+                  "p-4 rounded-2xl border flex flex-col gap-2",
+                  live ? "bg-uqu-accent/10 border-uqu-accent/30" : "bg-foreground/5 border-foreground/10",
+                )}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[13.5px] font-black text-foreground leading-tight">{ev.title}</span>
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0", getEventTone(ev.type))}>
+                    {eventTypeLabel(ev.type)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <span className="font-semibold text-foreground/90">{formatEventDateAr(ev)}</span>
+                  <span>{ev.hijri} هـ</span>
+                  <span className={cn("font-bold", live ? "text-uqu-accent" : "text-uqu-cyan")}>
+                    {live ? "جارٍ الآن" : daysUntilLabel(ev, now!)}
+                  </span>
+                </div>
               </div>
-              
-              {/* التواريخ المرتبة والمفصولة بصرياً */}
-              <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px]">
-                {/* كبسولة التاريخ الهجري */}
-                <span className="inline-flex items-center gap-1.5 bg-foreground/5 dark:bg-black/30 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono">
-                  <span className="text-[9px] font-sans font-black text-amber-400/90 bg-amber-400/10 px-1 rounded-sm">هـ</span>
-                  <span className="text-foreground/90 font-bold">{ev.hijri}</span>
-                </span>
-
-                {/* كبسولة التاريخ الميلادي */}
-                <span className="inline-flex items-center gap-1.5 bg-foreground/5 dark:bg-black/30 px-2.5 py-1 rounded-lg text-muted-foreground border border-foreground/5 font-mono" dir="ltr">
-                  <span className="text-foreground/90 font-bold">{ev.date}</span>
-                  <span className="text-[9px] font-sans font-black text-sky-400/90 bg-sky-400/10 px-1 rounded-sm">م</span>
-                </span>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
-      
+
       <div className="mt-5 pt-4 border-t border-foreground/10 text-[11px] text-muted-foreground font-medium text-center">
-        اضغط لمعاينة التقويم الكامل للفصلين
+        اضغط لعرض التقويم الكامل للفصلين
       </div>
     </Card>
   );
@@ -3413,7 +2780,7 @@ function AcademicCalendarDialogContent() {
       <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
         <DialogTitle className="text-xl font-black flex items-center gap-3">
           <CalendarClock className="w-6 h-6 text-sky-400" />
-          التقويم الجامعي لعام 1447 / 1448 هـ
+          التقويم الجامعي للعام {ACADEMIC_YEAR_LABEL}
         </DialogTitle>
         <DialogDescription className="text-muted-foreground text-sm">
           جميع الأحداث الأكاديمية والأنظمة بناءً على التقويم المعتمد لجامعة أم القرى.
@@ -3425,7 +2792,7 @@ function AcademicCalendarDialogContent() {
           <div key={termIdx} className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="h-px flex-1 bg-foreground/10" />
-              <h4 className="text-sm font-black uppercase tracking-widest text-sky-400">
+              <h4 className="text-sm font-black text-uqu-cyan">
                 {termData.term}
               </h4>
               <span className="h-px flex-1 bg-foreground/10" />
@@ -3440,14 +2807,13 @@ function AcademicCalendarDialogContent() {
                   <div className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-[13px] truncate">{ev.title}</div>
-                    <div className="flex items-center gap-3 mt-1 text-[11px] font-mono text-muted">
-                      <span>{ev.hijri}</span>
-                      <span className="text-foreground/30">|</span>
-                      <span>{ev.date}</span>
+                    <div className="flex flex-wrap items-center gap-x-3 mt-1 text-[11px] text-muted">
+                      <span>{formatEventDateAr(ev)}</span>
+                      <span>{ev.hijri} هـ</span>
                     </div>
                   </div>
                   <span className={cn("text-[10px] font-black px-2 py-1 rounded-md border shrink-0", getEventTone(ev.type))}>
-                     {ev.type === "holiday" ? "إجازة" : ev.type === "exam" ? "اختبارات" : ev.type === "system" ? "النظام" : "أكاديمي"}
+                     {eventTypeLabel(ev.type)}
                   </span>
                 </div>
               ))}

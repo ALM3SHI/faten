@@ -50,7 +50,6 @@ type PersistedStore = {
   /** Human-readable label for the warning log. */
   label: string;
   /** Zustand's persist middleware augments the store with `.persist`. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   persist: { clearStorage: () => void };
   /** Optional in-memory reset (so the React tree updates instantly
    *  before the hard refresh — defense in depth). */

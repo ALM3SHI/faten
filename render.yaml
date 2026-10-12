@@ -1,0 +1,31 @@
+# Render Blueprint — free FastAPI backend for Faten.
+# Render dashboard → New → Blueprint → pick this repo. Secrets marked
+# `sync: false` are asked for once in the dashboard (never committed).
+services:
+  - type: web
+    name: faten-backend
+    runtime: python
+    plan: free
+    region: frankfurt          # closest Render region to Saudi Arabia
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FIREBASE_CREDENTIALS_JSON   # paste the whole serviceAccountKey.json
+        sync: false
+      - key: ALLOWED_ORIGINS             # e.g. https://faten.netlify.app
+        sync: false
+      - key: ENABLE_INTERNAL_SCHEDULER   # free plan sleeps → use the GitHub Action
+        value: "false"
+      - key: CRON_SECRET
+        generateValue: true
+      - key: DAILY_AI_CREDITS
+        value: "60"

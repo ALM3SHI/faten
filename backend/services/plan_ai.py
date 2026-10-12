@@ -435,10 +435,11 @@ def _extract_json_object(text: str) -> Any:
 
 
 async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
-    """OpenAI fallback when LLAMA_API_KEY is unset (POST /api/plan/generate-ai only)."""
+    """Main-provider fallback when LLAMA_API_KEY is unset (POST /api/plan/generate-ai only)."""
+    from services.llm import make_llm_client
+
     settings = get_settings()
-    client = AsyncOpenAI(
-        api_key=settings.OPENAI_API_KEY,
+    client = make_llm_client(
         timeout=90.0,
         max_retries=1,
     )
@@ -450,7 +451,7 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
 
     async def _do_call(use_json_mode: bool) -> str:
         kwargs: dict[str, Any] = {
-            "model": settings.OPENAI_MODEL,
+            "model": settings.llm_model,
             "messages": messages,
             "temperature": 0.4,
             "max_tokens": 6144,
@@ -473,7 +474,7 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
 
         logger.info(
             "[plan_ai] cost_log | provider=openai | model=%s | prompt_tokens=%d | completion_tokens=%d | total_tokens=%d",
-            settings.OPENAI_MODEL,
+            settings.llm_model,
             prompt_tokens,
             completion_tokens,
             total_tokens,
@@ -547,15 +548,15 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
     """
     settings = get_settings()
     if not settings.LLAMA_API_KEY:
-        if settings.OPENAI_API_KEY:
+        if settings.llm_api_key:
             logger.info(
-                "[plan_ai] LLAMA_API_KEY missing — using OPENAI_API_KEY fallback."
+                "[plan_ai] LLAMA_API_KEY missing — using %s fallback.", settings.ai_provider
             )
             return await _call_openai_plan(system_prompt, user_content)
         raise HTTPException(
             status_code=503,
             detail=(
-                "Plan generation requires LLAMA_API_KEY or OPENAI_API_KEY on the server."
+                "Plan generation requires LLAMA_API_KEY or an AI_PROVIDER key on the server."
             ),
         )
 
@@ -733,7 +734,7 @@ async def generate_ai_study_plan(req: GeneratePlanRequest) -> dict[str, Any]:
     model_id = (
         settings.LLAMA_MODEL
         if settings.LLAMA_API_KEY
-        else settings.OPENAI_MODEL
+        else settings.llm_model
     )
     return {
         "plan": plan.model_dump(),

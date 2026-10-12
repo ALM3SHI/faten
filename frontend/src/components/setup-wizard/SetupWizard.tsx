@@ -185,7 +185,7 @@ function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => voi
                   isDone
                     ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
                     : isActive
-                      ? "bg-[#0066cc] text-foreground shadow-[0_0_18px_rgba(0,102,204,0.5)]"
+                      ? "bg-uqu-accent text-white shadow-[0_0_18px_hsla(245,78%,62%,0.5)]"
                       : "bg-foreground/5 text-muted border border-foreground/10",
                 )}
               >

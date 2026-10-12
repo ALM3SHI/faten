@@ -56,7 +56,6 @@ function clamp(n: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, n));
 }
 
-const VALID_TOOLS = new Set(["pomodoro", "gpa", "map", "dashboard", "plan"]);
 const VALID_PRIORITY = new Set<PlanPriority>(["high", "medium", "low"]);
 
 // ──────────────────────────────────────────────────────────────────

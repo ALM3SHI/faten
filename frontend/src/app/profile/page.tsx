@@ -146,7 +146,7 @@ export default function ProfilePage() {
             "rounded-[32px] p-6 md:p-8 mb-8 relative overflow-hidden",
             hasTranscript && hasSchedule
               ? "glass border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent"
-              : "glass border border-[#0066cc]/30 bg-gradient-to-br from-[#0066cc]/8 via-transparent to-cyan-500/5 shadow-[0_0_40px_rgba(0,102,204,0.12)]",
+              : "glass border border-uqu-accent/30 bg-gradient-to-br from-uqu-accent/8 via-transparent to-cyan-500/5 shadow-[0_0_40px_hsla(245,78%,62%,0.12)]",
           )}
         >
           <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -156,7 +156,7 @@ export default function ProfilePage() {
                   "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0",
                   hasTranscript && hasSchedule
                     ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "bg-[#0066cc] text-foreground shadow-[0_0_18px_rgba(0,102,204,0.5)]",
+                    : "bg-uqu-accent text-white shadow-[0_0_18px_hsla(245,78%,62%,0.5)]",
                 )}
               >
                 {hasTranscript && hasSchedule ? (
@@ -182,7 +182,7 @@ export default function ProfilePage() {
                 "rounded-2xl gap-2 px-5 py-5 font-bold",
                 hasTranscript && hasSchedule
                   ? "bg-foreground/5 border border-foreground/10 hover:bg-foreground/5 text-foreground"
-                  : "bg-[#0066cc] hover:bg-[#005bb5] text-foreground shadow-[0_0_24px_rgba(0,102,204,0.4)]",
+                  : "bg-uqu-accent hover:bg-uqu-accent/90 text-white shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
               )}
             >
               {hasTranscript && hasSchedule ? (
@@ -190,7 +190,7 @@ export default function ProfilePage() {
               ) : (
                 <>
                   <Rocket className="w-4 h-4" />
-                  🚀 ابدأ تهيئة بياناتك الآن
+                  ابدأ تهيئة بياناتك الآن
                 </>
               )}
             </Button>

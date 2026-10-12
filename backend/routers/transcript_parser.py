@@ -19,6 +19,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from auth.dependencies import get_current_user
+from services.quota import COST_TRANSCRIPT_ANALYSIS, require_ai_credits
 from services.transcript import (
     TranscriptAIError,
     TranscriptAnalysisRequest,
@@ -45,6 +46,7 @@ async def analyze_transcript_endpoint(
 
     The shape on the wire mirrors what the UI puts under `parsedData.analysis`.
     """
+    require_ai_credits(user_id, COST_TRANSCRIPT_ANALYSIS)
     logger.info(
         "Transcript advisor request: user=%s completed=%d registered=%d gpa=%s",
         user_id,

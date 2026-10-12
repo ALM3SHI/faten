@@ -34,7 +34,8 @@ export type ChatErrorType =
   | "api_auth"
   | "api_unavailable"
   | "api_timeout"
-  | "agent_error";
+  | "agent_error"
+  | "quota_exceeded";
 
 export interface ChatResponse {
   success: boolean;
@@ -99,10 +100,10 @@ export async function executeClientTool(name: string, args: any, backendData: an
       const theme = args.theme || 'auto';
       if (theme === 'dark') {
         document.documentElement.classList.add("dark");
-        try { localStorage.setItem("uqu-theme", "dark"); } catch (e) {}
+        try { localStorage.setItem(STORAGE_KEYS.THEME, "dark"); } catch {}
       } else {
         document.documentElement.classList.remove("dark");
-        try { localStorage.setItem("uqu-theme", "light"); } catch (e) {}
+        try { localStorage.setItem(STORAGE_KEYS.THEME, "light"); } catch {}
       }
       return backendData;
     }
@@ -146,7 +147,9 @@ export const AIService = {
     messages: Message[],
     opts?: { conversationId?: string | null; clientContext?: ClientContextSnapshot },
   ): Promise<ChatResponse> {
-    const trimmedMessages = messages.slice(-10); // Context window limit
+    // Context window limit. System prompts are built server-side and the
+    // API rejects client-sent "system" turns, so never forward them.
+    const trimmedMessages = messages.filter((m) => m.role !== 'system').slice(-10);
 
     // Build the snapshot on every call so the agent sees the freshest
     // state — including edits the user just made in another tab.

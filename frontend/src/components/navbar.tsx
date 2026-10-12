@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { isActivePath } from "@/lib/routes";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LogoMark } from "@/components/logo";
 
 const navItems = [
   { name: "اللوحة", href: "/dashboard" },
@@ -15,6 +17,7 @@ const navItems = [
   { name: "الخطة", href: "/plan" },
   { name: "بومودورو", href: "/pomodoro" },
   { name: "القاعات", href: "/locations" },
+  { name: "المجتمع", href: "/community" },
   { name: "الملف الشخصي", href: "/profile" },
 ];
 
@@ -53,9 +56,7 @@ export function Navbar() {
         <div className="container mx-auto h-full flex items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-uqu-accent to-uqu-cyan rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-uqu-accent/25 transition-shadow">
-                <span className="text-xl">🎓</span>
-              </div>
+              <LogoMark />
               <div className="hidden md:block">
                 <span className="font-bold text-lg">فطن</span>
               </div>
@@ -69,7 +70,7 @@ export function Navbar() {
                       href={item.href}
                       className={cn(
                         "px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
-                        pathname === item.href
+                        isActivePath(pathname, item.href)
                           ? "text-uqu-accent bg-uqu-accent/10"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                       )}
@@ -103,7 +104,7 @@ export function Navbar() {
               </Link>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-foreground font-bold px-6">
+                <Button size="sm" className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white font-bold px-6">
                   دخول
                 </Button>
               </Link>
@@ -134,7 +135,7 @@ export function Navbar() {
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-colors",
-                      pathname === item.href
+                      isActivePath(pathname, item.href)
                         ? "text-uqu-accent bg-uqu-accent/10"
                         : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                     )}

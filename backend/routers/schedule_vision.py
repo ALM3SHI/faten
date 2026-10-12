@@ -20,6 +20,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
 from auth.dependencies import get_current_user
+from services.quota import COST_SCHEDULE_VISION, require_ai_credits
 from services.schedule_vision import (
     ScheduleVisionAIError,
     ScheduleVisionReadError,
@@ -55,6 +56,7 @@ async def analyze_schedule_vision_endpoint(
           ]
         }
     """
+    require_ai_credits(user_id, COST_SCHEDULE_VISION)
     logger.info(
         "Schedule vision analyze: user=%s filename=%s content_type=%s",
         user_id, file.filename, file.content_type,

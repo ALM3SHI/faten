@@ -102,8 +102,8 @@ export function ChatHistoryDrawer({
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-foreground/10 shrink-0">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-[#0066cc]/15 border border-[#0066cc]/20 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-4 h-4 text-[#0066cc]" />
+                <div className="w-9 h-9 rounded-full bg-uqu-accent/15 border border-uqu-accent/20 flex items-center justify-center shrink-0">
+                  <MessageSquare className="w-4 h-4 text-uqu-accent" />
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-foreground font-bold text-[15px] tracking-tight truncate">
@@ -133,12 +133,12 @@ export function ChatHistoryDrawer({
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="ابحث في المحادثات..."
-                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl pr-10 pl-4 py-2.5 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/40 focus:ring-1 focus:ring-[#0066cc]/20 transition-all"
+                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl pr-10 pl-4 py-2.5 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/40 focus:ring-1 focus:ring-uqu-accent/20 transition-all"
                 />
               </div>
               <button
                 onClick={onNewThread}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#0066cc]/10 border border-[#0066cc]/25 text-[#0066cc] hover:bg-[#0066cc]/15 transition-colors text-[13px] font-bold"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-uqu-accent/10 border border-uqu-accent/25 text-uqu-accent hover:bg-uqu-accent/15 transition-colors text-[13px] font-bold"
               >
                 <Plus className="w-4 h-4" />
                 <span>محادثة جديدة</span>
@@ -163,7 +163,7 @@ export function ChatHistoryDrawer({
                       className={
                         "group relative flex items-stretch gap-1 rounded-2xl transition-all " +
                         (isActive
-                          ? "border border-[#0066cc]/35 bg-[#0066cc]/[0.06]"
+                          ? "border border-uqu-accent/35 bg-uqu-accent/[0.06]"
                           : "border border-foreground/10 bg-foreground/5 hover:bg-foreground/5 hover:border-foreground/10")
                       }
                     >

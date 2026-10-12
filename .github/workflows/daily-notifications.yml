@@ -1,0 +1,29 @@
+# Wakes the backend every morning and starts the daily notifications job.
+# Needed because Render's free plan sleeps when idle, so the in-process
+# scheduler cannot fire on its own.
+#
+# Repo → Settings → Secrets and variables → Actions → add:
+#   BACKEND_URL  e.g. https://faten-backend.onrender.com
+#   CRON_SECRET  same value as CRON_SECRET on Render
+name: Daily notifications
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # 05:00 UTC = 08:00 Riyadh
+  workflow_dispatch:       # "Run workflow" button for manual tests
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake backend (free plan cold start can take ~1 min)
+        run: |
+          curl --silent --show-error --fail --retry 6 --retry-delay 20 \
+               --retry-all-errors --max-time 90 \
+               "${{ secrets.BACKEND_URL }}/health"
+
+      - name: Start daily notifications
+        run: |
+          curl --silent --show-error --fail --max-time 60 -X POST \
+               -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+               "${{ secrets.BACKEND_URL }}/api/cron/daily-notifications"

@@ -220,7 +220,7 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
           micState === "recording"
             ? "text-red-400 bg-red-500/10 hover:bg-red-500/15 animate-pulse"
             : micState === "transcribing"
-              ? "text-amber-300 bg-amber-500/10"
+              ? "text-amber-700 dark:text-amber-300 bg-amber-500/10"
               : "text-muted hover:text-foreground hover:bg-foreground/5"
         )}
       >
@@ -245,7 +245,7 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
       <button
         onClick={onSend}
         disabled={!value.trim() || isLoading}
-        className="w-10 h-10 rounded-full bg-[#0066cc] flex items-center justify-center text-white shrink-0 disabled:opacity-50 transition-all active:scale-95 hover:bg-[#005bb5] shadow-lg shadow-[#0066cc]/20"
+        className="w-10 h-10 rounded-full bg-uqu-accent flex items-center justify-center text-white shrink-0 disabled:opacity-50 transition-all active:scale-95 hover:bg-uqu-accent/90 shadow-lg shadow-uqu-accent/20"
       >
         <Send className="w-4 h-4 rotate-180" />
       </button>

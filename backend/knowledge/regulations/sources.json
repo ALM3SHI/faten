@@ -1,0 +1,335 @@
+{
+  "documents": [
+    {
+      "id": "study_exams",
+      "file": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى.txt",
+      "title": "لائحة الدراسة والاختبارات للمرحلة الجامعية (القواعد التنفيذية لجامعة أم القرى)",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/dadregis/151795",
+      "issued": "الإصدار الأول — 1444هـ",
+      "priority": 1.4
+    },
+    {
+      "id": "grad_studies",
+      "file": "القواعد التنفيذية للائحة المنظمة للدراسات العليا بجامعة أم القرى.txt",
+      "title": "اللائحة المنظمة للدراسات العليا (القواعد التنفيذية لجامعة أم القرى)",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "student_rights",
+      "file": "قواعد حقوق الطلبة بجامعة أم القرى.txt",
+      "title": "قواعد حقوق الطلبة بجامعة أم القرى",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/studaff/124223",
+      "issued": "",
+      "priority": 1.4
+    },
+    {
+      "id": "conduct",
+      "file": "قواعد السلوك والانضباط الطلابي بجامعة أم القرى.txt",
+      "title": "قواعد السلوك والانضباط الطلابي بجامعة أم القرى",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/studaff/124223",
+      "issued": "",
+      "priority": 1.4
+    },
+    {
+      "id": "exam_guide",
+      "file": "dc187407-d7e2-4b43-88ef-57fd1cc67f84.pdf",
+      "title": "الدليل الإجرائي لسير الاختبارات بجامعة أم القرى",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/studaff/124223",
+      "issued": "عمادة شؤون الطلاب",
+      "split": "chapter",
+      "strip_lines": [
+        "الدليل الإجرائي لسير الاختبارات",
+        "بجامعة أم القرى",
+        "عمادة شؤون الطلاب"
+      ],
+      "priority": 1.4
+    },
+    {
+      "id": "student_fund",
+      "file": "اللائحة المنظمة لصناديق الطلبة بالجامعات.txt",
+      "title": "اللائحة المنظمة لصناديق الطلبة بالجامعات",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/studaff/124223",
+      "issued": "مجلس شؤون الجامعات"
+    },
+    {
+      "id": "student_clubs",
+      "file": "studentclub.ocr.txt",
+      "title": "القواعد التنظيمية للأندية الطلابية — عمادة شؤون الطلاب",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/studaff/124223",
+      "issued": "",
+      "split": "pages",
+      "ocr": true
+    },
+    {
+      "id": "coop_training",
+      "file": "الدليل الإجرائي لمقرر التدريب التعاوني بجامعة أم القرى.txt",
+      "title": "الدليل الإجرائي لمقرر التدريب التعاوني بجامعة أم القرى",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "applied_college",
+      "file": "القواعد التنفيذية للائحة المنظمة للكلية التطبيقية بجامعة أم القرى.txt",
+      "title": "اللائحة المنظمة للكلية التطبيقية (القواعد التنفيذية لجامعة أم القرى)",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "grants_charity_fund",
+      "file": "القواعد المنظمة للصندوق الخيري لدعم برامج المنح بجامعة أم القرى.txt",
+      "title": "القواعد المنظمة للصندوق الخيري لدعم برامج المنح بجامعة أم القرى",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "dental_hospital",
+      "file": "لائحة إجراءات مخالفة أنظمة المستشفى التعليمي بكلية طب الأسنان بجامعة أم القرى.txt",
+      "title": "لائحة إجراءات مخالفة أنظمة المستشفى التعليمي بكلية طب الأسنان",
+      "audience": "students",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "medical_fellowships",
+      "file": "لائحة الزمالات الطبية بجامعة أم القرى.txt",
+      "title": "لائحة الزمالات الطبية بجامعة أم القرى",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "universities_law",
+      "file": "universities_law.ocr.txt",
+      "title": "نظام الجامعات",
+      "audience": "general",
+      "source_url": "",
+      "issued": "مرسوم ملكي (م/27) 1441هـ — مجلس شؤون الجامعات",
+      "ocr": true
+    },
+    {
+      "id": "research_innovation",
+      "file": "القواعد التنفيذية للائحة البحث العلمي والابتكار بجامعة أم القرى.txt",
+      "title": "لائحة البحث العلمي والابتكار (القواعد التنفيذية لجامعة أم القرى)",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "intellectual_property",
+      "file": "وثيقة سياسات الملكية الفكرية بجامعة أم القرى.txt",
+      "title": "وثيقة سياسات الملكية الفكرية بجامعة أم القرى",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "anti_harassment",
+      "file": "‏وثيقة مكافحة التحرش في بيئة العمل.txt",
+      "title": "وثيقة مكافحة التحرش في بيئة العمل",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "email_policy",
+      "file": "سياسات استخدام البريد الإلكتروني المخصص من الجامعة لأعضاء هيئة التدريس والموظفين والطلبة.txt",
+      "title": "سياسات استخدام البريد الإلكتروني الجامعي",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "computers_policy",
+      "file": "سياسات استخدام أجهزة الحواسيب المكتبية والمحمولة.txt",
+      "title": "سياسات استخدام أجهزة الحواسيب المكتبية والمحمولة",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "graduate_attributes",
+      "file": "دليل خصائص الخريجين.txt",
+      "title": "دليل خصائص الخريجين — جامعة أم القرى",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "ethics_compliance",
+      "file": "سياسات وضوابط الالتزام والامتثال الأخلاقي ــ المهني بجامعة أم القرى.txt",
+      "title": "سياسات وضوابط الالتزام والامتثال الأخلاقي المهني",
+      "audience": "general",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "volunteer_law",
+      "file": "volunteer_law.ocr.txt",
+      "title": "نظام العمل التطوعي",
+      "audience": "general",
+      "source_url": "",
+      "issued": "مرسوم ملكي (م/70) 1441هـ وتعديلاته",
+      "ocr": true
+    },
+    {
+      "id": "faculty_affairs",
+      "file": "القواعد التنفيذية للائحة المنظمة لشؤون منسوبي الجامعات السعوديين من أعضاء هيئة التدريس ومن في حكمهم بجامعة أم القرى.txt",
+      "title": "اللائحة المنظمة لشؤون أعضاء هيئة التدريس السعوديين ومن في حكمهم (القواعد التنفيذية)",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "non_saudi_staff",
+      "file": "لائـحة توظيف غير السعوديين في الجامعات.txt",
+      "title": "لائحة توظيف غير السعوديين في الجامعات",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "scholarship_staff",
+      "file": "القواعد التنفيذية للائحة الابتعاث والتدريب لمنسوبي الجامعات بجامعة أم القرى.txt",
+      "title": "لائحة الابتعاث والتدريب لمنسوبي الجامعات (القواعد التنفيذية)",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "scholarship_policies",
+      "file": "السياسات العامة للابتعاث.txt",
+      "title": "السياسات العامة للابتعاث",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "faculty_housing",
+      "file": "لائحة الإسكان لأعضاء هيئة التدريس بجامعة أم القرى.txt",
+      "title": "لائحة الإسكان لأعضاء هيئة التدريس",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "finance_procedures",
+      "file": "الاجراءات التفصيلية للائحة المنظمة للشؤون المالية بجامعة أم القرى.txt",
+      "title": "الإجراءات التفصيلية للائحة المنظمة للشؤون المالية",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "university_finance_regulation",
+      "file": "university_finance_regulation.ocr.txt",
+      "title": "اللائحة المنظمة للشؤون المالية للجامعات",
+      "audience": "staff",
+      "source_url": "",
+      "issued": "مجلس شؤون الجامعات",
+      "ocr": true
+    },
+    {
+      "id": "investment",
+      "file": "السياسات العامة للاستثمار جامعة أم القرى.txt",
+      "title": "السياسات العامة للاستثمار — جامعة أم القرى",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "partnerships",
+      "file": "الدليل الاجرائي التنظيمي للشراكات المحلية والدولية بجامعة أم القرى.txt",
+      "title": "الدليل الإجرائي التنظيمي للشراكات المحلية والدولية",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "advisory_councils",
+      "file": "القواعد المنظمة للمجالس الاستشارية الدولية بجامعة أم القرى.txt",
+      "title": "القواعد المنظمة للمجالس الاستشارية الدولية",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "conflict_of_interest",
+      "file": "سياسات الإفصاح عن تعارض المصالح بجامعة أم القرى.txt",
+      "title": "سياسات الإفصاح عن تعارض المصالح",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "misconduct_suspicion",
+      "file": "سياسات التأكد من الممارسات المثلى في حال وجود شبهة بالمخالفات والتجاوزات والحالات المثيرة للتساؤل بجامعة أم القرى.txt",
+      "title": "سياسات الممارسات المثلى عند الاشتباه بالمخالفات والتجاوزات",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "property_use",
+      "file": "ضوابط الانتفاع قصير المدى لأملاك الجامعة.txt",
+      "title": "ضوابط الانتفاع قصير المدى لأملاك الجامعة",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "program_accreditation",
+      "file": "وثيقة الاعتماد الأكاديمي البرامجي بجامعة أم القرى.txt",
+      "title": "وثيقة الاعتماد الأكاديمي البرامجي",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "accreditation_guide",
+      "file": "الدليل الإرشادي للتعامل مع شروط الاعتماد البرامجي بجامعة أم القرى.txt",
+      "title": "الدليل الإرشادي للتعامل مع شروط الاعتماد البرامجي",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "program_development",
+      "file": "دليل تحديث البرامج الأكاديمية واستحداثها.txt",
+      "title": "دليل تحديث البرامج الأكاديمية واستحداثها",
+      "audience": "staff",
+      "source_url": "https://uqu.edu.sa/App/Regulations",
+      "issued": ""
+    },
+    {
+      "id": "civil_service_law",
+      "file": "01KGY2EPGSJ0EAGRR9KKWYFV95.pdf",
+      "title": "نظام الخدمة المدنية",
+      "audience": "staff",
+      "source_url": "",
+      "issued": "مرسوم ملكي (م/49) 1397هـ",
+      "strip_lines": [
+        "نظام الخدمة المدنية"
+      ]
+    },
+    {
+      "id": "employee_discipline_law",
+      "file": "employee_discipline_law.ocr.txt",
+      "title": "نظام الانضباط الوظيفي",
+      "audience": "staff",
+      "source_url": "",
+      "issued": "مرسوم ملكي (م/18) 1443هـ",
+      "ocr": true
+    }
+  ]
+}

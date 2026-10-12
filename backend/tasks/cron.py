@@ -6,6 +6,7 @@ Converts: exports.dailyNotificationsCron from index.js lines 369-424
 Daily proactive notifications at 8 AM Riyadh time.
 """
 
+import asyncio
 import json
 import math
 import logging
@@ -68,8 +69,17 @@ async def daily_notifications_cron():
 
     users_snap = db.collection("users").get()
 
-    for user_doc in users_snap:
+    # Only expose the one tool this job needs — smaller prompt, and the
+    # model cannot wander off into other tools.
+    notify_tools = [
+        t for t in TOOLS_SCHEMA
+        if t.get("function", {}).get("name") == "send_notification"
+    ]
+
+    for index, user_doc in enumerate(users_snap):
         user_id = user_doc.id
+        if index:
+            await asyncio.sleep(settings.CRON_USER_DELAY_SECONDS)
         try:
             ctx = await load_student_context_for_cron(user_id, db)
             user_ref = db.collection("users").document(user_id)
@@ -82,17 +92,16 @@ async def daily_notifications_cron():
             )
 
             completion = await client.chat.completions.create(
-                model=settings.OPENAI_MODEL,
+                model=settings.llm_fast_model,
                 messages=[
                     {"role": "system", "content": system_p},
                     {"role": "user", "content": "ابعث للطالب إشعاراً تحفيزياً صباحياً مناسباً لوضعه الأكاديمي الحالي. استخدم أداة send_notification."},
                 ],
-                tools=TOOLS_SCHEMA,
+                tools=notify_tools,
                 tool_choice={"type": "function", "function": {"name": "send_notification"}},
                 temperature=1.00,
                 top_p=1.00,
                 max_tokens=1024,
-                extra_body={"chat_template_kwargs": {"thinking": True}},
             )
 
             tool_call = None

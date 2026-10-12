@@ -10,7 +10,7 @@ import {
   CheckCircle2,
   AlertCircle,
   CalendarDays,
-  ArrowLeft,
+  ArrowRight,
   Eye,
   Trash2,
   Clock,
@@ -93,7 +93,7 @@ export default function SchedulePage() {
       <main className="container mx-auto pt-32 px-4 max-w-6xl">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-xl glass border-foreground/10">
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-3xl font-black flex items-center gap-3">

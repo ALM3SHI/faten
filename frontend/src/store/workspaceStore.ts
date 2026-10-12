@@ -27,6 +27,7 @@ export type ChatErrorType =
   | "api_unavailable"
   | "api_timeout"
   | "agent_error"
+  | "quota_exceeded"
   | "network";
 
 export type ChatMessage = {

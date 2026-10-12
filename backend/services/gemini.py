@@ -35,7 +35,7 @@ async def call_gemini(
     if not settings.GEMINI_API_KEY:
         raise HTTPException(status_code=503, detail="API Key missing")
 
-    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent?key={settings.GEMINI_API_KEY}"
+    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent"
 
     # Prepare parts
     parts = []
@@ -77,7 +77,7 @@ async def call_gemini(
         payload["generationConfig"]["maxOutputTokens"] = max_output_tokens
 
     async with httpx.AsyncClient(timeout=timeout_seconds) as client:
-        response = await client.post(url, json=payload)
+        response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
         
     if response.status_code != 200:
         logger.error(f"Gemini API Error (HTTP {response.status_code}): {response.text}")
@@ -173,7 +173,7 @@ async def call_gemini_chat_text(
         logger.warning("Gemini chat fallback skipped — GEMINI_API_KEY not set")
         return None
 
-    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent?key={settings.GEMINI_API_KEY}"
+    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent"
 
     # Translate OpenAI-style messages to Gemini's `contents` shape.
     # Gemini uses role "model" instead of "assistant"; "tool" / "system"
@@ -205,7 +205,7 @@ async def call_gemini_chat_text(
 
     try:
         async with httpx.AsyncClient(timeout=timeout_seconds) as client:
-            response = await client.post(url, json=payload)
+            response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
     except httpx.HTTPError as exc:
         logger.error("Gemini chat fallback network error: %s", exc)
         return None

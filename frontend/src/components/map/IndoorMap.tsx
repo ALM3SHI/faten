@@ -334,7 +334,6 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
         if (!c) return;
         const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, s.scale * factor));
         if (newScale === s.scale) return;
-        const cr = c.getBoundingClientRect();
         const ratio = newScale / s.scale;
         // Zoom around viewport center → dx = dy = 0 in the legacy math.
         s.panX -= 0 * (ratio - 1);

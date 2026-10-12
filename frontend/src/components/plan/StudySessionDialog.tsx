@@ -453,7 +453,7 @@ export function StudySessionDialog({
           <div className="flex flex-row items-center justify-start gap-3 border-t border-border dark:border-white/10 px-6 py-4 mt-1 shrink-0">
             <Button
               type="submit"
-              className="h-9 px-4 rounded-xl text-sm font-bold bg-uqu-accent hover:bg-uqu-accent/90 text-foreground shadow-[0_0_16px_-4px_hsla(245,78%,62%,0.5)]"
+              className="h-9 px-4 rounded-xl text-sm font-bold bg-uqu-accent hover:bg-uqu-accent/90 text-white shadow-[0_0_16px_-4px_hsla(245,78%,62%,0.5)]"
             >
               {mode === "add" ? "إضافة الجلسة" : "حفظ التعديلات"}
             </Button>

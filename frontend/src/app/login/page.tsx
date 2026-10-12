@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { safeNextPath } from "@/lib/routes";
 import { auth, googleProvider } from "@/lib/firebase";
 import {
   signInWithEmailAndPassword,
@@ -11,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Mail, Lock, ArrowRight, Sparkles, Check, Circle } from "lucide-react";
+import { Mail, Lock, ArrowRight, Check, Circle, GraduationCap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "@/lib/toast";
@@ -25,6 +26,11 @@ import {
 } from "@/lib/signup-validation";
 import { EMAIL_VERIFICATION_MESSAGES } from "@/lib/email-verification";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+function nextPath(): string {
+  if (typeof window === "undefined") return "/dashboard";
+  return safeNextPath(new URLSearchParams(window.location.search).get("next"));
+}
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -72,7 +78,7 @@ export default function LoginPage() {
           );
         }
       }
-      router.push("/dashboard");
+      router.replace(nextPath());
     } catch (error: unknown) {
       toast.error(getArabicAuthError(error, isLogin ? "login" : "signup"));
     } finally {
@@ -83,7 +89,7 @@ export default function LoginPage() {
   const handleGoogleAuth = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push("/dashboard");
+      router.replace(nextPath());
     } catch (error: unknown) {
       const code = getAuthErrorCode(error);
       if (code === "auth/popup-closed-by-user") {
@@ -107,29 +113,24 @@ export default function LoginPage() {
             pulse on slightly offset timings to create a slow, organic
             color drift behind the tagline. */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full blur-[140px] bg-purple-600/30 animate-pulse [animation-duration:8s]" />
-          <div className="absolute -bottom-40 -left-20 w-[520px] h-[520px] rounded-full blur-[140px] bg-indigo-600/30 animate-pulse [animation-duration:11s]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full blur-[120px] bg-fuchsia-500/15 animate-pulse [animation-duration:14s]" />
+          <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full blur-[140px] bg-uqu-accent/30 animate-pulse [animation-duration:8s]" />
+          <div className="absolute -bottom-40 -left-20 w-[520px] h-[520px] rounded-full blur-[140px] bg-uqu-cyan/20 animate-pulse [animation-duration:11s]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full blur-[120px] bg-uqu-cyan/15 animate-pulse [animation-duration:14s]" />
           {/* Vignette so the form column edge fades cleanly */}
           <div className="absolute inset-0 hidden dark:block bg-[radial-gradient(ellipse_at_center,_transparent_30%,_rgba(9,9,11,0.85)_100%)]" />
         </div>
 
         <div className="relative z-10 max-w-md space-y-8 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-600 to-indigo-600 shadow-2xl shadow-purple-600/40">
-            <Sparkles className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-uqu-accent to-uqu-cyan shadow-2xl shadow-uqu-accent/40">
+            <GraduationCap className="w-10 h-10 text-white" strokeWidth={2.2} />
           </div>
           <div className="space-y-4">
-            <h2 className="text-5xl font-black tracking-tight leading-tight bg-gradient-to-br from-foreground via-foreground to-purple-600 dark:from-white dark:via-white dark:to-purple-200 bg-clip-text text-transparent">
+            <h2 className="text-5xl font-black tracking-tight leading-tight bg-gradient-to-br from-foreground via-foreground to-uqu-accent dark:from-white dark:via-white dark:to-uqu-cyan bg-clip-text text-transparent">
               فطن
             </h2>
             <p className="text-base text-muted-foreground dark:text-white/60 leading-relaxed">
-              فطن — مساعدك الأكاديمي المتطور مدعوماً بالذكاء الاصطناعي. يخطّط، يذاكر، ويتابع تقدّمك في جامعة أم القرى.
+              مساعدك الأكاديمي في جامعة أم القرى: يجيب من اللوائح الرسمية، ويتابع معدلك، وينظّم مذاكرتك.
             </p>
-          </div>
-          <div className="flex items-center justify-center gap-2 pt-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground dark:text-white/40 font-semibold">UQU · Smart</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse [animation-delay:400ms]" />
           </div>
         </div>
       </aside>
@@ -140,18 +141,18 @@ export default function LoginPage() {
       <main className="relative flex items-center justify-center p-6 sm:p-10 bg-background dark:bg-zinc-950">
         {/* Mobile-only aurora — desktop gets the full branding column. */}
         <div className="absolute inset-0 pointer-events-none lg:hidden">
-          <div className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full blur-[120px] bg-purple-600/20 animate-pulse [animation-duration:9s]" />
-          <div className="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full blur-[120px] bg-indigo-600/20 animate-pulse [animation-duration:12s]" />
+          <div className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full blur-[120px] bg-uqu-accent/20 animate-pulse [animation-duration:9s]" />
+          <div className="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full blur-[120px] bg-uqu-cyan/15 animate-pulse [animation-duration:12s]" />
         </div>
 
         <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-700">
           {/* Mobile-only brand header (desktop already has the branding column). */}
           <div className="text-center mb-8 space-y-3 lg:hidden">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center shadow-2xl shadow-purple-600/40">
-              <Sparkles className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-uqu-accent to-uqu-cyan rounded-2xl mx-auto flex items-center justify-center shadow-2xl shadow-uqu-accent/40">
+              <GraduationCap className="w-8 h-8 text-white" strokeWidth={2.2} />
             </div>
             <h1 className="text-3xl font-black tracking-tight text-foreground dark:text-white">فطن</h1>
-            <p className="text-muted-foreground dark:text-white/50 text-sm">فطن — مساعدك الأكاديمي المتطور</p>
+            <p className="text-muted-foreground dark:text-white/50 text-sm">مساعدك الأكاديمي في جامعة أم القرى</p>
           </div>
 
           {/* Frosted-glass auth card */}
@@ -172,7 +173,7 @@ export default function LoginPage() {
                 className={cn(
                   "flex-1 py-2 text-xs font-bold rounded-lg transition-all",
                   isLogin
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/30"
+                    ? "bg-gradient-to-r from-uqu-accent to-uqu-cyan text-white shadow-lg shadow-uqu-accent/30"
                     : "text-muted-foreground hover:text-foreground dark:text-white/50 dark:hover:text-white"
                 )}
               >
@@ -183,7 +184,7 @@ export default function LoginPage() {
                 className={cn(
                   "flex-1 py-2 text-xs font-bold rounded-lg transition-all",
                   !isLogin
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/30"
+                    ? "bg-gradient-to-r from-uqu-accent to-uqu-cyan text-white shadow-lg shadow-uqu-accent/30"
                     : "text-muted-foreground hover:text-foreground dark:text-white/50 dark:hover:text-white"
                 )}
               >
@@ -199,7 +200,7 @@ export default function LoginPage() {
                   placeholder="البريد الإلكتروني"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
+                  className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
                   required
                 />
               </div>
@@ -211,7 +212,7 @@ export default function LoginPage() {
                   placeholder="كلمة المرور"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
+                  className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
                   required
                 />
               </div>
@@ -253,7 +254,7 @@ export default function LoginPage() {
                     placeholder="تأكيد كلمة المرور"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
+                    className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
                     required
                   />
                 </div>
@@ -262,7 +263,7 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 hover:scale-[1.02] text-white font-bold text-sm shadow-xl shadow-purple-600/30 transition-all disabled:opacity-50 disabled:hover:scale-100"
+                className="w-full h-12 rounded-xl bg-gradient-to-r from-uqu-accent to-uqu-cyan hover:opacity-90 hover:scale-[1.02] text-white font-bold text-sm shadow-xl shadow-uqu-accent/30 transition-all disabled:opacity-50 disabled:hover:scale-100"
               >
                 {loading ? (
                   "جاري المعالجة..."

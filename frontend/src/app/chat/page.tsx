@@ -53,7 +53,22 @@ const NAV_PATH_META: Record<string, { label: string; icon: string }> = {
   "/profile":    { label: "فتح الملف الشخصي",              icon: "👤" },
   "/transcript": { label: "فتح السجل الأكاديمي",        icon: "🎓" },
   "/schedule":   { label: "فتح الجدول الأسبوعي",        icon: "🗓️" },
+  "/community":  { label: "فتح تقييمات المواد",          icon: "💬" },
 };
+
+/** Older agent replies (and saved threads) may still point at retired paths. */
+const LEGACY_PATHS: Record<string, string> = { "/map": "/locations" };
+
+/** Starter questions shown on an empty conversation — one per thing the
+ *  assistant is genuinely good at, phrased the way students ask. */
+const STARTER_PROMPTS = [
+  "كم نسبة الغياب اللي تحرمني من الاختبار؟",
+  "حلّل سجلي الأكاديمي ووش أركّز عليه",
+  "متى الاختبارات النهائية هذا الفصل؟",
+  "سوّ لي خطة مذاكرة لهذا الأسبوع",
+  "كم أحتاج في موادي عشان أوصل معدل 4؟",
+  "هل مادة CS4510 صعبة؟ وش يقول الطلاب؟",
+];
 
 /** Translate an in-app path into an Arabic CTA label + glyph. Falls
  *  back to the raw path so unknown destinations still render a usable
@@ -72,9 +87,11 @@ function labelForPath(path: string): { label: string; icon: string } {
 function extractSuggestedActions(response: ChatResponse): SuggestedNavigation[] {
   const out: SuggestedNavigation[] = [];
   const seen = new Set<string>();
-  const push = (rawPath: unknown) => {
-    if (typeof rawPath !== "string") return;
-    if (!rawPath.startsWith("/") || rawPath.startsWith("//")) return;
+  const push = (candidate: unknown) => {
+    if (typeof candidate !== "string") return;
+    if (!candidate.startsWith("/") || candidate.startsWith("//")) return;
+    const [bare, rest = ""] = candidate.split(/(?=[?#])/);
+    const rawPath: string = (LEGACY_PATHS[bare] ?? bare) + rest;
     if (seen.has(rawPath)) return;
     seen.add(rawPath);
     const meta = labelForPath(rawPath);
@@ -190,16 +207,6 @@ function ChatPageContent() {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (initialQuery && !hasInitialized) {
-      setHasInitialized(true);
-      setTimeout(() => {
-        handleSend(initialQuery);
-      }, 0);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialQuery, hasInitialized]);
-
   const handleSend = async (overrideInput?: string) => {
     const textToSend = typeof overrideInput === "string" ? overrideInput : input;
     if (!textToSend.trim() || isLoading) return;
@@ -270,9 +277,19 @@ function ChatPageContent() {
       setIsLoading(false);
     }
   };
+  // Auto-send a query passed in the URL (?q=...) once, after handleSend exists.
+  useEffect(() => {
+    if (initialQuery && !hasInitialized) {
+      setHasInitialized(true);
+      setTimeout(() => {
+        handleSend(initialQuery);
+      }, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery, hasInitialized]);
 
   return (
-    <div className="h-screen flex flex-col bg-background text-foreground font-sans overflow-hidden" dir="rtl">
+    <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-background text-foreground font-sans overflow-hidden" dir="rtl">
       <Navbar />
 
       <main className="flex-1 flex overflow-hidden w-full p-4 pt-20 gap-4">
@@ -347,13 +364,13 @@ function ChatPageContent() {
                           <AlertTriangle className="w-4 h-4 text-amber-500" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0066cc] to-cyan-500 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(0,102,204,0.3)] mt-0.5">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-uqu-accent to-cyan-500 flex items-center justify-center shrink-0 shadow-[0_0_12px_hsla(245,78%,62%,0.3)] mt-0.5">
                           <Sparkles className="w-4 h-4 text-foreground" />
                         </div>
                       )
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-[#0066cc]/20 border border-[#0066cc]/40 flex items-center justify-center shrink-0 mt-0.5">
-                        <UserIcon className="w-4 h-4 text-[#0066cc]" />
+                      <div className="w-8 h-8 rounded-full bg-uqu-accent/20 border border-uqu-accent/40 flex items-center justify-center shrink-0 mt-0.5">
+                        <UserIcon className="w-4 h-4 text-uqu-accent" />
                       </div>
                     )}
 
@@ -364,7 +381,7 @@ function ChatPageContent() {
                     )}>
                       <div className={cn(
                         "px-4 py-3 text-[15px] leading-relaxed rounded-2xl",
-                        !isBot && "bg-[#0066cc] text-foreground rounded-tr-sm shadow-lg shadow-[#0066cc]/15 text-left",
+                        !isBot && "bg-uqu-accent text-white rounded-tr-sm shadow-lg shadow-uqu-accent/15 text-left",
                         isBot && !isError && "bg-card border border-foreground/10 text-foreground rounded-tl-sm text-right",
                         // Warning style — orange tint + dashed border so
                         // it visually reads as "system notice" rather
@@ -410,7 +427,7 @@ function ChatPageContent() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 items-start w-full flex-row"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0066cc] to-cyan-500 flex items-center justify-center shrink-0 animate-pulse mt-0.5">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-uqu-accent to-cyan-500 flex items-center justify-center shrink-0 animate-pulse mt-0.5">
                     <Sparkles className="w-4 h-4 text-foreground" />
                   </div>
                   {/* Loading pill — three-dot typing indicator only, no
@@ -419,6 +436,24 @@ function ChatPageContent() {
                 </motion.div>
               )}
             </AnimatePresence>
+          {/* Starter prompts — only on a fresh conversation */}
+            {!isLoading && !messages.some((m) => m.role === "user") && (
+              <div className="mt-auto pt-6">
+                <p className="text-xs font-bold text-muted-foreground mb-2 text-center">جرّب تسأل:</p>
+                <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+                  {STARTER_PROMPTS.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => handleSend(q)}
+                      className="px-3.5 py-2 rounded-xl border border-border bg-card hover:border-uqu-accent/50 hover:text-uqu-accent text-[13px] font-medium transition-colors text-right"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* Floating Input Pill */}

@@ -7,7 +7,9 @@ export const STORAGE_KEYS = {
   PLAN: 'uqu_plan_v5',
   GPA: 'uqu_gpa_v1',
   TASKS: 'uqu_tasks_v1',
-  THEME: 'uqu_theme',
+  // Must match the key used by theme-toggle.tsx and the inline script in
+  // app/layout.tsx — logout preserves this key so the theme survives.
+  THEME: 'uqu-theme',
   AUTH: 'uqu_auth_v1'
 };
 

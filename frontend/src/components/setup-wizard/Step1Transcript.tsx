@@ -430,8 +430,8 @@ function SummaryView({
           onClick={onNext}
           disabled={currentCourses.length === 0}
           className={cn(
-            "rounded-2xl bg-[#0066cc] hover:bg-[#005bb5] gap-2 px-6 py-6 text-base font-bold mr-auto",
-            "shadow-[0_0_24px_rgba(0,102,204,0.4)] disabled:opacity-50 disabled:shadow-none",
+            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold mr-auto",
+            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)] disabled:opacity-50 disabled:shadow-none",
           )}
         >
           التالي: الجدول الدراسي
@@ -511,8 +511,8 @@ function ReviewView({
         <Button
           onClick={handleConfirm}
           className={cn(
-            "rounded-2xl bg-[#0066cc] hover:bg-[#005bb5] gap-2 px-6 py-6 text-base font-bold",
-            "shadow-[0_0_24px_rgba(0,102,204,0.4)]",
+            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold",
+            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
           )}
         >
           تأكيد والمتابعة لإعداد الجدول
@@ -656,8 +656,8 @@ function InsightCard({
 function CourseChip({ course }: { course: EnrichedCourse }) {
   return (
     <div className="flex items-center gap-3 p-3 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-[#0066cc]/10 border border-[#0066cc]/20 flex items-center justify-center shrink-0">
-        <BookOpen className="w-4 h-4 text-[#0066cc]" />
+      <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center shrink-0">
+        <BookOpen className="w-4 h-4 text-uqu-accent" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[13px] font-bold truncate">
@@ -681,8 +681,8 @@ function EditableCourseChip({
 }) {
   return (
     <div className="flex items-center gap-3 p-3 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-[#0066cc]/10 border border-[#0066cc]/20 flex items-center justify-center shrink-0">
-        <BookOpen className="w-4 h-4 text-[#0066cc]" />
+      <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center shrink-0">
+        <BookOpen className="w-4 h-4 text-uqu-accent" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[13px] font-bold truncate">

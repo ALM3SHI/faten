@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// ════════════════════════════════════════════════════════════════
+//  Faten — Firestore Security Rules
+// ════════════════════════════════════════════════════════════════
+//  • The backend uses the Firebase Admin SDK, which bypasses these
+//    rules — so everything the server needs keeps working.
+//  • The browser may only touch its OWN documents under users/{uid}.
+//  • Everything else (ai_usage, future shared collections, …) is
+//    closed to clients by default.
+//
+//  Deploy:  firebase deploy --only firestore:rules
+//  or paste this file into Firebase Console → Firestore → Rules.
+// ════════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Fields only the server may set (subscription tier, admin flags).
+    function serverOnlyFields() {
+      return ['role', 'isAdmin', 'plan_tier', 'subscription', 'quota'];
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+        && request.resource.data.get('uid', uid) == uid
+        && !request.resource.data.keys().hasAny(serverOnlyFields());
+
+      allow update: if isOwner(uid)
+        && request.resource.data.get('uid', uid) == uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(serverOnlyFields());
+
+      // academic_record, plan, chats, chat_history, notifications, …
+      match /{subpath=**} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid);
+      }
+    }
+
+    // Default deny — anything not matched above is unreachable from clients.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

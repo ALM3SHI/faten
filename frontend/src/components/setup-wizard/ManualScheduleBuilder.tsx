@@ -287,7 +287,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-[13px] font-bold"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-200 text-[13px] font-bold"
             role="status"
           >
             <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -462,12 +462,12 @@ function CourseChipVisual({
         "w-full flex items-center gap-2 p-2.5 rounded-xl text-right transition-all",
         "bg-foreground/5 border border-foreground/10",
         dragging
-          ? "border-[#0066cc]/60 bg-[#0066cc]/10 shadow-[0_8px_30px_rgba(0,102,204,0.45)] scale-105 cursor-grabbing"
-          : "hover:bg-foreground/5 hover:border-[#0066cc]/30",
+          ? "border-uqu-accent/60 bg-uqu-accent/10 shadow-[0_8px_30px_hsla(245,78%,62%,0.45)] scale-105 cursor-grabbing"
+          : "hover:bg-foreground/5 hover:border-uqu-accent/30",
       )}
     >
-      <div className="w-8 h-8 rounded-lg bg-[#0066cc]/15 border border-[#0066cc]/25 flex items-center justify-center shrink-0">
-        <BookOpen className="w-3.5 h-3.5 text-[#0066cc]" />
+      <div className="w-8 h-8 rounded-lg bg-uqu-accent/15 border border-uqu-accent/25 flex items-center justify-center shrink-0">
+        <BookOpen className="w-3.5 h-3.5 text-uqu-accent" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[12px] font-bold truncate">{course.nameAr || course.code}</div>
@@ -523,7 +523,7 @@ function DroppableCell({
         // even when it's empty.
         "border border-foreground/10 p-1 align-top min-h-[60px] h-[60px] min-w-[110px] transition-colors",
         isOver
-          ? "bg-[#0066cc]/20 border-[#0066cc]/60 shadow-[inset_0_0_0_2px_rgba(0,102,204,0.4)]"
+          ? "bg-uqu-accent/20 border-uqu-accent/60 shadow-[inset_0_0_0_2px_hsla(245,78%,62%,0.4)]"
           : "bg-transparent",
       )}
     >
@@ -556,7 +556,7 @@ function SpanningSlotCell({
         "border align-top p-1 min-w-[110px] transition-colors",
         isLab
           ? "border-amber-500/30 bg-amber-500/[0.06]"
-          : "border-[#0066cc]/30 bg-[#0066cc]/[0.06]",
+          : "border-uqu-accent/30 bg-uqu-accent/[0.06]",
       )}
       style={{ height: duration * CELL_HEIGHT_PX }}
     >
@@ -565,7 +565,7 @@ function SpanningSlotCell({
           "group h-full w-full rounded-lg border p-2 flex flex-col gap-1 relative overflow-hidden",
           isLab
             ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
-            : "bg-[#0066cc]/15 border-[#0066cc]/40 text-foreground",
+            : "bg-uqu-accent/15 border-uqu-accent/40 text-foreground",
         )}
       >
         <div className="flex items-center justify-between gap-1 shrink-0">
@@ -696,7 +696,7 @@ function PendingPlacementDialog({
                     className={cn(
                       "rounded-xl border py-2 text-sm font-bold transition-all relative",
                       active
-                        ? "bg-[#0066cc] border-[#0066cc] text-foreground"
+                        ? "bg-uqu-accent border-uqu-accent text-white"
                         : disabled
                           ? "bg-foreground/5 border-foreground/10 text-muted cursor-not-allowed"
                           : "bg-foreground/5 border-foreground/10 text-muted hover:border-foreground/10",
@@ -718,7 +718,7 @@ function PendingPlacementDialog({
                 onChange={(e) => setRoom(e.target.value)}
                 placeholder="1.042"
                 dir="ltr"
-                className="w-full bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50 dark:bg-black/40 dark:border-foreground/10"
+                className="w-full bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/50 dark:bg-black/40 dark:border-foreground/10"
               />
             </div>
             <div>
@@ -730,7 +730,7 @@ function PendingPlacementDialog({
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="25"
                   dir="ltr"
-                  className="w-full bg-input border border-border rounded-xl pr-8 pl-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-[#0066cc]/50 dark:bg-black/40 dark:border-foreground/10"
+                  className="w-full bg-input border border-border rounded-xl pr-8 pl-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/50 dark:bg-black/40 dark:border-foreground/10"
                 />
               </div>
             </div>
@@ -742,7 +742,7 @@ function PendingPlacementDialog({
           </Button>
           <Button
             onClick={() => onCommit(type, room, building, extraHours)}
-            className="rounded-xl bg-[#0066cc] hover:bg-[#005bb5]"
+            className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90"
           >
             إضافة المحاضرة
           </Button>
@@ -772,7 +772,7 @@ function TypeChoice({
         "flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-all font-bold text-sm",
         active
           ? accent === "blue"
-            ? "bg-[#0066cc]/15 border-[#0066cc]/50 text-[#0066cc]"
+            ? "bg-uqu-accent/15 border-uqu-accent/50 text-uqu-accent"
             : "bg-amber-500/15 border-amber-500/50 text-amber-800 dark:text-amber-300"
           : "bg-foreground/5 border-foreground/10 text-muted hover:border-foreground/10",
       )}

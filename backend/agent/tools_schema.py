@@ -16,11 +16,10 @@ def get_dynamic_calendar_tool():
     
   
     
-    term1_start = datetime.datetime(2025, 8, 24).date()
-    term1_end = datetime.datetime(2026, 1, 8).date()
-    term2_start = datetime.datetime(2026, 1, 18).date()
-    term2_end = datetime.datetime(2026, 6, 25).date()
-    next_year_start = datetime.datetime(2026, 8, 23).date()
+    from data.uqu_calendar import TERM1_START, TERM1_END, TERM2_START, TERM2_END, NEXT_YEAR_START
+    term1_start, term1_end, term2_start, term2_end = TERM1_START, TERM1_END, TERM2_START, TERM2_END
+    # Until the next calendar is published, treat "after term 2" as the summer break.
+    next_year_start = NEXT_YEAR_START or datetime.date.max
     
     today_date = today.date()
     
@@ -584,6 +583,51 @@ TOOLS_SCHEMA: list[dict] = [
         },
     },
 
-    get_dynamic_calendar_tool()
+    get_dynamic_calendar_tool(),
+
+    # ── Community course reviews ──
+    {
+        "type": "function",
+        "function": {
+            "name": "get_course_reviews",
+            "description": (
+                "اجلب خلاصة تقييمات الطلاب لمادة من قسم المجتمع في فطن: متوسط الصعوبة والضغط والفائدة "
+                "من 5، ونسبة من ينصحون بها، وأحدث نصائح الطلاب. استخدمها عندما يسأل الطالب: هل المادة صعبة؟ "
+                "وش رأي الطلاب فيها؟ هل أسجلها؟ نصائح للمادة."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "رمز المادة (مثل CS4510) أو اسمها بالعربي"}
+                },
+                "required": ["query"],
+            },
+        },
+    },
+
+    # ── Regulations knowledge base (RAG) ──
+    {
+        "type": "function",
+        "function": {
+            "name": "search_regulations",
+            "description": (
+                "ابحث في اللوائح الرسمية لجامعة أم القرى (لائحة الدراسة والاختبارات وقواعدها التنفيذية، "
+                "ولوائح شؤون الطلاب) وأرجع نصوص المواد المطابقة مع رقم المادة واسم اللائحة. "
+                "استخدمها لأي سؤال عن: الغياب والحرمان، الانسحاب والاعتذار والتأجيل، الإنذارات والفصل وطي القيد، "
+                "إعادة القيد، التحويل والمعادلة، الاختبار البديل والتظلم، التقديرات ومرتبة الشرف، شروط التخرج، العبء الدراسي. "
+                "⚠️ لا تجب عن أي حكم نظامي من معرفتك العامة — هذه الأداة هي المصدر الوحيد."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "سؤال الطالب أو كلماته المفتاحية بالعربي، مثل: نسبة الغياب المسببة للحرمان",
+                    }
+                },
+                "required": ["query"],
+            },
+        },
+    },
 
 ]

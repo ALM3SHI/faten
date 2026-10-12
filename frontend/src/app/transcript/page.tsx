@@ -3,7 +3,7 @@
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Upload, FileText, CheckCircle2, AlertCircle, BarChart3, ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { Upload, FileText, CheckCircle2, AlertCircle, BarChart3, ArrowLeft, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -140,7 +140,7 @@ export default function TranscriptParserPage() {
       <main className="container mx-auto pt-32 px-4 max-w-5xl">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-xl glass border-foreground/10">
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5" />
           </Button>
           <div>
             <h1 className="text-3xl font-black flex items-center gap-3">
@@ -238,7 +238,7 @@ export default function TranscriptParserPage() {
                           className={
                             "text-sm leading-relaxed " +
                             (parsedData.analysisQuotaHit
-                              ? "text-amber-300"
+                              ? "text-amber-700 dark:text-amber-300"
                               : "text-rose-400")
                           }
                         >
@@ -251,7 +251,7 @@ export default function TranscriptParserPage() {
                           <Button
                             onClick={() => router.push("/gpa")}
                             variant="outline"
-                            className="rounded-xl glass border-amber-500/30 text-amber-200 hover:bg-amber-500/10 gap-2"
+                            className="rounded-xl glass border-amber-500/30 text-amber-700 dark:text-amber-200 hover:bg-amber-500/10 gap-2"
                           >
                             <ArrowLeft className="w-4 h-4" />
                             متابعة بالإدخال اليدوي

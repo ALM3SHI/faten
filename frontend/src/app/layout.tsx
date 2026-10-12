@@ -1,20 +1,38 @@
-import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+// Cairo variable font, self-hosted (SIL OFL — see fonts/OFL-Cairo.txt).
+// Bundling it removes the build-time fetch from Google Fonts, so builds work
+// offline and the site never depends on a third-party font CDN.
+const cairo = localFont({
+  src: [
+    { path: "./fonts/cairo-arabic-wght-normal.woff2", weight: "200 1000", style: "normal" },
+    { path: "./fonts/cairo-latin-wght-normal.woff2", weight: "200 1000", style: "normal" },
+  ],
   variable: "--font-cairo",
+  display: "swap",
 });
 
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0f" },
+  ],
+};
+
 export const metadata: Metadata = {
-  title: "فطن — UQU",
-  description: "فطن — مساعدك الأكاديمي المتطور مدعوماً بالذكاء الاصطناعي لجامعة أم القرى. منصة متكاملة للمحادثة، حساب المعدل، وخطط المذاكرة",
+  title: "فطن — المساعد الأكاديمي لجامعة أم القرى",
+  applicationName: "فطن",
+  appleWebApp: { capable: true, title: "فطن", statusBarStyle: "black-translucent" },
+  description: "اسأل عن لوائح أم القرى وتصلك الإجابة بالمادة الرسمية، وتابع معدلك، ونظّم مذاكرتك وجدولك في مكان واحد.",
 };
 
 import { AuthProvider } from "@/components/auth-provider";
 import { ToastProvider } from "@/components/toast-provider";
+import { RouteGuard } from "@/components/route-guard";
+import { BottomNav } from "@/components/bottom-nav";
 
 export default function RootLayout({
   children,
@@ -45,7 +63,10 @@ export default function RootLayout({
       </head>
       <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            <RouteGuard>{children}</RouteGuard>
+            <BottomNav />
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

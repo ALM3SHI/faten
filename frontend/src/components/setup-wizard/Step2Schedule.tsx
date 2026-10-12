@@ -232,8 +232,8 @@ function SummaryView({
         <Button
           onClick={onNext}
           className={cn(
-            "rounded-2xl bg-[#0066cc] hover:bg-[#005bb5] gap-2 px-6 py-6 text-base font-bold mr-auto",
-            "shadow-[0_0_24px_rgba(0,102,204,0.4)]",
+            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold mr-auto",
+            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
           )}
         >
           التالي: حفظ والمتابعة
@@ -281,7 +281,7 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
         "rounded-xl p-3 border flex items-start gap-3",
         isLab
           ? "bg-amber-500/[0.06] border-amber-500/20"
-          : "bg-[#0066cc]/[0.06] border-[#0066cc]/20",
+          : "bg-uqu-accent/[0.06] border-uqu-accent/20",
       )}
     >
       <div
@@ -289,7 +289,7 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
           "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
           isLab
             ? "bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30"
-            : "bg-[#0066cc]/15 text-[#0066cc] border border-[#0066cc]/30",
+            : "bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30",
         )}
       >
         {isLab ? <FlaskConical className="w-4 h-4" /> : <GraduationCap className="w-4 h-4" />}
@@ -319,7 +319,7 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
               "px-1.5 py-0.5 rounded text-[9px] font-bold",
               isLab
                 ? "bg-amber-500/15 text-amber-800 dark:text-amber-300"
-                : "bg-[#0066cc]/15 text-[#0066cc]",
+                : "bg-uqu-accent/15 text-uqu-accent",
             )}
           >
             {isLab ? "عملي" : "نظري"}
@@ -402,15 +402,15 @@ function SelectionView({
           onClick={onVision}
           className={cn(
             "md:col-span-4 text-right p-8 rounded-[32px] transition-all group relative overflow-hidden",
-            "bg-gradient-to-br from-[#0066cc]/15 via-[#0066cc]/8 to-cyan-500/10",
-            "border border-[#0066cc]/30 hover:border-[#0066cc]/60",
-            "shadow-[0_0_40px_rgba(0,102,204,0.15)] hover:shadow-[0_0_60px_rgba(0,102,204,0.3)]",
+            "bg-gradient-to-br from-uqu-accent/15 via-uqu-accent/8 to-cyan-500/10",
+            "border border-uqu-accent/30 hover:border-uqu-accent/60",
+            "shadow-[0_0_40px_hsla(245,78%,62%,0.15)] hover:shadow-[0_0_60px_hsla(245,78%,62%,0.3)]",
             "active:scale-[0.99]",
           )}
         >
-          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-[#0066cc]/20 blur-3xl group-hover:bg-[#0066cc]/30 transition-colors" />
+          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-uqu-accent/20 blur-3xl group-hover:bg-uqu-accent/30 transition-colors" />
           <div className="relative flex items-start gap-5">
-            <div className="w-16 h-16 rounded-2xl bg-[#0066cc] flex items-center justify-center shrink-0 shadow-lg shadow-[#0066cc]/40">
+            <div className="w-16 h-16 rounded-2xl bg-uqu-accent flex items-center justify-center shrink-0 shadow-lg shadow-uqu-accent/40">
               <Eye className="w-8 h-8 text-foreground" />
             </div>
             <div className="flex-1">
@@ -422,7 +422,7 @@ function SelectionView({
                 ارفع PDF الجدول وسنستخرج كل المحاضرات بصرياً عبر نموذج ذكاء بصري متعدد الوسائط —
                 أيام وأوقات وقاعات بدقة عالية.
               </p>
-              <div className="inline-flex items-center gap-2 text-[#0066cc] font-bold text-sm">
+              <div className="inline-flex items-center gap-2 text-uqu-accent font-bold text-sm">
                 <span>الخيار الموصى به</span>
                 <ArrowLeft className="w-4 h-4" />
               </div>

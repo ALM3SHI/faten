@@ -3,7 +3,7 @@
 UQU Academic Assistant — Authentication Dependencies
 ================================================================
 Firebase ID Token verification as a FastAPI dependency.
-Handles both authenticated users and initial signup scenarios.
+Every endpoint requires a valid token — there is no anonymous fallback.
 
 Token verification logic lives in auth/bearer.py (_decode_firebase_token).
 This module provides the Header-based dependency variants.
@@ -28,18 +28,4 @@ async def get_current_user(authorization: str = Header(default="")) -> str:
             detail="مطلوب تسجيل الدخول — Authorization header مفقود",
         )
     return _decode_firebase_token(authorization[7:])
-
-
-async def get_current_user_optional(authorization: str = Header(default="")) -> str:
-    """Graceful auth — returns user ID or a development fallback.
-
-    For endpoints that should work during development without Firebase Auth.
-    In production, set REQUIRE_AUTH=true to disable the fallback.
-    """
-    if not authorization or not authorization.startswith("Bearer "):
-        logger.debug("No auth token — using dev fallback user")
-        return "dev_user_anonymous"
-
-    # If a token IS provided, STRICTLY extract and verify it. NO silent fallback!
-    return await get_current_user(authorization)
 

@@ -27,10 +27,26 @@ def init_firestore():
 
     settings = get_settings()
 
-    # Build absolute path: backend/ + serviceAccountKey.json
+    # 1) Credentials pasted into an environment variable (cloud hosting).
+    if settings.FIREBASE_CREDENTIALS_JSON.strip():
+        import json
+        cred = credentials.Certificate(json.loads(settings.FIREBASE_CREDENTIALS_JSON))
+        _app = firebase_admin.initialize_app(cred)
+        _db = firestore.client()
+        return _db
+
+    # 2) Credentials file on disk: backend/ + serviceAccountKey.json
     cred_path = settings.FIREBASE_CREDENTIALS_PATH
     if not os.path.isabs(cred_path):
         cred_path = os.path.join(_BASE_DIR, cred_path)
+
+    if not os.path.isfile(cred_path):
+        raise RuntimeError(
+            f"Firebase service account file not found: {cred_path}\n"
+            "Download it from Firebase Console > Project Settings > Service Accounts > "
+            "Generate New Private Key, and save it as backend/serviceAccountKey.json "
+            "(or set FIREBASE_CREDENTIALS_PATH / FIREBASE_CREDENTIALS_JSON in backend/.env)."
+        )
 
     cred = credentials.Certificate(cred_path)
     _app = firebase_admin.initialize_app(cred)

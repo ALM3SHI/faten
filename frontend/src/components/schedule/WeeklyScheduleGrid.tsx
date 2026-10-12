@@ -247,7 +247,7 @@ function LectureSpanningCell({
         "border align-top p-1.5",
         isLab
           ? "border-amber-500/30 bg-amber-500/[0.06]"
-          : "border-[#0066cc]/30 bg-[#0066cc]/[0.06]",
+          : "border-uqu-accent/30 bg-uqu-accent/[0.06]",
       )}
       style={{ height: duration * rowHeightPx }}
     >
@@ -256,7 +256,7 @@ function LectureSpanningCell({
           "h-full w-full rounded-lg border p-3 flex flex-col gap-1.5 relative overflow-hidden",
           isLab
             ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
-            : "bg-[#0066cc]/15 border-[#0066cc]/40 text-foreground",
+            : "bg-uqu-accent/15 border-uqu-accent/40 text-foreground",
         )}
       >
         <div className="text-sm font-bold leading-snug line-clamp-3">

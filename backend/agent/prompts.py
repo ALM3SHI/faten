@@ -89,7 +89,7 @@ Available routes:
 * /plan: الخطة
 * /chat: الدردشة
 * /pomodoro: البومودورو
-* /map: القاعات
+* /locations: القاعات والخريطة
 * /profile: الملف الشخصي
 
 If the target is clear, you must ONLY ask a short confirmation question in Arabic.
@@ -221,10 +221,24 @@ def build_system_prompt(
 - استخدم أداة get_course_info فقط للحصول على معلومات المواد.
 - لا تخمن تواريخ الاختبارات أو توزيع الدرجات أو تفاصيل المشروع من معرفتك العامة.
 - إذا لم تُرجع الأداة أي بيانات (found=false)، أبلغ الطالب أن المادة غير متوفرة في الكتالوج.
+- لآراء الطلاب (صعوبة المادة، هل أسجلها، نصائح) استخدم get_course_reviews، واذكر عدد التقييمات، ووضّح أنها آراء طلاب وليست معلومات رسمية.
 - ⛔ لا تستخدم الجداول (Markdown Tables) لعرض تفاصيل المادة أو توزيع الدرجات أبداً.
 - اعرض الإجابة كقوائم نقطية (Bullet Points) منسقة وواضحة.
 - ⛔ ممنوع عرض وسوم HTML (مثل <br>) في ردك.
 - حوّل أي <br> أو مسافات HTML متبقية إلى أسطر جديدة أو قائمة نقطية.
+"""
+
+    REGULATIONS_PROMPT = """═══ ⚖️ اللوائح الجامعية (search_regulations) — مصدر الحقيقة الوحيد للأحكام النظامية ═══
+- استدعِ search_regulations أولاً لأي سؤال نظامي، ولا تجب من معرفتك العامة أبداً.
+- أجب فقط بما تنص عليه المواد المُرجَعة. إذا لم تنص صراحة على الحالة فقل ذلك بوضوح.
+- اذكر المرجع في آخر الإجابة بهذا الشكل: 📄 المرجع: المادة (رقمها) — اسم اللائحة.
+- إذا كانت المادة تحيل إلى "القواعد التنفيذية" أو قرار مجلس الجامعة ولم تجد النص، فاذكر ذلك ولا تخمّن الرقم.
+- طبّق الحكم على وضع الطالب إن كانت بياناته متاحة (مثلاً معدله وعدد إنذاراته)، مع التنبيه أن القرار النهائي لعمادة القبول والتسجيل.
+- إذا أرجعت الأداة found=false فاعتذر ووجّه الطالب لعمادة القبول والتسجيل أو المرشد الأكاديمي.
+- استخدم get_calendar_info عندما يسأل عن موعد (آخر يوم للانسحاب مثلاً).
+- النتائج قد تأتي من لوائح مختلفة (البكالوريوس، الدراسات العليا، الزمالات الطبية، لوائح منسوبي الجامعة). اعتمد اللائحة المناسبة لمرحلة الطالب — البكالوريوس افتراضياً ما لم يذكر أنه طالب دراسات عليا — ولا تخلط أحكام لائحتين، وإن كان السؤال يخص فئة أخرى فاذكر اسم اللائحة صراحة.
+- إذا احتوت النتيجة على حقل note (نص مستخرج آلياً) فنبّه الطالب للتحقق من الأرقام من المصدر الرسمي.
+- قوائم نقطية مختصرة، بدون جداول، وبدون وسوم HTML.
 """
 
     # ══════════════════════════════════════════════════
@@ -250,6 +264,8 @@ def build_system_prompt(
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT])
     elif intent == "COURSE_INFO":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, COURSE_INFO_PROMPT])
+    elif intent == "REGULATIONS":
+        sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, REGULATIONS_PROMPT])
     else:
         # Fallback to mostly everything for unknown intents (safe)
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT, FULL_ANALYSIS_PROTOCOL_PROMPT, ACTION_TOOL_PROMPT])

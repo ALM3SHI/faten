@@ -311,7 +311,7 @@ export default function PlanPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
             >
-              <Card className="p-4 border-rose-500/40 bg-rose-500/10 text-rose-300 rounded-2xl text-sm flex items-start gap-3">
+              <Card className="p-4 border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 rounded-2xl text-sm flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                 <div className="flex-1">{error}</div>
                 <button
@@ -510,10 +510,10 @@ function PrerequisiteCard({
   const palette =
     tone === "warn"
       ? {
-          border: "border-amber-500/30",
-          bg: "bg-amber-500/[0.05]",
-          icon: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-          btn: "bg-amber-500 hover:bg-amber-600 text-black",
+          border: "border-uqu-accent/30",
+          bg: "bg-uqu-accent/[0.05]",
+          icon: "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30",
+          btn: "bg-uqu-accent hover:bg-uqu-accent/90 text-white",
         }
       : {
           border: "border-uqu-cyan/30",

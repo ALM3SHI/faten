@@ -3,7 +3,7 @@
 UQU AGENT — Agentic Loop with Reasoning Support
 ================================================================
 Iterative tool-calling loop. The exact model is
-configured via OPENAI_MODEL in .env — defaults to gpt-4o.
+chosen by AI_PROVIDER in .env (see services/llm.py).
 
 Robust error handling:
   • Network / API errors are logged with full detail (status code,
@@ -142,7 +142,7 @@ def _is_tools_schema_error(err: Exception) -> bool:
     return any(kw in body for kw in ("tool", "function", "schema"))
 
 
-def get_openai_client() -> AsyncOpenAI:
+def get_openai_client():
     """Create an AsyncOpenAI client.
 
     Returns a fresh client each call. For the hot-path (chat), the caller
@@ -150,10 +150,8 @@ def get_openai_client() -> AsyncOpenAI:
     lifespan) to avoid binding to a dead event loop across Uvicorn reloads.
     This factory is kept for cold-path callers (e.g. transcript analysis).
     """
-    settings = get_settings()
-    return AsyncOpenAI(
-        api_key=settings.OPENAI_API_KEY,
-    )
+    from services.llm import make_llm_client
+    return make_llm_client()
 
 
 async def _call_model(client, model_name, messages, with_tools: bool, tools_override: list | None = None):
@@ -172,18 +170,18 @@ async def _call_model(client, model_name, messages, with_tools: bool, tools_over
         return await client.chat.completions.create(**kwargs)
     except APIStatusError as e:
         logger.error(
-            "[AGENT] NVIDIA returned HTTP %s — body=%s",
+            "[AGENT] OpenAI returned HTTP %s — body=%s",
             e.status_code, getattr(e, "response", None) and e.response.text[:500],
         )
         raise
     except APIConnectionError as e:
-        logger.error("[AGENT] NVIDIA connection error: %s", e)
+        logger.error("[AGENT] OpenAI connection error: %s", e)
         raise
     except APITimeoutError as e:
-        logger.error("[AGENT] NVIDIA request timed out: %s", e)
+        logger.error("[AGENT] OpenAI request timed out: %s", e)
         raise
     except APIError as e:
-        logger.error("[AGENT] NVIDIA API error: %s", e)
+        logger.error("[AGENT] OpenAI API error: %s", e)
         raise
 
 
@@ -233,7 +231,7 @@ async def run_agent_loop(
         client = get_openai_client()
     all_messages = list(messages)  # shallow copy
     actions_log: list[dict] = []
-    model_name = override_model or settings.OPENAI_MODEL
+    model_name = override_model or settings.llm_model
 
     # Extract the system prompt for the Gemini fallback (first message if role=system)
     system_prompt_for_fallback = ""
@@ -281,7 +279,7 @@ async def run_agent_loop(
                 completion = await _call_model(client, model_name, all_messages, with_tools=False, tools_override=tools_override)
             except Exception as second_err:
                 logger.error("[AGENT] Retry without tools also failed: %s", second_err)
-                # Both NVIDIA calls failed — try Gemini as last resort
+                # Both OpenAI calls failed — try Gemini as last resort
                 fallback = await _gemini_fallback(all_messages, system_prompt_for_fallback)
                 if fallback:
                     return {"content": fallback, "actions_log": [], "reasoning": None}
@@ -334,16 +332,11 @@ async def run_agent_loop(
             "content": message.content or "",
         }
         if message.tool_calls:
+            # model_dump keeps provider-specific extras (e.g. Gemini 3's
+            # extra_content.google.thought_signature), which must be sent
+            # back unchanged or the next tool-calling turn is rejected.
             assistant_message["tool_calls"] = [
-                {
-                    "id": tc.id,
-                    "type": "function",
-                    "function": {
-                        "name": tc.function.name,
-                        "arguments": tc.function.arguments,
-                    },
-                }
-                for tc in message.tool_calls
+                tc.model_dump(exclude_none=True) for tc in message.tool_calls
             ]
         all_messages.append(assistant_message)
 

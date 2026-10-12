@@ -14,12 +14,14 @@ from google.cloud.firestore_v1 import Increment
 from openai import AsyncOpenAI
 
 from schemas.chat import ChatRequest, ChatResponse
-from auth.dependencies import get_current_user_optional
+from auth.dependencies import get_current_user
 from db.firestore import get_db
 from agent.prompts import build_system_prompt
 from agent.loop import run_agent_loop
 from services.student import load_student_context
 from agent.intent import classify_intent
+from config import get_settings
+from services.quota import COST_CHAT, QUOTA_EXCEEDED_MESSAGE, QuotaExceeded, consume_ai_credits
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Chat"])
@@ -29,8 +31,20 @@ router = APIRouter(tags=["Chat"])
 async def chat(
     body: ChatRequest,
     http_request: Request,
-    user_id: str = Depends(get_current_user_optional),
+    user_id: str = Depends(get_current_user),
 ):
+    try:
+        consume_ai_credits(user_id, COST_CHAT)
+    except QuotaExceeded:
+        # Returned as a normal reply so the chat renders a warning bubble.
+        return ChatResponse(
+            success=True,
+            message=QUOTA_EXCEEDED_MESSAGE,
+            actions=[],
+            client_actions=[],
+            conversationId=body.conversationId or f"conv_{int(time.time() * 1000)}",
+            error_type="quota_exceeded",
+        )
     return await _chat_logic(body, user_id, http_request.app.state.openai_client)
 
 
@@ -106,7 +120,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                 from agent.prompts import NAVIGATION_AMBIGUOUS_PROMPT
                 system_prompt = NAVIGATION_AMBIGUOUS_PROMPT
                 
-                logger.info("[chat] Calling gpt-4o-mini for ambiguous navigation | cost=tiny")
+                logger.info("[chat] Calling fast model for ambiguous navigation | cost=tiny")
                 result = await run_agent_loop(
                     [
                         {"role": "system", "content": system_prompt},
@@ -116,7 +130,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                     db, 
                     openai_client, 
                     with_tools_enabled=False,
-                    override_model="gpt-4o-mini"
+                    override_model=get_settings().llm_fast_model
                 )
                 content = result["content"]
                 
@@ -197,7 +211,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             intent_name = intent_info["intent"]
             if intent_name == "GENERAL_QA":
                 MAX_HISTORY = 2
-            elif intent_name in ("PROFILE_QUERY", "GPA_QUERY", "ACADEMIC_CALENDAR"):
+            elif intent_name in ("PROFILE_QUERY", "GPA_QUERY", "ACADEMIC_CALENDAR", "REGULATIONS"):
                 MAX_HISTORY = 4
             elif intent_name in ("GPA_IMPROVEMENT", "PLAN_OR_STUDY_ADVICE", "SCHEDULE_TASK", "SEMESTER_QUERY"):
                 MAX_HISTORY = 6
@@ -224,19 +238,26 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             try:
                 # Update loop call to disable tools if intent doesn't need them
                 with_tools = intent_info["needs_tools"]
-                override_model = "gpt-4o-mini" if intent_info["intent"] in ("GENERAL_QA", "COURSE_INFO", "ACADEMIC_CALENDAR") else None
+                override_model = get_settings().llm_fast_model if intent_info["intent"] in ("GENERAL_QA", "COURSE_INFO", "ACADEMIC_CALENDAR") else None
                 
                 tools_override = None
                 if intent_info["intent"] == "COURSE_INFO":
                     from agent.tools_schema import TOOLS_SCHEMA
-                    course_info_tool = next((t for t in TOOLS_SCHEMA if t.get("function", {}).get("name") == "get_course_info"), None)
-                    if course_info_tool:
-                        tools_override = [course_info_tool]
+                    tools_override = [
+                        t for t in TOOLS_SCHEMA
+                        if t.get("function", {}).get("name") in ("get_course_info", "get_course_reviews")
+                    ] or None
                 elif intent_info["intent"] == "ACADEMIC_CALENDAR":
                     from agent.tools_schema import TOOLS_SCHEMA
                     calendar_info_tool = next((t for t in TOOLS_SCHEMA if t.get("function", {}).get("name") == "get_calendar_info"), None)
                     if calendar_info_tool:
                         tools_override = [calendar_info_tool]
+                elif intent_info["intent"] == "REGULATIONS":
+                    from agent.tools_schema import TOOLS_SCHEMA
+                    tools_override = [
+                        t for t in TOOLS_SCHEMA
+                        if t.get("function", {}).get("name") in ("search_regulations", "get_calendar_info")
+                    ]
 
                 if tools_override:
                     tool_names = [t.get("function", {}).get("name") for t in tools_override]

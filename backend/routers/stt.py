@@ -19,6 +19,7 @@ import httpx
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
 from auth.bearer import verify_firebase_token
+from services.quota import COST_STT, require_ai_credits
 from config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ async def transcribe(
             detail="ميزة التحويل الصوتي غير مفعّلة على السيرفر (GROQ_API_KEY غير مُعرَّف).",
         )
 
+    require_ai_credits(user_id, COST_STT)
     raw = await audio.read()
     if not raw:
         raise HTTPException(status_code=400, detail="ملف الصوت فارغ.")

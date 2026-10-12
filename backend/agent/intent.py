@@ -2,6 +2,7 @@ import re
 import json
 import logging
 from openai import AsyncOpenAI
+from config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,11 @@ INTENT_MAP = {
     },
     "ACADEMIC_CALENDAR": {
         "required_blocks": [],
+        "needs_tools": True,
+        "direct_response": None
+    },
+    "REGULATIONS": {
+        "required_blocks": ["profile_basic", "gpa_summary"],
         "needs_tools": True,
         "direct_response": None
     },
@@ -124,7 +130,7 @@ def classify_intent_heuristic(messages: list) -> dict:
                 "/pomodoro": ["بومودورو", "pomodoro"],
                 "/plan": ["الخطة", "plan"],
                 "/gpa": ["المعدل", "gpa", "حاسبة المعدل"],
-                "/map": ["القاعات", "الخريطة", "map"],
+                "/locations": ["القاعات", "الخريطة", "map"],
                 "/chat": ["الدردشة", "الشات", "chat"],
                 "/dashboard": ["اللوحة", "الداشبورد", "dashboard"],
                 "/profile": ["الملف الشخصي", "البروفايل", "profile"]
@@ -169,7 +175,7 @@ def classify_intent_heuristic(messages: list) -> dict:
             "/gpa": ["المعدل", "حساب المعدل", "gpa"],
             "/chat": ["الدردشة", "الشات", "المحادثة", "فطن", "chat"],
             "/pomodoro": ["بومودورو", "المؤقت", "جلسة تركيز", "pomodoro"],
-            "/map": ["القاعات", "الخريطة", "الماب", "map"],
+            "/locations": ["القاعات", "الخريطة", "الماب", "map"],
             "/dashboard": ["اللوحة", "الرئيسية", "الداشبورد", "dashboard"],
             "/profile": ["الملف الشخصي", "البروفايل", "profile"]
         }
@@ -278,6 +284,22 @@ def classify_intent_heuristic(messages: list) -> dict:
         r'الاختبارات العمليه', r'متى الاختبارات', r'متى موعد الاختبار',
         r'متى موعد الاختبارات', r'موعد الاختبار'
     ]
+    regulations_patterns = [
+        r'لائح', r'نظام الجامع', r'حرمان', r'محروم', r'نسبة الغياب', r'كم اغيب', r'كم أغيب',
+        r'الغياب', r'انذار', r'إنذار', r'طي القيد', r'طي قيد', r'فصل من الجامع', r'يفصلون',
+        r'انسحاب', r'انسحب', r'تأجيل', r'تاجيل', r'أجل الفصل', r'اجل الفصل', r'معادل',
+        r'تحويل', r'مرتبة الشرف', r'تظلم', r'اعتراض على', r'اختبار بديل', r'غير مكتمل',
+        r'عبء', r'العبء', r'الحد الأدنى', r'الحد الادنى', r'الحد الأعلى', r'الحد الاعلى',
+        r'إعادة قيد', r'اعادة قيد', r'المدة القصوى', r'شروط التخرج',
+        r'غش', r'عقوب', r'مخالف', r'انضباط', r'حقوق', r'نادي', r'الأندية', r'الاندية',
+        r'صندوق الطلاب', r'صندوق الطلبة', r'قرض', r'إعانة', r'اعانة',
+        r'ماجستير', r'دكتوراه', r'الدراسات العليا', r'التدريب التعاوني', r'تعاوني',
+        r'ملكية فكرية', r'الملكية الفكرية', r'براءة اختراع', r'تحرش', r'ابتعاث',
+        r'نظام الجامعات', r'الكلية التطبيقية', r'زمالة', r'الزمالات',
+    ]
+    if any(re.search(p, msg) for p in regulations_patterns) and not has_course_code:
+        return {"intent": "REGULATIONS", "source": "heuristic"}
+
     if any(re.search(p, msg) for p in academic_calendar_patterns) and not has_course_code:
         return {"intent": "ACADEMIC_CALENDAR", "source": "heuristic"}
 
@@ -297,6 +319,7 @@ Classify the user's message into EXACTLY ONE of the following intents:
 - GREETING: Simple greetings or hellos. DO NOT classify ambiguous, random, or out-of-scope messages as GREETING.
 - GENERAL_QA: General questions about the assistant, its capabilities, or the university. If the message is out of the academic scope (e.g., politics, religion, medicine, random chat, unclear messages), classify it as GENERAL_QA.
 - PROFILE_QUERY: Asking about their own name, major, or basic profile data.
+- REGULATIONS: Questions about official university rules: absence limits and exam deprivation (حرمان), withdrawal, postponement, academic warnings and dismissal, re-enrollment, transfer and course equivalency, make-up exams, grade appeals, honors, graduation requirements, course load limits.
 - GPA_QUERY: Asking for their current GPA or earned hours.
 - GPA_IMPROVEMENT: Asking how to improve their GPA, what grades they need, or which subjects to focus on.
 - SCHEDULE_TASK: Asking to add a study task, schedule a session, start a pomodoro, or check for schedule conflicts.
@@ -311,7 +334,7 @@ Example: {"intent": "GREETING"}
 """
     try:
         response = await openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=get_settings().llm_fast_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": message}
@@ -325,10 +348,10 @@ Example: {"intent": "GREETING"}
         intent = data.get("intent", "UNKNOWN")
         if intent not in INTENT_MAP:
             intent = "UNKNOWN"
-        return {"intent": intent, "source": "gpt-4o-mini"}
+        return {"intent": intent, "source": "llm_fast"}
     except Exception as e:
         logger.warning(f"[intent] LLM classification failed: {e}")
-        return {"intent": "UNKNOWN", "source": "gpt-4o-mini"}
+        return {"intent": "UNKNOWN", "source": "llm_fast"}
 
 
 # ---------------------------------------------------------------------------
@@ -340,14 +363,14 @@ You receive the last few messages of a conversation plus a short user reply.
 Your job is to determine what the user meant based ONLY on the conversation context.
 
 Allowed intents:
-SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, GPA_QUERY,
+SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, REGULATIONS, GPA_QUERY,
 SEMESTER_QUERY, FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
 
 Rules:
 - If the assistant previously asked for a missing field for a study session or task
   (course name, time, date, or duration) and the user provides it → SCHEDULE_TASK
 - If the assistant asked to confirm a page and the user confirms → NAVIGATION
-  (include "route" if determinable: /pomodoro, /plan, /gpa, /map, /chat, /dashboard, /profile)
+  (include "route" if determinable: /pomodoro, /plan, /gpa, /locations, /chat, /dashboard, /profile)
 - If the assistant asked which course/material and the user names one → COURSE_INFO
   UNLESS the assistant message clearly mentioned a study task or session → then SCHEDULE_TASK
 - If the assistant asked whether the user means GPA or full academic record
@@ -392,7 +415,7 @@ async def classify_with_context_llm(
         ]
 
         response = await openai_client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=get_settings().llm_fast_model,
             messages=api_messages,
             temperature=0.0,
             max_tokens=80,

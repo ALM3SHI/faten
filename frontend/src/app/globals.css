@@ -62,6 +62,9 @@
    neutral-200 borders, neutral-600 muted text.
    ───────────────────────────────────────────────────────────── */
 :root {
+  /* Height reserved for the phone tab bar (components/bottom-nav.tsx). */
+  --bottom-nav-h: 0px;
+
   /* Brand (unchanged across themes; only opacity scales). */
   --accent: hsl(245, 78%, 62%);
   --accent-glow: hsla(245, 78%, 62%, 0.18);
@@ -245,3 +248,10 @@ select option {
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+
+/* Phone tab bar is visible below the lg breakpoint. */
+@media (max-width: 1023.98px) {
+  :root {
+    --bottom-nav-h: calc(4rem + env(safe-area-inset-bottom));
+  }
+}

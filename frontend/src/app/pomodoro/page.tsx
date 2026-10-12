@@ -107,7 +107,7 @@ export default function PomodoroPage() {
   // the running interval from going stale we stash the freshest
   // version in a ref and call it through that.
   const handleCompleteRef = useRef<() => void>(() => {});
-  handleCompleteRef.current = () => {
+  const handleComplete = () => {
     setTimerState("idle");
     if (!muted) playBeep();
 
@@ -150,6 +150,11 @@ export default function PomodoroPage() {
       setTimeLeft(getFocusDurationSeconds(pomodoroFocus));
     }
   };
+
+  // Refresh the ref after every render (refs must not be written during render).
+  useEffect(() => {
+    handleCompleteRef.current = handleComplete;
+  });
 
   // The interval itself only depends on whether the timer is running.
   // We deliberately don't list other deps — completion is routed
@@ -366,7 +371,7 @@ export default function PomodoroPage() {
           <div className="relative flex flex-col items-center gap-3">
             <div
               className={cn(
-                "text-[120px] font-black tracking-tighter leading-none select-none font-mono transition-colors",
+                "text-[clamp(4.5rem,22vw,7.5rem)] font-black tracking-tighter leading-none select-none font-mono tabular-nums transition-colors",
                 isBreak ? "text-emerald-400" : "text-foreground",
               )}
             >
@@ -557,7 +562,7 @@ function ModeBtn({
 }) {
   const accentClass =
     accent === "uqu"
-      ? "bg-uqu-accent text-foreground shadow-lg shadow-uqu-accent/20"
+      ? "bg-uqu-accent text-white shadow-lg shadow-uqu-accent/20"
       : accent === "emerald"
         ? "bg-emerald-500 text-foreground shadow-lg shadow-emerald-500/20"
         : "bg-teal-500 text-foreground shadow-lg shadow-teal-500/20";

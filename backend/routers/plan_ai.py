@@ -25,6 +25,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 
 from auth.bearer import verify_firebase_token
+from services.quota import COST_PLAN_GENERATION, require_ai_credits
 from schemas.plan_ai import GeneratePlanRequest, GeneratePlanResponse
 from services.plan_ai import generate_ai_study_plan
 
@@ -53,6 +54,7 @@ async def generate_ai_plan_endpoint(
 
     Returns the structured plan + the model id + an ISO timestamp.
     """
+    require_ai_credits(user_id, COST_PLAN_GENERATION)
     logger.info(
         "AI plan request: user=%s courses=%d slots=%d",
         user_id,

@@ -157,7 +157,7 @@ async def analyze_transcript(payload: TranscriptAnalysisRequest) -> Dict[str, An
 
     try:
         completion = await client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
+            model=settings.llm_model,
             messages=messages,
             temperature=0.3,
             top_p=0.9,

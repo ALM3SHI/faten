@@ -90,3 +90,7 @@ backend/serviceAccountKey.json
 # Virtual environments & IDE folders
 .venv-1/
 .claude/
+
+# Stray env copies — never commit secrets
+_env
+*.env

@@ -10,9 +10,14 @@ from pydantic import BaseModel, Field
 
 
 class ChatMessage(BaseModel):
-    """A single message in the conversation."""
-    role: Literal["user", "assistant", "system"]
-    content: str
+    """A single message in the conversation.
+
+    "system" is deliberately not accepted: the system prompt is built
+    server-side, and letting the client send one would let any user
+    override the agent's instructions.
+    """
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=20_000)
 
 
 class ClientContext(BaseModel):
@@ -39,7 +44,9 @@ class ClientContext(BaseModel):
 
 class ChatRequest(BaseModel):
     """Request body for POST /api/chat."""
-    messages: list[ChatMessage]
+    # The frontend sends at most the last 10 turns; 50 leaves headroom
+    # while capping how much a single request can cost.
+    messages: list[ChatMessage] = Field(min_length=1, max_length=50)
     conversationId: str | None = None
     client_context: ClientContext | None = None
 
