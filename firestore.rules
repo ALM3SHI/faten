@@ -37,9 +37,14 @@ service cloud.firestore {
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny(serverOnlyFields());
 
       // academic_record, plan, chats, chat_history, notifications, …
-      match /{subpath=**} {
+      // `coll` is the first sub-collection name; `rest` matches the
+      // document and anything nested under it.
+      match /{coll}/{rest=**} {
         allow read, delete: if isOwner(uid);
-        allow create, update: if isOwner(uid);
+        // Agent memory is written only by the server (it filters sensitive
+        // facts and caps the size before the text reaches the AI prompt);
+        // the student can still read and delete it.
+        allow create, update: if isOwner(uid) && coll != 'agent_memory';
       }
     }
 

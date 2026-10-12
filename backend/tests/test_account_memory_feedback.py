@@ -110,3 +110,20 @@ def test_delete_endpoint_requires_explicit_confirmation(client, monkeypatch):
     assert client.request("DELETE", "/api/account", json={"confirm": "yes"}).status_code == 422
     assert client.request("DELETE", "/api/account", json={"confirm": "حذف"}).json() == {"success": True}
     assert calls == [UID]
+
+
+def test_summarize_feedback_counts_and_orders():
+    from services.feedback import summarize_feedback
+
+    rows = [
+        {"rating": "up", "tools": ["get_gpa"], "createdAt": "2026-10-01"},
+        {"rating": "down", "tools": ["search_regulations"], "createdAt": "2026-10-02", "question": "q1", "comment": "خطأ"},
+        {"rating": "down", "tools": [], "createdAt": "2026-10-05", "question": "q2"},
+        {"rating": "up", "createdAt": "2026-10-03"},
+    ]
+    rep = summarize_feedback(rows, limit=5)
+    assert (rep["total"], rep["up"], rep["down"], rep["satisfaction"]) == (4, 2, 2, 50)
+    assert [r["question"] for r in rep["recent_down"]] == ["q2", "q1"]
+    assert rep["by_tool"]["(بدون أداة)"] == {"up": 1, "down": 1}
+    assert "uid" not in rep["recent_down"][0]
+    assert summarize_feedback([])["satisfaction"] is None

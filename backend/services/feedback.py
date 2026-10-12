@@ -29,3 +29,28 @@ def save_feedback(db, uid: str, payload: dict) -> dict:
         "createdAt": dt.datetime.now(dt.timezone.utc).isoformat(),
     })
     return {"success": True, "id": fid, "rating": rating}
+
+
+def summarize_feedback(rows: list[dict], limit: int = 20) -> dict:
+    """Aggregate feedback docs for the owner's report (no uids exposed)."""
+    up = sum(1 for r in rows if r.get("rating") == "up")
+    down = [r for r in rows if r.get("rating") == "down"]
+    by_tool: dict[str, dict[str, int]] = {}
+    for r in rows:
+        for t in r.get("tools") or ["(بدون أداة)"]:
+            s = by_tool.setdefault(t, {"up": 0, "down": 0})
+            if r.get("rating") in s:
+                s[r["rating"]] += 1
+    down.sort(key=lambda r: r.get("createdAt") or "", reverse=True)
+    total = up + len(down)
+    return {
+        "total": total,
+        "up": up,
+        "down": len(down),
+        "satisfaction": round(up / total * 100) if total else None,
+        "by_tool": dict(sorted(by_tool.items(), key=lambda kv: -kv[1]["down"])),
+        "recent_down": [
+            {k: r.get(k) for k in ("createdAt", "question", "answer", "comment", "tools")}
+            for r in down[:limit]
+        ],
+    }
