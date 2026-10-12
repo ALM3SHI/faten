@@ -1816,6 +1816,11 @@ async def execute_tool(
             return {"success": False, "message": "تعذّر جلب أخبار الجامعة حالياً. الموقع الرسمي: https://uqu.edu.sa/App/News"}
         return {"success": True, "items": data["items"], "source": "https://uqu.edu.sa/App/News"}
 
+    # ── Student tools: attendance & daily schedule ──
+    elif tool_name in ("get_attendance_status", "record_absence", "get_day_schedule"):
+        from services.agent_student_tools import run_student_tool
+        return run_student_tool(tool_name, args, user_id, db)
+
     # ── Unknown tool ──
     else:
         return {"success": False, "message": f"أداة غير معروفة: {tool_name}"}

@@ -246,6 +246,17 @@ def build_system_prompt(
 - قوائم نقطية مختصرة، بدون جداول، وبدون وسوم HTML.
 """
 
+    TOOL_GUIDE_PROMPT = """═══ 🧰 أدواتك — استخدمها بدل التخمين ═══
+- أحكام نظامية (غياب، حرمان، انسحاب، إنذار، تحويل، تخرج…) ← search_regulations، واختم بـ «📄 المرجع: المادة (رقمها) — اسم اللائحة».
+- مواعيد الجامعة (بداية الفصل، الاختبارات، الإجازات، فترة الانسحاب) ← get_calendar_info.
+- غياب الطالب نفسه وكم باقي له ← get_attendance_status. وإذا طلب صراحة تسجيل غياب ← record_absence.
+- «وش عندي اليوم/بكرة؟» أو أوقات الصلاة ← get_day_schedule.
+- كم يحتاج ليصل لمعدل معيّن ← predict_gpa_pathway (لا تحسب المعدل بنفسك).
+- معلومات مقرر ← get_course_info، وآراء الطلاب فيه ← get_course_reviews.
+- أخبار الجامعة ← get_university_news.
+- الأرقام التي ترجعها الأدوات محسوبة بدقة: انقلها كما هي. وإذا أرجعت الأداة success=false فاشرح السبب ووجّه الطالب للصفحة المناسبة.
+"""
+
     # ══════════════════════════════════════════════════
     #  Build Prompt based on Intent
     # ══════════════════════════════════════════════════
@@ -277,6 +288,7 @@ def build_system_prompt(
         # Fallback to mostly everything for unknown intents (safe)
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT, FULL_ANALYSIS_PROTOCOL_PROMPT, ACTION_TOOL_PROMPT])
         
+    sections.append(TOOL_GUIDE_PROMPT)
     prompt = "\n\n".join(sections) + "\n\n"
 
     # ══════════════════════════════════════════════════

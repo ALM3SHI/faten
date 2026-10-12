@@ -1,13 +1,14 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
-import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft } from "lucide-react";
+import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft, FileText, ExternalLink } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ChatResponse } from "@/lib/ai";
 import type { SuggestedNavigation } from "@/store/workspaceStore";
 import { BotMarkdown } from "@/components/bot-markdown";
+import { extractCitations } from "@/lib/citations";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -62,12 +63,12 @@ const LEGACY_PATHS: Record<string, string> = { "/map": "/locations" };
 /** Starter questions shown on an empty conversation — one per thing the
  *  assistant is genuinely good at, phrased the way students ask. */
 const STARTER_PROMPTS = [
+  "وش عندي محاضرات بكرة؟",
+  "كم باقي لي غياب قبل الحرمان؟",
   "كم نسبة الغياب اللي تحرمني من الاختبار؟",
   "حلّل سجلي الأكاديمي ووش أركّز عليه",
   "متى الاختبارات النهائية هذا الفصل؟",
   "سوّ لي خطة مذاكرة لهذا الأسبوع",
-  "كم أحتاج في موادي عشان أوصل معدل 4؟",
-  "هل مادة CS4510 صعبة؟ وش يقول الطلاب؟",
 ];
 
 /** Translate an in-app path into an Arabic CTA label + glyph. Falls
@@ -398,6 +399,7 @@ function ChatPageContent() {
                           <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                         )}
                       </div>
+                      {isBot && !isError && <SourceCards content={msg.content} actions={msg.actions} />}
                       {/* Manual navigation CTAs — only rendered if the
                           agent suggested a destination. Click is the
                           ONLY way the page changes. */}
@@ -504,3 +506,33 @@ function ChatPageContent() {
   );
 }
 
+// ── Regulation sources under an answer ─────────────────────────────
+function SourceCards({ content, actions }: { content: string; actions?: unknown }) {
+  const sources = extractCitations(content, Array.isArray(actions) ? actions : undefined);
+  if (sources.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-2 w-full min-w-0" aria-label="المصادر">
+      {sources.map((s) => {
+        const body = (
+          <>
+            <FileText className="w-3.5 h-3.5 shrink-0 text-uqu-accent" />
+            <span className="font-bold shrink-0">{s.article}</span>
+            <span className="text-muted-foreground truncate min-w-0">— {s.document}</span>
+            {s.url && <ExternalLink className="w-3 h-3 shrink-0 opacity-60" />}
+          </>
+        );
+        const cls =
+          "flex items-center gap-1.5 min-w-0 max-w-full sm:max-w-[22rem] px-3 py-1.5 rounded-xl border border-uqu-accent/20 bg-uqu-accent/5 text-[12px] hover:border-uqu-accent/40 transition-colors";
+        return s.url ? (
+          <a key={s.document + s.article} href={s.url} target="_blank" rel="noopener noreferrer" className={cls} title={`${s.article} — ${s.document}`}>
+            {body}
+          </a>
+        ) : (
+          <span key={s.document + s.article} className={cls} title={`${s.article} — ${s.document}`}>
+            {body}
+          </span>
+        );
+      })}
+    </div>
+  );
+}

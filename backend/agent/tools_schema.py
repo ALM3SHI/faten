@@ -649,4 +649,61 @@ TOOLS_SCHEMA: list[dict] = [
         },
     },
 
+    # ── Student tools: attendance & daily schedule (deterministic) ──
+    {
+        "type": "function",
+        "function": {
+            "name": "get_attendance_status",
+            "description": (
+                "حالة غياب الطالب في مقرراته: عدد المحاضرات في الفصل، غيابه بعذر وبدون عذر، وكم غياب باقي قبل الحرمان "
+                "(حسب القاعدة التنفيذية للمادة 14: الحرمان إذا زاد الغياب بدون عذر عن 15% أو المجموع عن 25%). "
+                "استخدمها لأي سؤال عن غياب الطالب نفسه. الأرقام محسوبة بدقة — انقلها كما هي ولا تحسبها بنفسك."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "course": {"type": "string", "description": "رمز المقرر أو اسمه (اختياري — بدونه ترجع كل المقررات)"}
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "record_absence",
+            "description": (
+                "سجّل غياباً للطالب في مقرر (يظهر فوراً في صفحة الغياب). استخدمها فقط عندما يطلب الطالب صراحةً تسجيل غيابه، "
+                "مثل: «سجّل غيابي اليوم في تعلم الآلة». إذا لم يذكر أنه بعذر فاعتبره بدون عذر."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "course": {"type": "string", "description": "رمز المقرر أو اسمه كما ذكره الطالب"},
+                    "date": {"type": "string", "description": "التاريخ YYYY-MM-DD أو today/tomorrow/yesterday، الافتراضي اليوم"},
+                    "excused": {"type": "boolean", "description": "true إذا كان الغياب بعذر"},
+                },
+                "required": ["course"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_day_schedule",
+            "description": (
+                "محاضرات الطالب في يوم معيّن من جدوله مع أوقات الصلاة في مكة (تقويم أم القرى)، "
+                "وتنبيه إذا وقعت صلاة أثناء محاضرة أو كان اليوم إجازة رسمية. "
+                "استخدمها لأسئلة مثل: «وش عندي بكرة؟»، «متى أول محاضرة يوم الأحد؟»، «متى صلاة العصر؟»."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "day": {"type": "string", "description": "today أو tomorrow أو اسم اليوم بالعربي (الأحد…) أو YYYY-MM-DD. الافتراضي today"}
+                },
+                "required": [],
+            },
+        },
+    },
+
 ]

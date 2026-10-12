@@ -13,6 +13,7 @@ import {
 } from './chat-client-actions';
 import { refreshWorkspaceAfterChat } from './workspace';
 import { executeCalendarTool, formatCalendarResults } from './calendar-tool';
+import { applyAgentResults } from './agent-results';
 
 export interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -171,6 +172,9 @@ export const AIService = {
           await executeClientTool(action.tool, action.args, action.result);
         }
       }
+
+      // Results of server-side student tools (e.g. record_absence) → local stores.
+      applyAgentResults(data.actions);
 
       // New structured client-action channel (Zustand mutations).
       if (data.client_actions && data.client_actions.length > 0) {

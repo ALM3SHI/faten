@@ -84,6 +84,11 @@ class _Col:
 
     get = stream
 
+    def add(self, data):
+        doc = _Doc(self._store, self.path + (f"auto{len(self._store)}",))
+        doc.set(data)
+        return None, doc
+
 
 class _Tx:
     def set(self, ref, data):

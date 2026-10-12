@@ -210,7 +210,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             # context for deep academic analysis.
             intent_name = intent_info["intent"]
             if intent_name == "GENERAL_QA":
-                MAX_HISTORY = 2
+                MAX_HISTORY = 4
             elif intent_name in ("PROFILE_QUERY", "GPA_QUERY", "ACADEMIC_CALENDAR", "REGULATIONS", "UNIVERSITY_NEWS"):
                 MAX_HISTORY = 4
             elif intent_name in ("GPA_IMPROVEMENT", "PLAN_OR_STUDY_ADVICE", "SCHEDULE_TASK", "SEMESTER_QUERY"):
@@ -236,42 +236,15 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
 
             # ── Run agent ──
             try:
-                # Update loop call to disable tools if intent doesn't need them
-                with_tools = intent_info["needs_tools"]
-                override_model = get_settings().llm_fast_model if intent_info["intent"] in ("GENERAL_QA", "COURSE_INFO", "ACADEMIC_CALENDAR", "UNIVERSITY_NEWS") else None
-                
-                tools_override = None
-                if intent_info["intent"] == "COURSE_INFO":
-                    from agent.tools_schema import TOOLS_SCHEMA
-                    tools_override = [
-                        t for t in TOOLS_SCHEMA
-                        if t.get("function", {}).get("name") in ("get_course_info", "get_course_reviews")
-                    ] or None
-                elif intent_info["intent"] == "ACADEMIC_CALENDAR":
-                    from agent.tools_schema import TOOLS_SCHEMA
-                    calendar_info_tool = next((t for t in TOOLS_SCHEMA if t.get("function", {}).get("name") == "get_calendar_info"), None)
-                    if calendar_info_tool:
-                        tools_override = [calendar_info_tool]
-                elif intent_info["intent"] == "UNIVERSITY_NEWS":
-                    from agent.tools_schema import TOOLS_SCHEMA
-                    tools_override = [
-                        t for t in TOOLS_SCHEMA
-                        if t.get("function", {}).get("name") == "get_university_news"
-                    ]
-                elif intent_info["intent"] == "REGULATIONS":
-                    from agent.tools_schema import TOOLS_SCHEMA
-                    tools_override = [
-                        t for t in TOOLS_SCHEMA
-                        if t.get("function", {}).get("name") in ("search_regulations", "get_calendar_info")
-                    ]
+                # Every message that reaches the model can use all read-only
+                # tools (see agent/tool_policy.py); write tools only for
+                # action/advice intents.
+                from agent.tool_policy import tool_names as _tool_names, tools_for_intent
 
-                if tools_override:
-                    tool_names = [t.get("function", {}).get("name") for t in tools_override]
-                elif with_tools:
-                    from agent.tools_schema import TOOLS_SCHEMA
-                    tool_names = [t.get("function", {}).get("name") for t in TOOLS_SCHEMA]
-                else:
-                    tool_names = []
+                with_tools = True
+                override_model = get_settings().llm_fast_model if intent_info["intent"] in ("GENERAL_QA", "COURSE_INFO", "ACADEMIC_CALENDAR", "UNIVERSITY_NEWS") else None
+                tools_override = tools_for_intent(intent_info["intent"])
+                tool_names = _tool_names(tools_override)
 
                 logger.info(
                     "[chat] PRE-FLIGHT: intent=%s | model=%s | tools=%s | prompt_len=%d | history_msgs=%d",
