@@ -2,7 +2,7 @@
 
 | الجزء | المكان | التكلفة |
 |---|---|---|
-| الواجهة (Next.js كموقع ثابت) | Firebase Hosting — `https://fatan-2648a.web.app` | مجاني (خطة Spark) |
+| الواجهة (Next.js كموقع ثابت) | Firebase Hosting — `https://fatenai.web.app` | مجاني (خطة Spark) |
 | الخادم (FastAPI) | Render — خطة Free | مجاني، بدون بطاقة |
 | قاعدة البيانات وتسجيل الدخول | Firebase (نفس المشروع) | مجاني |
 | الذكاء الاصطناعي | Gemini | مجاني ضمن حدود يومية |
@@ -28,7 +28,7 @@ git push
 3. سيطلب القيم السرية:
    - `GEMINI_API_KEY`: نفس المفتاح الموجود في `backend/.env`.
    - `FIREBASE_CREDENTIALS_JSON`: افتح `backend/serviceAccountKey.json` والصق **محتواه كاملًا**.
-   - `ALLOWED_ORIGINS`: `https://fatan-2648a.web.app,https://fatan-2648a.firebaseapp.com`
+   - `ALLOWED_ORIGINS`: `https://fatenai.web.app,https://fatenai.firebaseapp.com,https://fatan-2648a.web.app`
 4. انتظر حتى ينتهي النشر، ثم افتح `https://<اسم-الخدمة>.onrender.com/health`. يجب أن يظهر `"status":"healthy"`.
 5. من تبويب **Environment** انسخ قيمة `CRON_SECRET`، فستحتاجها في الخطوة 4.
 
@@ -42,7 +42,7 @@ git push
    npx firebase-tools login
    ```
 3. شغّل **`DEPLOY_FRONTEND.bat`**. يبني الموقع وينشره، وينشر معه `firestore.rules`.
-4. الموقع يعمل على `https://fatan-2648a.web.app`.
+4. الموقع يعمل على `https://fatenai.web.app`.
 
 لتحديث الموقع لاحقًا شغّل `DEPLOY_FRONTEND.bat` مرة أخرى. والخادم يتحدث تلقائيًا مع كل `git push`.
 

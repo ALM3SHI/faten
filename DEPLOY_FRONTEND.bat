@@ -31,7 +31,7 @@ call npx --yes firebase-tools deploy --only hosting,firestore:rules
 if errorlevel 1 goto :fail
 
 echo.
-echo Done:  https://fatan-2648a.web.app
+echo Done:  https://fatenai.web.app
 pause
 exit /b 0
 
