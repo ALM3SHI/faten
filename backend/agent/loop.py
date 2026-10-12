@@ -122,6 +122,20 @@ def _is_deflection(text: str, actions_were_taken: bool) -> tuple[bool, str | Non
     return False, None
 
 
+def _is_overloaded_error(err: Exception) -> bool:
+    """Provider-side, temporary failures (model overloaded / 5xx / timeout).
+
+    The OpenAI SDK has already retried these with backoff by the time we see
+    them, so the useful next step is a different (lighter) model.
+    """
+    if isinstance(err, (APITimeoutError, APIConnectionError)):
+        return True
+    if isinstance(err, APIStatusError):
+        return err.status_code in (500, 502, 503, 504)
+    low = str(err).lower()
+    return "overloaded" in low or "unavailable" in low
+
+
 def _is_tools_schema_error(err: Exception) -> bool:
     """
     True only when the error is a 4xx that names the tools/function schema
@@ -258,7 +272,18 @@ async def run_agent_loop(
         # ── Call the model ──
         used_tools = with_tools_enabled
         try:
-            completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
+            try:
+                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
+            except Exception as busy_err:
+                fast_model = settings.llm_fast_model
+                if not (_is_overloaded_error(busy_err) and fast_model and fast_model != model_name):
+                    raise
+                logger.warning(
+                    "[AGENT] %s unavailable (%s) — switching to %s for this request",
+                    model_name, type(busy_err).__name__, fast_model,
+                )
+                model_name = fast_model
+                completion = await _call_model(client, model_name, all_messages, with_tools=with_tools_enabled, tools_override=tools_override)
         except Exception as first_err:
             # Only retry without tools when the failure was specifically the
             # tools schema being rejected. For auth / network / 5xx we want
