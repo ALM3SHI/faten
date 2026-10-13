@@ -60,9 +60,11 @@ from schemas.analytics import (
     TargetAnalysis,
 )
 
+from common.grade_scale import NON_GPA_GRADES as BASE_NON_GPA_GRADES
+
 # Grades that DO NOT contribute to GPA (UQU registrar convention).
 # Courses with any of these grades are dropped before semester aggregation.
-NON_GPA_GRADES: frozenset[str] = frozenset({"W", "IP", "NP", "IC", ""})
+NON_GPA_GRADES: frozenset[str] = BASE_NON_GPA_GRADES | {""}
 
 
 # ──────────────────────────────────────────────────────────────────
