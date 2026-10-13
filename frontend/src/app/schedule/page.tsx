@@ -1,6 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,9 @@ export default function SchedulePage() {
     <div className="min-h-screen bg-background pb-20" dir="rtl">
       <Navbar />
 
-      <main className="container mx-auto pt-32 px-4 max-w-6xl">
+      <main className="container mx-auto pt-24 px-4 max-w-6xl">
+
+        <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-xl glass border-foreground/10">
             <ArrowRight className="w-5 h-5" />

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, X, Plus, Minus, Maximize2, AlertCircle } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -235,7 +236,8 @@ export function LocationsContent() {
           dir="rtl"
         >
           {/* Header — sticky title */}
-          <div className="px-6 pt-6 pb-2 shrink-0">
+          <div className="px-6 pt-4 pb-2 shrink-0 space-y-3">
+            <SectionTabs />
             <h1 className="text-2xl font-black">الخريطة</h1>
           </div>
 

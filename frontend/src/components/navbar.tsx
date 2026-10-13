@@ -3,26 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { isActivePath } from "@/lib/routes";
+import { isActivePath, normalizePath } from "@/lib/routes";
+import { NO_APP_NAV, sectionFor } from "@/lib/nav";
+import { useSectionLinks } from "@/components/nav-sections";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoMark } from "@/components/logo";
-
-const navItems = [
-  { name: "اللوحة", href: "/dashboard" },
-  { name: "الدردشة", href: "/chat" },
-  { name: "المعدل", href: "/gpa" },
-  { name: "الخطة", href: "/plan" },
-  { name: "الغياب", href: "/attendance" },
-  { name: "المذاكرة", href: "/study" },
-  { name: "الاختبارات", href: "/exams" },
-  { name: "بومودورو", href: "/pomodoro" },
-  { name: "القاعات", href: "/locations" },
-  { name: "المجتمع", href: "/community" },
-  { name: "الملف الشخصي", href: "/profile" },
-];
 
 import { useAuth } from "@/components/auth-provider";
 import { useProfileStore } from "@/store/profileStore";
@@ -34,6 +22,10 @@ export function Navbar() {
   const profileName = useProfileStore((s) => s.basic.name.trim());
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const sections = useSectionLinks();
+  const activeSection = sectionFor(pathname)?.id;
+  // Phones use the bottom bar; the ☰ menu only exists where that bar is hidden.
+  const showMenuButton = NO_APP_NAV.has(normalizePath(pathname));
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -68,21 +60,23 @@ export function Navbar() {
 
             {/* prefetch={false} on app links: prefetching every tab pulled the heavy
                 routes (map data, PDF reader, charts) into whatever page was open. */}
-            <nav className="hidden lg:block">
-              <ul className="flex items-center gap-0.5 xl:gap-1">
-                {navItems.filter(i => i.href !== '/profile' || user).map((item) => (
-                  <li key={item.href}>
+            <nav className="hidden lg:block" aria-label="الأقسام">
+              <ul className="flex items-center gap-1">
+                {sections.map((item) => (
+                  <li key={item.id}>
                     <Link
                       href={item.href}
                       prefetch={false}
+                      aria-current={activeSection === item.id ? "page" : undefined}
                       className={cn(
-                        "px-2.5 xl:px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors",
-                        isActivePath(pathname, item.href)
+                        "inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors",
+                        activeSection === item.id
                           ? "text-uqu-accent bg-uqu-accent/10"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                       )}
                     >
-                      {item.name}
+                      <item.Icon className="w-4 h-4" aria-hidden />
+                      {item.label}
                     </Link>
                   </li>
                 ))}
@@ -99,8 +93,19 @@ export function Navbar() {
                 aria-hidden
               />
             ) : user ? (
-              <Link href="/profile" prefetch={false} aria-label="الملف الشخصي">
-                <Button variant="ghost" size="sm" className="rounded-xl gap-2 hover:bg-foreground/5" tabIndex={-1} aria-hidden>
+              <Link
+                href="/profile"
+                prefetch={false}
+                aria-label="الملف الشخصي"
+                aria-current={isActivePath(pathname, "/profile") ? "page" : undefined}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn("rounded-xl gap-2 hover:bg-foreground/5", isActivePath(pathname, "/profile") && "bg-uqu-accent/10")}
+                  tabIndex={-1}
+                  aria-hidden
+                >
                   <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">
                      <User className="w-4 h-4" />
                   </div>
@@ -117,9 +122,10 @@ export function Navbar() {
               </Link>
             )}
 
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            {showMenuButton && (
+            <Button
+              variant="ghost"
+              size="icon"
               className="lg:hidden rounded-full"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? "إغلاق القائمة" : "فتح القائمة"}
@@ -127,30 +133,27 @@ export function Navbar() {
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
+            )}
           </div>
         </div>
       </header>
 
       {/* Mobile Menu Overlay */}
-      {mobileOpen && (
+      {mobileOpen && showMenuButton && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <nav className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-foreground/10 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <nav aria-label="الأقسام" className="absolute top-16 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-foreground/10 shadow-2xl animate-in slide-in-from-top-2 duration-200">
             <ul className="container mx-auto px-4 py-4 space-y-1">
-              {navItems.filter(i => i.href !== '/profile' || user).map((item) => (
-                <li key={item.href}>
+              {sections.map((item) => (
+                <li key={item.id}>
                   <Link
                     href={item.href}
                     prefetch={false}
                     onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-colors",
-                      isActivePath(pathname, item.href)
-                        ? "text-uqu-accent bg-uqu-accent/10"
-                        : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
-                    )}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
                   >
-                    {item.name}
+                    <item.Icon className="w-5 h-5" aria-hidden />
+                    {item.label}
                   </Link>
                 </li>
               ))}

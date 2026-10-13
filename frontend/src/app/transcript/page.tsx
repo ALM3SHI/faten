@@ -1,6 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Upload, FileText, CheckCircle2, AlertCircle, BarChart3, ArrowLeft, ArrowRight, Sparkles, Loader2 } from "lucide-react";
@@ -137,7 +138,9 @@ export default function TranscriptParserPage() {
         <div className="aurora-blob blob-2 opacity-10" />
       </div>
 
-      <main className="container mx-auto pt-32 px-4 max-w-5xl">
+      <main className="container mx-auto pt-24 px-4 max-w-5xl">
+
+        <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-xl glass border-foreground/10">
             <ArrowRight className="w-5 h-5" />

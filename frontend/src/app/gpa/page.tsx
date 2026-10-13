@@ -21,6 +21,7 @@
 import { useMemo, useState } from "react";
 import { Calculator, TrendingUp, Target, Clock, Plus } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useProfileStore } from "@/store/profileStore";
 import { GRADE_POINTS, type SelectableGrade } from "@/lib/grade-scale";
@@ -173,7 +174,9 @@ export default function GPAPage() {
         <div className="aurora-blob blob-2 opacity-10" />
       </div>
 
-      <main className="container mx-auto pt-28 px-4 md:px-8">
+      <main className="container mx-auto pt-24 px-4 md:px-8">
+
+        <SectionTabs className="mb-6 max-w-6xl mx-auto" />
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">

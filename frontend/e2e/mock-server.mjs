@@ -38,8 +38,8 @@ export const WORKSPACE = {
   },
   schedule: {
     schedule: [
-      { id: "s1", courseCode: "CS3301", courseName: "الذكاء الاصطناعي", day: "الأحد", startTime: "08:00", endTime: "09:40", room: "A-101" },
-      { id: "s2", courseCode: "CS3302", courseName: "قواعد البيانات", day: "الثلاثاء", startTime: "10:00", endTime: "11:40", room: "B-204" },
+      { course_code: "CS3301", course_name: "الذكاء الاصطناعي", day: "الأحد", start_time: "08:00", end_time: "09:40", type: "نظري", room: "A-101" },
+      { course_code: "CS3302", course_name: "قواعد البيانات", day: "الثلاثاء", start_time: "10:00", end_time: "11:40", type: "نظري", room: "B-204" },
     ],
     lastUpdated: "2026-10-01T08:00:00.000Z",
   },

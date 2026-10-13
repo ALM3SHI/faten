@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -224,7 +225,9 @@ export default function PlanPage() {
         <div className="aurora-blob blob-2 opacity-10" />
       </div>
 
-      <main className="w-full max-w-[95vw] mx-auto pt-32 px-3 sm:px-5 lg:px-6 space-y-8" dir="rtl">
+      <main className="w-full max-w-[95vw] mx-auto pt-24 px-3 sm:px-5 lg:px-6 space-y-8" dir="rtl">
+
+        <SectionTabs />
         {/* ── Header ──────────────────────────────────────────────── */}
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>

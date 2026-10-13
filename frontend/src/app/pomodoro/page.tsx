@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -265,7 +266,9 @@ export default function PomodoroPage() {
         />
       </div>
 
-      <main className="container mx-auto pt-32 px-4 flex flex-col items-center">
+      <main className="container mx-auto pt-24 px-4 flex flex-col items-center">
+
+        <SectionTabs className="mb-6 self-stretch" />
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black mb-4">بومودورو</h1>
           <p className="text-muted-foreground">

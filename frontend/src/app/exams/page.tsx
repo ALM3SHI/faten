@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, CalendarClock, Plus } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { SectionTabs } from "@/components/section-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -73,7 +74,8 @@ export default function ExamsPage() {
   return (
     <div className="min-h-screen bg-background pb-28" dir="rtl">
       <Navbar />
-      <main className="container mx-auto pt-28 md:pt-32 px-4 max-w-4xl space-y-6">
+      <main className="container mx-auto pt-24 px-4 max-w-4xl space-y-6">
+        <SectionTabs />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-black flex items-center gap-3">
