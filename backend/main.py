@@ -53,6 +53,7 @@ from routers.news import router as news_router
 from routers.account import router as account_router
 from routers.study import router as study_router
 from routers.notifications import router as notifications_router
+from routers.admin import router as admin_router
 
 # ── Import CRON tasks ──
 from tasks.cron import daily_notifications_cron, lecture_reminders_cron
@@ -175,6 +176,7 @@ app.include_router(news_router)
 app.include_router(account_router)
 app.include_router(study_router)
 app.include_router(notifications_router)
+app.include_router(admin_router)
 
 
 # ── Health Check ──

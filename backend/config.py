@@ -74,6 +74,11 @@ class Settings(BaseSettings):
     # Set to 0 to disable the limit (e.g. while developing locally).
     DAILY_AI_CREDITS: int = 60
 
+    # ── Admin dashboard (/admin) ──
+    # Comma-separated emails allowed to open it. The email must be verified
+    # in Firebase. Empty = nobody (the page answers 403).
+    ADMIN_EMAILS: str = ""
+
     # ── CORS ──
     # Comma-separated list of allowed frontend origins, e.g.
     #   ALLOWED_ORIGINS=http://localhost:3000,https://your-app.web.app

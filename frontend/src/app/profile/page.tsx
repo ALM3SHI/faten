@@ -31,6 +31,7 @@ import { SetupWizard } from "@/components/setup-wizard/SetupWizard";
 import { PrivacyCard } from "@/components/profile/privacy-card";
 import { NotificationsCard } from "@/components/profile/notifications-card";
 import { ReplayTourButton } from "@/components/profile/replay-tour-button";
+import { AdminLink } from "@/components/profile/admin-link";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
@@ -418,6 +419,7 @@ export default function ProfilePage() {
           <PrivacyCard />
         </div>
         <ReplayTourButton />
+        <AdminLink />
       </main>
 
       <SetupWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} />

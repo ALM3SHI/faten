@@ -99,6 +99,18 @@ const SOURCED_REPLIES = [
   ],
 ];
 
+const ADMIN_OVERVIEW = {
+  users: { total: 128, new_7d: 9, new_30d: 31 },
+  usage: { active_today: 17, active_7d: 54, requests_today: 96 },
+  devices: 23,
+  feedback: {
+    days: 30, total: 40, up: 34, down: 6, satisfaction: 85,
+    by_tool: { search_regulations: { up: 12, down: 4 }, get_upcoming_exams: { up: 9, down: 1 }, "(بدون أداة)": { up: 13, down: 1 } },
+    recent_down: [{ createdAt: "2026-10-12T09:30:00+00:00", question: "كم مرة اقدر اأجل؟", answer: "تقدر تأجل فصلين متتاليين…", comment: "الجواب ناقص", tools: ["search_regulations"] }],
+  },
+  reported_reviews: [{ code: "CS1101", course: "مقدمة في البرمجة", id: "a".repeat(20), tip: "الدكتور ما يشرح", reports: 3, hidden: true, updatedAt: "2026-10-01" }],
+};
+
 function chatReply(body) {
   const msgs = Array.isArray(body?.messages) ? body.messages : [];
   const q = String(body?.message ?? msgs.filter((m) => m?.role === "user").at(-1)?.content ?? "");
@@ -166,6 +178,13 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, { success: true, prefs: req.method === "PUT" && body ? { ...prefs, ...body } : prefs });
   }
   if (p.startsWith("/api/notifications/")) return send(res, 200, { success: true, id: "device1", sent: 1 });
+  if (p.startsWith("/api/admin/")) {
+    // Only the e2e admin account (uid e2e-admin) passes, like ADMIN_EMAILS on the server.
+    if (!String(req.headers.authorization).endsWith("e2e-admin")) return send(res, 403, { detail: "هذي الصفحة لمشرف فطن فقط." });
+    if (p === "/api/admin/me") return send(res, 200, { admin: true });
+    if (p === "/api/admin/overview") return send(res, 200, ADMIN_OVERVIEW);
+    return send(res, 200, { success: true });
+  }
   if (p === "/api/chat/stream") {
     res.writeHead(200, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache" });
     const reply = chatReply(body);
