@@ -38,6 +38,7 @@ test("add exams, see the countdown, the clash and the study plan", async ({ page
 
   // study plan with final reviews
   await expect(page.getByRole("heading", { name: "خطة المذاكرة قبل الاختبارات" })).toBeVisible();
+  await page.getByRole("button", { name: /عرض كل الأيام/ }).click();
   await expect(page.getByText(/مراجعة نهائية: /).first()).toBeVisible();
 
   // saved as one Firestore doc per exam, in the agent's shape

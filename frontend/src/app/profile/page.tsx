@@ -32,6 +32,7 @@ import { PrivacyCard } from "@/components/profile/privacy-card";
 import { NotificationsCard } from "@/components/profile/notifications-card";
 import { ReplayTourButton } from "@/components/profile/replay-tour-button";
 import { AdminLink } from "@/components/profile/admin-link";
+import { PageTabs } from "@/components/ui/page-tabs";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
@@ -115,17 +116,13 @@ export default function ProfilePage() {
         <div className="aurora-blob blob-2 opacity-10" />
       </div>
 
-      <main className="container mx-auto pt-32 px-4 max-w-4xl">
+      <main className="container mx-auto pt-24 px-4 max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-black mb-2">الملف الشخصي</h1>
             <p className="text-muted-foreground">قم بإعداد بياناتك للحصول على أفضل تجربة</p>
           </div>
           <div className="flex gap-3">
-            <Button onClick={handleSave} className="rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">
-              <Save className="w-4 h-4" />
-              حفظ التغييرات
-            </Button>
             <Button
               variant="destructive"
               onClick={async () => {
@@ -144,11 +141,19 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        <PageTabs
+          label="أقسام الملف الشخصي"
+          tabs={[
+            {
+              value: "data",
+              label: "بياناتي",
+              content: (
+                <div className="space-y-6">
         {/* Unified Academic Setup card — replaces the old separate
             "محلل السجل" and "محلل الجدول" buttons. */}
         <Card
           className={cn(
-            "rounded-[32px] p-6 md:p-8 mb-8 relative overflow-hidden",
+            "rounded-[32px] p-6 md:p-8 relative overflow-hidden",
             hasTranscript && hasSchedule
               ? "glass border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent"
               : "glass border border-uqu-accent/30 bg-gradient-to-br from-uqu-accent/8 via-transparent to-cyan-500/5 shadow-[0_0_40px_hsla(245,78%,62%,0.12)]",
@@ -237,7 +242,7 @@ export default function ProfilePage() {
           )}
         </Card>
 
-        <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-6">
           {/* Basic Info */}
           <Card className="glass p-8 rounded-[32px] border-foreground/10 space-y-6">
             <div className="flex items-center gap-3 mb-2">
@@ -249,8 +254,9 @@ export default function ProfilePage() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>الاسم الكامل</Label>
+                <Label htmlFor="profile-name">الاسم الكامل</Label>
                 <Input
+                  id="profile-name"
                   value={draft.basic.name}
                   onChange={(e) => {
                     setDraft((d) => ({
@@ -264,8 +270,9 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>التخصص الدراسي</Label>
+                <Label htmlFor="profile-major">التخصص الدراسي</Label>
                 <Input
+                  id="profile-major"
                   value={draft.basic.major}
                   onChange={(e) => {
                     setDraft((d) => ({
@@ -279,8 +286,9 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>الرقم الجامعي</Label>
+                <Label htmlFor="profile-id">الرقم الجامعي</Label>
                 <Input
+                  id="profile-id"
                   value={draft.basic.studentId}
                   onChange={(e) => {
                     setDraft((d) => ({
@@ -294,8 +302,9 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>عدد ساعات الخطة</Label>
+                <Label htmlFor="profile-plan-hours">عدد ساعات الخطة</Label>
                 <Input
+                  id="profile-plan-hours"
                   type="number"
                   inputMode="numeric"
                   min={0}
@@ -315,7 +324,7 @@ export default function ProfilePage() {
                   placeholder="مثال: 132"
                   className="rounded-xl glass border-foreground/10"
                 />
-                <p className="text-[11px] text-muted leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   إجمالي الساعات في خطتك الأكاديمية — يُستخدم لحساب المعدل التراكمي.
                 </p>
               </div>
@@ -333,8 +342,9 @@ export default function ProfilePage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>المعدل الحالي</Label>
+                <Label htmlFor="profile-gpa">المعدل الحالي</Label>
                 <Input
+                  id="profile-gpa"
                   type="number"
                   step="0.01"
                   value={draft.goals.currentGpa}
@@ -352,8 +362,9 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>المعدل المستهدف</Label>
+                <Label htmlFor="profile-target">المعدل المستهدف</Label>
                 <Input
+                  id="profile-target"
                   type="number"
                   step="0.01"
                   value={draft.goals.targetGpa}
@@ -380,8 +391,17 @@ export default function ProfilePage() {
             </div>
           </Card>
 
+                  </div>
+                </div>
+              ),
+            },
+            {
+              value: "notifications",
+              label: "الإعدادات",
+              content: (
+                <div className="grid gap-6">
           {/* Smart Preferences — compact summary; opens full hub in a modal */}
-          <Card className="glass p-6 md:p-7 rounded-[32px] border-foreground/10 md:col-span-2 relative overflow-hidden">
+          <Card className="glass p-6 md:p-7 rounded-[32px] border-foreground/10 relative overflow-hidden">
             <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-uqu-accent/10 blur-3xl pointer-events-none" />
             <div className="relative flex items-start justify-between gap-4 flex-wrap">
               <div className="flex items-start gap-3 min-w-0">
@@ -415,11 +435,38 @@ export default function ProfilePage() {
               ))}
             </div>
           </Card>
-          <NotificationsCard />
-          <PrivacyCard />
-        </div>
-        <ReplayTourButton />
-        <AdminLink />
+                  <NotificationsCard />
+                </div>
+              ),
+            },
+            {
+              value: "account",
+              label: "الخصوصية",
+              content: (
+                <div className="grid gap-6">
+                  <PrivacyCard />
+                  <div>
+                    <ReplayTourButton />
+                    <AdminLink />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+
+        {/* Unsaved edits (basic info, goals, preferences) — one save bar for all tabs. */}
+        {dirty && (
+          <div className="fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] lg:bottom-6 z-40 px-4 animate-in fade-in slide-in-from-bottom-2">
+            <div className="mx-auto max-w-4xl flex items-center justify-between gap-3 rounded-2xl border border-uqu-accent/30 bg-background/95 backdrop-blur-xl shadow-2xl px-4 py-3">
+              <span className="text-sm font-bold">عندك تغييرات غير محفوظة</span>
+              <Button onClick={handleSave} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">
+                <Save className="w-4 h-4" />
+                حفظ التغييرات
+              </Button>
+            </div>
+          </div>
+        )}
       </main>
 
       <SetupWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} />
@@ -465,14 +512,14 @@ function SetupSummaryCard({
         <div className="flex items-center gap-2">
           <span className="text-[13px] font-bold">{title}</span>
           {isReady && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
               مُكتمل
             </span>
           )}
         </div>
-        <div className="text-[11px] text-muted-foreground truncate">{primaryLine}</div>
+        <div className="text-xs text-muted-foreground truncate">{primaryLine}</div>
         {secondaryLine && (
-          <div className="text-[10px] text-muted truncate font-mono">{secondaryLine}</div>
+          <div className="text-xs text-muted-foreground truncate font-mono">{secondaryLine}</div>
         )}
       </div>
     </div>

@@ -90,7 +90,17 @@ export default function AttendancePage() {
           </div>
         </div>
 
-        <Card className="glass border-foreground/10 rounded-2xl p-4 mb-6 text-sm leading-7 gap-1">
+        {/* The rule in one line; the full text opens on demand. */}
+        <details className="group glass border border-foreground/10 rounded-2xl mb-6 text-sm">
+          <summary className="flex items-center justify-between gap-3 cursor-pointer list-none px-4 py-3 font-bold [&::-webkit-details-marker]:hidden">
+            <span>
+              حد الحرمان: <span className="text-rose-700 dark:text-rose-300">15% بدون عذر</span> أو{" "}
+              <span className="text-amber-800 dark:text-amber-300">25% بالمجموع</span>
+            </span>
+            <span className="text-xs text-uqu-accent shrink-0 group-open:hidden">التفاصيل</span>
+            <span className="text-xs text-uqu-accent shrink-0 hidden group-open:inline">إخفاء</span>
+          </summary>
+          <div className="px-4 pb-4 leading-7 space-y-1">
           <p>
             <span className="font-bold">حسب لائحة الدراسة والاختبارات (القاعدة التنفيذية للمادة 14):</span>{" "}
             يُحرم الطالب من دخول الاختبار النهائي إذا زاد غيابه <b>بدون عذر عن 15%</b>، أو زاد مجموع غيابه{" "}
@@ -99,7 +109,8 @@ export default function AttendancePage() {
           <p className="text-xs text-muted-foreground">
             الأرقام هنا تقديرية من جدولك؛ المرجع الرسمي هو سجل الحضور عند أستاذ المقرر.
           </p>
-        </Card>
+          </div>
+        </details>
 
         {!mounted ? null : courses.length === 0 ? (
           <Card className="glass border-dashed border-foreground/15 rounded-[32px] p-10 text-center flex flex-col items-center gap-4">
@@ -150,7 +161,7 @@ function CourseCard({ course, estimated }: { course: TrackedCourse; estimated: n
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-[11px] font-mono font-bold text-muted-foreground">{course.code}</div>
-          <h3 className="font-bold leading-snug">{course.name}</h3>
+          <h2 className="font-bold leading-snug">{course.name}</h2>
         </div>
         <span className={cn("shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-lg border flex items-center gap-1", ui.tone)}>
           <ui.Icon className="w-3.5 h-3.5" />
@@ -243,7 +254,7 @@ function CourseCard({ course, estimated }: { course: TrackedCourse; estimated: n
         />
         <Button
           size="sm"
-          className="h-9 rounded-xl mt-3 bg-rose-500 hover:bg-rose-500/90 text-white"
+          className="h-9 rounded-xl mt-3 bg-rose-600 hover:bg-rose-600/90 text-white"
           onClick={() => date && addAbsence(course.code, date, false)}
         >
           + غياب بدون عذر

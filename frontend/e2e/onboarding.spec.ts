@@ -44,7 +44,7 @@ test("skipping counts as done, and another device does not show it again", async
 
 test("the profile page can replay the tour", async ({ page }) => {
   await signIn(page);
-  await page.goto("/profile/");
+  await page.goto("/profile/#account");
   await page.getByRole("button", { name: "عرض الجولة التعريفية مرة ثانية" }).click();
   await expect(page).toHaveURL(/\/dashboard\/?$/);
   await expect(page.getByRole("dialog").getByRole("heading", { name: "أهلاً بك في فطن" })).toBeVisible();

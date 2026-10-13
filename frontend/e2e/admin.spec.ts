@@ -7,14 +7,14 @@ test("students cannot open the admin page and see no link to it", async ({ page 
   await signIn(page);
   await page.goto("/admin/");
   await expect(page.getByRole("heading", { name: "هذي الصفحة لمشرف فطن فقط." })).toBeVisible();
-  await page.goto("/profile/");
+  await page.goto("/profile/#account");
   await expect(page.getByRole("button", { name: "عرض الجولة التعريفية مرة ثانية" })).toBeVisible();
   await expect(page.getByRole("link", { name: "لوحة الإدارة" })).toHaveCount(0);
 });
 
 test("the admin sees the numbers and can restore a reported review", async ({ page }) => {
   await signIn(page, ADMIN);
-  await page.goto("/profile/");
+  await page.goto("/profile/#account");
   await page.getByRole("link", { name: "لوحة الإدارة" }).click();
   await expect(page).toHaveURL(/\/admin\/?$/);
 

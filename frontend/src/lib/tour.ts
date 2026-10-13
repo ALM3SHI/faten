@@ -73,7 +73,7 @@ export function tourSteps({ hasRecord }: { hasRecord: boolean }): TourStep[] {
       icon: "notifications",
       title: "خلّك على اطلاع",
       body: "فعّل الإشعارات على جوالك من الملف الشخصي: تذكير قبل المحاضرة، وتنبيه لما يقرب غيابك من الحد، وتذكير قبل اختباراتك.",
-      link: { href: "/profile", label: "تفعيل الإشعارات" },
+      link: { href: "/profile#notifications", label: "تفعيل الإشعارات" },
     },
   ];
 }

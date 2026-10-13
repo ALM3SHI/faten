@@ -15,6 +15,6 @@ describe("tourSteps", () => {
 
   it("every link points at a real page", () => {
     const pages = new Set(["/profile", "/chat", "/exams", "/study"]);
-    for (const s of tourSteps({ hasRecord: false })) if (s.link) expect(pages.has(s.link.href)).toBe(true);
+    for (const s of tourSteps({ hasRecord: false })) if (s.link) expect(pages.has(s.link.href.split("#")[0])).toBe(true);
   });
 });

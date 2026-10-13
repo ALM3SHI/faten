@@ -5,7 +5,7 @@ import { signIn } from "./helpers";
 // the card renders, explains why push is unavailable and still saves prefs.
 test("profile shows the notifications card and saves preferences", async ({ page }) => {
   await signIn(page);
-  await page.goto("/profile/");
+  await page.goto("/profile/#notifications");
   const card = page.getByRole("heading", { name: "الإشعارات على الجوال" }).locator("xpath=ancestor::*[@data-slot='card'][1]");
   await expect(card).toBeVisible();
   await expect(card).toContainText("متصفحك لا يدعم الإشعارات");

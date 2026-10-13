@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { AlertTriangle, CheckCircle2, Circle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -7,6 +8,8 @@ import { minutesLabel, weekdayAr, type ExamStudyPlan } from "@/lib/exams";
 import { formatExamDate } from "@/components/exams/exam-card";
 
 const DAILY_CHOICES = [60, 120, 180, 240, 300, 360];
+/** Days shown before «عرض كل الأيام»; the rest are one tap away. */
+const VISIBLE_DAYS = 3;
 
 export function ExamStudyPlanCard({
   plan,
@@ -24,6 +27,9 @@ export function ExamStudyPlanCard({
   onToggle: (key: string) => void;
 }) {
   const tight = plan.coverage.filter((c) => plan.tight.includes(c.examId));
+  const [showAll, setShowAll] = useState(false);
+  const days = showAll ? plan.days : plan.days.slice(0, VISIBLE_DAYS);
+  const hidden = plan.days.length - days.length;
   return (
     <Card className="glass rounded-[32px] border-foreground/10 p-6 md:p-8 space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -54,8 +60,8 @@ export function ExamStudyPlanCard({
         </p>
       )}
 
-      <ol className="space-y-3">
-        {plan.days.map((day) => (
+      <ol className="space-y-3" id="exam-plan-days">
+        {days.map((day) => (
           <li key={day.date} className={cn("rounded-2xl border border-foreground/10 p-4", day.date === today && "border-uqu-accent/40 bg-uqu-accent/[0.04]")}>
             <div className="flex items-baseline justify-between gap-2 mb-2">
               <span className="font-black text-sm">
@@ -100,6 +106,17 @@ export function ExamStudyPlanCard({
           </li>
         ))}
       </ol>
+      {(hidden > 0 || showAll) && plan.days.length > VISIBLE_DAYS && (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          aria-expanded={showAll}
+          aria-controls="exam-plan-days"
+          className="w-full rounded-xl border border-foreground/10 py-2.5 text-sm font-bold text-uqu-accent hover:bg-uqu-accent/5"
+        >
+          {showAll ? "عرض أقرب الأيام فقط" : `عرض كل الأيام (${plan.days.length})`}
+        </button>
+      )}
     </Card>
   );
 }

@@ -193,7 +193,7 @@ export default function GPAPage() {
           ) : (
             <>
               {/* Summary cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-both">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-both [&>*:last-child]:col-span-2 md:[&>*:last-child]:col-span-1">
                 <SummaryCard
                   label="المعدل التراكمي"
                   primary={historicalGpa.toFixed(2)}

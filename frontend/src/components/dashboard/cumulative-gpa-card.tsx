@@ -36,7 +36,9 @@ export function CumulativeGpaCard({
   /** Inside the dashboard's tabbed card: no card chrome, no title. */
   bare?: boolean;
 }) {
-  const [chartRef, chartVisible] = useInViewOnce<HTMLDivElement>();
+  // Load the chart only once it is actually on screen: on phones it sits
+  // just below the fold, and recharts is the heaviest script on this page.
+  const [chartRef, chartVisible] = useInViewOnce<HTMLDivElement>("0px");
   return (
     <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
       <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-6")}>

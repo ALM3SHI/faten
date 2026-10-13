@@ -42,17 +42,17 @@ export function SummaryCard({
         : "text-rose-400";
 
   return (
-    <Card className="glass p-6 rounded-[28px] border-foreground/10 hover:border-foreground/10 transition-colors group">
-      <div className="flex items-start justify-between mb-5">
+    <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10 hover:border-foreground/10 transition-colors group">
+      <div className="flex items-start justify-between mb-3">
         <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
           {label}
         </h2>
-        <div className={cn("w-11 h-11 rounded-2xl flex items-center justify-center border", tone)}>
+        <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center border", tone)}>
           {icon}
         </div>
       </div>
       <div className="space-y-2">
-        <div className="text-[2.75rem] leading-none font-black tracking-tighter font-mono">
+        <div className="text-3xl md:text-4xl leading-none font-black tracking-tighter font-mono">
           {primary}
         </div>
         <div className="flex items-baseline justify-between gap-2 text-xs">
@@ -90,16 +90,16 @@ export function RequiredToGraduateCard({
   // No target → CTA to /profile
   if (!required || required.status === "no_target" || targetGpa <= 0) {
     return (
-      <Card className="glass p-6 rounded-[28px] border-foreground/10">
-        <div className="flex items-start justify-between mb-5">
+      <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10">
+        <div className="flex items-start justify-between mb-3">
           <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
             المعدل المطلوب للأترام المتبقية
           </h2>
-          <div className="w-11 h-11 rounded-2xl flex items-center justify-center border bg-foreground/5 border-foreground/10">
-            <Target className="w-6 h-6 text-muted" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-foreground/5 border-foreground/10">
+            <Target className="w-5 h-5 text-muted" />
           </div>
         </div>
-        <div className="text-[2.75rem] leading-none font-black text-muted mb-2">—</div>
+        <div className="text-3xl md:text-4xl leading-none font-black text-muted mb-2">—</div>
         <p className="text-xs text-muted leading-relaxed">
           حدّد معدلاً مستهدفاً من{" "}
           <Link href="/profile" className="text-uqu-accent font-bold underline">
@@ -114,16 +114,16 @@ export function RequiredToGraduateCard({
   // Target set but plan hours unknown → CTA to /profile
   if (required.status === "no_plan" || totalPlanHours <= 0) {
     return (
-      <Card className="glass p-6 rounded-[28px] border-foreground/10">
-        <div className="flex items-start justify-between mb-5">
+      <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10">
+        <div className="flex items-start justify-between mb-3">
           <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
             المعدل المطلوب للأترام المتبقية
           </h2>
-          <div className="w-11 h-11 rounded-2xl flex items-center justify-center border bg-amber-500/10 border-amber-500/20">
-            <AlertCircle className="w-6 h-6 text-amber-400" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-amber-500/10 border-amber-500/20">
+            <AlertCircle className="w-5 h-5 text-amber-400" />
           </div>
         </div>
-        <div className="text-[2.75rem] leading-none font-black text-muted mb-2">—</div>
+        <div className="text-3xl md:text-4xl leading-none font-black text-muted mb-2">—</div>
         <p className="text-xs text-muted leading-relaxed">
           أدخل عدد ساعات خطتك الأكاديمية في{" "}
           <Link href="/profile" className="text-uqu-accent font-bold underline">
@@ -156,16 +156,16 @@ export function RequiredToGraduateCard({
   const remaining = required.remainingHours;
 
   return (
-    <Card className={cn("glass p-6 rounded-[28px] border", toneByStatus[status])}>
-      <div className="flex items-start justify-between mb-5">
+    <Card className={cn("glass p-4 md:p-5 gap-0 rounded-2xl border", toneByStatus[status])}>
+      <div className="flex items-start justify-between mb-3">
         <h2 className="text-sm font-extrabold tracking-wide opacity-90">
           المعدل المطلوب للأترام المتبقية
         </h2>
-        <div className="w-11 h-11 rounded-2xl flex items-center justify-center border border-foreground/10 bg-foreground/5 dark:bg-black/20">
-          <Target className="w-6 h-6" />
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center border border-foreground/10 bg-foreground/5 dark:bg-black/20">
+          <Target className="w-5 h-5" />
         </div>
       </div>
-      <div className="text-[2.75rem] leading-none font-black tracking-tighter font-mono mb-1">
+      <div className="text-3xl md:text-4xl leading-none font-black tracking-tighter font-mono mb-1">
         {display}
       </div>
       <div className="text-xs font-semibold opacity-90">
