@@ -1,7 +1,7 @@
 "use client";
 
 import { Zap } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { PanelRoot } from "@/components/dashboard/panel-root";
 import { cn } from "@/lib/utils";
 import { HighRoiCourse } from "@/components/dashboard/analytics";
 
@@ -17,14 +17,17 @@ export function HighRoiCard({
   courses,
   loading,
   hasCurrentTerm,
+  bare,
 }: {
   courses: HighRoiCourse[];
   loading: boolean;
   hasCurrentTerm: boolean;
+  /** Inside the dashboard's tabbed card: no card chrome, title kept for screen readers. */
+  bare?: boolean;
 }) {
   return (
-    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
+      <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "sr-only" : "mb-5")}>
         <div>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-700 dark:text-amber-400" />
@@ -42,7 +45,7 @@ export function HighRoiCard({
           <div className="h-20 rounded-2xl bg-foreground/5" />
         </div>
       ) : courses.length === 0 ? (
-        <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl text-center gap-2 p-6">
+        <div className="min-h-[140px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl text-center gap-2 p-6">
           <Zap className="w-8 h-8 text-muted" />
           <p className="text-sm text-muted-foreground">
             {hasCurrentTerm
@@ -62,7 +65,7 @@ export function HighRoiCard({
           </p>
         </div>
       )}
-    </Card>
+    </PanelRoot>
   );
 }
 

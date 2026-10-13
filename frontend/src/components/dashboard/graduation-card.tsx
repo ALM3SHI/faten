@@ -1,36 +1,6 @@
 "use client";
 
-import { useHydrated } from "@/lib/use-hydrated";
-import Link from "next/link";
-import { GraduationCap } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { termsLeftLabel, type GraduationProgress } from "@/lib/graduation";
-import { useGraduationProgress } from "@/lib/use-graduation";
-
-export function GraduationCard() {
-  const mounted = useHydrated();
-  const p = useGraduationProgress();
-
-  return (
-    <Card className="glass p-6 md:p-8 rounded-[32px] border-foreground/10 h-full flex flex-col">
-      <h3 className="text-xl font-bold flex items-center gap-2 mb-4">
-        <GraduationCap className="w-5 h-5 text-uqu-accent" />
-        طريقك للتخرج
-      </h3>
-      {!mounted ? (
-        <div className="h-24 rounded-2xl bg-foreground/5 animate-pulse" />
-      ) : !p ? (
-        <p className="text-sm text-muted-foreground leading-7">
-          ارفع سجلك الأكاديمي وحدّد ساعات خطتك من{" "}
-          <Link href="/profile" className="text-uqu-accent font-bold hover:underline">الملف الشخصي</Link>{" "}
-          لنحسب كم باقي لك للتخرج.
-        </p>
-      ) : (
-        <GraduationSummary p={p} />
-      )}
-    </Card>
-  );
-}
 
 /** Progress bar + "terms left" line — shared by the card and the hours dialog. */
 export function GraduationSummary({ p }: { p: GraduationProgress }) {

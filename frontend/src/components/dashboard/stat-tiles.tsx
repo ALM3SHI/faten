@@ -40,38 +40,23 @@ export function DialogStat({
 // Reused sub-components (KPI cards / Dialogs)
 // ──────────────────────────────────────────────────────────────────
 
-export function StatCard({
+/**
+ * Compact number tile for the dashboard's «وضعي الأكاديمي» row; the whole
+ * tile opens its drill-down dialog.
+ */
+export function StatTile({
   title,
   value,
-  subtitle,
-  footer,
+  hint,
   icon,
   color,
-  delay,
-  extraSubtext,
 }: {
   title: string;
   value: string;
-  subtitle: string;
-  footer: string;
+  hint?: string;
   icon: React.ReactNode;
   color: "emerald" | "uqu" | "cyan" | "rose";
-  delay?: string;
-  /** Sprint-4 Bug #7: subtle second-line muted text rendered below the
-   *  primary subtitle (e.g., "Expected GPA based on trajectory: X.XX"
-   *  on the Target GPA card). Optional so other cards stay unchanged. */
-  extraSubtext?: string;
 }) {
-  const colorMap = {
-    emerald:
-      "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300 dark:border-emerald-400/20",
-    uqu: "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent",
-    cyan:
-      "bg-cyan-500/10 border-cyan-500/30 text-cyan-700 dark:text-cyan-300 dark:border-cyan-400/20",
-    rose:
-      "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300 dark:border-rose-400/20",
-  } as const;
-
   const textColors = {
     emerald: "text-emerald-800 dark:text-emerald-300",
     uqu: "text-uqu-accent",
@@ -80,33 +65,15 @@ export function StatCard({
   } as const;
 
   return (
-    <Card
-      className={cn(
-        "glass p-6 rounded-[28px] border-foreground/10 hover:border-foreground/10 transition-all group animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
-        "relative overflow-hidden h-full flex flex-col",
-        delay,
-      )}
-    >
-      <div className="flex justify-between items-start mb-4">
-        <h2 className="text-sm font-bold text-foreground leading-snug">
-          {title}
-        </h2>
-        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", colorMap[color])}>
+    <Card className="glass p-3.5 md:p-4 gap-1 rounded-2xl border-foreground/10 hover:border-uqu-accent/30 transition-colors h-full">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-xs font-bold text-muted-foreground leading-snug">{title}</h3>
+        <span className="hidden sm:inline-flex" aria-hidden>
           {icon}
-        </div>
+        </span>
       </div>
-      <div className="space-y-1">
-        <div className={cn("text-4xl font-black tracking-tighter", textColors[color])}>{value}</div>
-        <div className="text-[10px] font-bold text-muted-foreground">{subtitle}</div>
-        {extraSubtext && (
-          <div className="text-[10px] font-medium text-muted leading-relaxed pt-0.5">
-            {extraSubtext}
-          </div>
-        )}
-      </div>
-      <div className="mt-auto pt-4 border-t border-foreground/10 text-[10px] text-muted-foreground font-medium">
-        {footer}
-      </div>
+      <div className={cn("text-2xl md:text-3xl font-black tracking-tight tabular-nums", textColors[color])}>{value}</div>
+      {hint && <div className="text-[11px] leading-snug text-muted-foreground line-clamp-2">{hint}</div>}
     </Card>
   );
 }

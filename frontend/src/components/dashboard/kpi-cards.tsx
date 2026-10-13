@@ -18,7 +18,18 @@ import {
 } from "@/components/ui/dialog";
 import type { EnrichedCourse } from "@/store/transcriptStore";
 import type { GraduationProgress } from "@/lib/graduation";
-import { StatCard, KvRow, KvTile } from "@/components/dashboard/stat-tiles";
+
+/** "11% · باقي ~7–8 فصول" for the hours tile; the dialog has the full summary. */
+function hoursHint(g: GraduationProgress | null): string {
+  if (!g) return "حدّد ساعات خطتك من الملف الشخصي";
+  if (g.remaining === 0) return "أكملت ساعات خطتك 🎓";
+  if (g.graduatesThisTerm) return `${g.percent}% · تتخرج هذا الفصل 🎓`;
+  const { min, max } = g.termsLeft;
+  // "7 إلى 8" rather than "7–8": a dash between numbers flips in RTL text.
+  const terms = min === max ? `${min}` : `${min} إلى ${max}`;
+  return `${g.percent}% · باقي ${terms} ${max <= 2 ? "فصل" : "فصول"} تقريباً`;
+}
+import { StatTile, KvRow, KvTile } from "@/components/dashboard/stat-tiles";
 import { RecentCourseRow } from "@/components/dashboard/recent-course-row";
 import { GraduationSummary } from "@/components/dashboard/graduation-card";
 import { TargetGpaEditDialog, TargetGpaCallout } from "@/components/dashboard/target-gpa";
@@ -45,14 +56,12 @@ export function CurrentGpaKpi({
   return (
     <Dialog>
       <DialogTrigger nativeButton={false} render={TRIGGER}>
-        <StatCard
-          title="المعدل الحالي"
+        <StatTile
+          title="المعدل"
           value={hydrated ? currentGpa.toFixed(2) : "—"}
-          subtitle="من أصل 4.00"
-          footer="اضغط لمعرفة التفاصيل"
-          icon={<TrendingUp className="w-5 h-5 text-emerald-700 dark:text-emerald-500" />}
+          hint="من 4.00"
+          icon={<TrendingUp className="w-4 h-4 text-emerald-700 dark:text-emerald-500" />}
           color="emerald"
-          delay="delay-0"
         />
       </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-md`}>
@@ -100,14 +109,12 @@ export function EarnedHoursKpi({
   return (
     <Dialog>
       <DialogTrigger nativeButton={false} render={TRIGGER}>
-        <StatCard
-          title="الساعات المنجزة"
-          value={hydrated ? String(earnedHours) : "—"}
-          subtitle={graduation ? `من أصل ${graduation.planHours} ساعة` : "ساعة مكتسبة"}
-          footer="اضغط لمعاينة التقدم"
-          icon={<BookOpen className="w-5 h-5 text-cyan-700 dark:text-cyan-500" />}
+        <StatTile
+          title="الساعات"
+          value={hydrated ? (graduation ? `${earnedHours}/${graduation.planHours}` : String(earnedHours)) : "—"}
+          hint={hydrated ? hoursHint(graduation) : undefined}
+          icon={<BookOpen className="w-4 h-4 text-cyan-700 dark:text-cyan-500" />}
           color="cyan"
-          delay="delay-100"
         />
       </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-lg`}>
@@ -152,6 +159,13 @@ export function EarnedHoursKpi({
   );
 }
 
+function targetHint(status: TargetCalloutStatus, required: number, expected: number | null): string {
+  if (status === "achieved") return "تجاوزت هدفك 🎯";
+  if (status === "impossible") return "صعب الفصل القادم — شوف الخيارات";
+  if (status === "feasible" || status === "stretch") return `تحتاج ${required.toFixed(2)} الفصل القادم`;
+  return expected != null ? `المتوقع ${expected.toFixed(2)}` : "حدّد هدفك";
+}
+
 export function TargetGpaKpi({
   hydrated,
   currentGpa,
@@ -172,21 +186,13 @@ export function TargetGpaKpi({
   return (
     <Dialog>
       <DialogTrigger nativeButton={false} render={TRIGGER}>
-        <StatCard
-          title="المعدل المستهدف"
+        <StatTile
+          title="المستهدف"
           value={hydrated ? targetGpa.toFixed(2) : "—"}
-          subtitle="حسب إعداداتك"
-          footer="اضغط لمعرفة المطلوب"
-          icon={<Target className="w-5 h-5 text-uqu-accent" />}
+          hint={hydrated ? targetHint(status, required, expectedGpa) : undefined}
+          icon={<Target className="w-4 h-4 text-uqu-accent" />}
           color="uqu"
-          delay="delay-200"
-          extraSubtext={
-            hydrated && expectedGpa != null
-              ? `المعدل المتوقع بناءً على مسارك: ${expectedGpa.toFixed(2)}`
-              : undefined
-          }
-        />
-      </DialogTrigger>
+        />      </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-md`}>
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">

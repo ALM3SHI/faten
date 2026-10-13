@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { LineChart as LineChartIcon, Sparkles } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { PanelRoot } from "@/components/dashboard/panel-root";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useInViewOnce } from "@/lib/use-in-view";
@@ -25,6 +25,7 @@ export function CumulativeGpaCard({
   completedCount,
   badgeStatus,
   nextHours,
+  bare,
 }: {
   series: { semester: string; cumulativeGpa: number; semesterGpa: number }[];
   loading: boolean;
@@ -32,12 +33,14 @@ export function CumulativeGpaCard({
   badgeStatus: TargetCalloutStatus;
   /** Hours the backend's target analysis assumes for next term. */
   nextHours: number;
+  /** Inside the dashboard's tabbed card: no card chrome, no title. */
+  bare?: boolean;
 }) {
   const [chartRef, chartVisible] = useInViewOnce<HTMLDivElement>();
   return (
-    <Card className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div>
+    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
+      <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-6")}>
+        <div className={cn(bare && "sr-only")}>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
             <LineChartIcon className="w-5 h-5 text-uqu-accent" />
             تقدم المعدل التراكمي
@@ -69,7 +72,7 @@ export function CumulativeGpaCard({
         </Badge>
       </div>
 
-      <div className="flex-1 min-h-[280px]" ref={chartRef}>
+      <div className={cn("flex-1", bare ? "min-h-[220px]" : "min-h-[280px]")} ref={chartRef}>
         {loading ? (
           <ChartSkeleton />
         ) : series.length < 2 ? (
@@ -106,7 +109,7 @@ export function CumulativeGpaCard({
           </div>
         </div>
       )}
-    </Card>
+    </PanelRoot>
   );
 }
 

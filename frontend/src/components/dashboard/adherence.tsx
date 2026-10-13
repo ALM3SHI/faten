@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { ListChecks, CheckCircle2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { PanelRoot } from "@/components/dashboard/panel-root";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,11 +18,14 @@ export function AdherenceCard({
   total,
   pct,
   hasPlan,
+  bare,
 }: {
   completed: number;
   total: number;
   pct: number;
   hasPlan: boolean;
+  /** Inside the dashboard's tabbed card: no card chrome, title kept for screen readers. */
+  bare?: boolean;
 }) {
   const tone =
     pct >= 70
@@ -67,10 +70,30 @@ export function AdherenceCard({
           ? "تقدّم جيد — استمر"
           : "ركّز على إكمال مهام اليوم";
 
+  // No plan yet: one line and the button, not an empty ring of zeros.
+  if (!hasPlan) {
+    return (
+      <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
+        <h3 className={cn("text-xl font-bold mb-1 flex items-center gap-2", bare && "sr-only")}>
+          <ListChecks className="w-5 h-5 text-uqu-accent" />
+          مؤشر الانضباط
+        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between py-2">
+          <p className="text-sm text-muted-foreground leading-7">
+            ولّد خطة مذاكرة لهذا الأسبوع، وهنا تشوف كم أنجزت من مهامها.
+          </p>
+          <Link href="/plan" prefetch={false} onClick={(e) => e.stopPropagation()} className="shrink-0">
+            <Button className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">ولّد خطتك الذكية</Button>
+          </Link>
+        </div>
+      </PanelRoot>
+    );
+  }
+
   return (
-    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div>
+    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
+      <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-5")}>
+        <div className={cn(bare && "sr-only")}>
           <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
             <ListChecks className={cn("w-5 h-5", t.icon)} />
             مؤشر الانضباط
@@ -160,7 +183,7 @@ export function AdherenceCard({
           )}
         </div>
       </div>
-    </Card>
+    </PanelRoot>
   );
 }
 

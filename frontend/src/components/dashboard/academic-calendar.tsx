@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { CalendarDays, CalendarClock, CalendarPlus } from "lucide-react";
 import { buildAcademicCalendarIcs, downloadIcs } from "@/lib/ics";
-import { Card } from "@/components/ui/card";
+import { PanelRoot } from "@/components/dashboard/panel-root";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
@@ -48,7 +48,7 @@ function daysUntilLabel(ev: CalendarEvent, today: Date): string {
 }
 
 
-export function AcademicCalendarCard() {
+export function AcademicCalendarCard({ bare, limit = 3 }: { bare?: boolean; limit?: number } = {}) {
   // Computed on the client only — the page is statically exported, so
   // "today" must come from the visitor's clock, not the build machine.
   const [now, setNow] = useState<Date | null>(null);
@@ -57,16 +57,16 @@ export function AcademicCalendarCard() {
     setNow(new Date());
   }, []);
 
-  const upcoming = now ? getUpcomingEvents(now).slice(0, 3) : [];
+  const upcoming = now ? getUpcomingEvents(now).slice(0, limit) : [];
   const todayStr = now
     ? new Intl.DateTimeFormat("ar-SA", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now)
     : "";
 
   return (
-    <Card className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden h-full flex flex-col">
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden h-full flex flex-col">
+      <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-5")}>
         <div>
-          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
+          <h3 className={cn("text-xl font-bold mb-1 flex items-center gap-2", bare && "sr-only")}>
             <CalendarDays className="w-5 h-5 text-uqu-cyan" />
             التقويم الجامعي {ACADEMIC_YEAR_LABEL}
           </h3>
@@ -109,10 +109,10 @@ export function AcademicCalendarCard() {
         )}
       </div>
 
-      <div className="mt-5 pt-4 border-t border-foreground/10 text-[11px] text-muted-foreground font-medium text-center">
-        اضغط لعرض التقويم الكامل للفصلين
+      <div className={cn("text-[11px] font-bold text-center", bare ? "mt-3 text-uqu-accent" : "mt-5 pt-4 border-t border-foreground/10 text-muted-foreground font-medium")}>
+        {bare ? "عرض التقويم الكامل للفصلين ←" : "اضغط لعرض التقويم الكامل للفصلين"}
       </div>
-    </Card>
+    </PanelRoot>
   );
 }
 

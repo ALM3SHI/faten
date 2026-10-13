@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ExternalLink, Newspaper, RefreshCw } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { PanelRoot } from "@/components/dashboard/panel-root";
 import { fetchWithAuth } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ function relative(iso: string | null): string {
   return DATE_AR.format(d);
 }
 
-export function UniversityNewsCard() {
+export function UniversityNewsCard({ bare, limit = 5 }: { bare?: boolean; limit?: number } = {}) {
   const [items, setItems] = useState<NewsItem[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -51,9 +51,9 @@ export function UniversityNewsCard() {
   }, [reloadKey]);
 
   return (
-    <Card className="glass p-6 md:p-8 rounded-[32px] border-foreground/10 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4 gap-3">
-        <h3 className="text-xl font-bold flex items-center gap-2">
+    <PanelRoot bare={bare} className="glass p-6 md:p-8 rounded-[32px] border-foreground/10 h-full flex flex-col">
+      <div className={cn("flex items-center justify-between gap-3", bare ? "mb-2" : "mb-4")}>
+        <h3 className={cn("text-xl font-bold flex items-center gap-2", bare && "sr-only")}>
           <Newspaper className="w-5 h-5 text-uqu-cyan" />
           أخبار الجامعة
         </h3>
@@ -87,7 +87,7 @@ export function UniversityNewsCard() {
             </button>
           </div>
         ) : (
-          items.map((n) => (
+          items.slice(0, limit).map((n) => (
             <a
               key={n.link}
               href={n.link}
@@ -115,6 +115,6 @@ export function UniversityNewsCard() {
         )}
       </div>
       <p className="mt-3 text-[10px] text-muted-foreground text-center">المصدر: الموقع الرسمي لجامعة أم القرى</p>
-    </Card>
+    </PanelRoot>
   );
 }
