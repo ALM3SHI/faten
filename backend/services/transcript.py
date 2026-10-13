@@ -30,6 +30,7 @@ from pydantic import BaseModel, Field
 
 from agent.loop import get_openai_client
 from config import get_settings
+from common.errors import upstream_ai_message
 
 logger = logging.getLogger(__name__)
 
@@ -166,13 +167,11 @@ async def analyze_transcript(payload: TranscriptAnalysisRequest) -> Dict[str, An
     except APIError as exc:
         logger.error("NVIDIA advisor call failed (%s): %s", type(exc).__name__, exc)
         raise TranscriptAIError(
-            f"تعذّر الاتصال بمحرّك الذكاء الاصطناعي. السبب: {type(exc).__name__}"
+            f"تعذّر تحليل السجل الآن. السبب: {upstream_ai_message(getattr(exc, 'status_code', None))}"
         )
     except Exception as exc:
         logger.error("Unexpected error during NVIDIA advisor call: %s", exc, exc_info=True)
-        raise TranscriptAIError(
-            f"حدث خطأ غير متوقع أثناء التحليل. السبب: {type(exc).__name__}: {exc}"
-        )
+        raise TranscriptAIError("حدث خطأ غير متوقع أثناء تحليل السجل. حاول مرة أخرى بعد قليل.")
 
     text = (completion.choices[0].message.content or "").strip()
     if not text:
@@ -181,7 +180,7 @@ async def analyze_transcript(payload: TranscriptAnalysisRequest) -> Dict[str, An
     parsed = _safe_json_parse(text)
     if parsed is None or not isinstance(parsed, dict):
         logger.error("Advisor returned non-JSON content: %s", text[:300])
-        raise TranscriptAIError("استجابة المحرّك ليست JSON صالحاً.")
+        raise TranscriptAIError("وصل رد غير مفهوم من محرّك التحليل. حاول مرة أخرى.")
 
     return _normalize_analysis(parsed)
 

@@ -3,7 +3,7 @@
  * Handles AI Chat interaction, Client-side Tools, and Markdown Rendering.
  */
 
-import { fetchRawWithAuth, fetchWithAuth } from './api';
+import { ApiError, errorMessageFromBody, fetchRawWithAuth, fetchWithAuth } from './api';
 import { Storage, STORAGE_KEYS } from './core'; // STORAGE_KEYS.THEME only (Phase 4C.5)
 import {
   buildClientContext,
@@ -249,7 +249,7 @@ export const AIService = {
     if (res.status === 404 || res.status === 405 || !res.body) return fallback();
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || `HTTP error! status: ${res.status}`);
+      throw new ApiError(errorMessageFromBody(err, res.status), res.status);
     }
 
     const reader = res.body.getReader();

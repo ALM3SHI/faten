@@ -9,7 +9,7 @@ import hashlib
 def save_feedback(db, uid: str, payload: dict) -> dict:
     rating = payload.get("rating")
     if rating not in ("up", "down", None):
-        raise ValueError("rating must be up, down or null")
+        raise ValueError("التقييم يجب أن يكون 👍 أو 👎 أو بدون تقييم.")
     answer = str(payload.get("answer") or "")[:4000]
     question = str(payload.get("question") or "")[:2000]
     conv = str(payload.get("conversationId") or "")[:100]

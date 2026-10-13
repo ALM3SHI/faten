@@ -161,18 +161,13 @@ async def analyze_schedule_vision(pdf_bytes: bytes) -> Dict[str, Any]:
         )
     except HTTPException as exc:
         # `call_gemini` raises HTTPException on quota / payload / parse failures.
-        # Bubble the underlying message up — the frontend's error-surfacing
-        # already shows it to the user (e.g. "Gemini RESOURCE_EXHAUSTED: ...").
+        # Bubble the (Arabic) reason up — the frontend shows it to the user.
         logger.error("Gemini schedule vision call failed (HTTP %s): %s",
                      exc.status_code, exc.detail)
-        raise ScheduleVisionAIError(
-            f"تعذّر تحليل الجدول بواسطة محرّك الذكاء البصري. السبب: {exc.detail}"
-        )
+        raise ScheduleVisionAIError(f"تعذّر تحليل الجدول بواسطة محرّك الذكاء البصري. السبب: {exc.detail}")
     except Exception as exc:
         logger.error("Unexpected Gemini schedule vision error: %s", exc, exc_info=True)
-        raise ScheduleVisionAIError(
-            f"حدث خطأ غير متوقع أثناء تحليل الجدول. السبب: {type(exc).__name__}: {exc}"
-        )
+        raise ScheduleVisionAIError("حدث خطأ غير متوقع أثناء تحليل الجدول. حاول مرة أخرى، وإذا تكرر جرّب ملفاً آخر.")
 
     # Gemini occasionally returns a bare array (it ignores the wrapper key)
     # when the prompt heavily emphasizes the list; tolerate both shapes.

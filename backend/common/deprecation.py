@@ -40,7 +40,7 @@ def raise_deprecated_endpoint(
             "deprecated": True,
             "code": CODE,
             "endpoint": endpoint,
-            "message": "This endpoint is deprecated and no longer writes to Firestore.",
+            "message": "هذه الخدمة متوقفة ولم تعد تحفظ أي بيانات. حدّث التطبيق لاستخدام البديل.",
             "replacement": replacement,
             "legacyFirestorePaths": list(legacy_firestore_paths),
             "phase": PHASE,

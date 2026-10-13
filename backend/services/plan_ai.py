@@ -44,6 +44,7 @@ from schemas.plan_ai import (
     PlanScheduleSlotInput,
     StudyPlan,
 )
+from common.errors import AI_EMPTY_REPLY_MESSAGE, AI_KEY_MISSING_MESSAGE, upstream_ai_message
 from services.plan_task_placement import (
     AI_SESSION_DEFAULT,
     AI_SESSION_MAX,
@@ -462,7 +463,7 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
         if not completion.choices:
             raise HTTPException(
                 status_code=502,
-                detail="OpenAI returned no choices.",
+                detail=AI_EMPTY_REPLY_MESSAGE,
             )
         msg = completion.choices[0].message
         text = (msg.content or "").strip()
@@ -483,7 +484,7 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
         if not text:
             raise HTTPException(
                 status_code=502,
-                detail="OpenAI returned an empty message.",
+                detail=AI_EMPTY_REPLY_MESSAGE,
             )
         return text
 
@@ -506,13 +507,12 @@ async def _call_openai_plan(system_prompt: str, user_content: str) -> Any:
         logger.warning("OpenAI upstream connection error: %s", exc)
         raise HTTPException(status_code=502, detail="تعذّر الاتصال بمزود الذكاء الاصطناعي.") from exc
     except APIStatusError as exc:
-        detail = f"OpenAI upstream error: {exc.status_code} {getattr(exc, 'message', '')}".strip()
-        logger.warning(detail)
+        logger.warning("OpenAI upstream error: %s %s", exc.status_code, getattr(exc, "message", ""))
         status = 429 if exc.status_code == 429 else 502
-        raise HTTPException(status_code=status, detail=detail) from exc
+        raise HTTPException(status_code=status, detail=upstream_ai_message(exc.status_code)) from exc
     except APIError as exc:
         logger.error("OpenAI API error: %s", exc, exc_info=True)
-        raise HTTPException(status_code=502, detail=f"خطأ من مزود الذكاء الاصطناعي: {exc}") from exc
+        raise HTTPException(status_code=502, detail=upstream_ai_message(None)) from exc
     finally:
         try:
             await client.close()
@@ -555,9 +555,7 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
             return await _call_openai_plan(system_prompt, user_content)
         raise HTTPException(
             status_code=503,
-            detail=(
-                "Plan generation requires LLAMA_API_KEY or an AI_PROVIDER key on the server."
-            ),
+            detail=AI_KEY_MISSING_MESSAGE,
         )
 
     # The OpenAI SDK enforces that the API key not be an empty string;
@@ -587,7 +585,7 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
         if not completion.choices:
             raise HTTPException(
                 status_code=502,
-                detail="Llama returned no choices.",
+                detail=AI_EMPTY_REPLY_MESSAGE,
             )
         msg = completion.choices[0].message
         text = (msg.content or "").strip()
@@ -608,7 +606,7 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
         if not text:
             raise HTTPException(
                 status_code=502,
-                detail="Llama returned an empty message.",
+                detail=AI_EMPTY_REPLY_MESSAGE,
             )
         return text
 
@@ -632,15 +630,14 @@ async def _call_llama(system_prompt: str, user_content: str) -> Any:
         logger.warning("Llama upstream connection error: %s", exc)
         raise HTTPException(status_code=502, detail="تعذّر الاتصال بمزود الذكاء الاصطناعي.") from exc
     except APIStatusError as exc:
-        detail = f"Llama upstream error: {exc.status_code} {getattr(exc, 'message', '')}".strip()
-        logger.warning(detail)
+        logger.warning("Llama upstream error: %s %s", exc.status_code, getattr(exc, "message", ""))
         # Map 429 / quota errors back to 429 so the frontend can show
         # a "rate-limited" UX; everything else surfaces as 502.
         status = 429 if exc.status_code == 429 else 502
-        raise HTTPException(status_code=status, detail=detail) from exc
+        raise HTTPException(status_code=status, detail=upstream_ai_message(exc.status_code)) from exc
     except APIError as exc:
         logger.error("Llama API error: %s", exc, exc_info=True)
-        raise HTTPException(status_code=502, detail=f"خطأ من مزود الذكاء الاصطناعي: {exc}") from exc
+        raise HTTPException(status_code=502, detail=upstream_ai_message(None)) from exc
     finally:
         # AsyncOpenAI keeps an httpx client open under the hood;
         # close it explicitly so we don't leak sockets across requests.

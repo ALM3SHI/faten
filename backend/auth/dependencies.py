@@ -25,7 +25,7 @@ async def get_current_user(authorization: str = Header(default="")) -> str:
     if not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=401,
-            detail="مطلوب تسجيل الدخول — Authorization header مفقود",
+            detail="سجّل دخولك أولاً — لم يصل رمز الدخول مع الطلب.",
         )
     return _decode_firebase_token(authorization[7:])
 

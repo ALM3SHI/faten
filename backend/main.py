@@ -35,6 +35,7 @@ from services.llm import make_llm_client
 
 from config import get_settings
 from db.firestore import init_firestore
+from common.errors import install_error_handlers
 from observability import REQUEST_ID_HEADER, install_observability
 
 # ── Import Routers ──
@@ -148,6 +149,8 @@ app.add_middleware(
 
 # ── Request ids, access logs, safe 500s, gzip, optional Sentry ──
 install_observability(app)
+# ── Arabic messages for 404/405/422 and other framework errors ──
+install_error_handlers(app)
 
 # ── Register Routers ──
 app.include_router(chat_router)

@@ -13,6 +13,7 @@ from typing import Any
 from fastapi import HTTPException
 
 from config import get_settings
+from common.errors import RETRYABLE_UPSTREAM
 from services.gemini import call_gemini
 
 logger = logging.getLogger(__name__)
@@ -84,6 +85,9 @@ def normalize(raw: Any, n: int) -> dict:
 
 
 def _retryable(exc: HTTPException) -> bool:
+    upstream = getattr(exc, "upstream_status", None)
+    if upstream is not None:
+        return upstream in RETRYABLE_UPSTREAM
     d = str(exc.detail)
     return any(k in d for k in ("RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL", "429", "503", "500"))
 

@@ -12,6 +12,13 @@ from typing import Any
 import httpx
 from fastapi import HTTPException, status
 from config import get_settings
+from common.errors import (
+    AI_BAD_REPLY_MESSAGE,
+    AI_BLOCKED_MESSAGE,
+    AI_EMPTY_REPLY_MESSAGE,
+    AI_KEY_MISSING_MESSAGE,
+    UpstreamAIError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +41,7 @@ async def call_gemini(
 ) -> Any:
     settings = get_settings()
     if not settings.GEMINI_API_KEY:
-        raise HTTPException(status_code=503, detail="API Key missing")
+        raise HTTPException(status_code=503, detail=AI_KEY_MISSING_MESSAGE)
 
     url = f"{GEMINI_BASE}/{model or settings.GEMINI_MODEL}:generateContent"
 
@@ -89,10 +96,13 @@ async def call_gemini(
             err = err_body.get("error") or {}
             err_msg = err.get("message") or response.text[:400]
             err_status = err.get("status") or f"HTTP {response.status_code}"
-            detail = f"Gemini {err_status}: {err_msg}"
+            logger.error("Gemini %s: %s", err_status, err_msg)
         except Exception:
-            detail = f"Gemini HTTP {response.status_code}: {response.text[:400]}"
-        raise HTTPException(status_code=502, detail=detail)
+            logger.error("Gemini HTTP %s: %s", response.status_code, response.text[:400])
+        raise UpstreamAIError(
+            upstream_status=response.status_code,
+            status_code=429 if response.status_code == 429 else 502,
+        )
 
     data = response.json()
     
@@ -103,19 +113,19 @@ async def call_gemini(
             if 'promptFeedback' in data and data['promptFeedback'].get('blockReason'):
                 reason = data['promptFeedback']['blockReason']
                 logger.error(f"Gemini blocked prompt: {reason}")
-                raise HTTPException(status_code=502, detail=f"Gemini blocked the request: {reason}")
+                raise HTTPException(status_code=502, detail=AI_BLOCKED_MESSAGE)
             
             logger.error(f"Gemini API Error (No candidates): {data}")
-            raise HTTPException(status_code=502, detail="Gemini returned no candidates.")
+            raise HTTPException(status_code=502, detail=AI_EMPTY_REPLY_MESSAGE)
 
         candidate = candidates[0]
         if candidate.get('finishReason') == 'SAFETY':
-             raise HTTPException(status_code=502, detail="Gemini blocked the response for safety reasons.")
+             raise HTTPException(status_code=502, detail=AI_BLOCKED_MESSAGE)
 
         parts = candidate.get('content', {}).get('parts', [])
         if not parts or 'text' not in parts[0]:
             logger.error(f"Gemini API Error (No text in parts): {data}")
-            raise HTTPException(status_code=502, detail="Gemini returned no text content.")
+            raise HTTPException(status_code=502, detail=AI_EMPTY_REPLY_MESSAGE)
 
         text_content = parts[0]['text'].strip()
         
@@ -144,7 +154,7 @@ async def call_gemini(
             
     except (KeyError, IndexError, ValueError) as e:
         logger.error(f"Gemini Parsing Error: {str(e)} | Data: {data}")
-        raise HTTPException(status_code=502, detail=f"Failed to parse Gemini response: {str(e)}")
+        raise HTTPException(status_code=502, detail=AI_BAD_REPLY_MESSAGE)
 
 
 async def call_gemini_chat_text(

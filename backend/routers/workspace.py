@@ -58,7 +58,7 @@ async def get_workspace(user_id: str = Depends(get_current_user)) -> WorkspaceRe
         return WorkspaceResponse(**data)
     except Exception as err:
         logger.error("[workspace] GET /api/workspace failed: %s", err, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر تحميل بياناتك من الخادم. حدّث الصفحة بعد قليل.") from err
 
 
 @router.patch("/api/workspace/profile", response_model=ProfileSaveResponse)
@@ -73,7 +73,7 @@ async def patch_workspace_profile(
         return ProfileSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/profile failed: %s", err, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حفظ ملفك الشخصي. تغييراتك محفوظة على جهازك وسنعيد المحاولة تلقائياً.") from err
 
 
 @router.patch("/api/workspace/transcript", response_model=TranscriptSaveResponse)
@@ -88,7 +88,7 @@ async def patch_workspace_transcript(
         return TranscriptSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/transcript failed: %s", err, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حفظ السجل الأكاديمي. بياناتك محفوظة على جهازك وسنعيد المحاولة تلقائياً.") from err
 
 
 @router.patch("/api/workspace/schedule", response_model=ScheduleSaveResponse)
@@ -103,7 +103,7 @@ async def patch_workspace_schedule(
         return ScheduleSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/schedule failed: %s", err, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حفظ الجدول الدراسي. تغييراتك محفوظة على جهازك وسنعيد المحاولة تلقائياً.") from err
 
 
 @router.patch("/api/workspace/plan", response_model=PlanSaveResponse)
@@ -118,7 +118,7 @@ async def patch_workspace_plan(
         return PlanSaveResponse(**data)
     except Exception as err:
         logger.error("[workspace] PATCH /api/workspace/plan failed: %s", err, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حفظ خطة المذاكرة. تغييراتك محفوظة على جهازك وسنعيد المحاولة تلقائياً.") from err
 
 
 @router.patch("/api/workspace/chats/{thread_id}", response_model=ChatThreadSaveResponse)
@@ -139,7 +139,7 @@ async def patch_workspace_chat_thread(
             err,
             exc_info=True,
         )
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حفظ المحادثة. حاول مرة أخرى بعد قليل.") from err
 
 
 @router.delete(
@@ -162,7 +162,7 @@ async def delete_workspace_chat_thread(
             err,
             exc_info=True,
         )
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر حذف المحادثة. حاول مرة أخرى بعد قليل.") from err
 
 
 @router.post(
@@ -183,4 +183,4 @@ async def post_suppress_chats_legacy_fallback(
             err,
             exc_info=True,
         )
-        raise HTTPException(status_code=500, detail=str(err)) from err
+        raise HTTPException(status_code=500, detail="تعذّر تحديث إعدادات المحادثات. حاول مرة أخرى بعد قليل.") from err

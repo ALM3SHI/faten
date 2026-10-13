@@ -43,9 +43,9 @@ async def trigger_daily_notifications(
     global _running
     expected = get_settings().CRON_SECRET
     if not expected:
-        raise HTTPException(status_code=503, detail="CRON_SECRET is not configured")
+        raise HTTPException(status_code=503, detail="مهمة الإشعارات اليومية غير مفعّلة: CRON_SECRET غير مضبوط على الخادم.")
     if not secrets.compare_digest(x_cron_secret, expected):
-        raise HTTPException(status_code=401, detail="Invalid cron secret")
+        raise HTTPException(status_code=401, detail="رمز مهمة الإشعارات (X-Cron-Secret) غير صحيح.")
     if _running:
         return {"status": "already_running"}
 

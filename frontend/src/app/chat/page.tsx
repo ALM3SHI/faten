@@ -12,7 +12,7 @@ import { BotMarkdown } from "@/components/bot-markdown";
 import { extractCitations } from "@/lib/citations";
 import { toolStatusLabel } from "@/lib/sse";
 import { useBackendStatus } from "@/lib/backend-status";
-import { api } from "@/lib/api";
+import { api, ApiError, NETWORK_ERROR_MESSAGE } from "@/lib/api";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -317,9 +317,11 @@ function ChatPageContent() {
         error instanceof Error && error.message
           ? error.message
           : "فشل غير معروف.";
-      const isNetwork = /failed to fetch|networkerror|typeerror/i.test(detail);
+      const isNetwork =
+        (error instanceof ApiError && error.status === 0) ||
+        /failed to fetch|networkerror|typeerror/i.test(detail);
       const friendly = isNetwork
-        ? "تعذّر الوصول إلى السيرفر. تأكد من أن الـbackend شغّال على المنفذ 8000."
+        ? NETWORK_ERROR_MESSAGE
         : `حدث خطأ أثناء الاتصال بالمساعد:\n${detail}`;
       setMessages((prev) => [...prev, {
         role: "bot",

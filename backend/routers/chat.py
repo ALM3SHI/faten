@@ -121,7 +121,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
 
         # ── Validate messages ──
         if not request.messages:
-            raise HTTPException(status_code=400, detail="messages required")
+            raise HTTPException(status_code=400, detail="اكتب رسالتك أولاً — الطلب لا يحتوي على أي رسالة.")
 
         last_user_msg = None
         for m in reversed(request.messages):
@@ -390,10 +390,12 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
                         "تحقق من اتصال السيرفر بالإنترنت."
                     )
                 else:
-                    # Unknown — surface the error tail in the message for
-                    # debugging, but keep `agent_error` as the type so the
-                    # frontend still styles it as a warning.
-                    error_msg = f"⚠️ خطأ في المحرك الذكي: {err_str[:120]}"
+                    # Unknown — the details are in the log; keep `agent_error`
+                    # as the type so the frontend still styles it as a warning.
+                    error_msg = (
+                        "⚠️ تعذّر على المحرك الذكي إكمال الرد هذه المرة. "
+                        "أعد إرسال سؤالك، وإذا تكرر جرّب صياغة أخرى."
+                    )
 
                 return ChatResponse(
                     success=True,
@@ -465,5 +467,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
         raise
     except Exception as err:
         logger.error(f"[chat] {err}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(err))
+        raise HTTPException(
+            status_code=500, detail="تعذّر إكمال الرد بسبب خطأ في الخادم. حاول مرة أخرى بعد قليل."
+        ) from err
 

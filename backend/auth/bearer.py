@@ -56,6 +56,6 @@ async def verify_firebase_token(
     if creds is None or not creds.credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="مطلوب تسجيل الدخول — Authorization header مفقود",
+            detail="سجّل دخولك أولاً — لم يصل رمز الدخول مع الطلب.",
         )
     return _decode_firebase_token(creds.credentials)

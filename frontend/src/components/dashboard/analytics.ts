@@ -4,6 +4,7 @@
  */
 
 import type { PlanPriority } from "@/store/planStore";
+import { ApiError } from "@/lib/api";
 
 /** Target status as the cards show it ("no_target" folds into "unknown"). */
 export type TargetCalloutStatus = "achieved" | "feasible" | "stretch" | "impossible" | "unknown";
@@ -103,14 +104,17 @@ export type AnalyticsError = { kind: AnalyticsErrorKind; detail: string };
 
 /** Classify a thrown fetch error into a UI branch.
  *
- * The api helper throws Error with `detail` already extracted from the
- * server's JSON body for non-2xx responses, OR a generic "HTTP error!
- * status: N" string. We sniff both shapes — and detect 422 specifically
- * because that's the signal the user's persisted transcript still holds
- * pre-purge 5.0-scale numbers and needs re-upload.
+ * The api helper throws ApiError carrying the HTTP status (0 = network)
+ * and the server's Arabic `detail`. Older error shapes are still sniffed
+ * from the message text. A 422 means the user's persisted transcript
+ * still holds pre-purge 5.0-scale numbers and needs re-upload.
  */
 export function classifyError(err: unknown): AnalyticsError {
   const msg = err instanceof Error ? err.message : String(err);
+  if (err instanceof ApiError) {
+    if (err.status === 422) return { kind: "migration", detail: msg };
+    if (err.status === 0) return { kind: "network", detail: msg };
+  }
   if (/422|unprocessable|less than or equal|ge=|le=/i.test(msg)) {
     return { kind: "migration", detail: msg };
   }
