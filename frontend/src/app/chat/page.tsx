@@ -2,14 +2,14 @@
 
 import { Navbar } from "@/components/navbar";
 import { useHydrated } from "@/lib/use-hydrated";
-import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft, FileText, ExternalLink, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Sparkles, User as UserIcon, History, Settings, Trash2, ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ChatResponse } from "@/lib/ai";
 import type { SuggestedNavigation } from "@/store/workspaceStore";
 import { BotMarkdown } from "@/components/bot-markdown";
-import { extractCitations } from "@/lib/citations";
+import { SourceCards } from "@/components/chat/source-cards";
 import { toolStatusLabel } from "@/lib/sse";
 import { useBackendStatus } from "@/lib/backend-status";
 import { api, ApiError, NETWORK_ERROR_MESSAGE } from "@/lib/api";
@@ -588,37 +588,6 @@ function ChatPageContent() {
           setIsHistoryOpen(false);
         }}
       />
-    </div>
-  );
-}
-
-// ── Regulation sources under an answer ─────────────────────────────
-function SourceCards({ content, actions }: { content: string; actions?: unknown }) {
-  const sources = extractCitations(content, Array.isArray(actions) ? actions : undefined);
-  if (sources.length === 0) return null;
-  return (
-    <div className="flex flex-wrap gap-2 w-full min-w-0" aria-label="المصادر">
-      {sources.map((s) => {
-        const body = (
-          <>
-            <FileText className="w-3.5 h-3.5 shrink-0 text-uqu-accent" />
-            <span className="font-bold shrink-0">{s.article}</span>
-            <span className="text-muted-foreground truncate min-w-0">— {s.document}</span>
-            {s.url && <ExternalLink className="w-3 h-3 shrink-0 opacity-60" />}
-          </>
-        );
-        const cls =
-          "flex items-center gap-1.5 min-w-0 max-w-full sm:max-w-[22rem] px-3 py-1.5 rounded-xl border border-uqu-accent/20 bg-uqu-accent/5 text-[12px] hover:border-uqu-accent/40 transition-colors";
-        return s.url ? (
-          <a key={s.document + s.article} href={s.url} target="_blank" rel="noopener noreferrer" className={cls} title={`${s.article} — ${s.document}`}>
-            {body}
-          </a>
-        ) : (
-          <span key={s.document + s.article} className={cls} title={`${s.article} — ${s.document}`}>
-            {body}
-          </span>
-        );
-      })}
     </div>
   );
 }

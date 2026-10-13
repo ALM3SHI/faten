@@ -165,10 +165,14 @@ async def _get_calendar_info(ctx: ToolContext, args: dict) -> dict:
         return {"success": False, "message": "حدث خطأ أثناء البحث في التقويم"}
 
     # إرجاع البيانات بشكل نقي (بدون client_only) للنموذج (LLM)
+    from data.uqu_calendar import CALENDAR_SOURCE
+
     return {
         "success": True,
         "data": results,
-        "message": message
+        "message": message,
+        # The chat shows this under the answer when it uses these dates.
+        "source": CALENDAR_SOURCE,
     }
 
 

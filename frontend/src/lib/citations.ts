@@ -1,22 +1,45 @@
 /**
- * Regulation citations for chat answers.
+ * Sources for chat answers.
  *
- * The agent's search_regulations results travel back in the response's
- * action log. We show a source card only for the articles the answer
- * actually cites, so the student never sees an unrelated "source".
+ * The agent's search_regulations and get_calendar_info results travel back
+ * in the response's action log. We show a source card only for what the
+ * answer actually uses, so the student never sees an unrelated "source".
+ * The card opens the article's text (or the calendar dates) in the chat.
  */
 
 export interface Citation {
   document: string;
   article: string;
   url: string | null;
+  /** Section title inside the document, when it says more than the article number. */
+  heading?: string;
+  /** The article text (or the calendar dates) as the agent received it. */
+  text?: string;
+  issued?: string;
+  /** e.g. the OCR warning for scanned documents. */
+  note?: string;
 }
 
 interface RegulationHit {
   document?: string;
   article?: string;
   heading?: string;
+  text?: string;
+  issued?: string;
+  note?: string;
   source_url?: string;
+}
+
+interface CalendarEvent {
+  title?: string;
+  date?: string;
+  hijri?: string;
+}
+
+interface CalendarResult {
+  success?: boolean;
+  data?: CalendarEvent[];
+  source?: { document?: string; url?: string };
 }
 
 interface ToolLogEntry {
@@ -57,6 +80,13 @@ function docKey(title: string): string {
 
 export function extractCitations(content: string, actions: ToolLogEntry[] | undefined, max = 4): Citation[] {
   if (!content || !Array.isArray(actions)) return [];
+  const out = regulationCitations(content, actions, max);
+  const calendar = calendarCitation(content, actions);
+  if (calendar && out.length < max) out.push(calendar);
+  return out;
+}
+
+function regulationCitations(content: string, actions: ToolLogEntry[], max: number): Citation[] {
   const hits: RegulationHit[] = [];
   for (const a of actions) {
     if (a?.tool !== "search_regulations") continue;
@@ -85,9 +115,43 @@ export function extractCitations(content: string, actions: ToolLogEntry[] | unde
     const key = `${doc}|${h.article}`;
     if (match && !seen.has(key)) {
       seen.add(key);
-      out.push({ document: doc, article: h.article ?? "", url: h.source_url ?? null });
+      out.push({
+        document: doc,
+        article: h.article ?? "",
+        url: h.source_url ?? null,
+        ...(h.heading && h.heading !== h.article ? { heading: h.heading } : {}),
+        ...(h.text ? { text: h.text } : {}),
+        ...(h.issued ? { issued: h.issued } : {}),
+        ...(h.note ? { note: h.note } : {}),
+      });
       if (out.length >= max) break;
     }
   }
   return out;
+}
+
+/** One card for the academic calendar when the answer uses its events (by name or Hijri date). */
+function calendarCitation(content: string, actions: ToolLogEntry[]): Citation | null {
+  const text = normalize(content);
+  const used: CalendarEvent[] = [];
+  let source: CalendarResult["source"];
+  for (const a of actions) {
+    if (a?.tool !== "get_calendar_info") continue;
+    const r = a.result as CalendarResult | null;
+    if (!r?.success || !Array.isArray(r.data) || !r.source?.document) continue;
+    source = r.source;
+    for (const ev of r.data) {
+      const title = normalize(ev.title ?? "");
+      const hijriStart = (ev.hijri ?? "").split(" ")[0];
+      const mentioned = (title.length > 4 && text.includes(title)) || (hijriStart.length >= 5 && text.includes(hijriStart));
+      if (mentioned && !used.some((u) => u.title === ev.title)) used.push(ev);
+    }
+  }
+  if (!source?.document || used.length === 0) return null;
+  return {
+    document: source.document,
+    article: used[0].title ?? "",
+    url: source.url ?? null,
+    text: used.map((ev) => `${ev.title}: ${ev.date}${ev.hijri ? ` (${ev.hijri}هـ)` : ""}`).join("\n"),
+  };
 }

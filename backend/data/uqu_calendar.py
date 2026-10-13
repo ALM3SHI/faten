@@ -11,6 +11,12 @@ import datetime as _dt
 
 ACADEMIC_YEAR = "1448"
 
+# Shown under date answers in the chat as the source the dates come from.
+CALENDAR_SOURCE = {
+    "document": f"التقويم الأكاديمي لجامعة أم القرى {ACADEMIC_YEAR}هـ",
+    "url": "https://uqu.edu.sa/App/AcademicCalendar",
+}
+
 UQU_CALENDAR = [
     {
         "term": "الفصل الدراسي الأول",

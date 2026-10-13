@@ -24,3 +24,15 @@ def test_finals_fall_inside_their_term():
     finals2 = next(e for e in t2["events"] if e["title"] == "الاختبارات النهائية")
     assert cal.TERM1_START <= dt.date.fromisoformat(finals1["start"]) <= cal.TERM1_END
     assert cal.TERM2_START <= dt.date.fromisoformat(finals2["start"]) <= cal.TERM2_END
+
+
+def test_calendar_answers_carry_their_source():
+    import asyncio
+    from agent.tools.context import ToolContext
+    from agent.tools.regulations import HANDLERS
+
+    ctx = ToolContext(tool_name="get_calendar_info", user_id="u1", db=None, user_ref=None, now_iso="2026-10-13T08:00:00")
+    out = asyncio.run(HANDLERS["get_calendar_info"](ctx, {"query_type": "search", "query": "الاختبارات النهائية"}))
+    assert out["success"] and out["data"]
+    assert out["source"]["url"].startswith("https://uqu.edu.sa/")
+    assert cal.ACADEMIC_YEAR in out["source"]["document"]

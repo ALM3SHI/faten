@@ -49,6 +49,59 @@ describe("extractCitations", () => {
   });
 });
 
+describe("source text and the calendar", () => {
+  const withText = [
+    {
+      tool: "search_regulations",
+      result: {
+        success: true,
+        results: [
+          {
+            document: STUDY,
+            article: "المادة 36",
+            heading: "الفصل الثامن: الاختبارات — المادة 36",
+            text: "يجوز للطالب التظلم على الدرجة النهائية للمقرر الدراسي خلال مدة لا تتجاوز خمسة عشر يوماً…",
+            issued: "الإصدار الأول — 1444هـ",
+            source_url: URL,
+          },
+        ],
+      },
+    },
+  ];
+
+  it("keeps the article text so the student can read it in the chat", () => {
+    const [c] = extractCitations("تقدر تتظلم خلال 15 يوم (المادة 36).", withText);
+    expect(c.text).toContain("التظلم على الدرجة النهائية");
+    expect(c.heading).toBe("الفصل الثامن: الاختبارات — المادة 36");
+    expect(c.issued).toBe("الإصدار الأول — 1444هـ");
+  });
+
+  const calendar = [
+    {
+      tool: "get_calendar_info",
+      result: {
+        success: true,
+        data: [
+          { title: "الاختبارات النهائية", date: "27 Dec 2026 - 07 Jan 2027", hijri: "18/07 - 29/07/1448" },
+          { title: "إجازة الخريف", date: "19 Nov - 28 Nov 2026", hijri: "09/06 - 18/06/1448" },
+        ],
+        source: { document: "التقويم الأكاديمي لجامعة أم القرى 1448هـ", url: "https://uqu.edu.sa/App/AcademicCalendar" },
+      },
+    },
+  ];
+
+  it("cites the academic calendar for the events the answer uses", () => {
+    const [c] = extractCitations("الاختبارات النهائيه تبدأ 27 ديسمبر.", calendar);
+    expect(c).toMatchObject({ document: "التقويم الأكاديمي لجامعة أم القرى 1448هـ", article: "الاختبارات النهائية", url: "https://uqu.edu.sa/App/AcademicCalendar" });
+    expect(c.text).toBe("الاختبارات النهائية: 27 Dec 2026 - 07 Jan 2027 (18/07 - 29/07/1448هـ)");
+  });
+
+  it("matches calendar events by Hijri date too, and skips unused results", () => {
+    expect(extractCitations("الإجازة من ٠٩/٠٦ إلى 18/06.", calendar)[0].article).toBe("إجازة الخريف");
+    expect(extractCitations("ما لقيت الموعد في التقويم.", calendar)).toEqual([]);
+  });
+});
+
 describe("attendanceSnapshotFrom", () => {
   it("takes the last successful record_absence snapshot", () => {
     const snap = { courses: { CS4510: { entries: [{ id: "a", date: "2026-10-12", excused: false }], totalOverride: null } }, lastUpdated: "t2" };

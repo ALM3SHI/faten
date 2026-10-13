@@ -79,6 +79,33 @@ const STUDY_PACK = {
 
 const CHAT_REPLY = "موعد اختبارك القادم في مادة الذكاء الاصطناعي يوم الأحد. بالتوفيق!";
 
+// Questions with a canned sourced answer: [match, reply, actions].
+const STUDY_REG = "لائحة الدراسة والاختبارات للمرحلة الجامعية (القواعد التنفيذية لجامعة أم القرى)";
+const SOURCED_REPLIES = [
+  [
+    "الحرمان",
+    "يُحرم الطالب إذا زاد غيابه بدون عذر عن 15% من المحاضرات.\n📄 المرجع: المادة (14) — لائحة الدراسة والاختبارات",
+    [{ tool: "search_regulations", args: { query: "الحرمان" }, result: { success: true, found: true, results: [
+      { document: STUDY_REG, article: "المادة 14", heading: "الفصل الخامس: الإجراءات الأكاديمية — المادة 14", issued: "الإصدار الأول — 1444هـ", source_url: "https://uqu.edu.sa/dadregis/151795",
+        text: "يلتزم الطالب بحضور الوحدة الدراسية – حضورياً أو افتراضياً – ويحرم من دخول الاختبار النهائي إذا زادت نسبة غيابه بدون عذر عن (15%)." },
+    ] } }],
+  ],
+  [
+    "النهائية",
+    "الاختبارات النهائية للفصل الأول من 27 ديسمبر 2026 إلى 7 يناير 2027.",
+    [{ tool: "get_calendar_info", args: { query_type: "search", query: "الاختبارات النهائية" }, result: { success: true, message: "", data: [
+      { title: "الاختبارات النهائية", date: "27 Dec 2026 - 07 Jan 2027", hijri: "18/07 - 29/07/1448", type: "exam" },
+    ], source: { document: "التقويم الأكاديمي لجامعة أم القرى 1448هـ", url: "https://uqu.edu.sa/App/AcademicCalendar" } } }],
+  ],
+];
+
+function chatReply(body) {
+  const msgs = Array.isArray(body?.messages) ? body.messages : [];
+  const q = String(body?.message ?? msgs.filter((m) => m?.role === "user").at(-1)?.content ?? "");
+  const hit = SOURCED_REPLIES.find(([m]) => q.includes(m));
+  return hit ? { message: hit[1], actions: hit[2] } : { message: CHAT_REPLY, actions: [] };
+}
+
 function send(res, status, body, headers = {}) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", ...headers });
   res.end(JSON.stringify(body));
@@ -141,12 +168,13 @@ const server = http.createServer(async (req, res) => {
   if (p.startsWith("/api/notifications/")) return send(res, 200, { success: true, id: "device1", sent: 1 });
   if (p === "/api/chat/stream") {
     res.writeHead(200, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache" });
-    res.write(`data: ${JSON.stringify({ type: "status", tool: "get_upcoming_exams" })}\n\n`);
-    for (const word of CHAT_REPLY.split(" ")) res.write(`data: ${JSON.stringify({ type: "token", text: word + " " })}\n\n`);
-    res.write(`data: ${JSON.stringify({ type: "done", response: { success: true, message: CHAT_REPLY, conversationId: "conv-e2e", actions: [], client_actions: [] } })}\n\n`);
+    const reply = chatReply(body);
+    res.write(`data: ${JSON.stringify({ type: "status", tool: reply.actions[0]?.tool ?? "get_upcoming_exams" })}\n\n`);
+    for (const word of reply.message.split(" ")) res.write(`data: ${JSON.stringify({ type: "token", text: word + " " })}\n\n`);
+    res.write(`data: ${JSON.stringify({ type: "done", response: { success: true, message: reply.message, conversationId: "conv-e2e", actions: reply.actions, client_actions: [] } })}\n\n`);
     return res.end();
   }
-  if (p === "/api/chat") return send(res, 200, { success: true, message: CHAT_REPLY, conversationId: "conv-e2e", actions: [], client_actions: [] });
+  if (p === "/api/chat") return send(res, 200, { success: true, ...chatReply(body), conversationId: "conv-e2e", client_actions: [] });
   return send(res, 404, { detail: "غير موجود في الخادم الوهمي." });
 });
 
