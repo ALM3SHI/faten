@@ -20,6 +20,15 @@ from services.workspace import (
 )
 
 from common.grade_scale import GRADE_POINTS
+from services.exams import (
+    conflicts as exam_conflicts,
+    load_exams,
+    normalize_date,
+    normalize_exam,
+    normalize_time,
+    upcoming,
+    upcoming_summary,
+)
 from agent.tools.context import ToolContext
 from agent.tools._common import (
     ALLOWED_CLIENT_ACTION_TYPES,
@@ -101,40 +110,48 @@ async def _emit_client_action(ctx: ToolContext, args: dict) -> dict:
 
 
 async def _add_upcoming_exam(ctx: ToolContext, args: dict) -> dict:
-    """1. Add Exam"""
+    """1. Add Exam — same document shape as the /exams page (services/exams.py)."""
     user_ref = ctx.user_ref
     now_iso = ctx.now_iso
-    exam = {
-        "subject":     args["subject"],
-        "date":        args["date"],
-        "time":        args.get("time"),
-        "course_code": args.get("course_code"),
-        "exam_type":   args.get("exam_type", "exam"),
-        "notes":       args.get("notes", ""),
-        "createdAt":   now_iso,
-        "done":        False,
+    date = normalize_date(args.get("date"))
+    if not date:
+        return {"success": False, "message": "تاريخ الاختبار غير واضح. اطلب من الطالب التاريخ بصيغة يوم/شهر/سنة."}
+    raw = {
+        "subject":          str(args.get("subject") or "").strip() or args.get("course_code") or "اختبار",
+        "date":             date,
+        "time":             normalize_time(args.get("time")),
+        "course_code":      args.get("course_code"),
+        "duration_minutes": args.get("duration_minutes"),
+        "location":         args.get("location"),
+        "exam_type":        args.get("exam_type", "exam"),
+        "notes":            args.get("notes", ""),
     }
-    _, ref = user_ref.collection("exams").add(exam)
-    return {
+    clean = normalize_exam("new", raw)
+    doc = {k: v for k, v in clean.items() if k != "id"}
+    doc.update({"createdAt": now_iso, "updatedAt": now_iso, "source": "agent"})
+    _, ref = user_ref.collection("exams").add(doc)
+    exam = {**doc, "id": ref.id}
+    clashes = [c for c in exam_conflicts(upcoming(load_exams(user_ref))) if ref.id in c["exams"]]
+    result = {
         "success": True,
         "id": ref.id,
-        "message": f"تم تسجيل اختبار \"{args['subject']}\" بتاريخ {args['date']}"
+        "exam": exam,
+        "message": f"تم تسجيل اختبار \"{exam['subject']}\" بتاريخ {exam['date']} — يظهر في صفحة الاختبارات.",
     }
+    if clashes:
+        other = [s for s in clashes[0]["subjects"] if s != exam["subject"]] or clashes[0]["subjects"]
+        result["warning"] = (
+            f"تنبيه: يتعارض مع اختبار {other[0]} في نفس الوقت."
+            if clashes[0]["kind"] == "overlap"
+            else f"تنبيه: في نفس اليوم اختبار {other[0]} أيضاً."
+        )
+    return result
 
 
 async def _get_upcoming_exams(ctx: ToolContext, args: dict) -> dict:
-    """7. Get Upcoming Exams"""
-    user_ref = ctx.user_ref
-    today = datetime.now().strftime("%Y-%m-%d")
-    limit = args.get("limit", 10)
-    snaps = (user_ref.collection("exams")
-             .where(filter=FieldFilter("date", ">=", today))
-             .where(filter=FieldFilter("done", "==", False))
-             .order_by("date")
-             .limit(limit)
-             .get())
-    exams = [{"id": d.id, **d.to_dict()} for d in snaps]
-    return {"success": True, "exams": exams, "count": len(exams)}
+    """7. Get Upcoming Exams — next exam, countdown and conflicts."""
+    limit = max(1, min(20, to_int(args.get("limit"), 10)))
+    return upcoming_summary(load_exams(ctx.user_ref), limit=limit)
 
 
 async def _create_study_plan(ctx: ToolContext, args: dict) -> dict:

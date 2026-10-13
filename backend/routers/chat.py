@@ -280,7 +280,7 @@ async def _chat_logic(request: ChatRequest, user_id: str, openai_client: AsyncOp
             intent_name = intent_info["intent"]
             if intent_name == "GENERAL_QA":
                 MAX_HISTORY = 4
-            elif intent_name in ("PROFILE_QUERY", "GPA_QUERY", "ACADEMIC_CALENDAR", "REGULATIONS", "UNIVERSITY_NEWS"):
+            elif intent_name in ("PROFILE_QUERY", "GPA_QUERY", "ACADEMIC_CALENDAR", "REGULATIONS", "UNIVERSITY_NEWS", "MY_EXAMS"):
                 MAX_HISTORY = 4
             elif intent_name in ("GPA_IMPROVEMENT", "PLAN_OR_STUDY_ADVICE", "SCHEDULE_TASK", "SEMESTER_QUERY"):
                 MAX_HISTORY = 6

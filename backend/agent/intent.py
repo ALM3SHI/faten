@@ -83,6 +83,11 @@ INTENT_MAP = {
         "needs_tools": True,
         "direct_response": None
     },
+    "MY_EXAMS": {
+        "required_blocks": ["profile_basic", "current_courses", "exams"],
+        "needs_tools": True,
+        "direct_response": None
+    },
     "COURSE_INFO": {
         "required_blocks": ["profile_basic", "current_courses"],
         "needs_tools": True,
@@ -233,6 +238,18 @@ def classify_intent_heuristic(messages: list) -> dict:
     if any(re.search(p, msg) for p in full_analysis_patterns):
         return {"intent": "FULL_ACADEMIC_ANALYSIS", "source": "heuristic"}
 
+    # The student's OWN exam timetable ("متى اختباري الجاي؟", "كم باقي على
+    # الفاينل؟", "عندي تعارض؟"). Adding an exam stays SCHEDULE_TASK.
+    my_exams_patterns = [
+        r'اختباري', r'اختباراتي', r'امتحاني', r'امتحاناتي',
+        r'(اختبار|امتحان)\s*(ال)?(جاي|قادم|الياي|الجاي|القادم)',
+        r'جدول\s*(ال)?(اختبارات|امتحانات)(ي)?', r'كم\s*باقي\s*(على|ل)\s*(ال)?(اختبار|امتحان|فاينل|ميد)',
+        r'تعارض.*(اختبار|امتحان)', r'(اختبار|امتحان).*تعارض',
+    ]
+    add_exam_words = [r'أضف', r'اضف', r'سجل', r'سجّل', r'عندي اختبار']
+    if any(re.search(p, msg) for p in my_exams_patterns) and not any(re.search(p, msg) for p in add_exam_words):
+        return {"intent": "MY_EXAMS", "source": "heuristic"}
+
     schedule_patterns = [
         r'أضف مهمة', r'جلسة مذاكرة', r'حط لي مهمة', r'سجل جلسة', r'تعارض',
         r'أضف اختبار', r'بومودورو', r'متى محاضرتي', r'عندي اختبار', r'في الخطة',
@@ -341,6 +358,7 @@ Classify the user's message into EXACTLY ONE of the following intents:
 - SEMESTER_QUERY: Asking about courses, grades, or GPA for a specific past or previous semester (e.g., last semester, Term 1 1445).
 - FULL_ACADEMIC_ANALYSIS: Asking for a deep, comprehensive analysis of their entire academic record, all past courses, and broad strengths/weaknesses.
 - ACADEMIC_CALENDAR: questions about the general Umm Al-Qura University academic calendar, university holidays, semester starts, final exam periods, midterm periods, withdrawal periods, national day holiday, or academic year 1447/1448 dates. Includes informal Arabic phrasing such as "الاختبارات العامه", "موعد الاختبارات", "متى الاختبارات", and "اختبارات المتطلبات".
+- MY_EXAMS: Asking about THEIR OWN exam timetable: when is my next exam, how many days until my final, which exams I have this week, exam conflicts (e.g. "متى اختباري الجاي؟", "كم باقي على اختباراتي").
 - COURSE_INFO: Asking for course details, syllabus, project, midterm, final, exam dates, or grading policy of a specific course (e.g. by course code or name).
 
 Return ONLY a JSON object with a single key "intent".
@@ -377,7 +395,7 @@ You receive the last few messages of a conversation plus a short user reply.
 Your job is to determine what the user meant based ONLY on the conversation context.
 
 Allowed intents:
-SCHEDULE_TASK, NAVIGATION, COURSE_INFO, ACADEMIC_CALENDAR, REGULATIONS, UNIVERSITY_NEWS, GPA_QUERY,
+SCHEDULE_TASK, NAVIGATION, COURSE_INFO, MY_EXAMS, ACADEMIC_CALENDAR, REGULATIONS, UNIVERSITY_NEWS, GPA_QUERY,
 SEMESTER_QUERY, FULL_ACADEMIC_ANALYSIS, GENERAL_QA, UNKNOWN
 
 Rules:

@@ -22,10 +22,8 @@ paths and legacy fallbacks.
 
 import asyncio
 import logging
-from datetime import datetime
 
-from google.cloud.firestore_v1.base_query import FieldFilter
-
+from services.exams import load_exams, upcoming
 from services.workspace import (
     load_workspace,
     transcript_has_data,
@@ -77,8 +75,6 @@ async def load_student_context(user_id: str, db, required_blocks: list[str] | No
     """
     loop = asyncio.get_running_loop()
     user_ref = db.collection("users").document(user_id)
-    today = datetime.now().strftime("%Y-%m-%d")
-
     # Shared workspace loader (canonical paths + legacy fallbacks).
     ws = await load_workspace(user_id, db)
 
@@ -106,15 +102,8 @@ async def load_student_context(user_id: str, db, required_blocks: list[str] | No
         return [d.to_dict() for d in snaps]
 
     def _fetch_exams():
-        snaps = (
-            user_ref.collection("exams")
-            .where(filter=FieldFilter("done", "==", False))
-            .where(filter=FieldFilter("date", ">=", today))
-            .order_by("date")
-            .limit(10)
-            .get()
-        )
-        return [d.to_dict() for d in snaps]
+        # No composite index needed: the collection is small (services/exams.py).
+        return upcoming(load_exams(user_ref))[:10]
 
     user_data = await loop.run_in_executor(None, _fetch_user)
     

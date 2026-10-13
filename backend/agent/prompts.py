@@ -139,6 +139,7 @@ def build_system_prompt(
     NEWS_PROMPT = prompt_text("news")
 
     REGULATIONS_PROMPT = prompt_text("regulations")
+    EXAMS_PROMPT = prompt_text("exams")
 
     TOOL_GUIDE_PROMPT = prompt_text("tool_guide")
 
@@ -169,6 +170,8 @@ def build_system_prompt(
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, NEWS_PROMPT])
     elif intent == "REGULATIONS":
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, REGULATIONS_PROMPT])
+    elif intent == "MY_EXAMS":
+        sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, EXAMS_PROMPT])
     else:
         # Fallback to mostly everything for unknown intents (safe)
         sections.extend([BASE_IDENTITY_PROMPT, SCOPE_POLICY_PROMPT, FORMATTING_PROMPT, ACADEMIC_ANALYSIS_PROMPT, FULL_ANALYSIS_PROTOCOL_PROMPT, ACTION_TOOL_PROMPT])

@@ -153,13 +153,15 @@ TOOLS_SCHEMA: list[dict] = [
         "type": "function",
         "function": {
             "name": "add_upcoming_exam",
-            "description": "أضف اختباراً أو كويزاً قادماً للوحة تحكم الطالب. استخدمها عندما يذكر الطالب اختباراً قادماً.",
+            "description": "سجّل اختباراً قادماً للطالب في صفحة الاختبارات (/exams). استخدمها عندما يذكر الطالب موعد اختبار. ترجع تنبيهاً إن تعارض مع اختبار آخر.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "subject":     {"type": "string", "description": "اسم المادة (مثل: رياضيات، فيزياء)"},
                     "date":        {"type": "string", "description": "تاريخ الاختبار بصيغة YYYY-MM-DD"},
-                    "time":        {"type": "string", "description": "وقت الاختبار مثل 10:00 AM (اختياري)"},
+                    "time":        {"type": "string", "description": "وقت بداية الاختبار بصيغة 24 ساعة HH:MM مثل 09:30 أو 13:00 (اختياري)"},
+                    "duration_minutes": {"type": "number", "description": "مدة الاختبار بالدقائق (افتراضي 120)"},
+                    "location":    {"type": "string", "description": "القاعة أو المبنى (اختياري)"},
                     "course_code": {"type": "string", "description": "رمز المادة إن عُرف (اختياري)"},
                     "exam_type":   {"type": "string", "enum": ["exam", "quiz", "midterm", "final", "assignment"], "description": "نوع التقييم"},
                     "notes":       {"type": "string", "description": "ملاحظات إضافية (اختياري)"}
@@ -282,7 +284,7 @@ TOOLS_SCHEMA: list[dict] = [
         "type": "function",
         "function": {
             "name": "get_upcoming_exams",
-            "description": "احصل على قائمة الاختبارات القادمة المسجلة للطالب.",
+            "description": "اختبارات الطالب القادمة من صفحة الاختبارات: الاختبار القادم (next_exam) مع اليوم والوقت والمكان وكم باقي (when)، والقائمة، والتعارضات (conflicts). استخدمها لأسئلة مثل «متى اختباري الجاي؟».",
             "parameters": {
                 "type": "object",
                 "properties": {
