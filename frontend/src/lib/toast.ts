@@ -12,6 +12,8 @@ const DEFAULT_DURATION_MS = 3000;
 
 interface ToastStore {
   toasts: ToastItem[];
+  /** True once any toast was shown (keeps the list mounted for exit animations). */
+  shown: boolean;
   push: (message: string, variant: ToastVariant, durationMs?: number) => void;
   remove: (id: string) => void;
 }
@@ -20,10 +22,12 @@ let nextId = 0;
 
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
+  shown: false,
   push: (message, variant, durationMs = DEFAULT_DURATION_MS) => {
     const id = `toast-${++nextId}`;
     set((state) => ({
       toasts: [...state.toasts, { id, message, variant }],
+      shown: true,
     }));
     window.setTimeout(() => get().remove(id), durationMs);
   },

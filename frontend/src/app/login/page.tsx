@@ -146,7 +146,7 @@ export default function LoginPage() {
           <div className="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full blur-[120px] bg-uqu-cyan/15 animate-pulse [animation-duration:12s]" />
         </div>
 
-        <div className="w-full max-w-md relative z-10 animate-in fade-in zoom-in duration-700">
+        <div className="w-full max-w-md relative z-10 animate-rise">
           {/* Mobile-only brand header (desktop already has the branding column). */}
           <div className="text-center mb-8 space-y-3 lg:hidden">
             <div className="w-16 h-16 bg-gradient-to-br from-uqu-accent to-uqu-cyan rounded-2xl mx-auto flex items-center justify-center shadow-2xl shadow-uqu-accent/40">
@@ -199,6 +199,7 @@ export default function LoginPage() {
                 <Input
                   type="email"
                   placeholder="البريد الإلكتروني"
+                  aria-label="البريد الإلكتروني"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
@@ -211,6 +212,7 @@ export default function LoginPage() {
                 <Input
                   type="password"
                   placeholder="كلمة المرور"
+                  aria-label="كلمة المرور"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"
@@ -253,6 +255,7 @@ export default function LoginPage() {
                   <Input
                     type="password"
                     placeholder="تأكيد كلمة المرور"
+                    aria-label="تأكيد كلمة المرور"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="pr-12 h-12 rounded-xl bg-input border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-uqu-accent/50 focus:border-transparent transition-all text-sm dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-white/30"

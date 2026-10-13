@@ -67,6 +67,7 @@
 
   /* Brand (unchanged across themes; only opacity scales). */
   --accent: hsl(245, 78%, 62%);
+  --accent-text: var(--accent);
   --accent-glow: hsla(245, 78%, 62%, 0.18);
   --accent-dim: hsla(245, 78%, 62%, 0.08);
   --accent-2: hsl(187, 80%, 48%);
@@ -131,6 +132,7 @@
    visually unchanged when dark is the active theme.
    ───────────────────────────────────────────────────────────── */
 .dark {
+  --accent-text: hsl(245 90% 76%);
   --accent-glow: hsla(245, 78%, 62%, 0.35);
   --accent-dim: hsla(245, 78%, 62%, 0.12);
   --accent-2-dim: hsla(187, 80%, 48%, 0.12);
@@ -244,6 +246,23 @@ select option {
   animation: fade-in 0.5s ease-out forwards;
 }
 
+/* Entrance without the opacity fade — for the page's main content, which
+   browsers ignore as the "largest contentful paint" while it is transparent. */
+@keyframes rise-in {
+  from { transform: translateY(12px); }
+  to { transform: translateY(0); }
+}
+.animate-rise {
+  animation: rise-in 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-rise {
+    animation: none;
+  }
+}
+
 .delay-0 { animation-delay: 0s; }
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
@@ -254,4 +273,14 @@ select option {
   :root {
     --bottom-nav-h: calc(4rem + env(safe-area-inset-bottom));
   }
+}
+
+/* Accent TEXT on dark surfaces uses the lighter --accent-text tint so small
+   labels pass WCAG AA (4.5:1). Unlayered so it wins over the generated
+   utility; :not(:hover) leaves hover colours (hover:text-…) untouched.
+   Light mode keeps --accent-text = --accent, so nothing changes there. */
+.dark .text-uqu-accent:not(:hover),
+.dark .hover\:text-uqu-accent:hover,
+.dark .group:hover .group-hover\:text-uqu-accent {
+  color: var(--accent-text);
 }

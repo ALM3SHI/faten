@@ -88,9 +88,9 @@ export function StatCard({
       )}
     >
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-sm font-bold text-foreground leading-snug">
+        <h2 className="text-sm font-bold text-foreground leading-snug">
           {title}
-        </h3>
+        </h2>
         <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", colorMap[color])}>
           {icon}
         </div>

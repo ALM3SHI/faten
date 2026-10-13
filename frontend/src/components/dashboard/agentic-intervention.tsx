@@ -122,6 +122,7 @@ export function AgenticInterventionBanner({ action }: { action: AgenticAction })
             instead of opening the parent banner's decision-log dialog. */}
         <Link
           href="/plan"
+          prefetch={false}
           className="shrink-0"
           onClick={(e) => e.stopPropagation()}
         >

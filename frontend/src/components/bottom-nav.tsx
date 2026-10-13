@@ -40,6 +40,8 @@ export function BottomNav() {
               <li key={href}>
                 <Link
                   href={href}
+                  // No prefetch: each tab loads its code when opened (see navbar.tsx).
+                  prefetch={false}
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "h-full flex flex-col items-center justify-center gap-1 text-[11px] font-bold transition-colors",

@@ -15,6 +15,10 @@ const cairo = localFont({
   display: "swap",
 });
 
+// Same default as lib/api.ts (kept here so this server layout stays free of
+// the client-only Firebase import that lib/api.ts carries).
+const API_ORIGIN = process.env.NEXT_PUBLIC_AGENT_BASE_URL || "http://localhost:8000";
+
 export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: [
@@ -77,6 +81,9 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        {/* Warm up the connections every signed-in page needs first. */}
+        <link rel="preconnect" href={API_ORIGIN} crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
       </head>
       <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>

@@ -17,6 +17,7 @@
  */
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Settings, Flame, AlertCircle } from "lucide-react";
@@ -37,13 +38,23 @@ import type { TargetCalloutStatus } from "@/components/dashboard/analytics";
 import { useDashboardAnalytics } from "@/components/dashboard/use-dashboard-analytics";
 import { CurrentGpaKpi, EarnedHoursKpi, TargetGpaKpi } from "@/components/dashboard/kpi-cards";
 import { AgenticInterventionBanner, InterventionDialogContent } from "@/components/dashboard/agentic-intervention";
-import { AdherenceCard, AdherenceDialogContent, usePlanAdherence } from "@/components/dashboard/adherence";
-import { RoiSimulatorDialog } from "@/components/dashboard/roi-simulator-dialog";
+import { AdherenceCard, usePlanAdherence } from "@/components/dashboard/adherence";
 import { HighRoiCard } from "@/components/dashboard/high-roi-card";
 import { MigrationBoundary } from "@/components/dashboard/migration-boundary";
 import { CumulativeGpaCard, GpaTrendInsight } from "@/components/dashboard/cumulative-gpa-card";
 import { TaskRolloverDialog } from "@/components/dashboard/task-rollover-dialog";
 import { AcademicCalendarCard, AcademicCalendarDialogContent } from "@/components/dashboard/academic-calendar";
+
+// Dialog bodies load on first open (they carry the charts / simulator code);
+// they are only rendered once their dialog has been opened, see below.
+const AdherenceDialogContent = dynamic(
+  () => import("@/components/dashboard/adherence-dialog").then((m) => m.AdherenceDialogContent),
+  { ssr: false },
+);
+const RoiSimulatorDialog = dynamic(
+  () => import("@/components/dashboard/roi-simulator-dialog").then((m) => m.RoiSimulatorDialog),
+  { ssr: false },
+);
 
 /** Hours the backend assumes for next term until it answers (backend NEXT_HOURS). */
 const DEFAULT_NEXT_HOURS = 15;
@@ -51,17 +62,12 @@ const DEFAULT_NEXT_HOURS = 15;
 /**
  * Element that turns a whole bento card into a dialog trigger. A plain
  * element (not a component) because base-ui clones it with its own props.
+ * No aria-label: the card's own text is its accessible name, so what a
+ * screen reader announces matches what is on screen.
  */
-function cardTrigger(label: string) {
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={label}
-      className="block w-full text-right cursor-pointer focus:outline-none h-full"
-    />
-  );
-}
+const CARD_TRIGGER = (
+  <div role="button" tabIndex={0} className="block w-full text-right cursor-pointer focus:outline-none h-full" />
+);
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -144,6 +150,9 @@ export default function DashboardPage() {
   const agenticAction = analyticsData?.agentic_action;
   const { adherence, overdueTasks, perDay, hasPlan } = usePlanAdherence();
   const [rolloverOpen, setRolloverOpen] = useState(false);
+  // Lazy dialogs mount (and fetch their code) the first time they open.
+  const [roiOpened, setRoiOpened] = useState(false);
+  const [adherenceOpened, setAdherenceOpened] = useState(false);
 
   const recentCourses = useMemo(
     () =>
@@ -183,7 +192,7 @@ export default function DashboardPage() {
               <span className="font-black text-orange-500">{streak}</span>
               <span className="text-muted-foreground text-sm font-bold">يوم</span>
             </div>
-            <Link href="/profile">
+            <Link href="/profile" prefetch={false}>
               <Button className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 shadow-lg shadow-uqu-accent/20 gap-2">
                 <Settings className="w-4 h-4" />
                 الملف الشخصي
@@ -210,7 +219,6 @@ export default function DashboardPage() {
                     <div
                       role="button"
                       tabIndex={0}
-                      aria-label="افتح سجل قرار الذكاء الاصطناعي"
                       className="block w-full text-right cursor-pointer focus:outline-none"
                     />
                   }
@@ -263,7 +271,7 @@ export default function DashboardPage() {
               </div>
 
               <Dialog>
-                <DialogTrigger nativeButton={false} render={cardTrigger("افتح التقويم الجامعي")}>
+                <DialogTrigger nativeButton={false} render={CARD_TRIGGER}>
                   <AcademicCalendarCard />
                 </DialogTrigger>
                 <AcademicCalendarDialogContent />
@@ -272,10 +280,10 @@ export default function DashboardPage() {
 
             {/* ╔═══ BOTTOM ROW · High-ROI + Adherence ═══╗ */}
             <div className="grid lg:grid-cols-2 gap-6">
-              <Dialog>
+              <Dialog onOpenChange={(open) => open && setRoiOpened(true)}>
                 <DialogTrigger
                   nativeButton={false}
-                  render={cardTrigger("افتح محاكي السيناريوهات للمواد الحالية")}
+                  render={CARD_TRIGGER}
                 >
                   <HighRoiCard
                     courses={roiCourses}
@@ -283,20 +291,24 @@ export default function DashboardPage() {
                     hasCurrentTerm={currentCourses.length > 0}
                   />
                 </DialogTrigger>
-                <RoiSimulatorDialog roster={roiRoster} currentGpa={currentGpa} earnedHours={earnedHours} />
+                {roiOpened && (
+                  <RoiSimulatorDialog roster={roiRoster} currentGpa={currentGpa} earnedHours={earnedHours} />
+                )}
               </Dialog>
               <div className="flex flex-col gap-3 min-w-0 h-full">
-                <Dialog>
-                  <DialogTrigger nativeButton={false} render={cardTrigger("افتح تحليل الانضباط الدراسي")}>
+                <Dialog onOpenChange={(open) => open && setAdherenceOpened(true)}>
+                  <DialogTrigger nativeButton={false} render={CARD_TRIGGER}>
                     <AdherenceCard {...adherence} hasPlan={hasPlan} />
                   </DialogTrigger>
-                  <AdherenceDialogContent
-                    {...adherence}
-                    hasPlan={hasPlan}
-                    perDay={perDay}
-                    overdueTasks={overdueTasks}
-                    onOpenRollover={() => setRolloverOpen(true)}
-                  />
+                  {adherenceOpened && (
+                    <AdherenceDialogContent
+                      {...adherence}
+                      hasPlan={hasPlan}
+                      perDay={perDay}
+                      overdueTasks={overdueTasks}
+                      onOpenRollover={() => setRolloverOpen(true)}
+                    />
+                  )}
                 </Dialog>
               </div>
             </div>

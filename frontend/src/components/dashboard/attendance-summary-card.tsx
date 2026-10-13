@@ -39,7 +39,7 @@ export function AttendanceSummaryCard() {
   const atRisk = rows.filter((r) => r.st.level !== "safe").length;
 
   return (
-    <Link href="/attendance" className="block h-full focus:outline-none" aria-label="افتح متابعة الغياب">
+    <Link href="/attendance" prefetch={false} className="block h-full focus:outline-none">
       <Card className="glass p-6 md:p-8 rounded-[32px] border-foreground/10 h-full flex flex-col hover:border-uqu-accent/30 transition-colors">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold flex items-center gap-2">

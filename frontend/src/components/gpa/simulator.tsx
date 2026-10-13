@@ -170,6 +170,7 @@ function GradePicker({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as SelectableGrade)}
+        aria-label="التقدير المتوقع"
         className="appearance-none bg-transparent pr-2 pl-6 py-1 outline-none cursor-pointer"
       >
         {SELECTABLE_GRADES.map((g) => (

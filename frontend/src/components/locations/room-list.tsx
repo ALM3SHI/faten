@@ -39,10 +39,10 @@ export function GroupedList({
         return (
           <section key={g}>
             <div className="flex items-baseline justify-between mb-2 px-1">
-              <h3 className="text-[11px] font-bold uppercase tracking-wider text-muted">
+              <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted">
                 {g}
                 <span className="font-mono text-muted mr-1.5">· {items.length}</span>
-              </h3>
+              </h2>
               {items.length > GROUP_LIMIT_DEFAULT && (
                 <button
                   onClick={() => onToggleGroup(g)}

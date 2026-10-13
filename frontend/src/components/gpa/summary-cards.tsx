@@ -44,9 +44,9 @@ export function SummaryCard({
   return (
     <Card className="glass p-6 rounded-[28px] border-foreground/10 hover:border-foreground/10 transition-colors group">
       <div className="flex items-start justify-between mb-5">
-        <h3 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+        <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
           {label}
-        </h3>
+        </h2>
         <div className={cn("w-11 h-11 rounded-2xl flex items-center justify-center border", tone)}>
           {icon}
         </div>
@@ -92,9 +92,9 @@ export function RequiredToGraduateCard({
     return (
       <Card className="glass p-6 rounded-[28px] border-foreground/10">
         <div className="flex items-start justify-between mb-5">
-          <h3 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+          <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
             المعدل المطلوب للأترام المتبقية
-          </h3>
+          </h2>
           <div className="w-11 h-11 rounded-2xl flex items-center justify-center border bg-foreground/5 border-foreground/10">
             <Target className="w-6 h-6 text-muted" />
           </div>
@@ -116,9 +116,9 @@ export function RequiredToGraduateCard({
     return (
       <Card className="glass p-6 rounded-[28px] border-foreground/10">
         <div className="flex items-start justify-between mb-5">
-          <h3 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+          <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
             المعدل المطلوب للأترام المتبقية
-          </h3>
+          </h2>
           <div className="w-11 h-11 rounded-2xl flex items-center justify-center border bg-amber-500/10 border-amber-500/20">
             <AlertCircle className="w-6 h-6 text-amber-400" />
           </div>
@@ -158,9 +158,9 @@ export function RequiredToGraduateCard({
   return (
     <Card className={cn("glass p-6 rounded-[28px] border", toneByStatus[status])}>
       <div className="flex items-start justify-between mb-5">
-        <h3 className="text-sm font-extrabold tracking-wide opacity-90">
+        <h2 className="text-sm font-extrabold tracking-wide opacity-90">
           المعدل المطلوب للأترام المتبقية
-        </h3>
+        </h2>
         <div className="w-11 h-11 rounded-2xl flex items-center justify-center border border-foreground/10 bg-foreground/5 dark:bg-black/20">
           <Target className="w-6 h-6" />
         </div>

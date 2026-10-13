@@ -1,23 +1,23 @@
 "use client";
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import dynamic from "next/dynamic";
 import { LineChart as LineChartIcon, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useInViewOnce } from "@/lib/use-in-view";
 import type { TargetCalloutStatus } from "@/components/dashboard/analytics";
 
 // ──────────────────────────────────────────────────────────────────
 // Middle Row — Cumulative GPA Chart
 // ──────────────────────────────────────────────────────────────────
+
+// Recharts is heavy: load it only when there is a chart to draw and the
+// card is (nearly) on screen.
+const GpaLineChart = dynamic(() => import("@/components/dashboard/gpa-line-chart").then((m) => m.GpaLineChart), {
+  ssr: false,
+  loading: () => <ChartSkeleton />,
+});
 
 export function CumulativeGpaCard({
   series,
@@ -33,6 +33,7 @@ export function CumulativeGpaCard({
   /** Hours the backend's target analysis assumes for next term. */
   nextHours: number;
 }) {
+  const [chartRef, chartVisible] = useInViewOnce<HTMLDivElement>();
   return (
     <Card className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
@@ -68,7 +69,7 @@ export function CumulativeGpaCard({
         </Badge>
       </div>
 
-      <div className="flex-1 min-h-[280px]">
+      <div className="flex-1 min-h-[280px]" ref={chartRef}>
         {loading ? (
           <ChartSkeleton />
         ) : series.length < 2 ? (
@@ -84,74 +85,7 @@ export function CumulativeGpaCard({
             </p>
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={series} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="gpaGlow" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="hsl(245, 78%, 62%)" />
-                  <stop offset="100%" stopColor="hsl(187, 80%, 48%)" />
-                </linearGradient>
-                <filter id="gpaGlowFilter" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
-              <XAxis dataKey="semester" hide />
-              <YAxis domain={[0, 4]} hide />
-              <Tooltip
-                cursor={{
-                  stroke: "color-mix(in oklab, var(--foreground) 15%, transparent)",
-                  strokeWidth: 1,
-                }}
-                contentStyle={{
-                  background: "var(--popover)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  backdropFilter: "blur(8px)",
-                  padding: "8px 12px",
-                  fontSize: 12,
-                  color: "var(--popover-foreground)",
-                }}
-                labelStyle={{
-                  color: "var(--muted-text)",
-                  fontSize: 10,
-                  marginBottom: 4,
-                }}
-                formatter={(value, name) => {
-                  const num = typeof value === "number" ? value : Number(value);
-                  const label = name === "cumulativeGpa" ? "تراكمي" : "فصلي";
-                  return [Number.isFinite(num) ? num.toFixed(2) : String(value), label];
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="semesterGpa"
-                stroke="color-mix(in oklab, var(--foreground) 35%, transparent)"
-                strokeWidth={1.5}
-                strokeDasharray="3 3"
-                dot={false}
-                activeDot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="cumulativeGpa"
-                stroke="url(#gpaGlow)"
-                strokeWidth={3}
-                filter="url(#gpaGlowFilter)"
-                dot={{ r: 4, fill: "hsl(245, 78%, 62%)", strokeWidth: 0 }}
-                activeDot={{
-                  r: 6,
-                  fill: "var(--background)",
-                  stroke: "hsl(245, 78%, 62%)",
-                  strokeWidth: 2,
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          chartVisible ? <GpaLineChart series={series} /> : <ChartSkeleton />
         )}
       </div>
 

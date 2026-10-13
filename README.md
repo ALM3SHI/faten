@@ -224,7 +224,7 @@ The navigation system is a faithful React port of the legacy UQU floor-plan PWA.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  base-map.jpg  (floor plan image)                       │
+│  base-map.webp (floor plan image)                       │
 │  ┌───────────────────────────────────────────────────┐  │
 │  │  SVG overlay  viewBox="0 0 100 100"               │  │
 │  │  · Room polygons (percentage coordinates)         │  │
@@ -297,7 +297,7 @@ Faten/
 │   │   ├── data/             # map-data.json, typed map exports
 │   │   ├── lib/              # navEngine, api client, calendar, transcript parser
 │   │   └── store/            # Zustand stores (profile, transcript, plan, …)
-│   └── public/               # base-map.jpg, static assets
+│   └── public/               # base-map.webp, static assets
 │
 ├── backend/                  # FastAPI application
 │   ├── agent/                # Prompts, tool schemas, agent loop

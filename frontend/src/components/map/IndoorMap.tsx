@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -66,7 +67,7 @@ export interface IndoorMapProps {
   routeEnd?: { x: number; y: number } | null;
   onRoomClick?: (room: Room) => void;
   onMapClick?: (e: React.MouseEvent<SVGSVGElement>) => void;
-  /** Override the default `/base-map.jpg` if needed. */
+  /** Override the default `/base-map.webp` if needed. */
   baseImageSrc?: string;
   className?: string;
 }
@@ -83,6 +84,9 @@ const DOUBLE_CLICK_ZOOM = 2;
 // Component
 // ──────────────────────────────────────────────────────────────────
 
+/** The floor plan shipped in /public (dimensions in pixels). */
+const DEFAULT_MAP = { src: "/base-map.webp", width: 2048, height: 2050 } as const;
+
 export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function IndoorMap(
   {
     selectedRoomId,
@@ -91,7 +95,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
     routeEnd,
     onRoomClick,
     onMapClick,
-    baseImageSrc = "/base-map.jpg",
+    baseImageSrc = DEFAULT_MAP.src,
     className,
   },
   ref,
@@ -108,8 +112,10 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
     panY: 0,
     displayW: 0,
     displayH: 0,
-    imgW: 0,
-    imgH: 0,
+    // Known size of the bundled floor plan, so the map can be laid out
+    // before the image arrives (no layout shift). Custom images measure on load.
+    imgW: baseImageSrc === DEFAULT_MAP.src ? DEFAULT_MAP.width : 0,
+    imgH: baseImageSrc === DEFAULT_MAP.src ? DEFAULT_MAP.height : 0,
   });
 
   // Drag bookkeeping
@@ -183,6 +189,11 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
       stateRef.current.imgH = img.naturalHeight;
       fit();
     }
+  }, [fit]);
+
+  // First layout before paint, from the known image size.
+  useLayoutEffect(() => {
+    fit();
   }, [fit]);
 
   // ── Resize listener ──────────────────────────────────────────────
@@ -376,6 +387,9 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
           position: "absolute",
           left: 0,
           top: 0,
+          // Sized by fit(); 0 until then so the raw image never flashes full-size.
+          width: 0,
+          height: 0,
           transformOrigin: "0 0",
           willChange: "transform",
         }}

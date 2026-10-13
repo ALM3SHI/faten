@@ -58,19 +58,22 @@ export function Navbar() {
       >
         <div className="container mx-auto h-full flex items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 group">
+            <Link href="/" prefetch={false} className="flex items-center gap-2 group" aria-label="فطن — الصفحة الرئيسية">
               <LogoMark />
               <div className="hidden md:block">
                 <span className="font-bold text-lg">فطن</span>
               </div>
             </Link>
 
+            {/* prefetch={false} on app links: prefetching every tab pulled the heavy
+                routes (map data, PDF reader, charts) into whatever page was open. */}
             <nav className="hidden lg:block">
               <ul className="flex items-center gap-1">
                 {navItems.filter(i => i.href !== '/profile' || user).map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      prefetch={false}
                       className={cn(
                         "px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
                         isActivePath(pathname, item.href)
@@ -95,8 +98,8 @@ export function Navbar() {
                 aria-hidden
               />
             ) : user ? (
-              <Link href="/profile">
-                <Button variant="ghost" size="sm" className="rounded-xl gap-2 hover:bg-foreground/5">
+              <Link href="/profile" prefetch={false} aria-label="الملف الشخصي">
+                <Button variant="ghost" size="sm" className="rounded-xl gap-2 hover:bg-foreground/5" tabIndex={-1} aria-hidden>
                   <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">
                      <User className="w-4 h-4" />
                   </div>
@@ -118,6 +121,8 @@ export function Navbar() {
               size="icon" 
               className="lg:hidden rounded-full"
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileOpen}
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
@@ -135,6 +140,7 @@ export function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    prefetch={false}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-colors",

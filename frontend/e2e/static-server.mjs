@@ -6,6 +6,7 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import zlib from "node:zlib";
 
 const root = path.resolve(process.argv[2] || "out");
 const port = Number(process.argv[3] || process.env.STATIC_PORT || 3100);
@@ -49,7 +50,13 @@ http
       res.writeHead(404, { "Content-Type": TYPES[".html"] });
       return fs.createReadStream(path.join(root, "404.html")).pipe(res);
     }
-    res.writeHead(200, { "Content-Type": TYPES[path.extname(file)] || "application/octet-stream" });
+    const type = TYPES[path.extname(file)] || "application/octet-stream";
+    // Compress text like Firebase Hosting does, so Lighthouse runs see real sizes.
+    if (/text|javascript|json|svg|manifest/.test(type) && /\bgzip\b/.test(req.headers["accept-encoding"] || "")) {
+      res.writeHead(200, { "Content-Type": type, "Content-Encoding": "gzip", Vary: "Accept-Encoding" });
+      return fs.createReadStream(file).pipe(zlib.createGzip()).pipe(res);
+    }
+    res.writeHead(200, { "Content-Type": type });
     fs.createReadStream(file).pipe(res);
   })
   .listen(port, () => console.log(`[static-server] ${root} on http://localhost:${port}`));
