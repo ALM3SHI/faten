@@ -28,6 +28,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Vendored, minified pdf.js worker.
     "public/**",
+    // End-to-end build output and Playwright reports.
+    "out-e2e/**",
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 
