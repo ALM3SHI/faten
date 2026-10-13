@@ -36,6 +36,42 @@ STUDENT = {
     "وش حقوقي في التظلم من قرار تأديبي": ("student_rights|conduct", ""),
 }
 
+# Second set, written later in other words (dialect, short questions).
+STUDENT_MORE = {
+    "ابي اعرف الغياب المسموح بعذر كم": ("study_exams", "المادة 14"),
+    "انحرمت من مادة كيف ارفع الحرمان": ("study_exams", "المادة 15"),
+    "اعتذر عن الترم كامل ابغى": ("study_exams", "المادة 16"),
+    "كم ترم اقدر اعتذر عنه": ("study_exams", "المادة 16"),
+    "تأجيل الدراسة قبل بداية الفصل": ("study_exams", "المادة 18"),
+    "انقطعت عن الجامعة ترم بدون ما اقدم شي": ("study_exams", "المادة 19"),
+    "انسحبت من الجامعة ابي ارجع": ("study_exams", "المادة 21"),
+    "كم انذار ويفصلوني": ("study_exams", "المادة 22"),
+    "طالب محول من جامعة ثانية وش الشروط": ("study_exams", "المادة 23"),
+    "معادلة مواد درستها في جامعة ثانية": ("study_exams", "المادة 24"),
+    "التحويل من تخصص لتخصص داخل الجامعة": ("study_exams", "المادة 25"),
+    "ادرس مادة في جامعة ثانية صيفي كطالب زائر": ("study_exams", "المادة 28"),
+    "وش يصير اذا غبت عن الاختبار النهائي بدون عذر": ("study_exams", "المادة 31"),
+    "اختبار بديل لاني كنت مريض": ("study_exams", "المادة 32"),
+    "وش معنى غير مكتمل في المادة": ("study_exams", "المادة 33"),
+    "ابي اتظلم على درجة الفاينل كم المدة": ("study_exams", "المادة 36"),
+    "التقدير العام ممتاز جدا كم المعدل": ("study_exams", "المادة 37"),
+    "مرتبة الشرف الثانية": ("study_exams", "المادة 39"),
+    "كم نقطة يعطي تقدير ب+": ("study_exams", ""),
+    "حذف واضافة المواد متى": ("study_exams", "المادة 13"),
+    "العبء الدراسي الاقصى كم ساعة": ("study_exams", "المادة 13"),
+    "مدة الدراسة القصوى للبكالوريوس": ("study_exams", ""),
+    "كم مكافأة الطالب الشهرية": ("student_fund|study_exams", ""),
+    "مخالفة سلوكية وش العقوبات": ("conduct", ""),
+    "حقي اني اطلع على ورقة اختباري": ("student_rights|exam_guide", ""),
+    "الجوال في قاعة الاختبار": ("exam_guide|conduct", ""),
+    "تأخرت عن الاختبار كم دقيقة يدخلوني": ("exam_guide", ""),
+    "التدريب الصيفي كم ساعة معتمدة": ("coop_training", ""),
+    "شروط الابتعاث للمعيد": ("scholarship_staff|scholarship_policies", ""),
+    "الطالب الموهوب يدرس مواد زيادة": ("study_exams", "المادة 48"),
+    "التجسير من الدبلوم للبكالوريوس": ("study_exams|applied_college", ""),
+    "الفصل الصيفي اجباري؟": ("study_exams", ""),
+}
+
 STAFF = {
     "كم إجازة عضو هيئة التدريس الاعتيادية": ("faculty_affairs", ""),
     "شروط الترقية لأستاذ مشارك": ("faculty_affairs", ""),
@@ -54,11 +90,25 @@ def _hit(question, docs, article, k):
     )
 
 
-@pytest.mark.parametrize("question,expected", list(STUDENT.items()) + list(STAFF.items()))
+ALL = {**STUDENT, **STUDENT_MORE, **STAFF}
+
+
+@pytest.mark.parametrize("question,expected", list(ALL.items()))
 def test_question_finds_the_right_regulation(question, expected):
     # The agent receives the top 5 results (search_regulations default).
     docs, article = expected
     assert _hit(question, docs, article, k=5), f"no match in top-5 for: {question}"
+
+
+def test_right_article_is_usually_in_the_top_3():
+    # The answer quotes the first results most; keep them precise, not just present.
+    hits = sum(_hit(q, d, a, k=3) for q, (d, a) in ALL.items())
+    assert hits / len(ALL) >= 0.95, f"top-3 hit rate {hits}/{len(ALL)}"
+
+
+def test_heading_labels_do_not_count_as_words():
+    # "الفصل" / "المادة" repeat on every chunk and mean "dismissal" / "course" to students.
+    assert R._heading_topic("الفصل الخامس: الإجراءات الأكاديمية — المادة 15").split() == ["الإجراءات", "الأكاديمية"]
 
 
 def test_index_is_loaded_with_core_documents():

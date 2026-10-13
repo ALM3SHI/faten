@@ -85,6 +85,14 @@ _SYNONYMS_RAW = {
     "اغيب": ["غياب", "حرمان", "حضور"],
     "حرمان": ["غياب"],
     "محروم": ["حرمان", "غياب"],
+    "انحرمت": ["حرمان"],
+    "انحرم": ["حرمان"],
+    "ارفع": ["رفع"],
+    "غبت": ["غايب", "يغيب"],
+    "غايب": ["غياب"],
+    "طالب": ["طلب"],
+    "موهوب": ["متميز", "مبدع"],
+    "متفوق": ["متميز", "موهوب"],
     "انسحب": ["انسحاب"],
     "انسحاب": ["اعتذار", "حذف"],
     "اعتذر": ["اعتذار"],
@@ -160,6 +168,16 @@ def _expand(tokens: list[str]) -> Counter:
     return weights
 
 
+# "الفصل الخامس: الإجراءات الأكاديمية — المادة 15" → "الإجراءات الأكاديمية".
+# The chapter and article labels repeat on every chunk, and their words
+# ("فصل", "مادة") are also what students say for dismissal and courses.
+_HEADING_LABELS = re.compile(r"الفصل\s+[^:—]{1,25}:|—?\s*المادة\s*\(?\d+\)?|—?\s*الملحق\s*\(?\d+\)?")
+
+
+def _heading_topic(heading: str) -> str:
+    return _HEADING_LABELS.sub(" ", heading or "")
+
+
 # ── Index ─────────────────────────────────────────────────────────
 class _Index:
     def __init__(self, data: dict[str, Any]) -> None:
@@ -168,12 +186,15 @@ class _Index:
         self.tfs: list[Counter] = []
         self.lengths: list[int] = []
         df: Counter = Counter()
+        self.bigrams: list[set[tuple[str, str]]] = []
         for c in self.chunks:
             # Heading counted twice: it names the topic of the article.
-            toks = tokenize(c.get("heading", "")) * 2 + tokenize(c.get("text", ""))
+            toks = tokenize(_heading_topic(c.get("heading", ""))) * 2 + tokenize(c.get("text", ""))
             tf = Counter(toks)
             self.tfs.append(tf)
             self.lengths.append(len(toks))
+            body = tokenize(c.get("text", ""))
+            self.bigrams.append(set(zip(body, body[1:])))
             df.update(tf.keys())
         # Student-facing documents first: this is a student assistant, and many
         # staff regulations share vocabulary (leave, absence, discipline…).
@@ -186,9 +207,13 @@ class _Index:
         self.idf = {t: math.log(1 + (n - f + 0.5) / (f + 0.5)) for t, f in df.items()}
 
     def search(self, query: str, k: int = 4) -> list[tuple[float, dict[str, Any]]]:
-        q = _expand(tokenize(query))
+        q_tokens = tokenize(query)
+        q = _expand(q_tokens)
         if not q or not self.chunks:
             return []
+        # Pairs use the synonyms too: "انسحب من مادة" also matches "الانسحاب من مقرر".
+        forms = [{t, *_SYNONYMS.get(t, [])} for t in q_tokens]
+        q_pairs = {(a, b) for x, y in zip(forms, forms[1:]) for a in x for b in y}
         k1, b = 1.5, 0.75
         scored = []
         for i, tf in enumerate(self.tfs):
@@ -199,6 +224,10 @@ class _Index:
                 if f:
                     score += qw * self.idf.get(term, 0.0) * (f * (k1 + 1)) / (f + norm)
             if score > 0:
+                # Query words that sit side by side in the article ("رفع الحرمان",
+                # "الاختبار النهائي") point at the article that is about them.
+                pairs = sum(1 for p in q_pairs if p in self.bigrams[i])
+                score *= 1 + 0.2 * min(pairs, 3)
                 doc_id = self.chunks[i].get("doc_id")
                 score *= self.doc_prior.get(doc_id, 1.0)
                 # Query names the document ("نظام الجامعات", "لائحة الإسكان") → boost it.
