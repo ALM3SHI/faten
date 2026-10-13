@@ -97,3 +97,18 @@ export function estimateSessions(course: TrackedCourse, term: TermWindow | null)
   for (const d of course.weekdays) perDay.set(d, (perDay.get(d) ?? 0) + 1);
   return teachingDates(term, [...perDay.keys()]).reduce((n, d) => n + (perDay.get(d.getDay()) ?? 0), 0);
 }
+
+/**
+ * Which copy wins when this device and Firestore both hold an attendance
+ * record: the one changed last. Equal timestamps mean nothing to do.
+ * Missing timestamps lose to any real one.
+ */
+export function newerAttendance(
+  localUpdated: string | null,
+  remoteUpdated: string | null | undefined,
+): "local" | "remote" | "same" {
+  const local = localUpdated ?? "";
+  const remote = remoteUpdated ?? "";
+  if (local === remote) return "same";
+  return local > remote ? "local" : "remote";
+}

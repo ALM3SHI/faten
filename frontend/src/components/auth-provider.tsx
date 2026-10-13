@@ -6,6 +6,7 @@ import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
   attachStoreSync,
+  hydrateAttendance,
   hydrateExams,
   hydrateStudyPacks,
   hydrateUserWorkspace,
@@ -78,10 +79,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
 
-        // Study packs and exams live outside /api/workspace — merge them on every sign-in.
-        const extra = await Promise.allSettled([hydrateStudyPacks(user.uid), hydrateExams(user.uid)]);
+        // Study packs, exams and attendance live outside /api/workspace — merge them on every sign-in.
+        const extra = await Promise.allSettled([
+          hydrateStudyPacks(user.uid),
+          hydrateExams(user.uid),
+          hydrateAttendance(user.uid),
+        ]);
         for (const r of extra) {
-          if (r.status === 'rejected') console.warn('[auth] hydrate study/exams failed:', r.reason);
+          if (r.status === 'rejected') console.warn('[auth] hydrate study/exams/attendance failed:', r.reason);
         }
 
         try {

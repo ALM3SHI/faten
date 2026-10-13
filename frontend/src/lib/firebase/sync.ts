@@ -64,6 +64,7 @@ import { useScheduleStore } from "@/store/scheduleStore";
 import { usePlanStore } from "@/store/planStore";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
 import { useAttendanceStore } from "@/store/attendanceStore";
+import { newerAttendance } from "@/lib/attendance";
 import { useStudyStore } from "@/store/studyStore";
 import { useExamsStore } from "@/store/examsStore";
 import { normalizeExam, type Exam } from "@/lib/exams";
@@ -338,6 +339,33 @@ export async function refreshExams(): Promise<void> {
 }
 
 /**
+ * Absence records live outside /api/workspace, so they are pulled here on
+ * every sign-in (whichever path loaded the other stores). The copy changed
+ * last wins; a newer copy on this device is uploaded.
+ */
+export async function hydrateAttendance(uid: string): Promise<void> {
+  const snap = await getDoc(doc(db, "users", uid, "academic_record", "attendance"));
+  const remote = snap.exists() ? (snap.data() as Record<string, unknown>) : null;
+  const local = useAttendanceStore.getState();
+  const winner = newerAttendance(local.lastUpdated, remote?.lastUpdated as string | null | undefined);
+
+  if (winner === "remote" && remote) {
+    const wasEnabled = syncEnabled;
+    setStoreSyncEnabled(false);
+    try {
+      useAttendanceStore.setState({
+        courses: (remote.courses as ReturnType<typeof useAttendanceStore.getState>["courses"]) ?? {},
+        lastUpdated: (remote.lastUpdated as string | null) ?? null,
+      });
+    } finally {
+      setStoreSyncEnabled(wasEnabled);
+    }
+  } else if (winner === "local" && local.lastUpdated) {
+    await syncAttendance(uid, { courses: local.courses, lastUpdated: local.lastUpdated });
+  }
+}
+
+/**
  * Merge this device's study packs with the copy in Firestore and push the
  * result back when it changed. Runs on every sign-in (whichever workspace
  * path hydrated the other stores), so packs appear on every device.
@@ -361,26 +389,15 @@ export async function hydrateUserWorkspace(uid: string): Promise<void> {
   // see setState() and immediately try to push the same data back.
   setStoreSyncEnabled(false);
   try {
-    const [profileSnap, transcriptSnap, scheduleSnap, planSnap, chatsSnap, attendanceSnap] =
+    const [profileSnap, transcriptSnap, scheduleSnap, planSnap, chatsSnap] =
       await Promise.all([
         getDoc(doc(db, "users", uid)),
         getDoc(doc(db, "users", uid, "academic_record", "main")),
         getDoc(doc(db, "users", uid, "academic_record", "schedule")),
         getDoc(doc(db, "users", uid, "plan", "current")),
         getDocs(collection(db, "users", uid, "chats")),
-        // Optional doc — a failure here must not break the rest of hydration.
-        getDoc(doc(db, "users", uid, "academic_record", "attendance")).catch(() => null),
       ]);
-
-    // ── Attendance ──
-    if (attendanceSnap?.exists()) {
-      const d = attendanceSnap.data() as Record<string, unknown>;
-      useAttendanceStore.setState({
-        courses:
-          (d.courses as ReturnType<typeof useAttendanceStore.getState>["courses"]) ?? {},
-        lastUpdated: (d.lastUpdated as string | null) ?? null,
-      });
-    }
+    // Attendance is merged by hydrateAttendance() on every sign-in.
 
     // ── Profile ──
     if (profileSnap.exists()) {
