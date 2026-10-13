@@ -332,6 +332,21 @@ export async function hydrateExams(uid: string): Promise<void> {
   ]);
 }
 
+// ─────────────────────────────────────────────────────────────────
+// Welcome tour — users/{uid}/settings/tour, written once it is closed.
+// ─────────────────────────────────────────────────────────────────
+
+/** True when this account already finished or skipped the current tour. */
+export async function readTourDone(uid: string, version: number): Promise<boolean> {
+  const snap = await getDoc(doc(db, "users", uid, "settings", "tour"));
+  if (!snap.exists()) return false;
+  return Number((snap.data() as Record<string, unknown>).version ?? 0) >= version;
+}
+
+export async function markTourDone(uid: string, version: number): Promise<void> {
+  await setDoc(doc(db, "users", uid, "settings", "tour"), { version, doneAt: new Date().toISOString() });
+}
+
 /** Pull exams again (e.g. when the exams page opens after a chat). */
 export async function refreshExams(): Promise<void> {
   const uid = currentUid();

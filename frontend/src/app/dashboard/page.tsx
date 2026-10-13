@@ -45,6 +45,7 @@ import { MigrationBoundary } from "@/components/dashboard/migration-boundary";
 import { CumulativeGpaCard, GpaTrendInsight } from "@/components/dashboard/cumulative-gpa-card";
 import { TaskRolloverDialog } from "@/components/dashboard/task-rollover-dialog";
 import { AcademicCalendarCard, AcademicCalendarDialogContent } from "@/components/dashboard/academic-calendar";
+import { useWelcomeTour } from "@/components/onboarding/use-welcome-tour";
 
 // Dialog bodies load on first open (they carry the charts / simulator code);
 // they are only rendered once their dialog has been opened, see below.
@@ -56,6 +57,10 @@ const RoiSimulatorDialog = dynamic(
   () => import("@/components/dashboard/roi-simulator-dialog").then((m) => m.RoiSimulatorDialog),
   { ssr: false },
 );
+// Only first-time visitors (or a replay from the profile page) load the tour.
+const WelcomeTour = dynamic(() => import("@/components/onboarding/welcome-tour").then((m) => m.WelcomeTour), {
+  ssr: false,
+});
 
 /** Hours the backend assumes for next term until it answers (backend NEXT_HOURS). */
 const DEFAULT_NEXT_HOURS = 15;
@@ -154,6 +159,7 @@ export default function DashboardPage() {
   // Lazy dialogs mount (and fetch their code) the first time they open.
   const [roiOpened, setRoiOpened] = useState(false);
   const [adherenceOpened, setAdherenceOpened] = useState(false);
+  const tour = useWelcomeTour();
 
   const recentCourses = useMemo(
     () =>
@@ -353,6 +359,7 @@ export default function DashboardPage() {
           </>
         )}
       </main>
+      {tour.open && <WelcomeTour open onClose={tour.close} />}
     </div>
   );
 }

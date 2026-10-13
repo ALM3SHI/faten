@@ -20,6 +20,8 @@ test("protected pages send signed-out visitors to /login and back", async ({ pag
   await page.locator("form").getByRole("button", { name: /دخول/ }).click();
 
   await expect(page).toHaveURL(/\/dashboard\/$/);
+  // first sign-in on this account → the welcome tour opens over the dashboard
+  await page.getByRole("dialog").getByRole("button", { name: "تخطي الجولة" }).click();
   await expect(page.getByRole("heading", { name: "لوحة المعلومات" })).toBeVisible();
 });
 

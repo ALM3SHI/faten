@@ -6,13 +6,18 @@ export const STUDENT = { uid: "e2e-omar", email: "omar@test.local", displayName:
  * Start the page already signed in (fake Firebase reads this key). Seeds only
  * on the tab's first page: the flag lives in window.name because logout
  * wipes local- and sessionStorage, and re-seeding would sign the user back in.
+ * The welcome tour is marked as seen unless `tour: true` (it would cover the page).
  */
-export async function signIn(page: Page, user = STUDENT): Promise<void> {
-  await page.addInitScript((u) => {
-    if (window.name.includes("e2e-auth")) return;
-    localStorage.setItem("__e2e_auth_user__", JSON.stringify(u));
-    window.name += " e2e-auth";
-  }, user);
+export async function signIn(page: Page, user = STUDENT, { tour = false }: { tour?: boolean } = {}): Promise<void> {
+  await page.addInitScript(
+    ({ u, tour }) => {
+      if (window.name.includes("e2e-auth")) return;
+      localStorage.setItem("__e2e_auth_user__", JSON.stringify(u));
+      if (!tour) localStorage.setItem("uqu_tour_done_v1", `${u.uid}:1`);
+      window.name += " e2e-auth";
+    },
+    { u: user, tour },
+  );
 }
 
 /** Put documents into the fake Firestore before the app loads. */
