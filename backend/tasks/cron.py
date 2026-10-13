@@ -10,7 +10,7 @@ import asyncio
 import json
 import math
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from agent.loop import get_openai_client
 from agent.tools_schema import TOOLS_SCHEMA
@@ -129,3 +129,39 @@ async def daily_notifications_cron():
             logger.error(f"[cron] Error for user {user_id}: {err}")
 
     logger.info("[cron] Daily notifications complete.")
+    await push_daily_reminders(db)
+
+
+RIYADH = timezone(timedelta(hours=3))
+
+
+async def push_daily_reminders(db=None) -> int:
+    """Morning push: upcoming exams and absence limits (services/push.py)."""
+    from services import push
+
+    db = db or get_db()
+    today = datetime.now(RIYADH).date()
+    sent = 0
+    for uid in push.users_with_devices(db):
+        try:
+            sent += push.send_to_user(db, uid, push.daily_items(db, uid, today))
+        except Exception as err:
+            logger.error("[cron] push for %s failed: %s", uid, err)
+    logger.info("[cron] Daily push reminders sent: %d", sent)
+    return sent
+
+
+async def lecture_reminders_cron(db=None, now: datetime | None = None) -> int:
+    """Every ~30 min in the day: 'محاضرة بعد ساعة' for students with push on."""
+    from services import push
+
+    db = db or get_db()
+    now = now or datetime.now(RIYADH)
+    sent = 0
+    for uid in push.users_with_devices(db):
+        try:
+            sent += push.send_to_user(db, uid, push.lecture_items(db, uid, now))
+        except Exception as err:
+            logger.error("[cron] lecture push for %s failed: %s", uid, err)
+    logger.info("[cron] Lecture reminders sent: %d", sent)
+    return sent

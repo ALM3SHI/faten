@@ -1,6 +1,9 @@
-# Wakes the backend every morning and starts the daily notifications job.
-# Needed because Render's free plan sleeps when idle, so the in-process
-# scheduler cannot fire on its own.
+# Wakes the backend and starts the notification jobs. Needed because
+# Render's free plan sleeps when idle, so the in-process scheduler cannot
+# fire on its own.
+#
+#   08:00 Riyadh            → daily notifications + push (exams, absences)
+#   every 30 min, Sun–Thu   → push "محاضرة بعد ساعة" for upcoming lectures
 #
 # Repo → Settings → Secrets and variables → Actions → add:
 #   BACKEND_URL  e.g. https://faten-backend.onrender.com
@@ -9,12 +12,21 @@ name: Daily notifications
 
 on:
   schedule:
-    - cron: "0 5 * * *"   # 05:00 UTC = 08:00 Riyadh
-  workflow_dispatch:       # "Run workflow" button for manual tests
+    - cron: "0 5 * * *"          # 05:00 UTC = 08:00 Riyadh
+    - cron: "*/30 4-17 * * 0-4"  # 07:00–20:30 Riyadh, Sunday–Thursday
+  workflow_dispatch:             # "Run workflow" button for manual tests
+    inputs:
+      job:
+        description: "Which job to run"
+        type: choice
+        options: [daily-notifications, lecture-reminders]
+        default: daily-notifications
 
 jobs:
   trigger:
     runs-on: ubuntu-24.04
+    env:
+      JOB: ${{ github.event.schedule == '*/30 4-17 * * 0-4' && 'lecture-reminders' || inputs.job || 'daily-notifications' }}
     steps:
       - name: Wake backend (free plan cold start can take ~1 min)
         run: |
@@ -22,8 +34,8 @@ jobs:
                --retry-all-errors --max-time 90 \
                "${{ secrets.BACKEND_URL }}/health"
 
-      - name: Start daily notifications
+      - name: Start ${{ env.JOB }}
         run: |
-          curl --silent --show-error --fail --max-time 60 -X POST \
+          curl --silent --show-error --fail --max-time 120 -X POST \
                -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
-               "${{ secrets.BACKEND_URL }}/api/cron/daily-notifications"
+               "${{ secrets.BACKEND_URL }}/api/cron/${JOB}"

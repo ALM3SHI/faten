@@ -300,6 +300,15 @@ export function clearAllAppData(): void {
 export async function logoutAndPurge(
   redirectTo: string = "/login",
 ): Promise<void> {
+  // Stop this device's push notifications while the token is still valid
+  // (the next person on this browser must not get this student's reminders).
+  try {
+    const { disablePush, hasPushDevice } = await import("@/lib/push");
+    if (hasPushDevice()) await Promise.race([disablePush(), new Promise((r) => setTimeout(r, 3000))]);
+  } catch (err) {
+    console.warn("[auth] disablePush failed — continuing logout:", err);
+  }
+
   try {
     await signOut(auth);
   } catch (err) {

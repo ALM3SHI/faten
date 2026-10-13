@@ -51,7 +51,22 @@ git push
 - `BACKEND_URL` = `https://<اسم-الخدمة>.onrender.com`
 - `CRON_SECRET` = القيمة التي نسختها من Render
 
-للتجربة: تبويب **Actions → Daily notifications → Run workflow**.
+للتجربة: تبويب **Actions → Daily notifications → Run workflow** (واختر `daily-notifications` أو `lecture-reminders`).
+
+نفس الملف يشغّل كل 30 دقيقة (من الأحد إلى الخميس، 7 الصبح إلى 8:30 المساء) تذكير «محاضرة بعد ساعة».
+
+## 5) إشعارات الجوال (Firebase Cloud Messaging)
+1. Firebase Console ← ⚙️ **Project settings** ← تبويب **Cloud Messaging**.
+2. تأكد أن **Firebase Cloud Messaging API (V1)** مفعّل (إذا مكتوب Disabled اضغط ⋮ ← Manage API in Google Cloud Console ← **Enable**).
+3. في نفس الصفحة، تحت **Web configuration ← Web Push certificates** اضغط **Generate key pair**، وانسخ المفتاح (Key pair).
+4. أضف سطراً ثانياً في `frontend\.env.production.local`:
+   ```
+   NEXT_PUBLIC_FIREBASE_VAPID_KEY=<المفتاح اللي نسخته>
+   ```
+5. شغّل `DEPLOY_FRONTEND.bat`. ما يحتاج تغيير في Render، لأن الخادم يرسل بنفس حساب الخدمة (`FIREBASE_CREDENTIALS_JSON`).
+6. للتجربة: الملف الشخصي ← **الإشعارات على الجوال** ← **تفعيل الإشعارات** ← **إرسال إشعار تجريبي**.
+
+> على الآيفون: الإشعارات تشتغل بس بعد **مشاركة ← إضافة إلى الشاشة الرئيسية** وفتح فطن من الأيقونة (iOS 16.4 أو أحدث).
 
 ---
 

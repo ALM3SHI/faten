@@ -29,6 +29,7 @@ import {
 } from "@/store/profileStore";
 import { SetupWizard } from "@/components/setup-wizard/SetupWizard";
 import { PrivacyCard } from "@/components/profile/privacy-card";
+import { NotificationsCard } from "@/components/profile/notifications-card";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
@@ -412,6 +413,7 @@ export default function ProfilePage() {
               ))}
             </div>
           </Card>
+          <NotificationsCard />
           <PrivacyCard />
         </div>
       </main>

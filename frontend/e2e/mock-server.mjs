@@ -10,6 +10,7 @@ import http from "node:http";
 
 const PORT = Number(process.env.MOCK_PORT || 8787);
 const requests = [];
+const prefs = { lectures: true, attendance: true, exams: true };
 
 const COMPLETED = [
   { code: "CS1101", nameAr: "مقدمة في البرمجة", nameEn: "Intro to Programming", creditHours: 4, grade: "A+", gradePoints: 4, semester: "الفصل الأول 1444", semesterStatus: "completed" },
@@ -133,7 +134,11 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/pomodoro/log") return send(res, 200, { success: true });
   if (p === "/api/memory") return send(res, 200, { items: [] });
   if (p === "/api/study/pdf") return send(res, 200, STUDY_PACK);
-  if (p.startsWith("/api/notifications/")) return send(res, 200, { success: true });
+  if (p === "/api/notifications/prefs") {
+    // Echo the saved prefs without keeping them, so parallel tests stay independent.
+    return send(res, 200, { success: true, prefs: req.method === "PUT" && body ? { ...prefs, ...body } : prefs });
+  }
+  if (p.startsWith("/api/notifications/")) return send(res, 200, { success: true, id: "device1", sent: 1 });
   if (p === "/api/chat/stream") {
     res.writeHead(200, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache" });
     res.write(`data: ${JSON.stringify({ type: "status", tool: "get_upcoming_exams" })}\n\n`);

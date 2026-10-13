@@ -52,9 +52,10 @@ from routers.community import router as community_router
 from routers.news import router as news_router
 from routers.account import router as account_router
 from routers.study import router as study_router
+from routers.notifications import router as notifications_router
 
 # ── Import CRON tasks ──
-from tasks.cron import daily_notifications_cron
+from tasks.cron import daily_notifications_cron, lecture_reminders_cron
 
 # ── Logging ──
 logging.basicConfig(
@@ -94,8 +95,15 @@ async def lifespan(app: FastAPI):
             name="Daily Motivational Notifications",
             replace_existing=True,
         )
+        scheduler.add_job(
+            lecture_reminders_cron,
+            CronTrigger(minute="0,30", hour="6-20", day_of_week="sun,mon,tue,wed,thu", timezone="Asia/Riyadh"),
+            id="lecture_reminders",
+            name="Lecture push reminders",
+            replace_existing=True,
+        )
         scheduler.start()
-        logger.info("⏰ CRON scheduler started (daily at 8:00 AM Riyadh)")
+        logger.info("⏰ CRON scheduler started (daily at 8:00 AM Riyadh + lecture reminders)")
     else:
         logger.info("⏰ Internal scheduler disabled — use POST /api/cron/daily-notifications")
 
@@ -166,6 +174,7 @@ app.include_router(community_router)
 app.include_router(news_router)
 app.include_router(account_router)
 app.include_router(study_router)
+app.include_router(notifications_router)
 
 
 # ── Health Check ──
