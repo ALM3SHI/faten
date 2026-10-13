@@ -83,3 +83,11 @@ export function buildCreditsResolver(
     return DEFAULT_COURSE_CREDITS;
   };
 }
+
+/** Earliest 4-digit year in a semester label — sorts terms chronologically (Infinity when none). */
+export function extractYearKey(semester: string): number {
+  const matches = semester.match(/\d{4}/g);
+  if (!matches) return Number.POSITIVE_INFINITY;
+  const nums = matches.map((m) => parseInt(m, 10)).filter(Number.isFinite);
+  return nums.length > 0 ? Math.min(...nums) : Number.POSITIVE_INFINITY;
+}

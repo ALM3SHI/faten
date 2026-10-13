@@ -28,6 +28,7 @@ import {
   type EnrichedCourse,
 } from "@/lib/transcript-parser";
 import { useTranscriptStore } from "@/store/transcriptStore";
+import { FAILING_GRADES, STRONG_GRADES, WEAK_GRADES } from "@/lib/grade-scale";
 
 interface Step1Props {
   // Passing `null` for `parsed` signals: "use the transcript already in
@@ -768,9 +769,6 @@ function deriveEnrollmentYear(courses: EnrichedCourse[]): number | null {
   return min;
 }
 
-const STRONG_GRADES = new Set(["A+", "A"]);
-const WEAK_GRADES = new Set(["D+", "D", "F", "DN"]);
-
 function deriveStrengths(courses: EnrichedCourse[]): EnrichedCourse[] {
   return courses
     .filter((c) => c.grade && STRONG_GRADES.has(c.grade))
@@ -796,7 +794,7 @@ function deriveRecommendations({
 }): string[] {
   const out: string[] = [];
 
-  const failed = weaknesses.filter((c) => c.grade === "F" || c.grade === "DN");
+  const failed = weaknesses.filter((c) => c.grade && FAILING_GRADES.has(c.grade));
   if (failed.length > 0) {
     out.push(
       `لديك ${failed.length} مادة بحاجة إلى إعادة. اجعل أولها في خطة الترم القادم وخصّص لها وقت مذاكرة إضافي.`,

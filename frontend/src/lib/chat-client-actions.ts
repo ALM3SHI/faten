@@ -18,6 +18,7 @@ import { useProfileStore } from "@/store/profileStore";
 import { usePlanStore, taskKey, type PlanTask, type PlanPriority } from "@/store/planStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
+import { clampGpa } from "@/lib/grade-scale";
 
 export type ClientActionType =
   | "ADD_TASK"
@@ -104,7 +105,7 @@ function dispatchUpdateTargetGpa(payload: Record<string, unknown>): boolean {
   if (target == null) return false;
   // Hard-clamp to the UQU 4.00 scale so the agent can't accidentally push
   // a value from a stale 5.0-scale assumption into the profile store.
-  useProfileStore.getState().setGoals({ targetGpa: clamp(target, 0, 4) });
+  useProfileStore.getState().setGoals({ targetGpa: clampGpa(target) });
   return true;
 }
 
@@ -142,18 +143,6 @@ function dispatchNavigate(payload: Record<string, unknown>): boolean {
   // bot message (see <NavigationCTA> in app/chat/page.tsx).
   void payload;
   return false;
-}
-
-/** Lightweight predicate the chat UI uses to split "suggested navigation"
- *  actions out of the dispatched stream. Kept here so the whitelist of
- *  navigation-style action types stays in one file. */
-export function isSuggestedNavigation(action: ClientAction): boolean {
-  if (!action || typeof action.type !== "string") return false;
-  if (action.type !== "NAVIGATE") return false;
-  const path = (action.payload as { path?: unknown } | undefined)?.path;
-  return typeof path === "string"
-    && path.startsWith("/")
-    && !path.startsWith("//");
 }
 
 function dispatchStartPomodoro(payload: Record<string, unknown>): boolean {

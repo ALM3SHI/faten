@@ -16,66 +16,13 @@ import type {
   PDFDocumentProxy,
   TextItem,
 } from "pdfjs-dist/types/src/display/api";
+import { GRADE_POINTS, normalizeGrade } from "@/lib/grade-scale";
 
 // ──────────────────────────────────────────────────────────────────────
 // Constants — ported verbatim from the legacy parser
 // ──────────────────────────────────────────────────────────────────────
 
 const COURSE_CODE_RE = /^[A-Z]{2,4}\d{3,4}T?$/;
-
-/**
- * Official UQU 4.00 grade-point scale. This is the SINGLE source of truth
- * for letter-grade → grade-point mapping across the entire app. Every
- * downstream computation (chart, advisor, simulator, cumulative GPA) is
- * derived from these values — there are NO other scales anywhere in the
- * codebase. Do not introduce a 5.0 variant.
- *
- *   A+ = 4.00   B+ = 3.50   C+ = 2.50   D+ = 1.50   F  = 0.00
- *   A  = 3.75   B  = 3.00   C  = 2.00   D  = 1.00   DN = 0.00 (محروم)
- *   W / IP / IC / NP → null (excluded from GPA)
- */
-export const GRADE_MAP: Record<string, number | null> = {
-  "A+": 4.0,
-  "A": 3.75,
-  "B+": 3.5,
-  "B": 3.0,
-  "C+": 2.5,
-  "C": 2.0,
-  "D+": 1.5,
-  "D": 1.0,
-  "F": 0.0,
-  "DN": 0.0,
-  "W": null,
-  "IP": null,
-  "IC": null,
-  "NP": null,
-};
-
-export const GRADE_COLORS: Record<string, string> = {
-  "A+": "#10b981",
-  "A": "#10b981",
-  "B+": "#06b6d4",
-  "B": "#06b6d4",
-  "C+": "#f59e0b",
-  "C": "#f59e0b",
-  "D+": "#f97316",
-  "D": "#f97316",
-  "F": "#ef4444",
-  "DN": "#ef4444",
-};
-
-export const GRADE_LABELS: Record<string, string> = {
-  "A+": "ممتاز مرتفع",
-  "A": "ممتاز",
-  "B+": "جيد جداً مرتفع",
-  "B": "جيد جداً",
-  "C+": "جيد مرتفع",
-  "C": "جيد",
-  "D+": "مقبول مرتفع",
-  "D": "مقبول",
-  "F": "راسب",
-  "DN": "محروم",
-};
 
 const AR_SKIP_LABELS =
   /^(رمز|اسم|معتمدة|مكتسبة|الدرجة|التقدير|النقاط|المجموع|الفصل|الكلية|القسم|التخصص|الحالة|منتظم|ممتاز|جيد|مقبول|راسب|محروم|الساعات|Course|Code|Name|Crd|Pass|Degree|Grade|Points|Hours|Hourse|sum|Faculty|Dept|Status|Major)/i;
@@ -311,14 +258,6 @@ function detectColumns(rows: TextFragment[][], pw: number): ColumnMap | null {
   return null;
 }
 
-function _normalizeGrade(g: string | null | undefined): string | null {
-  if (!g) return null;
-  const up = g.toUpperCase().replace(/\s/g, "");
-  if (Object.prototype.hasOwnProperty.call(GRADE_MAP, up)) return up;
-  if (up === "A" || up === "B" || up === "C" || up === "D" || up === "F") return up;
-  return null;
-}
-
 function _cleanCourseName(name: string): string {
   if (!name) return name;
   const cutPatterns: RegExp[] = [
@@ -403,7 +342,7 @@ function _parseWithColumns(
   const deg = parseInt((mapped.deg || [])[0] ?? "") || 0;
   const gradeStr = ((mapped.grade || [])[0] || "").trim();
   const pts = parseFloat((mapped.pts || [])[0] ?? "") || 0;
-  const grade = _normalizeGrade(gradeStr);
+  const grade = normalizeGrade(gradeStr);
   const nameAr = _extractArabicName(right);
   return {
     code,
@@ -414,7 +353,7 @@ function _parseWithColumns(
     degree: deg,
     grade,
     points: pts,
-    gradePoints: grade ? GRADE_MAP[grade] ?? null : null,
+    gradePoints: grade ? GRADE_POINTS[grade] ?? null : null,
   };
 }
 
@@ -445,7 +384,7 @@ function _parseByPattern(
   }
   const nameTokens = items.slice(0, dataStart);
   const nameAr = _extractArabicName(right);
-  grade = _normalizeGrade(grade);
+  grade = normalizeGrade(grade);
   return {
     code,
     nameEn: _cleanCourseName(nameTokens.join(" ")),
@@ -455,7 +394,7 @@ function _parseByPattern(
     degree: numbers[2] || 0,
     grade,
     points: numbers.length > 3 ? numbers[numbers.length - 1] : numbers[3] || 0,
-    gradePoints: grade ? GRADE_MAP[grade] ?? null : null,
+    gradePoints: grade ? GRADE_POINTS[grade] ?? null : null,
   };
 }
 
