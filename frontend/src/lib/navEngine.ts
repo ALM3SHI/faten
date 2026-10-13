@@ -302,15 +302,6 @@ export class NavEngine {
     return null;
   }
 
-  /** Route from a specific nav-graph node ID (entrance waypoint / free-point snap). */
-  findPathFromNode(
-    fromNodeId: string,
-    toRoomId: string,
-    options: FindPathOptions = {},
-  ): PathResult | null {
-    return this.findPath(null, toRoomId, { ...options, fromNodeId });
-  }
-
   // ── Snapping / nearest queries (public surface) ──────────────────
 
   findNearestNode(

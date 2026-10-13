@@ -7,7 +7,6 @@
 import type {
   EnergyPeak,
   TaskStrategy,
-  LearningStyle,
   DayOff,
   ProfilePreferences,
 } from "@/store/profileStore";
@@ -34,13 +33,6 @@ export const STRATEGY_OPTIONS: OptionMeta<TaskStrategy>[] = [
 export function strategyLabelAr(value: TaskStrategy | string): string {
   return findOption(STRATEGY_OPTIONS, value as TaskStrategy)?.titleAr ?? value;
 }
-
-export const LEARNING_OPTIONS: OptionMeta<LearningStyle>[] = [
-  { value: "visual",      emoji: "👀", titleAr: "بصري",        subtitleAr: "رسوم ومخططات" },
-  { value: "auditory",    emoji: "🎧", titleAr: "سمعي",        subtitleAr: "محاضرات وبودكاست" },
-  { value: "kinesthetic", emoji: "🏃", titleAr: "حركي",        subtitleAr: "تطبيق عملي" },
-  { value: "reading",     emoji: "📖", titleAr: "قرائي/كتابي", subtitleAr: "ملخصات ومراجعة" },
-];
 
 export const FOCUS_OPTIONS = [25, 30, 45, 50];
 export const SHORT_BREAK_OPTIONS = [5, 10, 15];

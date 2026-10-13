@@ -96,14 +96,6 @@ export function parseLocalDate(iso: string | undefined | null): Date | null {
   return date;
 }
 
-/** Format a Date as local "YYYY-MM-DD". */
-export function toISODate(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
 /** Arabic weekday name for a Date, aligned with PLAN_WEEK_DAYS (Sun→Sat). */
 export function weekdayNameFromDate(date: Date): string {
   return PLAN_WEEK_DAYS[date.getDay()];
@@ -204,12 +196,6 @@ export function rowSpanForTimeRange(startTime: string, endTime: string): number 
   if (endIdx < 0) endIdx = startIdx;
   if (endIdx < startIdx) endIdx = startIdx;
   return Math.max(1, endIdx - startIdx + 1);
-}
-
-export function rowSpanForDuration(startTime: string, durationMinutes: number): number {
-  const end = endTimeFromStartAndDuration(startTime, durationMinutes);
-  if (!end) return 1;
-  return rowSpanForTimeRange(startTime, end);
 }
 
 export interface BuildGridMapOptions {

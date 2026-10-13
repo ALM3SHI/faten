@@ -8,58 +8,6 @@
 import { UQU_CALENDAR, searchCalendar, getEventsByType, getTermEvents, getNextEvent, type CalendarEvent } from './uqu-calendar-data';
 
 /**
- * تعريف الأداة للذكاء الاصطناعي
- * Tool definition for AI
- */
-export const CALENDAR_TOOL_DEFINITION = {
-  name: 'get_calendar_info',
-  description: `
-    البحث في التقويم الأكاديمي لجامعة أم القرى.
-    Search the Umm Al-Qura University academic calendar.
-    
-    استخدم هذه الأداة عندما يسأل المستخدم عن:
-    Use this tool when the user asks about:
-    - تواريخ الاختبارات (نصفية، نهائية، عملية)
-    - Exam dates (midterm, final, practical)
-    - الإجازات (وطنية، عيد الفطر، عيد الأضحى، الخريف)
-    - Holidays (national day, Eid al-Fitr, Eid al-Adha, fall break)
-    - الإجراءات الأكاديمية (تأجيل، اعتذار، انسحاب، تحويل)
-    - Academic procedures (postponement, withdrawal, course drop, transfer)
-    - بداية/نهاية الفصول الدراسية
-    - Start/end of academic terms
-    - أي حدث أكاديمي مهم
-    - Any important academic event
-  `,
-  parameters: {
-    type: 'object',
-    properties: {
-      query_type: {
-        type: 'string',
-        enum: ['search', 'by_type', 'by_term', 'next_event', 'all'],
-        description: `
-          نوع الاستعلام:
-          - search: البحث بكلمة مفتاحية
-          - by_type: البحث حسب النوع (exam, holiday, academic, system)
-          - by_term: البحث حسب الفصل الدراسي
-          - next_event: الحصول على الحدث القادم
-          - all: جميع الأحداث
-        `
-      },
-      query: {
-        type: 'string',
-        description: 'الكلمة المفتاحية للبحث أو اسم الفصل الدراسي'
-      },
-      event_type: {
-        type: 'string',
-        enum: ['exam', 'holiday', 'academic', 'system'],
-        description: 'نوع الحدث عند استخدام by_type'
-      }
-    },
-    required: ['query_type']
-  }
-};
-
-/**
  * تنفيذ الأداة
  * Tool execution
  */
