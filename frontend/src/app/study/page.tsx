@@ -181,11 +181,12 @@ function Choice<T extends string | number>({
 
 function PackView({ pack }: { pack: StudyPack }) {
   const [tab, setTab] = useState<Tab>("summary");
-  const tabs: [Tab, string][] = [
-    ["summary", "الملخص"],
-    ["terms", `المصطلحات (${pack.key_terms.length})`],
-    ["cards", "البطاقات"],
-    ["quiz", `الاختبار (${pack.quiz.length})`],
+  // Counts are hidden on phones so the four tabs fit on one line.
+  const tabs: [Tab, string, number | null][] = [
+    ["summary", "الملخص", null],
+    ["terms", "المصطلحات", pack.key_terms.length],
+    ["cards", "البطاقات", null],
+    ["quiz", "الاختبار", pack.quiz.length],
   ];
   return (
     <div className="space-y-5">
@@ -193,16 +194,20 @@ function PackView({ pack }: { pack: StudyPack }) {
         <h2 className="text-xl font-black">{pack.title}</h2>
         <div className="text-xs text-muted-foreground mt-1">{pack.fileName}</div>
       </div>
-      <div className="flex gap-1.5 p-1 rounded-xl bg-foreground/5 border border-foreground/10 w-fit" role="tablist">
-        {tabs.map(([t, label]) => (
+      <div className="flex sm:w-fit gap-1 sm:gap-1.5 p-1 rounded-xl bg-foreground/5 border border-foreground/10" role="tablist">
+        {tabs.map(([t, label, count]) => (
           <button
             key={t}
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={cn("px-4 py-2 rounded-lg text-sm font-bold transition-colors", tab === t ? "bg-uqu-accent text-white" : "text-muted-foreground hover:text-foreground")}
+            className={cn(
+              "flex-auto sm:flex-none px-2 sm:px-4 py-2 rounded-lg text-[13px] sm:text-sm font-bold whitespace-nowrap transition-colors",
+              tab === t ? "bg-uqu-accent text-white" : "text-muted-foreground hover:text-foreground",
+            )}
           >
             {label}
+            {count !== null && <span className="hidden sm:inline"> ({count})</span>}
           </button>
         ))}
       </div>

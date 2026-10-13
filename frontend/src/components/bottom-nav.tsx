@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calculator, CalendarCheck, LayoutDashboard, MessageSquare, Users } from "lucide-react";
+import { Calculator, CalendarCheck, CalendarClock, LayoutDashboard, MessageSquare, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isActivePath, normalizePath } from "@/lib/routes";
 
@@ -10,6 +10,7 @@ const ITEMS = [
   { name: "اللوحة", href: "/dashboard", icon: LayoutDashboard },
   { name: "الدردشة", href: "/chat", icon: MessageSquare },
   { name: "الخطة", href: "/plan", icon: CalendarCheck },
+  { name: "الاختبارات", href: "/exams", icon: CalendarClock },
   { name: "المعدل", href: "/gpa", icon: Calculator },
   { name: "المجتمع", href: "/community", icon: Users },
 ];
@@ -33,7 +34,7 @@ export function BottomNav() {
         aria-label="التنقل الرئيسي"
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden border-t border-border bg-background/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       >
-        <ul className="grid grid-cols-5 h-16">
+        <ul className="grid grid-cols-6 h-16">
           {ITEMS.map(({ name, href, icon: Icon }) => {
             const active = isActivePath(pathname, href);
             return (
