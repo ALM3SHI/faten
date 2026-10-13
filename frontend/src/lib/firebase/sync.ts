@@ -22,6 +22,9 @@
  *   users/{uid}/chats/{threadId}             ← one doc per chat thread
  *     ├─ title, preview, createdAt, updatedAt, messages[], conversationId
  *
+ *   users/{uid}/study/packs                  ← study packs from lecture PDFs
+ *     ├─ packs[], deletedIds[], lastUpdated (merged per device, lib/study-sync.ts)
+ *
  * Why subscribe() and not action edits:
  *   Every Zustand action already mutates state through `set(...)`. A
  *   single `store.subscribe(listener)` on each store catches *all* of
@@ -58,6 +61,8 @@ import { useScheduleStore } from "@/store/scheduleStore";
 import { usePlanStore } from "@/store/planStore";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
 import { useAttendanceStore } from "@/store/attendanceStore";
+import { useStudyStore } from "@/store/studyStore";
+import { mergeStudySnapshots, sameSnapshot, type StudySnapshot } from "@/lib/study-sync";
 
 // ─────────────────────────────────────────────────────────────────
 // Sync gating — pause pushes while we're pulling, to prevent loops.
@@ -215,6 +220,69 @@ export async function clearAllChats(uid: string) {
   const batch = writeBatch(db);
   snap.forEach((d) => batch.delete(d.ref));
   await batch.commit();
+}
+
+export async function syncStudy(
+  uid: string,
+  data: StudySnapshot & { lastUpdated: string | null },
+) {
+  await setDoc(doc(db, "users", uid, "study", "packs"), { ...data, updatedAt: serverTimestamp() });
+}
+
+async function readRemoteStudy(uid: string): Promise<{ snapshot: StudySnapshot | null; lastUpdated: string | null }> {
+  const snap = await getDoc(doc(db, "users", uid, "study", "packs"));
+  if (!snap.exists()) return { snapshot: null, lastUpdated: null };
+  const d = snap.data() as Record<string, unknown>;
+  return {
+    snapshot: {
+      packs: Array.isArray(d.packs) ? (d.packs as StudySnapshot["packs"]) : [],
+      deletedIds: Array.isArray(d.deletedIds) ? (d.deletedIds as string[]) : [],
+    },
+    lastUpdated: (d.lastUpdated as string | null) ?? null,
+  };
+}
+
+/** Apply a merged snapshot locally without echoing it back as a push. */
+function applyStudyLocally(merged: StudySnapshot, lastUpdated: string | null) {
+  const wasEnabled = syncEnabled;
+  setStoreSyncEnabled(false);
+  try {
+    useStudyStore.setState({ ...merged, lastUpdated });
+  } finally {
+    const pending = timers.get(`study:${currentUid()}`);
+    if (pending) clearTimeout(pending);
+    timers.delete(`study:${currentUid()}`);
+    setStoreSyncEnabled(wasEnabled);
+  }
+}
+
+/**
+ * Read-merge-write: combine this device's packs with Firestore's and store
+ * the union, so two devices editing between sign-ins never drop each
+ * other's packs (lib/study-sync.ts has the rules).
+ */
+async function pushStudyMerged(uid: string): Promise<void> {
+  const local = useStudyStore.getState();
+  const remote = await readRemoteStudy(uid);
+  const merged = mergeStudySnapshots({ packs: local.packs, deletedIds: local.deletedIds }, remote.snapshot);
+  const now = new Date().toISOString();
+  await syncStudy(uid, { ...merged, lastUpdated: now });
+  if (!sameSnapshot(merged, { packs: local.packs, deletedIds: local.deletedIds })) applyStudyLocally(merged, now);
+}
+
+/**
+ * Merge this device's study packs with the copy in Firestore and push the
+ * result back when it changed. Runs on every sign-in (whichever workspace
+ * path hydrated the other stores), so packs appear on every device.
+ */
+export async function hydrateStudyPacks(uid: string): Promise<void> {
+  const remote = await readRemoteStudy(uid);
+  const local = useStudyStore.getState();
+  const merged = mergeStudySnapshots({ packs: local.packs, deletedIds: local.deletedIds }, remote.snapshot);
+  applyStudyLocally(merged, remote.lastUpdated ?? local.lastUpdated);
+  if (!sameSnapshot(merged, remote.snapshot) && (merged.packs.length > 0 || remote.snapshot)) {
+    await syncStudy(uid, { ...merged, lastUpdated: new Date().toISOString() });
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -493,6 +561,15 @@ export function attachStoreSync(): void {
         }
       }),
     );
+  });
+
+  // ── Study packs — direct Firestore (owner-only rules cover the path) ──
+  useStudyStore.subscribe((state) => {
+    const uid = currentUid();
+    if (!uid) return;
+    // null = freshly reset (logout / account switch): never push an empty list.
+    if (state.lastUpdated == null) return;
+    debouncedPush(`study:${uid}`, () => safeRun("pushStudy", () => pushStudyMerged(uid)));
   });
 
   // ── Chats ── diff old vs new so we only push what changed and

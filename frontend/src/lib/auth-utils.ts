@@ -6,7 +6,7 @@
  * Why this file exists
  *   The Zustand `persist` middleware writes every store the user
  *   interacts with into `localStorage` (uqu_profile_v3, uqu_transcript_v1,
- *   uqu_schedule_v1, uqu_ai_plan_v1, uqu_chat_history_v1). Calling
+ *   uqu_schedule_v1, uqu_ai_plan_v1, uqu_chat_history_v1, uqu_study_v1). Calling
  *   Firebase `signOut()` closes the auth session but leaves all that
  *   academic data sitting on the device. The next person to log in on
  *   the same browser sees the previous user's transcript and dashboard
@@ -157,6 +157,7 @@ function hasPersistedUserPayload(): boolean {
   if (usePlanStore.getState().plan !== null) return true;
   if (useChatHistoryStore.getState().threads.length > 0) return true;
   if (useAttendanceStore.getState().lastUpdated !== null) return true;
+  if (useStudyStore.getState().packs.length > 0) return true;
 
   return false;
 }
@@ -181,6 +182,7 @@ export function setStoresOwnerUid(uid: string): void {
   usePlanStore.setState({ ownerUid: uid });
   useChatHistoryStore.setState({ ownerUid: uid });
   useAttendanceStore.setState({ ownerUid: uid });
+  useStudyStore.setState({ ownerUid: uid });
 }
 
 /** Wipe user-owned persisted slots; theme and other preserved keys stay. */

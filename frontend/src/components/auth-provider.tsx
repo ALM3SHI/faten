@@ -6,6 +6,7 @@ import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import {
   attachStoreSync,
+  hydrateStudyPacks,
   hydrateUserWorkspace,
   pauseSyncForLogout,
 } from '@/lib/firebase/sync';
@@ -74,6 +75,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } catch (err) {
             console.error('[auth] hydrateUserWorkspace failed:', err);
           }
+        }
+
+        // Study packs live outside /api/workspace — merge them on every sign-in.
+        try {
+          await hydrateStudyPacks(user.uid);
+        } catch (err) {
+          console.warn('[auth] hydrateStudyPacks failed:', err);
         }
 
         try {
