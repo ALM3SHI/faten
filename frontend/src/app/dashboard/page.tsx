@@ -25,6 +25,7 @@ import { Navbar } from "@/components/navbar";
 import { UniversityNewsCard } from "@/components/dashboard/university-news-card";
 import { AttendanceSummaryCard } from "@/components/dashboard/attendance-summary-card";
 import { GraduationCard } from "@/components/dashboard/graduation-card";
+import { ExamsSummaryCard } from "@/components/exams/exams-summary-card";
 import { EmailVerificationReminder } from "@/components/email-verification-reminder";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -313,8 +314,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* ╔═══ STUDENT TOOLS · Attendance + Graduation + News ═══╗ */}
-            <div className="grid lg:grid-cols-3 gap-6 mt-6">
+            {/* ╔═══ STUDENT TOOLS · Exams + Attendance + Graduation + News ═══╗ */}
+            <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mt-6">
+              <ExamsSummaryCard />
               <AttendanceSummaryCard />
               <GraduationCard />
               <div className="lg:col-span-1">

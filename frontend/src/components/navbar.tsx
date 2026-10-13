@@ -17,6 +17,7 @@ const navItems = [
   { name: "الخطة", href: "/plan" },
   { name: "الغياب", href: "/attendance" },
   { name: "المذاكرة", href: "/study" },
+  { name: "الاختبارات", href: "/exams" },
   { name: "بومودورو", href: "/pomodoro" },
   { name: "القاعات", href: "/locations" },
   { name: "المجتمع", href: "/community" },
@@ -68,14 +69,14 @@ export function Navbar() {
             {/* prefetch={false} on app links: prefetching every tab pulled the heavy
                 routes (map data, PDF reader, charts) into whatever page was open. */}
             <nav className="hidden lg:block">
-              <ul className="flex items-center gap-1">
+              <ul className="flex items-center gap-0.5 xl:gap-1">
                 {navItems.filter(i => i.href !== '/profile' || user).map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       prefetch={false}
                       className={cn(
-                        "px-4 py-2 rounded-lg text-sm font-semibold transition-colors",
+                        "px-2.5 xl:px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors",
                         isActivePath(pathname, item.href)
                           ? "text-uqu-accent bg-uqu-accent/10"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
@@ -103,7 +104,7 @@ export function Navbar() {
                   <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">
                      <User className="w-4 h-4" />
                   </div>
-                  <span className="hidden sm:inline text-xs font-bold text-foreground">
+                  <span className="hidden sm:inline lg:hidden xl:inline text-xs font-bold text-foreground">
                     {profileName || user.displayName || user.email?.split("@")[0]}
                   </span>
                 </Button>

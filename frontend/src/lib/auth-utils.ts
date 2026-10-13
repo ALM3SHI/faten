@@ -6,7 +6,7 @@
  * Why this file exists
  *   The Zustand `persist` middleware writes every store the user
  *   interacts with into `localStorage` (uqu_profile_v3, uqu_transcript_v1,
- *   uqu_schedule_v1, uqu_ai_plan_v1, uqu_chat_history_v1, uqu_study_v1). Calling
+ *   uqu_schedule_v1, uqu_ai_plan_v1, uqu_chat_history_v1, uqu_study_v1, uqu_exams_v1). Calling
  *   Firebase `signOut()` closes the auth session but leaves all that
  *   academic data sitting on the device. The next person to log in on
  *   the same browser sees the previous user's transcript and dashboard
@@ -31,6 +31,7 @@ import { useTranscriptStore } from "@/store/transcriptStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
 import { useAttendanceStore } from "@/store/attendanceStore";
 import { useStudyStore } from "@/store/studyStore";
+import { useExamsStore } from "@/store/examsStore";
 import { STORAGE_KEYS } from "@/lib/core";
 
 /** Tab-scoped last Firebase UID — survives refresh, cleared on logout tracking reset. */
@@ -97,6 +98,12 @@ function getPersistedStores(): PersistedStore[] {
       reset: () => useStudyStore.getState().clearPacks(),
     },
     {
+      label: "exams",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      persist: (useExamsStore as any).persist,
+      reset: () => useExamsStore.getState().clearExams(),
+    },
+    {
       label: "chat-history",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       persist: (useChatHistoryStore as any).persist,
@@ -158,6 +165,7 @@ function hasPersistedUserPayload(): boolean {
   if (useChatHistoryStore.getState().threads.length > 0) return true;
   if (useAttendanceStore.getState().lastUpdated !== null) return true;
   if (useStudyStore.getState().packs.length > 0) return true;
+  if (useExamsStore.getState().exams.length > 0) return true;
 
   return false;
 }
@@ -183,6 +191,7 @@ export function setStoresOwnerUid(uid: string): void {
   useChatHistoryStore.setState({ ownerUid: uid });
   useAttendanceStore.setState({ ownerUid: uid });
   useStudyStore.setState({ ownerUid: uid });
+  useExamsStore.setState({ ownerUid: uid });
 }
 
 /** Wipe user-owned persisted slots; theme and other preserved keys stay. */

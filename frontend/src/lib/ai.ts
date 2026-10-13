@@ -4,7 +4,7 @@
  */
 
 import { ApiError, errorMessageFromBody, fetchRawWithAuth, fetchWithAuth } from './api';
-import { Storage, STORAGE_KEYS } from './core'; // STORAGE_KEYS.THEME only (Phase 4C.5)
+import { STORAGE_KEYS } from './core'; // STORAGE_KEYS.THEME only (Phase 4C.5)
 import {
   buildClientContext,
   dispatchClientActions,
@@ -98,13 +98,9 @@ export async function executeClientTool(
       return backendData;
     }
 
-    case 'add_upcoming_exam': {
-      const exams = Storage.get<Record<string, unknown>[]>('uqu_exams', []);
-      const exam = { ...args, id: backendData.id || Date.now(), done: false, createdAt: new Date().toISOString() };
-      exams.push(exam);
-      Storage.set('uqu_exams', exams);
+    case 'add_upcoming_exam':
+      // Saved in Firestore by the server; applyAgentResults() adds it to the exams store.
       return backendData;
-    }
 
     case 'add_course':
     case 'update_profile':

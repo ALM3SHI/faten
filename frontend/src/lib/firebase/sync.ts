@@ -22,6 +22,9 @@
  *   users/{uid}/chats/{threadId}             ← one doc per chat thread
  *     ├─ title, preview, createdAt, updatedAt, messages[], conversationId
  *
+ *   users/{uid}/exams/{examId}               ← one doc per exam (also written by the agent)
+ *     ├─ subject, course_code, date, time, duration_minutes, location, exam_type, done
+ *
  *   users/{uid}/study/packs                  ← study packs from lecture PDFs
  *     ├─ packs[], deletedIds[], lastUpdated (merged per device, lib/study-sync.ts)
  *
@@ -62,6 +65,8 @@ import { usePlanStore } from "@/store/planStore";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
 import { useAttendanceStore } from "@/store/attendanceStore";
 import { useStudyStore } from "@/store/studyStore";
+import { useExamsStore } from "@/store/examsStore";
+import { normalizeExam, type Exam } from "@/lib/exams";
 import { mergeStudySnapshots, sameSnapshot, type StudySnapshot } from "@/lib/study-sync";
 
 // ─────────────────────────────────────────────────────────────────
@@ -268,6 +273,68 @@ async function pushStudyMerged(uid: string): Promise<void> {
   const now = new Date().toISOString();
   await syncStudy(uid, { ...merged, lastUpdated: now });
   if (!sameSnapshot(merged, { packs: local.packs, deletedIds: local.deletedIds })) applyStudyLocally(merged, now);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Exams — one document per exam, shared with the agent's tools.
+// ─────────────────────────────────────────────────────────────────
+
+function examDocument(e: Exam): Record<string, unknown> {
+  const { id: _id, ...rest } = e;
+  return { ...rest, updatedAt: e.updatedAt ?? new Date().toISOString() };
+}
+
+export async function syncExam(uid: string, exam: Exam) {
+  await setDoc(doc(db, "users", uid, "exams", exam.id), examDocument(exam));
+}
+
+export async function deleteExamDoc(uid: string, examId: string) {
+  await deleteDoc(doc(db, "users", uid, "exams", examId));
+}
+
+const editedAt = (e: Exam) => e.updatedAt ?? e.createdAt ?? "";
+
+/**
+ * Merge the account's exams (including ones the agent added) with this
+ * device's: deletes made here win, otherwise the copy edited last wins.
+ * Local-only or newer exams are uploaded; deleted ones are removed.
+ */
+export async function hydrateExams(uid: string): Promise<void> {
+  const snap = await getDocs(collection(db, "users", uid, "exams"));
+  const remote = snap.docs
+    .map((d) => normalizeExam(d.id, d.data() as Record<string, unknown>))
+    .filter((e): e is Exam => e !== null);
+  const local = useExamsStore.getState();
+  const deleted = new Set(local.deletedIds);
+  const byId = new Map<string, Exam>();
+  for (const e of remote) if (!deleted.has(e.id)) byId.set(e.id, e);
+  const toPush: Exam[] = [];
+  for (const e of local.exams) {
+    const r = byId.get(e.id);
+    if (!r || editedAt(e) > editedAt(r)) {
+      byId.set(e.id, e);
+      toPush.push(e);
+    }
+  }
+  const merged = [...byId.values()];
+
+  const wasEnabled = syncEnabled;
+  setStoreSyncEnabled(false);
+  try {
+    useExamsStore.setState({ exams: merged });
+  } finally {
+    setStoreSyncEnabled(wasEnabled);
+  }
+  await Promise.all([
+    ...toPush.map((e) => syncExam(uid, e)),
+    ...remote.filter((e) => deleted.has(e.id)).map((e) => deleteExamDoc(uid, e.id)),
+  ]);
+}
+
+/** Pull exams again (e.g. when the exams page opens after a chat). */
+export async function refreshExams(): Promise<void> {
+  const uid = currentUid();
+  if (uid) await hydrateExams(uid);
 }
 
 /**
@@ -561,6 +628,25 @@ export function attachStoreSync(): void {
         }
       }),
     );
+  });
+
+  // ── Exams — direct Firestore, one doc per exam; push only what changed ──
+  useExamsStore.subscribe((state, prev) => {
+    const uid = currentUid();
+    // Hydration/agent updates run with sync paused — don't echo them back.
+    if (!uid || !syncEnabled) return;
+    if (state.lastUpdated == null || state.exams === prev.exams) return;
+    const before = new Map(prev.exams.map((e) => [e.id, e]));
+    const after = new Map(state.exams.map((e) => [e.id, e]));
+    for (const e of state.exams) {
+      const old = before.get(e.id);
+      if (old !== e) {
+        debouncedPush(`exam:${e.id}`, () => safeRun("pushExam", () => syncExam(uid, e)));
+      }
+    }
+    for (const id of before.keys()) {
+      if (!after.has(id)) safeRun("deleteExam", () => deleteExamDoc(uid, id));
+    }
   });
 
   // ── Study packs — direct Firestore (owner-only rules cover the path) ──

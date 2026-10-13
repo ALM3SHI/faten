@@ -5,6 +5,8 @@
 
 import { useAttendanceStore, type CourseAttendance } from "@/store/attendanceStore";
 import { clearPendingPushTimers, setStoreSyncEnabled } from "@/lib/firebase/sync";
+import { useExamsStore } from "@/store/examsStore";
+import { normalizeExam, type Exam } from "@/lib/exams";
 
 interface ToolLogEntry {
   tool?: string;
@@ -28,13 +30,32 @@ export function attendanceSnapshotFrom(actions: ToolLogEntry[] | undefined): Att
   return snap;
 }
 
+/** Exams the agent saved with add_upcoming_exam in this reply. */
+export function examsAddedBy(actions: ToolLogEntry[] | undefined): Exam[] {
+  if (!Array.isArray(actions)) return [];
+  const out: Exam[] = [];
+  for (const a of actions) {
+    if (a?.tool !== "add_upcoming_exam") continue;
+    const r = a.result as { success?: boolean; exam?: Record<string, unknown> & { id?: string } } | null;
+    const exam = r?.success && r.exam?.id ? normalizeExam(String(r.exam.id), r.exam) : null;
+    if (exam) out.push(exam);
+  }
+  return out;
+}
+
 export function applyAgentResults(actions: ToolLogEntry[] | undefined): void {
   const snap = attendanceSnapshotFrom(actions);
-  if (!snap) return;
-  // The server already saved this document — don't echo it back.
+  const exams = examsAddedBy(actions);
+  if (!snap && exams.length === 0) return;
+  // The server already saved these documents — don't echo them back.
   setStoreSyncEnabled(false);
   try {
-    useAttendanceStore.setState({ courses: snap.courses, lastUpdated: snap.lastUpdated });
+    if (snap) useAttendanceStore.setState({ courses: snap.courses, lastUpdated: snap.lastUpdated });
+    if (exams.length) {
+      useExamsStore.setState((s) => ({
+        exams: [...s.exams.filter((e) => !exams.some((x) => x.id === e.id)), ...exams],
+      }));
+    }
   } finally {
     clearPendingPushTimers();
     setStoreSyncEnabled(true);
