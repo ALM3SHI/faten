@@ -2,23 +2,26 @@ import type { Page } from "@playwright/test";
 
 export const STUDENT = { uid: "e2e-omar", email: "omar@test.local", displayName: "عمر", emailVerified: true };
 
-/** Start the page already signed in (fake Firebase reads this key). */
+/**
+ * Start the page already signed in (fake Firebase reads this key). Seeds only
+ * on the tab's first page: the flag lives in window.name because logout
+ * wipes local- and sessionStorage, and re-seeding would sign the user back in.
+ */
 export async function signIn(page: Page, user = STUDENT): Promise<void> {
   await page.addInitScript((u) => {
-    if (!sessionStorage.getItem("__e2e_seeded__")) {
-      localStorage.setItem("__e2e_auth_user__", JSON.stringify(u));
-      sessionStorage.setItem("__e2e_seeded__", "1");
-    }
+    if (window.name.includes("e2e-auth")) return;
+    localStorage.setItem("__e2e_auth_user__", JSON.stringify(u));
+    window.name += " e2e-auth";
   }, user);
 }
 
 /** Put documents into the fake Firestore before the app loads. */
 export async function seedFirestore(page: Page, docs: Record<string, unknown>): Promise<void> {
   await page.addInitScript((d) => {
-    if (sessionStorage.getItem("__e2e_fs_seeded__")) return;
+    if (window.name.includes("e2e-fs")) return;
     const all = JSON.parse(localStorage.getItem("__e2e_firestore__") || "{}");
     localStorage.setItem("__e2e_firestore__", JSON.stringify({ ...all, ...d }));
-    sessionStorage.setItem("__e2e_fs_seeded__", "1");
+    window.name += " e2e-fs";
   }, docs);
 }
 

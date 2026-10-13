@@ -7,6 +7,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MAX_STUDY_PACKS, capTombstones } from "@/lib/study-sync";
+import { nextState, type CardState, type Rating } from "@/lib/flashcards";
 
 export interface QuizQuestion {
   question: string;
@@ -25,6 +26,8 @@ export interface StudyPack {
   summary: string[];
   key_terms: { term: string; definition: string }[];
   quiz: QuizQuestion[];
+  /** Flashcard progress per term (lib/flashcards.ts), synced with the pack. */
+  reviews?: Record<string, CardState>;
 }
 
 interface StudyState {
@@ -36,6 +39,8 @@ interface StudyState {
   ownerUid: string | null;
   addPack: (p: Omit<StudyPack, "id" | "createdAt">) => StudyPack;
   removePack: (id: string) => void;
+  /** Save a flashcard rating (spaced repetition) inside its pack. */
+  reviewCard: (packId: string, key: string, rating: Rating, today: string) => void;
   clearPacks: () => void;
 }
 
@@ -63,6 +68,17 @@ export const useStudyStore = create<StudyState>()(
           deletedIds: capTombstones([...s.deletedIds, id]),
           lastUpdated: new Date().toISOString(),
         })),
+      reviewCard: (packId, key, rating, today) => {
+        const now = new Date().toISOString();
+        set((s) => ({
+          packs: s.packs.map((p) =>
+            p.id === packId
+              ? { ...p, updatedAt: now, reviews: { ...p.reviews, [key]: nextState(p.reviews?.[key] ?? null, rating, today) } }
+              : p,
+          ),
+          lastUpdated: now,
+        }));
+      },
       clearPacks: () => set({ packs: [], deletedIds: [], lastUpdated: null, ownerUid: null }),
     }),
     {

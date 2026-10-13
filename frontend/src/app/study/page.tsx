@@ -20,9 +20,10 @@ import { Card } from "@/components/ui/card";
 import { fetchWithAuth } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useStudyStore, type StudyPack } from "@/store/studyStore";
+import { Flashcards, dueLabel } from "@/components/study/flashcards";
 
 const MAX_MB = 10;
-type Tab = "summary" | "terms" | "quiz";
+type Tab = "summary" | "terms" | "cards" | "quiz";
 
 export default function StudyPage() {
   const router = useRouter();
@@ -130,6 +131,7 @@ export default function StudyPage() {
                       <div className="text-xs text-muted-foreground truncate">
                         {p.fileName} · {p.quiz.length} سؤال · {new Date(p.createdAt).toLocaleDateString("ar-SA-u-ca-gregory-nu-latn")}
                       </div>
+                      {dueLabel(p) && <div className="text-xs font-bold text-uqu-accent mt-0.5">{dueLabel(p)}</div>}
                     </button>
                     <button type="button" onClick={() => removePack(p.id)} className="p-2 rounded-lg text-muted-foreground hover:text-rose-500" aria-label="حذف">
                       <Trash2 className="w-4 h-4" />
@@ -182,6 +184,7 @@ function PackView({ pack }: { pack: StudyPack }) {
   const tabs: [Tab, string][] = [
     ["summary", "الملخص"],
     ["terms", `المصطلحات (${pack.key_terms.length})`],
+    ["cards", "البطاقات"],
     ["quiz", `الاختبار (${pack.quiz.length})`],
   ];
   return (
@@ -222,6 +225,7 @@ function PackView({ pack }: { pack: StudyPack }) {
           {pack.key_terms.length === 0 && <p className="text-sm text-muted-foreground">لا توجد مصطلحات.</p>}
         </div>
       )}
+      {tab === "cards" && <Flashcards key={pack.id} pack={pack} />}
       {tab === "quiz" && <Quiz key={pack.id} questions={pack.quiz} />}
     </div>
   );
