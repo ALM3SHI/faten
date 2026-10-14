@@ -5,7 +5,7 @@ cd /d "%~dp0"
 
 echo.
 echo ==============================================================
-echo       Faten - Build and deploy frontend + Firestore rules
+echo       Faten - Build and deploy frontend + Firestore rules and indexes
 echo ==============================================================
 echo.
 
@@ -27,7 +27,7 @@ popd
 
 echo Deploying to Firebase Hosting ...
 :: First time only: run  npx firebase-tools login
-call npx --yes firebase-tools deploy --only hosting,firestore:rules
+call npx --yes firebase-tools deploy --only hosting,firestore:rules,firestore:indexes
 if errorlevel 1 goto :fail
 
 echo.
