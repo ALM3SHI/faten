@@ -7,7 +7,11 @@
 // can assert what the app sent.
 
 import http from "node:http";
+import { readFileSync } from "node:fs";
 import { handleTutor } from "./tutor-mock.mjs";
+
+// Real advisor-engine output for a synthetic student (backend/scripts/advisor_e2e_fixture.py).
+const ADVISOR = JSON.parse(readFileSync(new URL("./advisor-fixture.json", import.meta.url), "utf8"));
 
 const PORT = Number(process.env.MOCK_PORT || 8787);
 const requests = [];
@@ -175,6 +179,14 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/memory") return send(res, 200, { items: [] });
   if (p === "/api/study/pdf") return send(res, 200, STUDY_PACK);
   if (handleTutor(req, p, body, send, res)) return;
+  if (p === "/api/advisor/catalog") return send(res, 200, ADVISOR.catalog);
+  if (p === "/api/advisor/settings") return send(res, 200, req.method === "PUT" ? { ...ADVISOR.settings, ...body } : ADVISOR.settings);
+  if (p === "/api/advisor/latest") return send(res, 200, { run: null });
+  if (p === "/api/advisor/analyze") return send(res, 200, ADVISOR.run);
+  if (p === "/api/advisor/validate-schedule") return send(res, 200, ADVISOR.validate);
+  if (p === "/api/advisor/compare-majors") return send(res, 200, ADVISOR.compare);
+  if (p.startsWith("/api/advisor/instructors/")) return send(res, 200, ADVISOR.instructors);
+  if (p === "/api/advisor/ask") return send(res, 200, ADVISOR.ask);
   if (p === "/api/notifications/prefs") {
     // Echo the saved prefs without keeping them, so parallel tests stay independent.
     return send(res, 200, { success: true, prefs: req.method === "PUT" && body ? { ...prefs, ...body } : prefs });

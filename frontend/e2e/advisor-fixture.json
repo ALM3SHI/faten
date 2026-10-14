@@ -1,0 +1,3263 @@
+{
+ "catalog": {
+  "university": {
+   "id": "uqu",
+   "name_ar": "جامعة أم القرى",
+   "name_en": "Umm Al-Qura University",
+   "website": "https://uqu.edu.sa"
+  },
+  "generated_at": "2026-10-14T19:40:53+00:00",
+  "programs": [
+   {
+    "id": "uqu-1490",
+    "university": "uqu",
+    "source_id": "1490",
+    "name_ar": "الذكاء الاصطناعي",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "علوم الحاسب والذكاء الاصطناعي",
+    "curricula": [
+     "uqu-1490@2026-10-14"
+    ],
+    "curriculum": {
+     "id": "uqu-1490@2026-10-14",
+     "verification": "incomplete",
+     "stated_total_hours": 132,
+     "listed_hours": 124,
+     "unlisted_hours": 8,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1490",
+     "retrieved_at": "2026-10-14T19:34:00.293Z"
+    }
+   },
+   {
+    "id": "uqu-1492",
+    "university": "uqu",
+    "source_id": "1492",
+    "name_ar": "هندسة الحاسب آلي والشبكات",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "هندسة الحاسب والشبكات",
+    "curricula": [
+     "uqu-1492@2026-10-14"
+    ],
+    "curriculum": {
+     "id": "uqu-1492@2026-10-14",
+     "verification": "incomplete",
+     "stated_total_hours": 158,
+     "listed_hours": 147,
+     "unlisted_hours": 11,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1492",
+     "retrieved_at": "2026-10-14T19:36:56.715Z"
+    }
+   },
+   {
+    "id": "uqu-1510",
+    "university": "uqu",
+    "source_id": "1510",
+    "name_ar": "هندسة البرمجيات",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "هندسة البرمجيات",
+    "curricula": [
+     "uqu-1510@2026-10-14"
+    ],
+    "curriculum": {
+     "id": "uqu-1510@2026-10-14",
+     "verification": "incomplete",
+     "stated_total_hours": 134,
+     "listed_hours": 120,
+     "unlisted_hours": 14,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1510",
+     "retrieved_at": "2026-10-14T19:35:23.856Z"
+    }
+   },
+   {
+    "id": "uqu-478",
+    "university": "uqu",
+    "source_id": "478",
+    "name_ar": "علوم الحاسب الآلي",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "علوم الحاسب والذكاء الاصطناعي",
+    "curricula": [
+     "uqu-478@2026-10-14"
+    ],
+    "curriculum": {
+     "id": "uqu-478@2026-10-14",
+     "verification": "incomplete",
+     "stated_total_hours": 137,
+     "listed_hours": 126,
+     "unlisted_hours": 11,
+     "source_url": "https://uqu.edu.sa/App/Degrees/478",
+     "retrieved_at": "2026-10-14T19:32:05.039Z"
+    }
+   }
+  ],
+  "rules": [
+   {
+    "rule": "min_regular_load",
+    "text": "لا يقل العبء الدراسي عن 10 ساعات، إلا للمتوقع تخرجه وباقٍ له أقل من 10 ساعات، أو عند عدم طرح مقررات.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "max_summer_load",
+    "text": "الحد الأعلى للعبء في الفصل الصيفي 10 ساعات.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "prerequisites_required",
+    "text": "يجب استيفاء المتطلبات السابقة عند التسجيل، وللمشرف الأكاديمي الموافقة على تجاوز المتطلب بعد اعتماد رئيس القسم.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "coop_exclusive",
+    "text": "لا يجوز الجمع بين تسجيل مقررات والتدريب التعاوني في البرامج التي تتطلب تفرّغ الطالب للتدريب.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "ic_blocks_dependents",
+    "text": "لا يُسجَّل مقرر متطلبه مرصود له «غير مكتمل» (IC) إلا بموافقة المشرف واعتماد رئيس القسم.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "gpa_all_attempts",
+    "text": "المعدل التراكمي = مجموع نقاط جميع المقررات التي درسها الطالب منذ التحاقه ÷ مجموع وحداتها.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الأولى — تعريف المعدل التراكمي"
+   },
+   {
+    "rule": "warning_below_grad_gpa",
+    "text": "انخفاض المعدل التراكمي عن معدل التخرج المحدد للتخصص إنذار أكاديمي؛ ثلاثة إنذارات متتالية تؤدي للفصل مع إمكان فرص إضافية.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادتان الحادية والأربعون والثانية والأربعون"
+   },
+   {
+    "rule": "summer_no_warning",
+    "text": "لا يُحتسب الفصل الصيفي ضمن الفصول التي تُمنح فيها الإنذارات الأكاديمية.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "grad_gpa_floor",
+    "text": "لا يقل معدل التخرج في كل الأحوال عن تقدير «مقبول»؛ ويحدد مجلس الجامعة معدل كل تخصص.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "مادة التخرج"
+   },
+   {
+    "rule": "retake_to_raise_gpa",
+    "text": "من أنهى ساعات خطته ومعدله دون معدل التخرج يعيد مقررات بحد أقصى 20% من ساعات الخطة، ويُرصد التقدير الأعلى.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "honors_first",
+    "text": "مرتبة الشرف الأولى من 3.75 إلى 4.00، والثانية من 3.25 إلى أقل من 3.75، بشروط المدة والساعات.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "max_regular_load",
+    "text": "لم تحدد القواعد المتاحة حداً أعلى للعبء في الفصل العادي؛ يحدده مجلس الجامعة/النظام. يُستخدم الحد الذي يختاره الطالب.",
+    "status": "unavailable",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "program_grad_gpa",
+    "text": "معدل التخرج الخاص بكل تخصص يحدده مجلس الجامعة ولم يُنشر في المصادر المتاحة؛ أدخله من دليل قسمك إن عرفته.",
+    "status": "unavailable",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "offerings",
+    "text": "المقررات المطروحة لكل فصل لا تُنشر علناً؛ تظهر في نظام التسجيل فقط.",
+    "status": "unavailable",
+    "source": "—",
+    "article": null
+   }
+  ],
+  "issues": []
+ },
+ "settings": {
+  "program_id": "uqu-478",
+  "priority": "balanced",
+  "target_term": "1449-1"
+ },
+ "run": {
+  "engine_version": "advisor-1.0",
+  "inputs_fingerprint": "c550ce9e3abd7b1f001d079d5942bc28405abfba2ab590a351c91870ea5b57ee",
+  "program": {
+   "id": "uqu-478",
+   "name": "علوم الحاسب الآلي",
+   "source": "student"
+  },
+  "curriculum": {
+   "id": "uqu-478@2026-10-14",
+   "label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-14)",
+   "verification": "incomplete",
+   "source_url": "https://uqu.edu.sa/App/Degrees/478",
+   "retrieved_at": "2026-10-14T19:32:05.039Z",
+   "issues": [
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 137 ساعة، والمقررات المنشورة في الخطة مجموعها 126 ساعة. 11 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ]
+  },
+  "profile": {
+   "gpa": 1.62,
+   "gpa_source": "transcript",
+   "computed_gpa": 1.5,
+   "stated_gpa": 1.62,
+   "gpa_hours": 26,
+   "earned_hours": 17,
+   "stated_earned_hours": 17,
+   "term_gpas": [
+    {
+     "term": [
+      1446,
+      1
+     ],
+     "label": "الفصل الأول 1446/1447",
+     "hours": 17,
+     "gpa": 1.35
+    },
+    {
+     "term": [
+      1446,
+      2
+     ],
+     "label": "الفصل الثاني 1446/1447",
+     "hours": 9,
+     "gpa": 1.78
+    }
+   ],
+   "category_performance": {
+    "CS": {
+     "avg_points": 0.0,
+     "hours": 9,
+     "courses": 3
+    },
+    "ELIE": {
+     "avg_points": 2.25,
+     "hours": 8,
+     "courses": 2
+    },
+    "IND": {
+     "avg_points": 3.0,
+     "hours": 2,
+     "courses": 1
+    },
+    "MTH": {
+     "avg_points": 1.0,
+     "hours": 3,
+     "courses": 1
+    },
+    "QR": {
+     "avg_points": 3.0,
+     "hours": 4,
+     "courses": 2
+    }
+   },
+   "failed_unresolved": [
+    "CS1302",
+    "CS1701"
+   ],
+   "in_progress": [],
+   "incomplete": [],
+   "repeated": {
+    "CS1701": 2
+   },
+   "notes": [
+    "المعدل المحسوب من المقررات (1.50) يختلف عن المعدل المذكور في السجل (1.62). نعتمد معدل السجل الرسمي في التقييم ونعرض الفرق للمراجعة (قد يكون مقرر لم يُقرأ من الملف)."
+   ]
+  },
+  "data_gaps": [
+   {
+    "field": "current_courses",
+    "message": "لا توجد مقررات مسجلة للفصل الحالي في السجل.",
+    "impact": "سنفترض أنك لا تدرس شيئاً الآن؛ إن كنت مسجلاً أضف مقرراتك الحالية حتى لا نقترحها مجدداً."
+   }
+  ],
+  "audit": {
+   "curriculum_id": "uqu-478@2026-10-14",
+   "program_name": "علوم الحاسب الآلي",
+   "stated_total_hours": 137,
+   "required_hours": 126,
+   "done_hours": 17,
+   "in_progress_hours": 0,
+   "remaining_required_hours": 109,
+   "unlisted_hours": 11,
+   "outside_plan_passed": [],
+   "outside_plan_hours": 0,
+   "remaining_hours_estimate": {
+    "min": 120,
+    "max": 120
+   },
+   "percent_required_done": 13.5,
+   "courses": [
+    {
+     "code": "CS1302",
+     "name": "هياكل متقطعة 1",
+     "level": 1,
+     "credits": 3,
+     "state": "failed",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS1701",
+     "name": "برمجة الحاسب بلغة جافا",
+     "level": 1,
+     "credits": 3,
+     "state": "failed",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1201",
+     "name": "اللغة الإنجليزية (1)",
+     "level": 1,
+     "credits": 4,
+     "state": "done",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "IND1101",
+     "name": "التفكير التصميمي",
+     "level": 1,
+     "credits": 2,
+     "state": "done",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1141",
+     "name": "التفاضل والتكامل 1",
+     "level": 1,
+     "credits": 3,
+     "state": "done",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "QR1101",
+     "name": "تجويد القرآن الكريم",
+     "level": 1,
+     "credits": 2,
+     "state": "done",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS1303",
+     "name": "هياكل متقطعة 2",
+     "level": 2,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS1302"
+     ],
+     "missing_prerequisites": [
+      "CS1302"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS1704",
+     "name": "البرمجة الشيئية بلغة جافا",
+     "level": 2,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS1701"
+     ],
+     "missing_prerequisites": [
+      "CS1701"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CUR1101",
+     "name": "مهارات جامعية",
+     "level": 2,
+     "credits": 0,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1202",
+     "name": "اللغة الإنجليزية (2)",
+     "level": 2,
+     "credits": 4,
+     "state": "done",
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1602",
+     "name": "الإحصاء والاحتمالات في الحاسبات",
+     "level": 2,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1113",
+     "name": "الفيزياء العامة",
+     "level": 2,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "QR2102",
+     "name": "حفظ القرآن الكريم 1",
+     "level": 2,
+     "credits": 2,
+     "state": "done",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "AI2001",
+     "name": "مقدمة في الذكاء الاصطناعي",
+     "level": 3,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "BIO3101",
+     "name": "الاحياء العامة",
+     "level": 3,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2011",
+     "name": "التصميم الرقمي المنطقي",
+     "level": 3,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS2105",
+     "name": "هياكل البيانات والخوازميات جافا",
+     "level": 3,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS1704"
+     ],
+     "missing_prerequisites": [
+      "CS1704"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1441",
+     "name": "الجبر الخطي",
+     "level": 3,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "QR2103",
+     "name": "حفظ القرآن الكريم 2",
+     "level": 3,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "SEC1101",
+     "name": "مقدمة في الأمن السيبراني",
+     "level": 3,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2012",
+     "name": "تنظيم وعمارة الحاسب الآلي",
+     "level": 4,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CEN2011"
+     ],
+     "missing_prerequisites": [
+      "CEN2011"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS2107",
+     "name": "تصميم وتحليل الخوارزميات",
+     "level": 4,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS2105"
+     ],
+     "missing_prerequisites": [
+      "CS2105"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS2206",
+     "name": "الرسومات بالحاسب",
+     "level": 4,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "MTH1441"
+     ],
+     "missing_prerequisites": [
+      "MTH1441"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "DS2201",
+     "name": "مقدمة في قواعد البيانات",
+     "level": 4,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "ICC1201",
+     "name": "القيم والأخلاق",
+     "level": 4,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "QR3104",
+     "name": "ختم القرآن الكريم",
+     "level": 4,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [
+      "QR1101"
+     ],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "SE1201",
+     "name": "اسس هندسة البرمجيات",
+     "level": 4,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "AI4101",
+     "name": "مبادئ الذكاء الإصطناعي",
+     "level": 5,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS2107"
+     ],
+     "missing_prerequisites": [
+      "CS2107"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3011",
+     "name": "شبكات الحاسب الآلي",
+     "level": 5,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "missing_prerequisites": [
+      "CEN2012"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS3608",
+     "name": "نظم التشغيل",
+     "level": 5,
+     "credits": 4,
+     "state": "remaining",
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "missing_prerequisites": [
+      "CEN2012"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS3713",
+     "name": "لغات البرمجة",
+     "level": 5,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS3809",
+     "name": "نظم بناء البرمجيات",
+     "level": 5,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "DS2201",
+      "SE1201"
+     ],
+     "missing_prerequisites": [
+      "DS2201",
+      "SE1201"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS3810",
+     "name": "تطوير الويب",
+     "level": 5,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "DS2201"
+     ],
+     "missing_prerequisites": [
+      "DS2201"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS3901",
+     "name": "التدريب التعاوني",
+     "level": 6,
+     "credits": 6,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "AI4202",
+     "name": "مبادئ تعلم الآلة",
+     "level": 7,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "AI4101"
+     ],
+     "missing_prerequisites": [
+      "AI4101"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4108",
+     "name": "برمجة متقدمة",
+     "level": 7,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS1704"
+     ],
+     "missing_prerequisites": [
+      "CS1704"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4411",
+     "name": "قواعد البيانات المتقدمة",
+     "level": 7,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "DS2201"
+     ],
+     "missing_prerequisites": [
+      "DS2201"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4612",
+     "name": "الحوسبة المتوازية و الموزعة",
+     "level": 7,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS3608"
+     ],
+     "missing_prerequisites": [
+      "CS3608"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4901",
+     "name": "مشروع التخرج 1",
+     "level": 7,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS3809"
+     ],
+     "missing_prerequisites": [
+      "CS3809"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "ICC4202",
+     "name": "الأسرة في الإسلام",
+     "level": 7,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "BUS1099",
+     "name": "مهارات التطوير المهني",
+     "level": 8,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4216",
+     "name": "الطرق العلمية",
+     "level": 8,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4714",
+     "name": "تركيب المترجمات",
+     "level": 8,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [
+      "CS3713"
+     ],
+     "missing_prerequisites": [
+      "CS3713"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4815",
+     "name": "الحوسبة السحابية",
+     "level": 8,
+     "credits": 2,
+     "state": "remaining",
+     "prerequisites": [
+      "CEN3011"
+     ],
+     "missing_prerequisites": [
+      "CEN3011"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    },
+    {
+     "code": "CS4902",
+     "name": "مشروع التخرج 2",
+     "level": 8,
+     "credits": 3,
+     "state": "remaining",
+     "prerequisites": [
+      "CS4901"
+     ],
+     "missing_prerequisites": [
+      "CS4901"
+     ],
+     "eligible_next_term": false,
+     "blocked_by_incomplete": [],
+     "verification": "verified"
+    }
+   ],
+   "assumptions": [
+    "المقررات المسجلة حالياً تُعامل كأنها ستُجتاز عند حساب الأهلية للفصل القادم.",
+    "الخطة المنشورة لا تذكر 11 ساعة اختيارية؛ لم نجد في سجلك مقررات خارج الخطة قد تغطيها."
+   ]
+  },
+  "load": {
+   "load": 12,
+   "mode": "recovery",
+   "reasons": [
+    "معدل آخر فصل 1.78."
+   ],
+   "basis": "قاعدة تخطيط في فطن وليست من اللائحة"
+  },
+  "recommended_strategy": "recovery",
+  "strategy_reason": "اخترنا مسار التعافي: عبء أخف وأولوية لإعادة المقررات المفتاحية. معدل آخر فصل 1.78.",
+  "next_term": {
+   "term": "1448-2",
+   "label": "الفصل الثاني 1448",
+   "credits": 12,
+   "courses": [
+    {
+     "code": "CS1701",
+     "name": "برمجة الحاسب بلغة جافا",
+     "credits": 3,
+     "reasons": [
+      "إعادة مقرر لم تجتزه بعد.",
+      "متطلب سابق لـ 1 مقرر: CS1704.",
+      "على أطول سلسلة متطلبات متبقية في خطتك.",
+      "تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+     ],
+     "unlocks": [
+      "CS1704"
+     ],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": [
+      "repeat",
+      "critical",
+      "unlocks:6",
+      "heavy"
+     ]
+    },
+    {
+     "code": "CUR1101",
+     "name": "مهارات جامعية",
+     "credits": 0,
+     "reasons": [
+      "تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+     ],
+     "unlocks": [],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": []
+    },
+    {
+     "code": "MTH1602",
+     "name": "الإحصاء والاحتمالات في الحاسبات",
+     "credits": 3,
+     "reasons": [
+      "تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+     ],
+     "unlocks": [],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": []
+    },
+    {
+     "code": "PHYS1113",
+     "name": "الفيزياء العامة",
+     "credits": 3,
+     "reasons": [
+      "تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+     ],
+     "unlocks": [],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": []
+    },
+    {
+     "code": "CEN2011",
+     "name": "التصميم الرقمي المنطقي",
+     "credits": 3,
+     "reasons": [
+      "متطلب سابق لـ 1 مقرر: CEN2012.",
+      "تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+     ],
+     "unlocks": [
+      "CEN2012"
+     ],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": [
+      "ahead_of_plan",
+      "unlocks:5"
+     ]
+    }
+   ],
+   "warnings": [],
+   "alternatives": [
+    {
+     "code": "CS1302",
+     "name": "هياكل متقطعة 1",
+     "credits": 3,
+     "level": 1,
+     "why_not_now": "أجّلناه لأن المسار المختار لا يجمع أكثر من 1 مقرر ثقيل أو سبق رسوبك فيه في فصل واحد."
+    },
+    {
+     "code": "AI2001",
+     "name": "مقدمة في الذكاء الاصطناعي",
+     "credits": 2,
+     "level": 3,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "BIO3101",
+     "name": "الاحياء العامة",
+     "credits": 3,
+     "level": 3,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "MTH1441",
+     "name": "الجبر الخطي",
+     "credits": 3,
+     "level": 3,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "QR2103",
+     "name": "حفظ القرآن الكريم 2",
+     "credits": 2,
+     "level": 3,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "SEC1101",
+     "name": "مقدمة في الأمن السيبراني",
+     "credits": 3,
+     "level": 3,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "DS2201",
+     "name": "مقدمة في قواعد البيانات",
+     "credits": 3,
+     "level": 4,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "ICC1201",
+     "name": "القيم والأخلاق",
+     "credits": 2,
+     "level": 4,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "QR3104",
+     "name": "ختم القرآن الكريم",
+     "credits": 2,
+     "level": 4,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
+     "code": "SE1201",
+     "name": "اسس هندسة البرمجيات",
+     "credits": 3,
+     "level": 4,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    }
+   ]
+  },
+  "scenarios": {
+   "fastest": {
+    "strategy": "fastest",
+    "load_cap": 18,
+    "terms": [
+     {
+      "term": "1448-2",
+      "label": "الفصل الثاني 1448",
+      "summer": false,
+      "credits": 18,
+      "courses": [
+       {
+        "code": "CS1701",
+        "name": "برمجة الحاسب بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "critical",
+         "unlocks:6",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 6
+       },
+       {
+        "code": "CEN2011",
+        "name": "التصميم الرقمي المنطقي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "DS2201",
+        "name": "مقدمة في قواعد البيانات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "SE1201",
+        "name": "اسس هندسة البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "CS1302",
+        "name": "هياكل متقطعة 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "unlocks:1",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CUR1101",
+        "name": "مهارات جامعية",
+        "credits": 0,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-1",
+      "label": "الفصل الأول 1449",
+      "summer": false,
+      "credits": 17,
+      "courses": [
+       {
+        "code": "CS1704",
+        "name": "البرمجة الشيئية بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "CEN2012",
+        "name": "تنظيم وعمارة الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:4"
+        ],
+        "verification": "verified",
+        "unlocks": 4
+       },
+       {
+        "code": "CS3809",
+        "name": "نظم بناء البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "CS3713",
+        "name": "لغات البرمجة",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS1303",
+        "name": "هياكل متقطعة 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "MTH1602",
+        "name": "الإحصاء والاحتمالات في الحاسبات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-2",
+      "label": "الفصل الثاني 1449",
+      "summer": false,
+      "credits": 18,
+      "courses": [
+       {
+        "code": "CS2105",
+        "name": "هياكل البيانات والخوازميات جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "CEN3011",
+        "name": "شبكات الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS3608",
+        "name": "نظم التشغيل",
+        "credits": 4,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS4901",
+        "name": "مشروع التخرج 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "PHYS1113",
+        "name": "الفيزياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "AI2001",
+        "name": "مقدمة في الذكاء الاصطناعي",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-1",
+      "label": "الفصل الأول 1450",
+      "summer": false,
+      "credits": 18,
+      "courses": [
+       {
+        "code": "CS2107",
+        "name": "تصميم وتحليل الخوارزميات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "QR2103",
+        "name": "حفظ القرآن الكريم 2",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "SEC1101",
+        "name": "مقدمة في الأمن السيبراني",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS2206",
+        "name": "الرسومات بالحاسب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ICC1201",
+        "name": "القيم والأخلاق",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "QR3104",
+        "name": "ختم القرآن الكريم",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-2",
+      "label": "الفصل الثاني 1450",
+      "summer": false,
+      "credits": 17,
+      "courses": [
+       {
+        "code": "AI4101",
+        "name": "مبادئ الذكاء الإصطناعي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4108",
+        "name": "برمجة متقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan"
+        ],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4411",
+        "name": "قواعد البيانات المتقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan"
+        ],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4612",
+        "name": "الحوسبة المتوازية و الموزعة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan"
+        ],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ICC4202",
+        "name": "الأسرة في الإسلام",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan"
+        ],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-1",
+      "label": "الفصل الأول 1451",
+      "summer": false,
+      "credits": 6,
+      "courses": [
+       {
+        "code": "CS3901",
+        "name": "التدريب التعاوني",
+        "credits": 6,
+        "kind": "coop",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-2",
+      "label": "الفصل الثاني 1451",
+      "summer": false,
+      "credits": 18,
+      "courses": [
+       {
+        "code": "AI4202",
+        "name": "مبادئ تعلم الآلة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "BUS1099",
+        "name": "مهارات التطوير المهني",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4216",
+        "name": "الطرق العلمية",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4714",
+        "name": "تركيب المترجمات",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4815",
+        "name": "الحوسبة السحابية",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4902",
+        "name": "مشروع التخرج 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-1",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1452-1",
+      "label": "الفصل الأول 1452",
+      "summer": false,
+      "credits": 8,
+      "courses": [
+       {
+        "code": "ELECTIVE-2",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-3",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-4",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 2,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     }
+    ],
+    "graduation_term": "1452-1",
+    "graduation_label": "الفصل الأول 1452",
+    "terms_needed": 8,
+    "complete": true,
+    "unscheduled": [],
+    "lower_bound": {
+     "terms": 8,
+     "by": "credits",
+     "chain_terms": 6,
+     "credit_terms": 8,
+     "earliest_term": "1452-1",
+     "earliest_label": "الفصل الأول 1452"
+    },
+    "target": {
+     "target_term": "1449-1",
+     "target_label": "الفصل الأول 1449",
+     "verdict": "impossible",
+     "message": "مستحيل رياضياً: أبكر تخرج ممكن الفصل الأول 1452 لأن الساعات المتبقية لا تتسع في هذه الفصول بحد العبء المختار.",
+     "earliest_label": "الفصل الأول 1452"
+    },
+    "assumptions": [
+     "الخطة ممكنة رياضياً وفق المتطلبات المنشورة، وليست مؤكدة للتسجيل: طرح المقررات وتعارض الجداول لا يُنشران علناً.",
+     "المقررات المسجلة حالياً تُعامل كأنها ستُجتاز.",
+     "المتطلبات المتعددة عوملت كلها لازمة (و).",
+     "التدريب التعاوني يُجدول بعد إنهاء مقررات المستويات التي تسبقه في الخطة، ووحده في فصله.",
+     "قيود التسجيل حسب المستوى أو عدد الساعات المجتازة غير منشورة؛ المقررات الموسومة «قبل موعدها» قد يمنعها النظام.",
+     "حد العبء 18 ساعة افتراض للتخطيط (لم نجد حداً أعلى منشوراً)؛ عدّله من الإعدادات.",
+     "جُدولت 11 ساعة اختيارية كخانات عامة لأن قائمتها غير منشورة."
+    ],
+    "status": "feasible_unconfirmed"
+   },
+   "balanced": {
+    "strategy": "balanced",
+    "load_cap": 14,
+    "terms": [
+     {
+      "term": "1448-2",
+      "label": "الفصل الثاني 1448",
+      "summer": false,
+      "credits": 14,
+      "courses": [
+       {
+        "code": "CS1701",
+        "name": "برمجة الحاسب بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "critical",
+         "unlocks:6",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 6
+       },
+       {
+        "code": "CS1302",
+        "name": "هياكل متقطعة 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "unlocks:1",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CUR1101",
+        "name": "مهارات جامعية",
+        "credits": 0,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "MTH1602",
+        "name": "الإحصاء والاحتمالات في الحاسبات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "PHYS1113",
+        "name": "الفيزياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "AI2001",
+        "name": "مقدمة في الذكاء الاصطناعي",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan"
+        ],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-1",
+      "label": "الفصل الأول 1449",
+      "summer": false,
+      "credits": 14,
+      "courses": [
+       {
+        "code": "CS1704",
+        "name": "البرمجة الشيئية بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "CS1303",
+        "name": "هياكل متقطعة 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CEN2011",
+        "name": "التصميم الرقمي المنطقي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "QR2103",
+        "name": "حفظ القرآن الكريم 2",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-2",
+      "label": "الفصل الثاني 1449",
+      "summer": false,
+      "credits": 14,
+      "courses": [
+       {
+        "code": "CS2105",
+        "name": "هياكل البيانات والخوازميات جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "SEC1101",
+        "name": "مقدمة في الأمن السيبراني",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "DS2201",
+        "name": "مقدمة في قواعد البيانات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "ICC1201",
+        "name": "القيم والأخلاق",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-1",
+      "label": "الفصل الأول 1450",
+      "summer": false,
+      "credits": 14,
+      "courses": [
+       {
+        "code": "SE1201",
+        "name": "اسس هندسة البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "CEN2012",
+        "name": "تنظيم وعمارة الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:4"
+        ],
+        "verification": "verified",
+        "unlocks": 4
+       },
+       {
+        "code": "CS2107",
+        "name": "تصميم وتحليل الخوارزميات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "CS2206",
+        "name": "الرسومات بالحاسب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "QR3104",
+        "name": "ختم القرآن الكريم",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-2",
+      "label": "الفصل الثاني 1450",
+      "summer": false,
+      "credits": 13,
+      "courses": [
+       {
+        "code": "CS3809",
+        "name": "نظم بناء البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "AI4101",
+        "name": "مبادئ الذكاء الإصطناعي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CEN3011",
+        "name": "شبكات الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS3608",
+        "name": "نظم التشغيل",
+        "credits": 4,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-1",
+      "label": "الفصل الأول 1451",
+      "summer": false,
+      "credits": 14,
+      "courses": [
+       {
+        "code": "CS3713",
+        "name": "لغات البرمجة",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4901",
+        "name": "مشروع التخرج 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "AI4202",
+        "name": "مبادئ تعلم الآلة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4108",
+        "name": "برمجة متقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-2",
+      "label": "الفصل الثاني 1451",
+      "summer": false,
+      "credits": 6,
+      "courses": [
+       {
+        "code": "CS3901",
+        "name": "التدريب التعاوني",
+        "credits": 6,
+        "kind": "coop",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1452-1",
+      "label": "الفصل الأول 1452",
+      "summer": false,
+      "credits": 13,
+      "courses": [
+       {
+        "code": "CS4411",
+        "name": "قواعد البيانات المتقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4612",
+        "name": "الحوسبة المتوازية و الموزعة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ICC4202",
+        "name": "الأسرة في الإسلام",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "BUS1099",
+        "name": "مهارات التطوير المهني",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4216",
+        "name": "الطرق العلمية",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1452-2",
+      "label": "الفصل الثاني 1452",
+      "summer": false,
+      "credits": 13,
+      "courses": [
+       {
+        "code": "CS4714",
+        "name": "تركيب المترجمات",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4815",
+        "name": "الحوسبة السحابية",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4902",
+        "name": "مشروع التخرج 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-1",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-2",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1453-1",
+      "label": "الفصل الأول 1453",
+      "summer": false,
+      "credits": 5,
+      "courses": [
+       {
+        "code": "ELECTIVE-3",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-4",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 2,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     }
+    ],
+    "graduation_term": "1453-1",
+    "graduation_label": "الفصل الأول 1453",
+    "terms_needed": 10,
+    "complete": true,
+    "unscheduled": [],
+    "lower_bound": {
+     "terms": 10,
+     "by": "credits",
+     "chain_terms": 6,
+     "credit_terms": 10,
+     "earliest_term": "1453-1",
+     "earliest_label": "الفصل الأول 1453"
+    },
+    "target": {
+     "target_term": "1449-1",
+     "target_label": "الفصل الأول 1449",
+     "verdict": "impossible",
+     "message": "مستحيل رياضياً: أبكر تخرج ممكن الفصل الأول 1453 لأن الساعات المتبقية لا تتسع في هذه الفصول بحد العبء المختار.",
+     "earliest_label": "الفصل الأول 1453"
+    },
+    "assumptions": [
+     "الخطة ممكنة رياضياً وفق المتطلبات المنشورة، وليست مؤكدة للتسجيل: طرح المقررات وتعارض الجداول لا يُنشران علناً.",
+     "المقررات المسجلة حالياً تُعامل كأنها ستُجتاز.",
+     "المتطلبات المتعددة عوملت كلها لازمة (و).",
+     "التدريب التعاوني يُجدول بعد إنهاء مقررات المستويات التي تسبقه في الخطة، ووحده في فصله.",
+     "قيود التسجيل حسب المستوى أو عدد الساعات المجتازة غير منشورة؛ المقررات الموسومة «قبل موعدها» قد يمنعها النظام.",
+     "حد العبء 18 ساعة افتراض للتخطيط (لم نجد حداً أعلى منشوراً)؛ عدّله من الإعدادات.",
+     "جُدولت 11 ساعة اختيارية كخانات عامة لأن قائمتها غير منشورة."
+    ],
+    "status": "feasible_unconfirmed"
+   },
+   "recovery": {
+    "strategy": "recovery",
+    "load_cap": 12,
+    "terms": [
+     {
+      "term": "1448-2",
+      "label": "الفصل الثاني 1448",
+      "summer": false,
+      "credits": 12,
+      "courses": [
+       {
+        "code": "CS1701",
+        "name": "برمجة الحاسب بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "critical",
+         "unlocks:6",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 6
+       },
+       {
+        "code": "CUR1101",
+        "name": "مهارات جامعية",
+        "credits": 0,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "MTH1602",
+        "name": "الإحصاء والاحتمالات في الحاسبات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "PHYS1113",
+        "name": "الفيزياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CEN2011",
+        "name": "التصميم الرقمي المنطقي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-1",
+      "label": "الفصل الأول 1449",
+      "summer": false,
+      "credits": 11,
+      "courses": [
+       {
+        "code": "CS1302",
+        "name": "هياكل متقطعة 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "repeat",
+         "unlocks:1",
+         "heavy"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS1704",
+        "name": "البرمجة الشيئية بلغة جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "AI2001",
+        "name": "مقدمة في الذكاء الاصطناعي",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1449-2",
+      "label": "الفصل الثاني 1449",
+      "summer": false,
+      "credits": 11,
+      "courses": [
+       {
+        "code": "CS1303",
+        "name": "هياكل متقطعة 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS2105",
+        "name": "هياكل البيانات والخوازميات جافا",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "QR2103",
+        "name": "حفظ القرآن الكريم 2",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-1",
+      "label": "الفصل الأول 1450",
+      "summer": false,
+      "credits": 12,
+      "courses": [
+       {
+        "code": "SEC1101",
+        "name": "مقدمة في الأمن السيبراني",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "DS2201",
+        "name": "مقدمة في قواعد البيانات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:5"
+        ],
+        "verification": "verified",
+        "unlocks": 5
+       },
+       {
+        "code": "SE1201",
+        "name": "اسس هندسة البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
+       },
+       {
+        "code": "CEN2012",
+        "name": "تنظيم وعمارة الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:4"
+        ],
+        "verification": "verified",
+        "unlocks": 4
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-2",
+      "label": "الفصل الثاني 1450",
+      "summer": false,
+      "credits": 12,
+      "courses": [
+       {
+        "code": "CS2107",
+        "name": "تصميم وتحليل الخوارزميات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "CS2206",
+        "name": "الرسومات بالحاسب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ICC1201",
+        "name": "القيم والأخلاق",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "QR3104",
+        "name": "ختم القرآن الكريم",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS3713",
+        "name": "لغات البرمجة",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-1",
+      "label": "الفصل الأول 1451",
+      "summer": false,
+      "credits": 12,
+      "courses": [
+       {
+        "code": "CS3809",
+        "name": "نظم بناء البرمجيات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "AI4101",
+        "name": "مبادئ الذكاء الإصطناعي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CEN3011",
+        "name": "شبكات الحاسب الآلي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1451-2",
+      "label": "الفصل الثاني 1451",
+      "summer": false,
+      "credits": 12,
+      "courses": [
+       {
+        "code": "CS3608",
+        "name": "نظم التشغيل",
+        "credits": 4,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CS4901",
+        "name": "مشروع التخرج 1",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "AI4202",
+        "name": "مبادئ تعلم الآلة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "ICC4202",
+        "name": "الأسرة في الإسلام",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1452-1",
+      "label": "الفصل الأول 1452",
+      "summer": false,
+      "credits": 6,
+      "courses": [
+       {
+        "code": "CS3901",
+        "name": "التدريب التعاوني",
+        "credits": 6,
+        "kind": "coop",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1452-2",
+      "label": "الفصل الثاني 1452",
+      "summer": false,
+      "credits": 11,
+      "courses": [
+       {
+        "code": "CS4108",
+        "name": "برمجة متقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4411",
+        "name": "قواعد البيانات المتقدمة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4612",
+        "name": "الحوسبة المتوازية و الموزعة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "BUS1099",
+        "name": "مهارات التطوير المهني",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1453-1",
+      "label": "الفصل الأول 1453",
+      "summer": false,
+      "credits": 10,
+      "courses": [
+       {
+        "code": "CS4216",
+        "name": "الطرق العلمية",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4714",
+        "name": "تركيب المترجمات",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4815",
+        "name": "الحوسبة السحابية",
+        "credits": 2,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "CS4902",
+        "name": "مشروع التخرج 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1453-2",
+      "label": "الفصل الثاني 1453",
+      "summer": false,
+      "credits": 11,
+      "courses": [
+       {
+        "code": "ELECTIVE-1",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-2",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-3",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 3,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       },
+       {
+        "code": "ELECTIVE-4",
+        "name": "مقرر اختياري (لم تُنشر قائمته)",
+        "credits": 2,
+        "kind": "elective",
+        "tags": [],
+        "verification": "unavailable",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     }
+    ],
+    "graduation_term": "1453-2",
+    "graduation_label": "الفصل الثاني 1453",
+    "terms_needed": 11,
+    "complete": true,
+    "unscheduled": [],
+    "lower_bound": {
+     "terms": 11,
+     "by": "credits",
+     "chain_terms": 6,
+     "credit_terms": 11,
+     "earliest_term": "1453-2",
+     "earliest_label": "الفصل الثاني 1453"
+    },
+    "target": {
+     "target_term": "1449-1",
+     "target_label": "الفصل الأول 1449",
+     "verdict": "impossible",
+     "message": "مستحيل رياضياً: أبكر تخرج ممكن الفصل الثاني 1453 لأن الساعات المتبقية لا تتسع في هذه الفصول بحد العبء المختار.",
+     "earliest_label": "الفصل الثاني 1453"
+    },
+    "assumptions": [
+     "الخطة ممكنة رياضياً وفق المتطلبات المنشورة، وليست مؤكدة للتسجيل: طرح المقررات وتعارض الجداول لا يُنشران علناً.",
+     "المقررات المسجلة حالياً تُعامل كأنها ستُجتاز.",
+     "المتطلبات المتعددة عوملت كلها لازمة (و).",
+     "التدريب التعاوني يُجدول بعد إنهاء مقررات المستويات التي تسبقه في الخطة، ووحده في فصله.",
+     "قيود التسجيل حسب المستوى أو عدد الساعات المجتازة غير منشورة؛ المقررات الموسومة «قبل موعدها» قد يمنعها النظام.",
+     "حد العبء 18 ساعة افتراض للتخطيط (لم نجد حداً أعلى منشوراً)؛ عدّله من الإعدادات.",
+     "جُدولت 11 ساعة اختيارية كخانات عامة لأن قائمتها غير منشورة."
+    ],
+    "status": "feasible_unconfirmed"
+   }
+  },
+  "risks": [
+   {
+    "kind": "failed_prerequisite",
+    "severity": "high",
+    "basis": "fact",
+    "message": "رسبت في CS1701 مرتين ولم تجتزه بعد، وهو متطلب لـ 6 مقرر في خطتك.",
+    "evidence": [
+     "الفصل الأول 1446/1447: F",
+     "الفصل الثاني 1446/1447: F",
+     "AI4101",
+     "AI4202",
+     "CS1704",
+     "CS2105",
+     "CS2107",
+     "CS4108"
+    ]
+   },
+   {
+    "kind": "possible_warning",
+    "severity": "high",
+    "basis": "estimate",
+    "message": "معدلك 1.62 أقل من 2.00. معدل التخرج لتخصصك غير منشور لدينا؛ إن كان 2.00 أو أعلى فأنت في حالة إنذار. أدخله من الإعدادات لنحسم ذلك.",
+    "evidence": [
+     "معدل التخرج الخاص بكل تخصص يحدده مجلس الجامعة ولم يُنشر في المصادر المتاحة؛ أدخله من دليل قسمك إن عرفته."
+    ]
+   },
+   {
+    "kind": "failed_prerequisite",
+    "severity": "medium",
+    "basis": "fact",
+    "message": "رسبت في CS1302 مرة واحدة ولم تجتزه بعد، وهو متطلب لـ 1 مقرر في خطتك.",
+    "evidence": [
+     "الفصل الأول 1446/1447: F",
+     "CS1303"
+    ]
+   }
+  ],
+  "gpa_what_if": {
+   "available": true,
+   "current_gpa": 1.62,
+   "gpa_hours": 17,
+   "term_credits": 12,
+   "rows": [
+    {
+     "term_average": "A+",
+     "term_points": 4.0,
+     "resulting_gpa": 2.6
+    },
+    {
+     "term_average": "A",
+     "term_points": 3.75,
+     "resulting_gpa": 2.5
+    },
+    {
+     "term_average": "B+",
+     "term_points": 3.5,
+     "resulting_gpa": 2.4
+    },
+    {
+     "term_average": "B",
+     "term_points": 3.0,
+     "resulting_gpa": 2.19
+    },
+    {
+     "term_average": "C+",
+     "term_points": 2.5,
+     "resulting_gpa": 1.98
+    },
+    {
+     "term_average": "C",
+     "term_points": 2.0,
+     "resulting_gpa": 1.78
+    },
+    {
+     "term_average": "D",
+     "term_points": 1.0,
+     "resulting_gpa": 1.36
+    }
+   ],
+   "note": "حساب دقيق وليس توقعاً: لو كان متوسطك في الفصل القادم كذا يصبح معدلك كذا."
+  },
+  "confidence": {
+   "level": "medium",
+   "reasons": [
+    "الخطة الرسمية ناقصة: 11 ساعة اختيارية غير منشورة.",
+    "1 نقص في البيانات (انظر القائمة).",
+    "المعدل المحسوب يختلف عن معدل السجل.",
+    "طرح المقررات في كل فصل غير منشور؛ الخطة ممكنة رياضياً لا مؤكدة للتسجيل.",
+    "خطتك تُقارن بالخطة المنشورة حالياً؛ إن التحقت بخطة أقدم فقد تختلف بعض المقررات."
+   ]
+  },
+  "rules": [
+   {
+    "rule": "min_regular_load",
+    "text": "لا يقل العبء الدراسي عن 10 ساعات، إلا للمتوقع تخرجه وباقٍ له أقل من 10 ساعات، أو عند عدم طرح مقررات.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "max_summer_load",
+    "text": "الحد الأعلى للعبء في الفصل الصيفي 10 ساعات.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "prerequisites_required",
+    "text": "يجب استيفاء المتطلبات السابقة عند التسجيل، وللمشرف الأكاديمي الموافقة على تجاوز المتطلب بعد اعتماد رئيس القسم.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "coop_exclusive",
+    "text": "لا يجوز الجمع بين تسجيل مقررات والتدريب التعاوني في البرامج التي تتطلب تفرّغ الطالب للتدريب.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+   },
+   {
+    "rule": "warning_below_grad_gpa",
+    "text": "انخفاض المعدل التراكمي عن معدل التخرج المحدد للتخصص إنذار أكاديمي؛ ثلاثة إنذارات متتالية تؤدي للفصل مع إمكان فرص إضافية.",
+    "status": "verified",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": "المادتان الحادية والأربعون والثانية والأربعون"
+   },
+   {
+    "rule": "max_regular_load",
+    "text": "لم تحدد القواعد المتاحة حداً أعلى للعبء في الفصل العادي؛ يحدده مجلس الجامعة/النظام. يُستخدم الحد الذي يختاره الطالب.",
+    "status": "unavailable",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "program_grad_gpa",
+    "text": "معدل التخرج الخاص بكل تخصص يحدده مجلس الجامعة ولم يُنشر في المصادر المتاحة؛ أدخله من دليل قسمك إن عرفته.",
+    "status": "unavailable",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+    "article": null
+   },
+   {
+    "rule": "offerings",
+    "text": "المقررات المطروحة لكل فصل لا تُنشر علناً؛ تظهر في نظام التسجيل فقط.",
+    "status": "unavailable",
+    "source": "—",
+    "article": null
+   }
+  ],
+  "run_id": "c550ce9e3abd7b1f001d",
+  "created_at": "2026-10-14T12:00:00+00:00",
+  "summary": {
+   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، CUR1101 مهارات جامعية، MTH1602 الإحصاء والاحتمالات في الحاسبات، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
+   "why": [
+    "اخترنا مسار التعافي: عبء أخف وأولوية لإعادة المقررات المفتاحية. معدل آخر فصل 1.78.",
+    "CS1701: إعادة مقرر لم تجتزه بعد.",
+    "CUR1101: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).",
+    "MTH1602: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).",
+    "PHYS1113: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+   ],
+   "alternatives": [
+    "مسار الأسرع تخرجاً: 8 فصول، تخرج متوقع الفصل الأول 1452 (حد العبء 18).",
+    "مسار المتوازن: 10 فصول، تخرج متوقع الفصل الأول 1453 (حد العبء 14)."
+   ],
+   "effect": [
+    "التخرج المتوقع في المسار المقترح: الفصل الثاني 1453 (11 فصول).",
+    "معدلك الآن 1.62: لو كان متوسطك القادم B يصبح 2.19، ولو C يصبح 1.78.",
+    "مستحيل رياضياً: أبكر تخرج ممكن الفصل الثاني 1453 لأن الساعات المتبقية لا تتسع في هذه الفصول بحد العبء المختار."
+   ],
+   "uncertain": [
+    "الخطة الرسمية ناقصة: 11 ساعة اختيارية غير منشورة.",
+    "1 نقص في البيانات (انظر القائمة).",
+    "المعدل المحسوب يختلف عن معدل السجل.",
+    "طرح المقررات في كل فصل غير منشور؛ الخطة ممكنة رياضياً لا مؤكدة للتسجيل.",
+    "خطتك تُقارن بالخطة المنشورة حالياً؛ إن التحقت بخطة أقدم فقد تختلف بعض المقررات.",
+    "لا توجد مقررات مسجلة للفصل الحالي في السجل. سنفترض أنك لا تدرس شيئاً الآن؛ إن كنت مسجلاً أضف مقرراتك الحالية حتى لا نقترحها مجدداً."
+   ],
+   "next_steps": [
+    "راجع مرشدك الأكاديمي بخصوص المخاطر المرتفعة قبل التسجيل.",
+    "أكمل البيانات الناقصة لتحسين دقة الخطة.",
+    "تحقق من طرح المقررات في نظام التسجيل، ثم استخدم «فحص جدول» قبل اعتماد التسجيل."
+   ],
+   "confidence": "medium"
+  }
+ },
+ "validate": {
+  "valid": false,
+  "credits": 6,
+  "courses": [
+   {
+    "input": "CS1704",
+    "code": "CS1704",
+    "ok": false,
+    "problems": [
+     "متطلب سابق غير مجتاز: CS1701."
+    ]
+   },
+   {
+    "input": "CS2105",
+    "code": "CS2105",
+    "ok": false,
+    "problems": [
+     "المتطلب CS1704 في نفس الفصل — يجب اجتيازه قبله."
+    ]
+   }
+  ],
+  "violations": [
+   {
+    "rule": "prerequisites_required",
+    "course": "CS1704",
+    "message": "متطلب سابق غير مجتاز: CS1701.",
+    "cite": {
+     "rule": "prerequisites_required",
+     "text": "يجب استيفاء المتطلبات السابقة عند التسجيل، وللمشرف الأكاديمي الموافقة على تجاوز المتطلب بعد اعتماد رئيس القسم.",
+     "status": "verified",
+     "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+     "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+    }
+   },
+   {
+    "rule": "prerequisites_required",
+    "course": "CS2105",
+    "message": "المتطلب CS1704 في نفس الفصل — يجب اجتيازه قبله.",
+    "cite": {
+     "rule": "prerequisites_required",
+     "text": "يجب استيفاء المتطلبات السابقة عند التسجيل، وللمشرف الأكاديمي الموافقة على تجاوز المتطلب بعد اعتماد رئيس القسم.",
+     "status": "verified",
+     "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+     "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+    }
+   }
+  ],
+  "warnings": [
+   {
+    "rule": "min_regular_load",
+    "message": "6 ساعة أقل من الحد الأدنى (10).",
+    "cite": {
+     "rule": "min_regular_load",
+     "text": "لا يقل العبء الدراسي عن 10 ساعات، إلا للمتوقع تخرجه وباقٍ له أقل من 10 ساعات، أو عند عدم طرح مقررات.",
+     "status": "verified",
+     "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+     "article": "المادة الثالثة عشرة — القاعدة التنفيذية"
+    }
+   }
+  ]
+ },
+ "compare": {
+  "programs": [
+   {
+    "program_id": "uqu-1492",
+    "name": "هندسة الحاسب آلي والشبكات",
+    "department": "هندسة الحاسب والشبكات",
+    "stated_total_hours": 158,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 14,
+    "remaining_listed_hours": 133,
+    "unlisted_hours": 11,
+    "main_areas": [
+     "CEN",
+     "MTH",
+     "CS",
+     "ELIE"
+    ],
+    "related_performance": 1.05,
+    "interest_matches": [],
+    "fastest_terms": 9,
+    "fastest_graduation": "الفصل الثاني 1452",
+    "evidence": [
+     "اجتزت 5 من مقرراته (14 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 1.05 من 4 (MTH: 1.00 في 3 ساعة، CS: 0.00 في 9 ساعة، ELIE: 2.25 في 8 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1492"
+   },
+   {
+    "program_id": "uqu-478",
+    "name": "علوم الحاسب الآلي",
+    "department": "علوم الحاسب والذكاء الاصطناعي",
+    "stated_total_hours": 137,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "MTH1141",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 17,
+    "remaining_listed_hours": 109,
+    "unlisted_hours": 11,
+    "main_areas": [
+     "CS",
+     "MTH",
+     "CEN",
+     "QR"
+    ],
+    "related_performance": 0.94,
+    "interest_matches": [],
+    "fastest_terms": 8,
+    "fastest_graduation": "الفصل الأول 1452",
+    "evidence": [
+     "اجتزت 6 من مقرراته (17 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 0.94 من 4 (CS: 0.00 في 9 ساعة، MTH: 1.00 في 3 ساعة، QR: 3.00 في 4 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/478"
+   },
+   {
+    "program_id": "uqu-1510",
+    "name": "هندسة البرمجيات",
+    "department": "هندسة البرمجيات",
+    "stated_total_hours": 134,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 14,
+    "remaining_listed_hours": 106,
+    "unlisted_hours": 14,
+    "main_areas": [
+     "SE",
+     "MTH",
+     "CS",
+     "QR"
+    ],
+    "related_performance": 0.94,
+    "interest_matches": [],
+    "fastest_terms": 8,
+    "fastest_graduation": "الفصل الأول 1452",
+    "evidence": [
+     "اجتزت 5 من مقرراته (14 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 0.94 من 4 (MTH: 1.00 في 3 ساعة، CS: 0.00 في 9 ساعة، QR: 3.00 في 4 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1510"
+   },
+   {
+    "program_id": "uqu-1490",
+    "name": "الذكاء الاصطناعي",
+    "department": "علوم الحاسب والذكاء الاصطناعي",
+    "stated_total_hours": 132,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "MTH1141",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 17,
+    "remaining_listed_hours": 107,
+    "unlisted_hours": 8,
+    "main_areas": [
+     "AI",
+     "CS",
+     "MTH",
+     "CEN"
+    ],
+    "related_performance": 0.25,
+    "interest_matches": [],
+    "fastest_terms": 8,
+    "fastest_graduation": "الفصل الأول 1452",
+    "evidence": [
+     "اجتزت 6 من مقرراته (17 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 0.25 من 4 (CS: 0.00 في 9 ساعة، MTH: 1.00 في 3 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1490"
+   }
+  ],
+  "transfer_rules": [
+   {
+    "text": "التحويل لبرنامج آخر يتطلب تحقيق النسبة الموزونة للقبول في البرنامج المحوَّل إليه وفق معايير المستجدين، ويجوز تخفيضها ثلاث نسب كحد أقصى بشرط ألا يقل المعدل التراكمي عن «جيد جداً».",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى"
+   },
+   {
+    "text": "المفاضلة بين المتقدمين للتحويل: 50% المعدل التراكمي و50% النسبة الموزونة.",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى"
+   },
+   {
+    "text": "التحويل بين تخصصات الكلية المشاركة في السنة التأهيلية يكون بعد اجتيازها وبحسب المعدل التراكمي.",
+    "source": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى"
+   }
+  ],
+  "gpa": 1.62,
+  "disclaimer": "المقارنة مبنية على سجلك والخطط المنشورة فقط. لا يضمن أي تخصص وظيفة أو نجاحاً؛ بيانات سوق العمل مصدر منفصل يتغير مع الوقت ولم تُدمج هنا. القبول والتحويل يحددهما القسم.",
+  "coverage_note": "الخطط المتاحة حالياً: 4 برامج من كلية الحاسبات. بقية برامج الجامعة لم تُضف بعد."
+ },
+ "instructors": {
+  "verdict": "no_data",
+  "message": "لا توجد تقييمات موثقة لمحاضري هذا المقرر بعد؛ لا نرشّح أحداً.",
+  "recommendation": null,
+  "instructors": [],
+  "course_mean": null,
+  "method": {
+   "prior_weight": 5.0,
+   "half_life_years": 2.0,
+   "min_reviews_to_compare": 5,
+   "min_gap": 0.4
+  },
+  "caveats": [
+   "التقييم يعكس تجربة من كتبوا فقط (انحياز الاختيار).",
+   "شعبية المحاضر ليست مقياساً لجودة التدريس، ولا يضمن أي محاضر درجة معينة."
+  ],
+  "course_code": "CS1701",
+  "providers": [
+   {
+    "name": "qaym",
+    "available": false,
+    "reason": "لم نجد واجهة برمجية عامة أو إذناً باستخدام بيانات موقع «قيم»، وتعذّر الوصول لخادمه عند الفحص (2026-10-14، خطأ 522). لا نجمع بياناته آلياً دون إذن.",
+    "data_policy": "يُفعَّل فقط عبر اتفاقية بيانات أو مجموعة بيانات مرخّصة."
+   }
+  ]
+ },
+ "ask": {
+  "source": "deterministic",
+  "reason": "رُفضت صياغة الذكاء الاصطناعي لأنها خرجت عن الحقائق",
+  "problems": [
+   "رموز مقررات غير موجودة في الحقائق: ['CS9999']"
+  ],
+  "summary": {
+   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، CUR1101 مهارات جامعية، MTH1602 الإحصاء والاحتمالات في الحاسبات، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
+   "why": [
+    "اخترنا مسار التعافي: عبء أخف وأولوية لإعادة المقررات المفتاحية. معدل آخر فصل 1.78.",
+    "CS1701: إعادة مقرر لم تجتزه بعد.",
+    "CUR1101: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).",
+    "MTH1602: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).",
+    "PHYS1113: تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة)."
+   ],
+   "alternatives": [
+    "مسار الأسرع تخرجاً: 8 فصول، تخرج متوقع الفصل الأول 1452 (حد العبء 18).",
+    "مسار المتوازن: 10 فصول، تخرج متوقع الفصل الأول 1453 (حد العبء 14)."
+   ],
+   "effect": [
+    "التخرج المتوقع في المسار المقترح: الفصل الثاني 1453 (11 فصول).",
+    "معدلك الآن 1.62: لو كان متوسطك القادم B يصبح 2.19، ولو C يصبح 1.78.",
+    "مستحيل رياضياً: أبكر تخرج ممكن الفصل الثاني 1453 لأن الساعات المتبقية لا تتسع في هذه الفصول بحد العبء المختار."
+   ],
+   "uncertain": [
+    "الخطة الرسمية ناقصة: 11 ساعة اختيارية غير منشورة.",
+    "1 نقص في البيانات (انظر القائمة).",
+    "المعدل المحسوب يختلف عن معدل السجل.",
+    "طرح المقررات في كل فصل غير منشور؛ الخطة ممكنة رياضياً لا مؤكدة للتسجيل.",
+    "خطتك تُقارن بالخطة المنشورة حالياً؛ إن التحقت بخطة أقدم فقد تختلف بعض المقررات.",
+    "لا توجد مقررات مسجلة للفصل الحالي في السجل. سنفترض أنك لا تدرس شيئاً الآن؛ إن كنت مسجلاً أضف مقرراتك الحالية حتى لا نقترحها مجدداً."
+   ],
+   "next_steps": [
+    "راجع مرشدك الأكاديمي بخصوص المخاطر المرتفعة قبل التسجيل.",
+    "أكمل البيانات الناقصة لتحسين دقة الخطة.",
+    "تحقق من طرح المقررات في نظام التسجيل، ثم استخدم «فحص جدول» قبل اعتماد التسجيل."
+   ],
+   "confidence": "medium"
+  }
+ }
+}

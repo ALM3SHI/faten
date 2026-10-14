@@ -1,0 +1,44 @@
+#degree|1490|الذكاء الاصطناعي|بكالوريوس|الحاسبات|علوم الحاسب والذكاء الاصطناعي|132|2026-10-14T19:34:00.293Z|https://uqu.edu.sa/App/Degrees/1490
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|MTH1141|التفاضل والتكامل 1|3 ساعات||38534|Calculus 1|3 hours/English|0|
+1|CS1011|برمجة الحاسب بلغة بايثون|3 ساعات||38540|Computer Programming in Python|3 hours/English|0|
+1|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات||38602|Statistics and Probabilities in Computing|3 hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|MTH1441|الجبر الخطي|3 ساعات||39084|Linear Algebra|3 hours/English|0|
+2|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات|متطلب واحد|39086|English Language (2)|4 hours/English|1|ELIE1201~English Language (1)~4 hours/No requisites
+2|CS1302|هياكل متقطعة 1|3 ساعات||39337|Discrete Structures 1|3 hours/English|0|
+2|CEN2011|التصميم الرقمي المنطقي|3 ساعات||39977|Digital Logic Design|3 hours/English|0|
+2|CS1012|البرمجة الشيئية بلغة بايثون|3 ساعات|متطلب واحد|41103|Object oriented programming with Python|3 hours/English|1|CS1011~Computer Programming in Python~3 hours/No requisites
+2|MTH2144|تفاضل وتكامل عديد المتغيرات|3 ساعات|متطلب واحد|42475|Multivariable Calculus|3 hours/English|1|MTH1141~Calculus 1~3 hours/No requisites
+3|QR2102|حفظ القرآن الكريم 1|ساعتين||38521|Memorizing the Holy Quran 1|Two hours/English|0|
+3|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+3|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+3|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+3|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+3|DS2201|مقدمة في قواعد البيانات|3 ساعات|متطلب واحد|39315|Introduction to Database|3 hours/English|1|CS1012~Object oriented programming with Python~3 hours/One requisite
+3|CEN2012|تنظيم وعمارة الحاسب الآلي|3 ساعات|متطلب واحد|39349|Computer Organization and Architecture|3 hours/English|1|CEN2011~Digital Logic Design~3 hours/No requisites
+3|CS2015|هياكل البيانات والخوارزميات بلغة بايثون|3 ساعات|متطلب واحد|39980|Data Structures and Algorithms in Python|3 hours/English|1|CS1011~Computer Programming in Python~3 hours/No requisites
+4|QR2103|حفظ القرآن الكريم 2|ساعتين||38522|Memorizing the Holy Quran 2|Two hours/English|0|
+4|CEN3011|شبكات الحاسب الآلي|3 ساعات|متطلب واحد|38623|Computer Networks|3 hours/English|1|CEN2012~Computer Organization and Architecture~3 hours/One requisite
+4|SE1201|اسس هندسة البرمجيات|3 ساعات|متطلب واحد|39061|Foundations of Software Engineering|3 hours/English|1|DS2201~Introduction to Database~3 hours/One requisite
+4|CS2107|تصميم وتحليل الخوارزميات|3 ساعات|متطلب واحد|39347|Design & Analysis of Algorithms|3 hours/English|1|CS2015~Data Structures and Algorithms in Python~3 hours/One requisite
+4|CS3608|نظم التشغيل|4 ساعات|متطلب واحد|39351|Operating System|4 hours/English|1|CEN2012~Computer Organization and Architecture~4 hours/One requisite
+5|QR3104|ختم القرآن الكريم|ساعتين|متطلب واحد|38523|Seal of the Holy Quran|Two hours/English|1|QR1101~Tajweed of The Holy Quran~Two hours/No requisites
+5|SEC1101|مقدمة في الأمن السيبراني|3 ساعات|متطلب واحد|38548|Introduction to Cybersecurity|3 hours/English|1|CEN3011~Computer Networks~3 hours/One requisite
+5|HCI2011|تصميم واجهة المستخدم|3 ساعات|متطلب واحد|39836|User Interface Design|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/One requisite
+5|AI3101|مبادىء وتقنيات الذكاء الاصطناعي|4 ساعات|متطلب واحد|39981|Principles and Techniques of AI|4 hours/English|1|CS2015~Data Structures and Algorithms in Python~4 hours/One requisite
+5|AI3301|تحليل وتصوير البيانات|ساعتين|متطلب واحد|39982|Data Analysis and Visualization|Two hours/English|1|DS2201~Introduction to Database~Two hours/One requisite
+5|AI3201|تعلم الآلة|4 ساعات|متطلبين|39983|Machine Learning|4 hours/English|1|MTH1441~Linear Algebra~4 hours/No requisites;CS2107~Design & Analysis of Algorithms~4 hours/One requisite
+6|AI3202|مقدمة في التعلم العميق|3 ساعات|متطلب واحد|39984|Introduction to Deep Learning|3 hours/English|1|AI3201~Machine Learning~3 hours/Two requisites
+6|AI3103|أخلاقيات الذكاء الاصطناعي|ساعتين|متطلب واحد|39985|AI Ethics|Two hours/English|1|AI3101~Principles and Techniques of AI~Two hours/One requisite
+6|AI3104|تصميم نظم الذكاء الاصطناعي|3 ساعات|متطلبين|39986|AI System Design|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/One requisite;AI3201~Machine Learning~3 hours/Two requisites
+6|AI3501|مشروع تخرج 1|3 ساعات|متطلبين|39987|Graduation Project 1|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/One requisite;AI3101~Principles and Techniques of AI~3 hours/One requisite
+6|AI3302|الرؤية بالحاسب|3 ساعات|متطلبين|39988|Computer Vision|3 hours/English|1|AI3201~Machine Learning~3 hours/Two requisites;MTH1441~Linear Algebra~3 hours/No requisites
+6|AI3102|تقنيات الذكاء الاصطناعي المتقدمة|4 ساعات|متطلب واحد|39989|Advanced AI Techniques|4 hours/English|1|AI3101~Principles and Techniques of AI~4 hours/One requisite
+7|AI4401|التدريب التعاوني|6 ساعات||39990|Cooprative Training|6 hours/English|0|
+8|ICC4202|الأسرة في الإسلام|ساعتين||38525|Family in Islam|Two hours/English|0|
+8|AI4502|مشروع تخرج 2|3 ساعات|متطلب واحد|39991|Graduation Project II|3 hours/English|1|AI3501~Graduation Project 1~3 hours/Two requisites
+8|AI4203|التعلم العميق المتقدم|3 ساعات|متطلب واحد|39992|Advanced Deep Learning|3 hours/English|1|AI3202~Introduction to Deep Learning~3 hours/One requisite
+8|AI4303|معالجة اللغات الطبيعية|3 ساعات|متطلب واحد|39993|Natural Language Processing|3 hours/English|1|AI3202~Introduction to Deep Learning~3 hours/One requisite

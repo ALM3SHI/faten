@@ -1,0 +1,3657 @@
+{
+ "schema_version": 1,
+ "generated_at": "2026-10-14T19:40:53+00:00",
+ "university": {
+  "id": "uqu",
+  "name_ar": "جامعة أم القرى",
+  "name_en": "Umm Al-Qura University",
+  "website": "https://uqu.edu.sa"
+ },
+ "courses": {
+  "AI2001": {
+   "code": "AI2001",
+   "name_ar": "مقدمة في الذكاء الاصطناعي",
+   "name_en": "Introduction to Artificial Intelligence",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "AI3011": {
+   "code": "AI3011",
+   "name_ar": "الذكاء الاصطناعي والتعلم الآلي",
+   "name_en": "Artificial Intelligence and Machine Learning",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "AI3101": {
+   "code": "AI3101",
+   "name_ar": "مبادىء وتقنيات الذكاء الاصطناعي",
+   "name_en": "Principles and Techniques of AI",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3102": {
+   "code": "AI3102",
+   "name_ar": "تقنيات الذكاء الاصطناعي المتقدمة",
+   "name_en": "Advanced AI Techniques",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3103": {
+   "code": "AI3103",
+   "name_ar": "أخلاقيات الذكاء الاصطناعي",
+   "name_en": "AI Ethics",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3104": {
+   "code": "AI3104",
+   "name_ar": "تصميم نظم الذكاء الاصطناعي",
+   "name_en": "AI System Design",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3201": {
+   "code": "AI3201",
+   "name_ar": "تعلم الآلة",
+   "name_en": "Machine Learning",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3202": {
+   "code": "AI3202",
+   "name_ar": "مقدمة في التعلم العميق",
+   "name_en": "Introduction to Deep Learning",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3301": {
+   "code": "AI3301",
+   "name_ar": "تحليل وتصوير البيانات",
+   "name_en": "Data Analysis and Visualization",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3302": {
+   "code": "AI3302",
+   "name_ar": "الرؤية بالحاسب",
+   "name_en": "Computer Vision",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI3501": {
+   "code": "AI3501",
+   "name_ar": "مشروع تخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI4101": {
+   "code": "AI4101",
+   "name_ar": "مبادئ الذكاء الإصطناعي",
+   "name_en": "Artificial Intelligence Principles",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "AI4202": {
+   "code": "AI4202",
+   "name_ar": "مبادئ تعلم الآلة",
+   "name_en": "Machine Learning Principles",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "AI4203": {
+   "code": "AI4203",
+   "name_ar": "التعلم العميق المتقدم",
+   "name_en": "Advanced Deep Learning",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI4303": {
+   "code": "AI4303",
+   "name_ar": "معالجة اللغات الطبيعية",
+   "name_en": "Natural Language Processing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI4401": {
+   "code": "AI4401",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "Cooprative Training",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "AI4502": {
+   "code": "AI4502",
+   "name_ar": "مشروع تخرج 2",
+   "name_en": "Graduation Project II",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "BIO3101": {
+   "code": "BIO3101",
+   "name_ar": "الاحياء العامة",
+   "name_en": "General Biology",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "BUS1099": {
+   "code": "BUS1099",
+   "name_ar": "مهارات التطوير المهني",
+   "name_en": "Professional skills",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "CEN0301": {
+   "code": "CEN0301",
+   "name_ar": "التصميم الرقمي المنطقي",
+   "name_en": "Digital Logic Design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN0601": {
+   "code": "CEN0601",
+   "name_ar": "نماذج متقطعة",
+   "name_en": "Discrete Models",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN1012": {
+   "code": "CEN1012",
+   "name_ar": "تنظيم الحاسوب والمنطق الرقمي",
+   "name_en": "Computer Organization and Digital Logic",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "CEN1201": {
+   "code": "CEN1201",
+   "name_ar": "تنسيق و تصميم الحاسب الآلي",
+   "name_en": "Computer Organization and Design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN1501": {
+   "code": "CEN1501",
+   "name_ar": "أساسيات الشبكات و تطبيقاتها",
+   "name_en": "Network Fundamentals and Applications",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN1701": {
+   "code": "CEN1701",
+   "name_ar": "الإشارات و النظم",
+   "name_en": "Signals and Systems",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2011": {
+   "code": "CEN2011",
+   "name_ar": "التصميم الرقمي المنطقي",
+   "name_en": "Digital Logic Design",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "CEN2012": {
+   "code": "CEN2012",
+   "name_ar": "تنظيم وعمارة الحاسب الآلي",
+   "name_en": "Computer Organization and Architecture",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "CEN2202": {
+   "code": "CEN2202",
+   "name_ar": "عمارة الحاسب الآلي",
+   "name_en": "Computer Architecture",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2302": {
+   "code": "CEN2302",
+   "name_ar": "تصميم الأنظمة الرقمية",
+   "name_en": "Digital Systems Design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2401": {
+   "code": "CEN2401",
+   "name_ar": "تصميم أنظمة الحاسبات الصغيرة",
+   "name_en": "Microcomputer Systems design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2502": {
+   "code": "CEN2502",
+   "name_ar": "اتصالات البيانات",
+   "name_en": "Data Communications",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2603": {
+   "code": "CEN2603",
+   "name_ar": "طرق التحليل الهندسية",
+   "name_en": "Analytical Methods in Engineering",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2801": {
+   "code": "CEN2801",
+   "name_ar": "عملية وأدوات التصميم الهندسي",
+   "name_en": "Engineering design process and tools",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN2901": {
+   "code": "CEN2901",
+   "name_ar": "هندسة البيانات",
+   "name_en": "Data Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3011": {
+   "code": "CEN3011",
+   "name_ar": "شبكات الحاسب الآلي",
+   "name_en": "Computer Networks",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "CEN3402": {
+   "code": "CEN3402",
+   "name_ar": "الأنظمة المتضمنة",
+   "name_en": "Embedded Systems",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3503": {
+   "code": "CEN3503",
+   "name_ar": "الشبكات اللاسلكية",
+   "name_en": "Wireless Networks",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3504": {
+   "code": "CEN3504",
+   "name_ar": "هندسة الشبكات",
+   "name_en": "Network Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3802": {
+   "code": "CEN3802",
+   "name_ar": "المهارات الإحترافية للتصميم الهندسي",
+   "name_en": "Professional skills for Engineering design",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3803": {
+   "code": "CEN3803",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "CO-OP",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3804": {
+   "code": "CEN3804",
+   "name_ar": "مشروع التخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN3902": {
+   "code": "CEN3902",
+   "name_ar": "مقدمة في الأنظمة الذكية",
+   "name_en": "Introduction to Intelligent Systems",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CEN4805": {
+   "code": "CEN4805",
+   "name_ar": "مشروع التخرج 2",
+   "name_en": "Graduation Project 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CHM1109": {
+   "code": "CHM1109",
+   "name_ar": "الكيمياء لمهندسي الحاسب",
+   "name_en": "Chemistry for Computer Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CS1011": {
+   "code": "CS1011",
+   "name_ar": "برمجة الحاسب بلغة بايثون",
+   "name_en": "Computer Programming in Python",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492"
+   ]
+  },
+  "CS1012": {
+   "code": "CS1012",
+   "name_ar": "البرمجة الشيئية بلغة بايثون",
+   "name_en": "Object oriented programming with Python",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "CS1013": {
+   "code": "CS1013",
+   "name_ar": "البرمجة الشيئية بلغة C++",
+   "name_en": "Object-Oriented Programming with C++",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CS1302": {
+   "code": "CS1302",
+   "name_ar": "هياكل متقطعة 1",
+   "name_en": "Discrete Structures 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "CS1303": {
+   "code": "CS1303",
+   "name_ar": "هياكل متقطعة 2",
+   "name_en": "Discrete Structures 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS1701": {
+   "code": "CS1701",
+   "name_ar": "برمجة الحاسب بلغة جافا",
+   "name_en": "Computer Programming in Java",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "CS1704": {
+   "code": "CS1704",
+   "name_ar": "البرمجة الشيئية بلغة جافا",
+   "name_en": "Object Oriented Programming with Java",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS2014": {
+   "code": "CS2014",
+   "name_ar": "هياكل البيانات والخوارزميات باستخدام C++",
+   "name_en": "Data structures and Algorithms with C++",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "CS2015": {
+   "code": "CS2015",
+   "name_ar": "هياكل البيانات والخوارزميات بلغة بايثون",
+   "name_en": "Data Structures and Algorithms in Python",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "CS2016": {
+   "code": "CS2016",
+   "name_ar": "نظم التشغيل",
+   "name_en": "Operating Systems",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492",
+    "uqu-1510"
+   ]
+  },
+  "CS2105": {
+   "code": "CS2105",
+   "name_ar": "هياكل البيانات والخوازميات جافا",
+   "name_en": "Data Structures & Algorithms with Java",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "CS2107": {
+   "code": "CS2107",
+   "name_ar": "تصميم وتحليل الخوارزميات",
+   "name_en": "Design & Analysis of Algorithms",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "CS2206": {
+   "code": "CS2206",
+   "name_ar": "الرسومات بالحاسب",
+   "name_en": "Computer Graphics",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS3608": {
+   "code": "CS3608",
+   "name_ar": "نظم التشغيل",
+   "name_en": "Operating System",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "CS3713": {
+   "code": "CS3713",
+   "name_ar": "لغات البرمجة",
+   "name_en": "Programming Languages",
+   "credits": 2,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS3809": {
+   "code": "CS3809",
+   "name_ar": "نظم بناء البرمجيات",
+   "name_en": "Software Implementation Systems",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS3810": {
+   "code": "CS3810",
+   "name_ar": "تطوير الويب",
+   "name_en": "Web Development",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS3901": {
+   "code": "CS3901",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "Cooperative Training",
+   "credits": 6,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4108": {
+   "code": "CS4108",
+   "name_ar": "برمجة متقدمة",
+   "name_en": "Advance Programming",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4216": {
+   "code": "CS4216",
+   "name_ar": "الطرق العلمية",
+   "name_en": "Scientific Methods",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4411": {
+   "code": "CS4411",
+   "name_ar": "قواعد البيانات المتقدمة",
+   "name_en": "Advanced Database",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4612": {
+   "code": "CS4612",
+   "name_ar": "الحوسبة المتوازية و الموزعة",
+   "name_en": "Parallel and Distributed Computing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4714": {
+   "code": "CS4714",
+   "name_ar": "تركيب المترجمات",
+   "name_en": "Compiler Construction",
+   "credits": 2,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4815": {
+   "code": "CS4815",
+   "name_ar": "الحوسبة السحابية",
+   "name_en": "Cloud Computing",
+   "credits": 2,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4901": {
+   "code": "CS4901",
+   "name_ar": "مشروع التخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CS4902": {
+   "code": "CS4902",
+   "name_ar": "مشروع التخرج 2",
+   "name_en": "Graduation Project 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-478"
+   ]
+  },
+  "CUR1101": {
+   "code": "CUR1101",
+   "name_ar": "مهارات جامعية",
+   "name_en": "University Skills",
+   "credits": 0,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "DS2201": {
+   "code": "DS2201",
+   "name_ar": "مقدمة في قواعد البيانات",
+   "name_en": "Introduction to Database",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "EE1101": {
+   "code": "EE1101",
+   "name_ar": "نظرية الدوائر",
+   "name_en": "Circuit Theory",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "EE2102": {
+   "code": "EE2102",
+   "name_ar": "الدوائر الإلكترونية",
+   "name_en": "Electronic circuits",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "ELIE1201": {
+   "code": "ELIE1201",
+   "name_ar": "اللغة الإنجليزية (1)",
+   "name_en": "English Language (1)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "ELIE1202": {
+   "code": "ELIE1202",
+   "name_ar": "اللغة الإنجليزية (2)",
+   "name_en": "English Language (2)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "HCI2011": {
+   "code": "HCI2011",
+   "name_ar": "تصميم واجهة المستخدم",
+   "name_en": "User Interface Design",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "ICC1201": {
+   "code": "ICC1201",
+   "name_ar": "القيم والأخلاق",
+   "name_en": "Values and Ethics",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "ICC4202": {
+   "code": "ICC4202",
+   "name_ar": "الأسرة في الإسلام",
+   "name_en": "Family in Islam",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "IND1101": {
+   "code": "IND1101",
+   "name_ar": "التفكير التصميمي",
+   "name_en": "Design Thinking",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "MTH1141": {
+   "code": "MTH1141",
+   "name_ar": "التفاضل والتكامل 1",
+   "name_en": "Calculus 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "MTH1181": {
+   "code": "MTH1181",
+   "name_ar": "التفاضل والتكامل للهندسة (1)",
+   "name_en": "Calculus for Engineering (1)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492",
+    "uqu-1510"
+   ]
+  },
+  "MTH1182": {
+   "code": "MTH1182",
+   "name_ar": "التفاضل والتكامل للهندسة (2)",
+   "name_en": "Calculus for Engineering (2)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492",
+    "uqu-1510"
+   ]
+  },
+  "MTH1402": {
+   "code": "MTH1402",
+   "name_ar": "الهياكل الحسابية (1)",
+   "name_en": "Computational Structures (1)",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "MTH1441": {
+   "code": "MTH1441",
+   "name_ar": "الجبر الخطي",
+   "name_en": "Linear Algebra",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "MTH1602": {
+   "code": "MTH1602",
+   "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+   "name_en": "Statistics and Probabilities in Computing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "MTH2143": {
+   "code": "MTH2143",
+   "name_ar": "معادلات تفاضلية و الجبر خطي",
+   "name_en": "Differential equations and Linear Algebra",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1492",
+    "uqu-1510"
+   ]
+  },
+  "MTH2144": {
+   "code": "MTH2144",
+   "name_ar": "تفاضل وتكامل عديد المتغيرات",
+   "name_en": "Multivariable Calculus",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490"
+   ]
+  },
+  "PHYS1113": {
+   "code": "PHYS1113",
+   "name_ar": "الفيزياء العامة",
+   "name_en": "General Physics",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "PHYS1114": {
+   "code": "PHYS1114",
+   "name_ar": "الفيزياء للمهندسين",
+   "name_en": "Physics for Engineering",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "QR1101": {
+   "code": "QR1101",
+   "name_ar": "تجويد القرآن الكريم",
+   "name_en": "Tajweed of The Holy Quran",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "QR2102": {
+   "code": "QR2102",
+   "name_ar": "حفظ القرآن الكريم 1",
+   "name_en": "Memorizing the Holy Quran 1",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "QR2103": {
+   "code": "QR2103",
+   "name_ar": "حفظ القرآن الكريم 2",
+   "name_en": "Memorizing the Holy Quran 2",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "QR3104": {
+   "code": "QR3104",
+   "name_ar": "ختم القرآن الكريم",
+   "name_en": "Seal of the Holy Quran",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1492",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "SE1101": {
+   "code": "SE1101",
+   "name_ar": "تطوير التطبيقات كائنية التوجه",
+   "name_en": "Object-oriented Application Development",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE1201": {
+   "code": "SE1201",
+   "name_ar": "اسس هندسة البرمجيات",
+   "name_en": "Foundations of Software Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-1510",
+    "uqu-478"
+   ]
+  },
+  "SE2202": {
+   "code": "SE2202",
+   "name_ar": "الممارسة المهنية وأخلاقيات هندسة البرمجيات",
+   "name_en": "Software Engineering Professional Practice and Code Ethics",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE2203": {
+   "code": "SE2203",
+   "name_ar": "هندسة المتطلبات",
+   "name_en": "Requirements Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE2204": {
+   "code": "SE2204",
+   "name_ar": "إدارة مشاريع تقنية المعلومات",
+   "name_en": "IT Project Management",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1492",
+    "uqu-1510"
+   ]
+  },
+  "SE2301": {
+   "code": "SE2301",
+   "name_ar": "نمذجة وتحليل البرمجيات",
+   "name_en": "Software Modelling and Analysis",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3102": {
+   "code": "SE3102",
+   "name_ar": "تصميم ومعمارية البرمجيات",
+   "name_en": "Software Design and Architecture",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3103": {
+   "code": "SE3103",
+   "name_ar": "اختبار البرمجيات وضمان الجودة",
+   "name_en": "Software Testing and Quality Assurance",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3104": {
+   "code": "SE3104",
+   "name_ar": "هندسة تطبيقات الجوال والويب",
+   "name_en": "Mobile and Web Application Engineering",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3302": {
+   "code": "SE3302",
+   "name_ar": "بناء البرمجيات",
+   "name_en": "Software Construction",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3402": {
+   "code": "SE3402",
+   "name_ar": "الهياكل الحسابية (2)",
+   "name_en": "Computational Structures (2)",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3501": {
+   "code": "SE3501",
+   "name_ar": "مشروع تخرج (1)",
+   "name_en": "Graduation Project (1)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE3502": {
+   "code": "SE3502",
+   "name_ar": "مشروع تخرج (2)",
+   "name_en": "Graduation Project (2)",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE4205": {
+   "code": "SE4205",
+   "name_ar": "مقاييس البرمجيات",
+   "name_en": "Software Metrics",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE4206": {
+   "code": "SE4206",
+   "name_ar": "تطوير وتشغيل البرمجيات",
+   "name_en": "Software Development and Operations",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SE4502": {
+   "code": "SE4502",
+   "name_ar": "التدريب تعاوني",
+   "name_en": "Cooperative Training",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  },
+  "SEC1101": {
+   "code": "SEC1101",
+   "name_ar": "مقدمة في الأمن السيبراني",
+   "name_en": "Introduction to Cybersecurity",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1490",
+    "uqu-478"
+   ]
+  },
+  "SEC4011": {
+   "code": "SEC4011",
+   "name_ar": "أمن الحاسب والشبكات",
+   "name_en": "Computer and Netwrok Security",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1492"
+   ]
+  },
+  "SEC4012": {
+   "code": "SEC4012",
+   "name_ar": "التطوير الآمن للبرمجيات",
+   "name_en": "Secure Software Development",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1510"
+   ]
+  }
+ },
+ "programs": {
+  "uqu-1490": {
+   "id": "uqu-1490",
+   "university": "uqu",
+   "source_id": "1490",
+   "name_ar": "الذكاء الاصطناعي",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "علوم الحاسب والذكاء الاصطناعي",
+   "curricula": [
+    "uqu-1490@2026-10-14"
+   ]
+  },
+  "uqu-1492": {
+   "id": "uqu-1492",
+   "university": "uqu",
+   "source_id": "1492",
+   "name_ar": "هندسة الحاسب آلي والشبكات",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "هندسة الحاسب والشبكات",
+   "curricula": [
+    "uqu-1492@2026-10-14"
+   ]
+  },
+  "uqu-1510": {
+   "id": "uqu-1510",
+   "university": "uqu",
+   "source_id": "1510",
+   "name_ar": "هندسة البرمجيات",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "هندسة البرمجيات",
+   "curricula": [
+    "uqu-1510@2026-10-14"
+   ]
+  },
+  "uqu-478": {
+   "id": "uqu-478",
+   "university": "uqu",
+   "source_id": "478",
+   "name_ar": "علوم الحاسب الآلي",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "علوم الحاسب والذكاء الاصطناعي",
+   "curricula": [
+    "uqu-478@2026-10-14"
+   ]
+  }
+ },
+ "curricula": {
+  "uqu-1490@2026-10-14": {
+   "id": "uqu-1490@2026-10-14",
+   "program_id": "uqu-1490",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-14)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1490",
+    "retrieved_at": "2026-10-14T19:34:00.293Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1490.psv",
+    "raw_sha256": "7056964f8d7b997916c88dcd76bae69607d9b1bff331238807269b92c84c4199"
+   },
+   "stated_total_hours": 132,
+   "listed_hours": 124,
+   "unlisted_hours": 8,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38528",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1141",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38534",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1011",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38540",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1602",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38602",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39071",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1441",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39084",
+     "verification": "verified"
+    },
+    {
+     "code": "QR1101",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38520",
+     "verification": "verified"
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38530",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39086",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1302",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39337",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2011",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39977",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1012",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/41103",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH2144",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1141"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/42475",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2102",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38521",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC1201",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38524",
+     "verification": "verified"
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38526",
+     "verification": "verified"
+    },
+    {
+     "code": "BUS1099",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38590",
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1113",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39020",
+     "verification": "verified"
+    },
+    {
+     "code": "DS2201",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39315",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2012",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39349",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2015",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39980",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2103",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38522",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3011",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38623",
+     "verification": "verified"
+    },
+    {
+     "code": "SE1201",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39061",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2107",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CS2015"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39347",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3608",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39351",
+     "verification": "verified"
+    },
+    {
+     "code": "QR3104",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "QR1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38523",
+     "verification": "verified"
+    },
+    {
+     "code": "SEC1101",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CEN3011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38548",
+     "verification": "verified"
+    },
+    {
+     "code": "HCI2011",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39836",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3101",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "CS2015"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39981",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3301",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39982",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3201",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "MTH1441",
+      "CS2107"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39983",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3202",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "AI3201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39984",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3103",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [
+      "AI3101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39985",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3104",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201",
+      "AI3201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39986",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3501",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201",
+      "AI3101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39987",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3302",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "AI3201",
+      "MTH1441"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39988",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3102",
+     "level": 6,
+     "credits": 4,
+     "prerequisites": [
+      "AI3101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39989",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4401",
+     "level": 7,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39990",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC4202",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/38525",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4502",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "AI3501"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39991",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4203",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "AI3202"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39992",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4303",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "AI3202"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39993",
+     "verification": "verified"
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "10 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 132 ساعة، والمقررات المنشورة في الخطة مجموعها 124 ساعة. 8 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ]
+  },
+  "uqu-1492@2026-10-14": {
+   "id": "uqu-1492@2026-10-14",
+   "program_id": "uqu-1492",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-14)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1492",
+    "retrieved_at": "2026-10-14T19:36:56.715Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1492.psv",
+    "raw_sha256": "7ab097a7287604ce09549a82393c53b0667e9a680ec6f2c99d7e42e6c20e59e0"
+   },
+   "stated_total_hours": 158,
+   "listed_hours": 147,
+   "unlisted_hours": 11,
+   "levels": 10,
+   "courses": [
+    {
+     "code": "MTH1181",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38536",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1011",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38540",
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1113",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39020",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39071",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN0601",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39837",
+     "verification": "verified"
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38530",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1182",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "MTH1181"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38539",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39086",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1013",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39838",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN0301",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41602",
+     "verification": "verified"
+    },
+    {
+     "code": "CHM1109",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/42245",
+     "verification": "verified"
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38526",
+     "verification": "verified"
+    },
+    {
+     "code": "IND1101",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38528",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2014",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CEN0601",
+      "CS1013"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39839",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH2143",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1182"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39963",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN1501",
+     "level": 3,
+     "credits": 4,
+     "prerequisites": [
+      "CEN0601"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41604",
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1114",
+     "level": 3,
+     "credits": 4,
+     "prerequisites": [
+      "PHYS1113"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/42609",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC1201",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38524",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1602",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1181"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38602",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2603",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "MTH2143"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39841",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN1201",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "CEN0301"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41603",
+     "verification": "verified"
+    },
+    {
+     "code": "EE1101",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "PHYS1114",
+      "MTH1182"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41605",
+     "verification": "verified"
+    },
+    {
+     "code": "QR1101",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38520",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN1701",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "MTH2143"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39840",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2202",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CEN1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39842",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2901",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CS2014"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39843",
+     "verification": "verified"
+    },
+    {
+     "code": "EE2102",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "CHM1109",
+      "EE1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41606",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2102",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38521",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2801",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "CEN1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39844",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2502",
+     "level": 6,
+     "credits": 4,
+     "prerequisites": [
+      "CEN1701"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41607",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2302",
+     "level": 6,
+     "credits": 4,
+     "prerequisites": [
+      "CEN0301",
+      "EE2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41608",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2401",
+     "level": 6,
+     "credits": 4,
+     "prerequisites": [
+      "CEN1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41609",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2103",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38522",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2016",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2202"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38583",
+     "verification": "verified"
+    },
+    {
+     "code": "SE2204",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [
+      "CEN2801"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39104",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3802",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [
+      "CEN2801"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39845",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3902",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "MTH2143",
+      "MTH1602"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39846",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3503",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2502"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41636",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC4202",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38525",
+     "verification": "verified"
+    },
+    {
+     "code": "SEC4011",
+     "level": 8,
+     "credits": 4,
+     "prerequisites": [
+      "CEN1501"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38846",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3804",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2801"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39847",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3504",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "CEN1501"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39848",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3402",
+     "level": 8,
+     "credits": 4,
+     "prerequisites": [
+      "CEN2401"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/41610",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3803",
+     "level": 9,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39849",
+     "verification": "verified"
+    },
+    {
+     "code": "QR3104",
+     "level": 10,
+     "credits": 2,
+     "prerequisites": [
+      "QR1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38523",
+     "verification": "verified"
+    },
+    {
+     "code": "BUS1099",
+     "level": 10,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/38590",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN4805",
+     "level": 10,
+     "credits": 3,
+     "prerequisites": [
+      "CEN3804"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1492/39850",
+     "verification": "verified"
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "13 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 158 ساعة، والمقررات المنشورة في الخطة مجموعها 147 ساعة. 11 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ]
+  },
+  "uqu-1510@2026-10-14": {
+   "id": "uqu-1510@2026-10-14",
+   "program_id": "uqu-1510",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-14)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1510",
+    "retrieved_at": "2026-10-14T19:35:23.856Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1510.psv",
+    "raw_sha256": "7b8e206bf1c077a3e6e222e08d96bf1706ae76cfbb73b2dca38f19f7e9dd8cc1"
+   },
+   "stated_total_hours": 134,
+   "listed_hours": 120,
+   "unlisted_hours": 14,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "QR1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38520",
+     "verification": "verified"
+    },
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38528",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN1012",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38900",
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1113",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39020",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39071",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1701",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39316",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2102",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38521",
+     "verification": "verified"
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38530",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1181",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38536",
+     "verification": "verified"
+    },
+    {
+     "code": "SE1101",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1701"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39037",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1402",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39057",
+     "verification": "verified"
+    },
+    {
+     "code": "SE1201",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39061",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39086",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2103",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38522",
+     "verification": "verified"
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38526",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1182",
+     "level": 3,
+     "credits": 4,
+     "prerequisites": [
+      "MTH1181"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38539",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2105",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "SE1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38588",
+     "verification": "verified"
+    },
+    {
+     "code": "SE2202",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39075",
+     "verification": "verified"
+    },
+    {
+     "code": "SE2203",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39078",
+     "verification": "verified"
+    },
+    {
+     "code": "SE2204",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39104",
+     "verification": "verified"
+    },
+    {
+     "code": "QR3104",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38523",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC1201",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38524",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2016",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CEN1012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38583",
+     "verification": "verified"
+    },
+    {
+     "code": "SE2301",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "SE2203"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39102",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3402",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1402"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39109",
+     "verification": "verified"
+    },
+    {
+     "code": "DS2201",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CS1701"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39315",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH2143",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1182"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39963",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1602",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1181"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38602",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3501",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "SE2301"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39115",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3102",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39125",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3104",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "SE2301"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39153",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3011",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "CS2016"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38623",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3302",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39130",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3103",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39149",
+     "verification": "verified"
+    },
+    {
+     "code": "AI3011",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1602",
+      "MTH2143"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39314",
+     "verification": "verified"
+    },
+    {
+     "code": "SE3502",
+     "level": 6,
+     "credits": 4,
+     "prerequisites": [
+      "SE3501"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/42515",
+     "verification": "verified"
+    },
+    {
+     "code": "SE4502",
+     "level": 7,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39158",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC4202",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38525",
+     "verification": "verified"
+    },
+    {
+     "code": "BUS1099",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38590",
+     "verification": "verified"
+    },
+    {
+     "code": "SEC4012",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "SE3103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/38847",
+     "verification": "verified"
+    },
+    {
+     "code": "SE4205",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [
+      "SE2204"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39163",
+     "verification": "verified"
+    },
+    {
+     "code": "SE4206",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "SE3103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39168",
+     "verification": "verified"
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "4 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 134 ساعة، والمقررات المنشورة في الخطة مجموعها 120 ساعة. 14 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ]
+  },
+  "uqu-478@2026-10-14": {
+   "id": "uqu-478@2026-10-14",
+   "program_id": "uqu-478",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-14)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/478",
+    "retrieved_at": "2026-10-14T19:32:05.039Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-478.psv",
+    "raw_sha256": "dc6a318745639f2ab6fe0985f42ab786c718949193b736a9497dd17aa9e1bc97"
+   },
+   "stated_total_hours": 137,
+   "listed_hours": 126,
+   "unlisted_hours": 11,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "QR1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38520",
+     "verification": "verified"
+    },
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38528",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1141",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38534",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39071",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1701",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39316",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1302",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39337",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2102",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38521",
+     "verification": "verified"
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38530",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1704",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1701"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38554",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1602",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38602",
+     "verification": "verified"
+    },
+    {
+     "code": "PHYS1113",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39020",
+     "verification": "verified"
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39086",
+     "verification": "verified"
+    },
+    {
+     "code": "CS1303",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1302"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39338",
+     "verification": "verified"
+    },
+    {
+     "code": "QR2103",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38522",
+     "verification": "verified"
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38526",
+     "verification": "verified"
+    },
+    {
+     "code": "SEC1101",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38548",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2105",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1704"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38588",
+     "verification": "verified"
+    },
+    {
+     "code": "MTH1441",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39084",
+     "verification": "verified"
+    },
+    {
+     "code": "BIO3101",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39342",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2011",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39977",
+     "verification": "verified"
+    },
+    {
+     "code": "QR3104",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [
+      "QR1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38523",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC1201",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38524",
+     "verification": "verified"
+    },
+    {
+     "code": "SE1201",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39061",
+     "verification": "verified"
+    },
+    {
+     "code": "DS2201",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39315",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2206",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1441"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39345",
+     "verification": "verified"
+    },
+    {
+     "code": "CS2107",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CS2105"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39347",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN2012",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39349",
+     "verification": "verified"
+    },
+    {
+     "code": "CEN3011",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38623",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3608",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "CEN2012"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39351",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3809",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201",
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39354",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3810",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39355",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4101",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CS2107"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39356",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3713",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/42204",
+     "verification": "verified"
+    },
+    {
+     "code": "CS3901",
+     "level": 6,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39357",
+     "verification": "verified"
+    },
+    {
+     "code": "ICC4202",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38525",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4901",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "CS3809"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39359",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4411",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39360",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4612",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "CS3608"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39363",
+     "verification": "verified"
+    },
+    {
+     "code": "AI4202",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "AI4101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/41774",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4108",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "CS1704"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/42205",
+     "verification": "verified"
+    },
+    {
+     "code": "BUS1099",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/38590",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4902",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "CS4901"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39365",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4815",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [
+      "CEN3011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39367",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4714",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [
+      "CS3713"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39368",
+     "verification": "verified"
+    },
+    {
+     "code": "CS4216",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/478/39370",
+     "verification": "verified"
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "3 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 137 ساعة، والمقررات المنشورة في الخطة مجموعها 126 ساعة. 11 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ]
+  }
+ },
+ "issues": []
+}

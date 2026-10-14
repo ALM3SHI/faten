@@ -10,7 +10,7 @@ All GPA values operate on the official UQU 4.00 scale.
 
 from datetime import datetime, timezone
 
-from agent.tools import gpa, memory, regulations, schedule, student
+from agent.tools import advisor, gpa, memory, regulations, schedule, student
 from agent.tools.context import ToolContext
 
 TOOL_HANDLERS = {
@@ -19,6 +19,7 @@ TOOL_HANDLERS = {
     **gpa.HANDLERS,
     **student.HANDLERS,
     **memory.HANDLERS,
+    **advisor.HANDLERS,
 }
 
 

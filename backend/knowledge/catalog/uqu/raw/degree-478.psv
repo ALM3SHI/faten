@@ -1,0 +1,46 @@
+#degree|478|علوم الحاسب الآلي|بكالوريوس|الحاسبات|علوم الحاسب والذكاء الاصطناعي|137|2026-10-14T19:32:05.039Z|https://uqu.edu.sa/App/Degrees/478
+1|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|MTH1141|التفاضل والتكامل 1|3 ساعات||38534|Calculus 1|3 hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|CS1701|برمجة الحاسب بلغة جافا|3 ساعات||39316|Computer Programming in Java|3 hours/English|0|
+1|CS1302|هياكل متقطعة 1|3 ساعات||39337|Discrete Structures 1|3 hours/English|0|
+2|QR2102|حفظ القرآن الكريم 1|ساعتين||38521|Memorizing the Holy Quran 1|Two hours/English|0|
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|CS1704|البرمجة الشيئية بلغة جافا|3 ساعات|متطلب واحد|38554|Object Oriented Programming with Java|3 hours/English|1|CS1701~Computer Programming in Java~3 hours/No requisites
+2|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات||38602|Statistics and Probabilities in Computing|3 hours/English|0|
+2|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات|متطلب واحد|39086|English Language (2)|4 hours/English|1|ELIE1201~English Language (1)~4 hours/No requisites
+2|CS1303|هياكل متقطعة 2|3 ساعات|متطلب واحد|39338|Discrete Structures 2|3 hours/English|1|CS1302~Discrete Structures 1~3 hours/No requisites
+3|QR2103|حفظ القرآن الكريم 2|ساعتين||38522|Memorizing the Holy Quran 2|Two hours/English|0|
+3|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+3|SEC1101|مقدمة في الأمن السيبراني|3 ساعات||38548|Introduction to Cybersecurity|3 hours/English|0|
+3|CS2105|هياكل البيانات والخوازميات جافا|3 ساعات|متطلب واحد|38588|Data Structures & Algorithms with Java|3 hours/English|1|CS1704~Object Oriented Programming with Java~3 hours/One requisite
+3|MTH1441|الجبر الخطي|3 ساعات||39084|Linear Algebra|3 hours/English|0|
+3|BIO3101|الاحياء العامة|3 ساعات||39342|General Biology|3 hours/English|0|
+3|CEN2011|التصميم الرقمي المنطقي|3 ساعات||39977|Digital Logic Design|3 hours/English|0|
+4|QR3104|ختم القرآن الكريم|ساعتين|متطلب واحد|38523|Seal of the Holy Quran|Two hours/English|1|QR1101~Tajweed of The Holy Quran~Two hours/No requisites
+4|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+4|SE1201|اسس هندسة البرمجيات|3 ساعات||39061|Foundations of Software Engineering|3 hours/English|0|
+4|DS2201|مقدمة في قواعد البيانات|3 ساعات||39315|Introduction to Database|3 hours/English|0|
+4|CS2206|الرسومات بالحاسب|3 ساعات|متطلب واحد|39345|Computer Graphics|3 hours/English|1|MTH1441~Linear Algebra~3 hours/No requisites
+4|CS2107|تصميم وتحليل الخوارزميات|3 ساعات|متطلب واحد|39347|Design & Analysis of Algorithms|3 hours/English|1|CS2105~Data Structures & Algorithms with Java~3 hours/One requisite
+4|CEN2012|تنظيم وعمارة الحاسب الآلي|3 ساعات|متطلب واحد|39349|Computer Organization and Architecture|3 hours/English|1|CEN2011~Digital Logic Design~3 hours/No requisites
+5|CEN3011|شبكات الحاسب الآلي|3 ساعات|متطلب واحد|38623|Computer Networks|3 hours/English|1|CEN2012~Computer Organization and Architecture~3 hours/One requisite
+5|CS3608|نظم التشغيل|4 ساعات|متطلب واحد|39351|Operating System|4 hours/English|1|CEN2012~Computer Organization and Architecture~4 hours/One requisite
+5|CS3809|نظم بناء البرمجيات|3 ساعات|متطلبين|39354|Software Implementation Systems|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites;SE1201~Foundations of Software Engineering~3 hours/No requisites
+5|CS3810|تطوير الويب|3 ساعات|متطلب واحد|39355|Web Development|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites
+5|AI4101|مبادئ الذكاء الإصطناعي|3 ساعات|متطلب واحد|39356|Artificial Intelligence Principles|3 hours/English|1|CS2107~Design & Analysis of Algorithms~3 hours/One requisite
+5|CS3713|لغات البرمجة|ساعتين||42204|Programming Languages|Two hours/English|0|
+6|CS3901|التدريب التعاوني|6 ساعات||39357|Cooperative Training|6 hours/English|0|
+7|ICC4202|الأسرة في الإسلام|ساعتين||38525|Family in Islam|Two hours/English|0|
+7|CS4901|مشروع التخرج 1|3 ساعات|متطلب واحد|39359|Graduation Project 1|3 hours/English|1|CS3809~Software Implementation Systems~3 hours/Two requisites
+7|CS4411|قواعد البيانات المتقدمة|3 ساعات|متطلب واحد|39360|Advanced Database|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites
+7|CS4612|الحوسبة المتوازية و الموزعة|3 ساعات|متطلب واحد|39363|Parallel and Distributed Computing|3 hours/English|1|CS3608~Operating System~3 hours/One requisite
+7|AI4202|مبادئ تعلم الآلة|3 ساعات|متطلب واحد|41774|Machine Learning Principles|3 hours/English|1|AI4101~Artificial Intelligence Principles~3 hours/One requisite
+7|CS4108|برمجة متقدمة|3 ساعات|متطلب واحد|42205|Advance Programming|3 hours/English|1|CS1704~Object Oriented Programming with Java~3 hours/One requisite
+8|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+8|CS4902|مشروع التخرج 2|3 ساعات|متطلب واحد|39365|Graduation Project 2|3 hours/English|1|CS4901~Graduation Project 1~3 hours/One requisite
+8|CS4815|الحوسبة السحابية|ساعتين|متطلب واحد|39367|Cloud Computing|Two hours/English|1|CEN3011~Computer Networks~Two hours/One requisite
+8|CS4714|تركيب المترجمات|ساعتين|متطلب واحد|39368|Compiler Construction|Two hours/English|1|CS3713~Programming Languages~Two hours/No requisites
+8|CS4216|الطرق العلمية|3 ساعات||39370|Scientific Methods|3 hours/English|0|

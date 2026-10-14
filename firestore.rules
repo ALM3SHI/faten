@@ -46,13 +46,15 @@ service cloud.firestore {
         // the student can still read and delete it.
         // The dynamic study mode (tutor_lectures: mastery evidence, exam
         // results) is written only by the server so scores cannot be edited
-        // from the browser.
-        allow create, update: if isOwner(uid) && coll != 'agent_memory' && coll != 'tutor_lectures';
+        // from the browser. Academic-advisor results (advisor_runs) are
+        // server-computed for the same reason.
+        allow create, update: if isOwner(uid) && coll != 'agent_memory' && coll != 'tutor_lectures' && coll != 'advisor_runs';
       }
     }
 
-    // tutor_cache (shared lecture analysis) and tutor_stats (anonymous
-    // aggregates) are server-only: they fall under the default deny below.
+    // tutor_cache (shared lecture analysis), tutor_stats (anonymous
+    // aggregates) and instructor_reviews (verified student reviews) are
+    // server-only: they fall under the default deny below.
 
     // Default deny — anything not matched above is unreachable from clients.
     match /{document=**} {

@@ -1,0 +1,43 @@
+#degree|1510|هندسة البرمجيات|بكالوريوس|الحاسبات|هندسة البرمجيات|134|2026-10-14T19:35:23.856Z|https://uqu.edu.sa/App/Degrees/1510
+1|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|CEN1012|تنظيم الحاسوب والمنطق الرقمي|3 ساعات||38900|Computer Organization and Digital Logic|3 hours/English|0|
+1|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|CS1701|برمجة الحاسب بلغة جافا|3 ساعات||39316|Computer Programming in Java|3 hours/English|0|
+2|QR2102|حفظ القرآن الكريم 1|ساعتين||38521|Memorizing the Holy Quran 1|Two hours/English|0|
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|MTH1181|التفاضل والتكامل للهندسة (1)|4 ساعات||38536|Calculus for Engineering (1)|4 hours/English|0|
+2|SE1101|تطوير التطبيقات كائنية التوجه|3 ساعات|متطلب واحد|39037|Object-oriented Application Development|3 hours/English|1|CS1701~Computer Programming in Java~3 hours/No requisites
+2|MTH1402|الهياكل الحسابية (1)|3 ساعات||39057|Computational Structures (1)|3 hours/English|0|
+2|SE1201|اسس هندسة البرمجيات|3 ساعات||39061|Foundations of Software Engineering|3 hours/English|0|
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات||39086|English Language (2)|4 hours/English|0|
+3|QR2103|حفظ القرآن الكريم 2|ساعتين||38522|Memorizing the Holy Quran 2|Two hours/English|0|
+3|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+3|MTH1182|التفاضل والتكامل للهندسة (2)|4 ساعات|متطلب واحد|38539|Calculus for Engineering (2)|4 hours/English|1|MTH1181~Calculus for Engineering (1)~4 hours/No requisites
+3|CS2105|هياكل البيانات والخوازميات جافا|3 ساعات|متطلب واحد|38588|Data Structures & Algorithms with Java|3 hours/English|1|SE1101~Object-oriented Application Development~3 hours/One requisite
+3|SE2202|الممارسة المهنية وأخلاقيات هندسة البرمجيات|ساعتين||39075|Software Engineering Professional Practice and Code Ethics|Two hours/English|0|
+3|SE2203|هندسة المتطلبات|3 ساعات|متطلب واحد|39078|Requirements Engineering|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/No requisites
+3|SE2204|إدارة مشاريع تقنية المعلومات|ساعتين|متطلب واحد|39104|IT Project Management|Two hours/English|1|SE1201~Foundations of Software Engineering~Two hours/No requisites
+4|QR3104|ختم القرآن الكريم|ساعتين||38523|Seal of the Holy Quran|Two hours/English|0|
+4|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+4|CS2016|نظم التشغيل|3 ساعات|متطلب واحد|38583|Operating Systems|3 hours/English|1|CEN1012~Computer Organization and Digital Logic~3 hours/No requisites
+4|SE2301|نمذجة وتحليل البرمجيات|3 ساعات|متطلب واحد|39102|Software Modelling and Analysis|3 hours/English|1|SE2203~Requirements Engineering~3 hours/One requisite
+4|SE3402|الهياكل الحسابية (2)|3 ساعات|متطلب واحد|39109|Computational Structures (2)|3 hours/English|1|MTH1402~Computational Structures (1)~3 hours/No requisites
+4|DS2201|مقدمة في قواعد البيانات|3 ساعات|متطلب واحد|39315|Introduction to Database|3 hours/English|1|CS1701~Computer Programming in Java~3 hours/No requisites
+4|MTH2143|معادلات تفاضلية و الجبر خطي|3 ساعات|متطلب واحد|39963|Differential equations and Linear Algebra|3 hours/English|1|MTH1182~Calculus for Engineering (2)~3 hours/One requisite
+5|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات|متطلب واحد|38602|Statistics and Probabilities in Computing|3 hours/English|1|MTH1181~Calculus for Engineering (1)~3 hours/No requisites
+5|SE3501|مشروع تخرج (1)|4 ساعات|متطلب واحد|39115|Graduation Project (1)|4 hours/English|1|SE2301~Software Modelling and Analysis~4 hours/One requisite
+5|SE3102|تصميم ومعمارية البرمجيات|3 ساعات|متطلب واحد|39125|Software Design and Architecture|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/No requisites
+5|SE3104|هندسة تطبيقات الجوال والويب|3 ساعات|متطلب واحد|39153|Mobile and Web Application Engineering|3 hours/English|1|SE2301~Software Modelling and Analysis~3 hours/One requisite
+6|CEN3011|شبكات الحاسب الآلي|3 ساعات|متطلب واحد|38623|Computer Networks|3 hours/English|1|CS2016~Operating Systems~3 hours/One requisite
+6|SE3302|بناء البرمجيات|3 ساعات|متطلب واحد|39130|Software Construction|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/No requisites
+6|SE3103|اختبار البرمجيات وضمان الجودة|3 ساعات|متطلب واحد|39149|Software Testing and Quality Assurance|3 hours/English|1|SE1201~Foundations of Software Engineering~3 hours/No requisites
+6|AI3011|الذكاء الاصطناعي والتعلم الآلي|3 ساعات|متطلبين|39314|Artificial Intelligence and Machine Learning|3 hours/English|1|MTH1602~Statistics and Probabilities in Computing~3 hours/No requisites;MTH2143~Differential equations and Linear Algebra~3 hours/No requisites
+6|SE3502|مشروع تخرج (2)|4 ساعات|متطلب واحد|42515|Graduation Project (2)|4 hours/English|1|SE3501~Graduation Project (1)~4 hours/One requisite
+7|SE4502|التدريب تعاوني|6 ساعات||39158|Cooperative Training|6 hours/English|0|
+8|ICC4202|الأسرة في الإسلام|ساعتين||38525|Family in Islam|Two hours/English|0|
+8|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+8|SEC4012|التطوير الآمن للبرمجيات|3 ساعات|متطلب واحد|38847|Secure Software Development|3 hours/English|1|SE3103~Software Testing and Quality Assurance~3 hours/One requisite
+8|SE4205|مقاييس البرمجيات|ساعتين|متطلب واحد|39163|Software Metrics|Two hours/English|1|SE2204~IT Project Management~Two hours/One requisite
+8|SE4206|تطوير وتشغيل البرمجيات|3 ساعات|متطلب واحد|39168|Software Development and Operations|3 hours/English|1|SE3103~Software Testing and Quality Assurance~3 hours/One requisite

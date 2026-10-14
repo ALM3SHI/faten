@@ -13,6 +13,7 @@ Endpoints:
   POST /api/mark-notification-read — Mark notification as read
   GET  /api/news                 — University headlines (public, cached RSS)
   /api/tutor/*                   — Dynamic study mode (lecture → topics → mastery → final exam)
+  /api/advisor/*                 — Academic planning engine (study plans, eligibility, multi-term plans)
   CRON                           — Daily proactive notifications (8 AM Riyadh)
 ================================================================
 
@@ -56,6 +57,7 @@ from routers.study import router as study_router
 from routers.notifications import router as notifications_router
 from routers.admin import router as admin_router
 from routers.tutor import router as tutor_router
+from routers.advisor import router as advisor_router
 
 # ── Import CRON tasks ──
 from tasks.cron import daily_notifications_cron, lecture_reminders_cron
@@ -180,6 +182,7 @@ app.include_router(study_router)
 app.include_router(notifications_router)
 app.include_router(admin_router)
 app.include_router(tutor_router)
+app.include_router(advisor_router)
 
 
 # ── Health Check ──

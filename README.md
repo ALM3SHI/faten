@@ -40,6 +40,7 @@ The experience is **RTL-first** (Arabic UI) with a modern glassmorphism design, 
 | **Smart Study Mode** | `/tutor` | «المذاكرة الذكية»: a private tutor that teaches an uploaded lecture topic by topic, checks understanding, re-teaches mistakes and only moves on at mastery — then a final exam and a review plan |
 | **Dashboard** | `/dashboard` | Bento-grid analytics: cumulative GPA chart, upcoming academic events, high-ROI courses, study adherence |
 | **Indoor Map** | `/locations` | Pan/zoom floor plan, room search, A* routing from main entrance (or any room), smooth animated paths |
+| **Academic Advisor** | `/advisor` | «المرشد الأكاديمي»: official UQU study plans → next-term courses, graduation scenarios, risks and schedule checks, computed deterministically ([docs](docs/ADVISOR.md)) |
 | **GPA Planner** | `/gpa` | Live semester simulator on the official UQU 4.00 scale with transcript integration |
 | **Study Plan** | `/plan` | AI-generated semester master plans and task tracking |
 | **Pomodoro** | `/pomodoro` | Focus timer with session history synced to the backend |

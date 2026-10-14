@@ -746,5 +746,13 @@ TOOLS_SCHEMA: list[dict] = [
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_academic_plan",
+            "description": "المرشد الأكاديمي: يقارن سجل الطالب بالخطة الدراسية الرسمية ويحسب مقررات الفصل القادم المستوفية لمتطلباتها، ومسارات التخرج (الأسرع/المتوازن/التعافي)، والمخاطر. استخدمها لأسئلة مثل «وش أسجل الترم الجاي؟» أو «متى أتخرج لو خففت؟». لا تخترع مقررات أو متطلبات من عندك.",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
 
 ]

@@ -45,6 +45,7 @@ export const SECTIONS: NavSection[] = [
     label: "سجلي",
     pages: [
       { href: "/gpa", label: "المعدل" },
+      { href: "/advisor", label: "المرشد" },
       { href: "/attendance", label: "الغياب" },
       { href: "/schedule", label: "الجدول" },
       { href: "/transcript", label: "السجل" },
