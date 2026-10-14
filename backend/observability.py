@@ -74,6 +74,9 @@ def _init_sentry() -> None:
         dsn=dsn,
         traces_sample_rate=float(os.getenv("SENTRY_TRACES_SAMPLE_RATE", "0.05")),
         send_default_pii=False,
+        # Never ship request bodies: they hold students' messages and lecture
+        # files. The stack trace and the URL are enough to find a bug.
+        max_request_body_size="never",
         environment=os.getenv("APP_ENV", "production"),
     )
     logger.info("Sentry enabled")

@@ -11,4 +11,6 @@ python-dotenv==1.2.4
 python-multipart==0.0.32
 apscheduler==3.11.3
 httpx==0.28.1
+# Error reports — active only when SENTRY_DSN is set on the server.
+sentry-sdk==2.71.0
 pdfplumber==0.11.10
