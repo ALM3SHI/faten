@@ -4,5 +4,5 @@ export const SITE = {
   url: "https://fatenai.web.app",
   /** Contact for privacy requests. Leave empty to point users to in-app feedback. */
   contactEmail: "",
-  legalUpdated: "12 أكتوبر 2026",
+  legalUpdated: "14 أكتوبر 2026",
 };

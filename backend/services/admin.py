@@ -72,6 +72,7 @@ def reported_reviews(db) -> list[dict[str, Any]]:
 
 
 def overview(db, today: dt.date) -> dict[str, Any]:
+    from services.ai_gate import gate
     from services.push import users_with_devices
 
     return {
@@ -80,6 +81,8 @@ def overview(db, today: dt.date) -> dict[str, Any]:
         "devices": len(users_with_devices(db)),
         "feedback": feedback_stats(db, today),
         "reported_reviews": reported_reviews(db),
+        # Shared AI budget of this server process (resets on restart).
+        "ai_gate": gate.snapshot(),
     }
 
 

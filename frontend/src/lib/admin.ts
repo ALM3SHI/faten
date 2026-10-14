@@ -6,6 +6,15 @@ export interface AdminOverview {
   users: { total: number; new_7d: number; new_30d: number };
   usage: { active_today: number; active_7d: number; requests_today: number; refunded_today?: number };
   devices: number;
+  ai_gate?: {
+    last_minute: number;
+    per_minute_limit: number;
+    in_flight: number;
+    concurrent_limit: number;
+    today: number;
+    per_day_limit: number;
+    rejected: number;
+  };
   feedback: {
     days: number;
     total: number;

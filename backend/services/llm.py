@@ -48,7 +48,12 @@ class _TunedCompletions:
         self._inner = inner
 
     async def create(self, **kwargs: Any) -> Any:
-        return await self._inner.create(**_tune_kwargs(kwargs))
+        # Every completion counts against Faten's shared AI budget. For a
+        # stream the slot covers opening it (the request Google counts).
+        from services.ai_gate import gate
+
+        async with gate.slot():
+            return await self._inner.create(**_tune_kwargs(kwargs))
 
 
 class LLMClient:

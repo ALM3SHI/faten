@@ -23,6 +23,20 @@ os.environ.setdefault("AI_PROVIDER", "gemini")
 os.environ.setdefault("GEMINI_API_KEY", "test-key")
 os.environ.setdefault("CRON_SECRET", "")
 os.environ.setdefault("ENABLE_INTERNAL_SCHEDULER", "false")
+# The shared AI budget is tested on its own (test_ai_gate.py); elsewhere it
+# must never make a test wait.
+os.environ.setdefault("AI_MAX_PER_MINUTE", "0")
+os.environ.setdefault("AI_MAX_CONCURRENT", "0")
+os.environ.setdefault("AI_MAX_PER_DAY", "0")
+
+
+@pytest.fixture(autouse=True)
+def _fresh_ai_gate():
+    from services.ai_gate import gate
+
+    gate.reset()
+    yield
+    gate.reset()
 
 
 # ── In-memory Firestore ──────────────────────────────────────────

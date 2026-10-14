@@ -22,6 +22,8 @@ from common.errors import (
     UpstreamAIError,
 )
 
+from services.ai_gate import AIBusyError, gate
+
 logger = logging.getLogger(__name__)
 
 # v1beta is required — the stable /v1/ endpoint rejects `responseMimeType`
@@ -175,7 +177,7 @@ async def call_gemini(
         payload["generationConfig"]["thinkingConfig"] = {"thinkingLevel": thinking_level}
 
     try:
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        async with gate.slot(), httpx.AsyncClient(timeout=timeout_seconds) as client:
             response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
     except httpx.TimeoutException as exc:
         logger.error("Gemini timeout after %.0fs (model=%s): %r", timeout_seconds, model or settings.GEMINI_MODEL, exc)
@@ -306,8 +308,11 @@ async def call_gemini_chat_text(
         payload["systemInstruction"] = {"parts": [{"text": system_prompt}]}
 
     try:
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        async with gate.slot(), httpx.AsyncClient(timeout=timeout_seconds) as client:
             response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
+    except AIBusyError:
+        logger.warning("Gemini chat fallback skipped — shared AI budget is full")
+        return None
     except httpx.HTTPError as exc:
         logger.error("Gemini chat fallback network error: %s", exc)
         return None

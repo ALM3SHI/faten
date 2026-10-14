@@ -74,6 +74,15 @@ class Settings(BaseSettings):
     # Set to 0 to disable the limit (e.g. while developing locally).
     DAILY_AI_CREDITS: int = 60
 
+    # ── Shared AI budget for the whole server (see services/ai_gate.py) ──
+    # Keep these a little under the provider limits shown in AI Studio for
+    # your key. 0 disables a limit.
+    AI_MAX_PER_MINUTE: int = 30
+    AI_MAX_CONCURRENT: int = 12
+    AI_MAX_PER_DAY: int = 0
+    # How long a request may wait in line for a free slot before "busy".
+    AI_QUEUE_WAIT_SECONDS: float = 20.0
+
     # ── Admin dashboard (/admin) ──
     # Comma-separated emails allowed to open it. The email must be verified
     # in Firebase. Empty = nobody (the page answers 403).

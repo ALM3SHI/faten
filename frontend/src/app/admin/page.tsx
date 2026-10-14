@@ -7,7 +7,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { BarChart3, Bell, EyeOff, Flag, Loader2, MessageSquare, RefreshCw, ShieldAlert, ThumbsDown, ThumbsUp, UserPlus, Users } from "lucide-react";
+import { BarChart3, Bell, Cpu, EyeOff, Flag, Loader2, MessageSquare, RefreshCw, ShieldAlert, ThumbsDown, ThumbsUp, UserPlus, Users } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { TutorInsights } from "@/components/admin/tutor-insights";
 import { Button } from "@/components/ui/button";
@@ -109,6 +109,14 @@ function Dashboard({ data, at, onChanged }: { data: AdminOverview; at: Date; onC
         <Stat icon={MessageSquare} label="استخدموا المساعد اليوم" value={data.usage.active_today} hint={`${data.usage.active_7d} آخر 7 أيام`} />
         <Stat icon={BarChart3} label="طلبات اليوم" value={data.usage.requests_today} hint={data.usage.refunded_today ? `بالرصيد اليومي · أُعيد ${data.usage.refunded_today} بسبب أعطال` : "بالرصيد اليومي"} />
         <Stat icon={Bell} label="فعّلوا الإشعارات" value={data.devices} />
+        {data.ai_gate && (
+          <Stat
+            icon={Cpu}
+            label="طلبات الذكاء الاصطناعي آخر دقيقة"
+            value={data.ai_gate.per_minute_limit ? `${data.ai_gate.last_minute}/${data.ai_gate.per_minute_limit}` : data.ai_gate.last_minute}
+            hint={`اليوم ${data.ai_gate.today}${data.ai_gate.per_day_limit ? `/${data.ai_gate.per_day_limit}` : ""}${data.ai_gate.rejected ? ` · رُدّ ${data.ai_gate.rejected} بسبب الزحمة` : ""}`}
+          />
+        )}
         <Stat
           icon={ThumbsUp}
           label={`الرضا (آخر ${fb.days} يوم)`}
