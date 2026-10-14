@@ -35,7 +35,7 @@ export function ScenariosPanel({ run }: { run: AdvisorRun }) {
               <p className="text-sm">
                 {sc.complete ? (
                   <>
-                    تخرج متوقع <b>{sc.graduation_label}</b>
+                    تخرج محسوب <b>{sc.graduation_label}</b>
                     <br />
                     {sc.terms_needed} فصول · حتى {sc.load_cap} ساعة
                   </>

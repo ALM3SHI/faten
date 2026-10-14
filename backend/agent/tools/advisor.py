@@ -6,6 +6,8 @@ from agent.tools.context import ToolContext
 
 
 def _compact(run: dict) -> dict:
+    if run.get("plan_applicable") is False:
+        return {"success": False, "plan_applicable": False, "message": run.get("withheld_reason")}
     nt = run.get("next_term") or {}
     sc = run.get("scenarios") or {}
     chosen = run.get("recommended_strategy")

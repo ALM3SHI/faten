@@ -171,7 +171,7 @@ export interface AdvisorRun {
   curriculum: { id: string; label: string; verification: Verification; source_url: string; retrieved_at: string; issues: { severity: string; code: string; message: string }[] };
   profile: {
     gpa: number | null;
-    gpa_source: "transcript" | "computed";
+    gpa_source: "courses" | "record_field" | "none";
     computed_gpa: number | null;
     earned_hours: number;
     term_gpas: { term: number[]; label: string; gpa: number | null; hours: number }[];
@@ -222,6 +222,9 @@ export interface AdvisorRun {
   uncertainties?: { topic: string; message: string; effect: string }[];
   documents?: OfficialDocument[];
   prep_year?: { in_prep: boolean; notice: string | null; levels: number[]; hours: number } | null;
+  /** false when the record matches another curriculum edition: no course or date advice is given. */
+  plan_applicable?: boolean;
+  withheld_reason?: string | null;
   rules: RuleCite[];
   summary?: RunSummary;
 }
@@ -344,6 +347,7 @@ const TAG_LABEL: Record<string, string> = {
   summer_unverified: "صيفي غير مؤكد",
   ahead_of_plan: "قبل موعده في الخطة",
   needs_approval: "يتطلب موافقة القسم",
+  conditional: "مشروط بنجاحك الحالي",
   spec_verified: "مؤكد في التوصيف الرسمي",
 };
 

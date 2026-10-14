@@ -20,7 +20,7 @@ from services.advisor import rules
 from services.advisor.audit import DegreeAudit, audit
 from services.advisor.catalog import Catalog, Curriculum
 from services.advisor.planner import PREP_NOTICE, PlanResult, PlanSettings, Strategy, plan, prep_status
-from services.advisor.profile import StudentProfile, effective_gpa
+from services.advisor.profile import StudentProfile, effective_gpa, gpa_source
 
 ENGINE_VERSION = "advisor-1.0"
 
@@ -128,11 +128,10 @@ def choose_strategy(mode: str, prefs: AdvisorPreferences) -> Strategy:
 
 def gpa_what_if(profile: StudentProfile, credits: int, target: float | None) -> dict:
     """Exact arithmetic: resulting cumulative GPA for a few uniform term averages."""
-    gpa = effective_gpa(profile)
-    hours = profile.stated_earned_hours if (profile.stated_gpa is not None and profile.stated_earned_hours) else profile.gpa_hours
-    if gpa is None or not hours or not credits:
+    # Weight by GRADED hours (failed attempts included), never by earned/passed hours.
+    if profile.computed_gpa is None or not profile.gpa_hours or not credits:
         return {"available": False}
-    points = gpa * hours
+    gpa, hours, points = profile.computed_gpa, profile.gpa_hours, profile.gpa_points
     rows = []
     for letter in ("A+", "A", "B+", "B", "C+", "C", "D"):
         gp = GRADE_POINTS[letter]
@@ -236,18 +235,24 @@ def academic_standing(profile: StudentProfile, prefs: AdvisorPreferences) -> dic
         warning = {"status": "unknown", "basis": "no_gpa", "message": "لا يوجد معدل تراكمي لتقييم حالة الإنذار."}
     elif threshold is not None:
         warning = ({"status": "warning", "basis": "student_threshold",
-                    "message": f"معدلك {gpa:.2f} أقل من معدل التخرج الذي أدخلته لتخصصك ({threshold:.2f}) — وهذا بحسب اللائحة إنذار أكاديمي."}
+                    "message": (f"معدلك المحسوب {gpa:.2f} أقل من معدل التخرج الذي أدخلته لتخصصك ({threshold:.2f}). إن صحّ هذا المعدل "
+                                "فهذا بحسب اللائحة إنذار أكاديمي بنهاية الفصل العادي.")}
                    if gpa < threshold else
                    {"status": "clear", "basis": "student_threshold",
                     "message": f"معدلك {gpa:.2f} ليس أقل من معدل التخرج الذي أدخلته ({threshold:.2f})."})
     elif gpa < floor:
         warning = {"status": "warning", "basis": "floor",
-                   "message": (f"معدلك {gpa:.2f} أقل من 1.00، وهو أدنى معدل تخرج تسمح به اللائحة لأي تخصص؛ "
-                               "لذا فهو أقل من معدل تخرج تخصصك أياً كان — وهذا إنذار أكاديمي.")}
+                   "message": (f"معدلك المحسوب {gpa:.2f} أقل من 1.00، وأي معدل تخرج لأي تخصص لا يقل عن 1.00 بنص اللائحة؛ "
+                               "فالمعدل أقل من معدل تخرج تخصصك يقيناً. إذا كان هذا معدلك الرسمي بنهاية فصل عادي "
+                               "(لا صيفي) فهذا إنذار أكاديمي.")}
     else:
         warning = {"status": "unknown", "basis": "threshold_unknown",
                    "message": (f"لا يمكن الجزم بحالة الإنذار: معدلك {gpa:.2f}، ومعدل التخرج لتخصصك غير منشور. "
                                "أدخله من الإعدادات إن عرفته من القسم أو من نظام التسجيل.")}
+    last = max((a.term_key for a in profile.attempts if a.term_key and a.counts_in_gpa), default=None)
+    if warning["status"] == "warning" and last and last[1] == 3:
+        warning["message"] += " آخر فصل مرصود في سجلك صيفي، والصيفي لا تُمنح فيه إنذارات؛ يُحسم الإنذار بنهاية الفصل العادي التالي."
+    warning["certainty"] = {"floor": "mathematical", "student_threshold": "depends_on_student_input"}.get(warning["basis"], "undetermined")
     warning["rule"] = rules.cite("warning_below_grad_gpa")
     warning["summer_note"] = rules.cite("summer_no_warning")["text"]
     return {"graduation": graduation, "warning": warning}
@@ -439,12 +444,16 @@ def analyze(
                 reasons.append("على أطول سلسلة متطلبات متبقية في خطتك.")
             cost = _delay_cost(pcourse.code, profile, catalog, cur, settings_used, chosen, cap_used, picked, today)
             if cost and cost > 0:
-                reasons.append(f"تأجيله فصلاً يؤخر تخرجك المتوقع {cost} فصل.")
+                reasons.append(f"تأجيله فصلاً يؤخر موعد تخرجك المحسوب {cost} فصل.")
             elif cost == 0:
-                reasons.append("تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).")
+                reasons.append("تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة).")
             if not reasons:
                 reasons.append(f"من مقررات المستوى {cur.course(pcourse.code).level} في خطتك ومتطلباته مستوفاة.")
             pc_full = cur.course(pcourse.code)
+            pending = [q for q in pc_full.prerequisites if q in profile.in_progress]
+            if pending:
+                reasons.insert(0, f"مشروط بنجاحك في {', '.join(pending)} هذا الفصل؛ إن لم تنجح فلن يُتاح لك.")
+                pcourse.tags.append("conditional")
             for cond in pc_full.special_conditions:
                 reasons.append(f"تنبيه: {cond['text']}.")
             if pc_full.evidence:
@@ -482,6 +491,17 @@ def analyze(
     what_if = gpa_what_if(profile, next_credits, target_gpa)
     fit = curriculum_fit(profile, cur)
     standing = academic_standing(profile, prefs)
+    plan_applicable = fit["verdict"] not in ("other_edition", "mismatch")
+    withheld_reason = None
+    if not plan_applicable:
+        # We hold no data for the student's actual curriculum (e.g. Plan 44): any course list
+        # or graduation date computed against the current plan would be advice for the wrong plan.
+        withheld_reason = (fit["message"] + " لا يملك فطن بيانات تلك الخطة ولا يستطيع التخطيط عليها، لذلك لا نقترح مقررات "
+                           "ولا موعد تخرج. راجع القسم أو نظام التسجيل لمعرفة خطتك.")
+        next_courses, alternatives = [], []
+        what_if = {"available": False, "reason": "withheld_other_curriculum"}
+        # Keep only risks that come from the record itself, not from the current plan's structure.
+        risks = [r for r in risks if r.kind in ("academic_warning", "declining_trend", "repeated_course")]
     conf = confidence(profile, cur, prefs, program_source, fit)
 
     inputs_fingerprint = hashlib.sha256(json.dumps({
@@ -499,7 +519,7 @@ def analyze(
                        "source_url": cur.provenance.source_url, "retrieved_at": cur.provenance.retrieved_at,
                        "issues": [i.model_dump() for i in cur.issues if i.severity != "info" or i.code in ("prereq_relation_assumed", "no_offering_data")]},
         "profile": {
-            "gpa": effective_gpa(profile), "gpa_source": "transcript" if profile.stated_gpa is not None else "computed",
+            "gpa": effective_gpa(profile), "gpa_source": gpa_source(profile),
             "computed_gpa": profile.computed_gpa, "stated_gpa": profile.stated_gpa, "gpa_hours": profile.gpa_hours,
             "earned_hours": profile.earned_hours, "stated_earned_hours": profile.stated_earned_hours,
             "term_gpas": profile.term_gpas, "category_performance": profile.category_performance,
@@ -511,12 +531,14 @@ def analyze(
         "load": load_info,
         "recommended_strategy": chosen,
         "strategy_reason": _strategy_reason(chosen, load_info, prefs),
+        "plan_applicable": plan_applicable,
+        "withheld_reason": withheld_reason,
         "next_term": {
             "term": first.term if first else None, "label": first.label if first else None,
-            "credits": next_credits, "courses": [c.model_dump() for c in next_courses],
+            "credits": next_credits if plan_applicable else 0, "courses": [c.model_dump() for c in next_courses],
             "warnings": first.warnings if first else [], "alternatives": alternatives,
         },
-        "scenarios": {k: v.model_dump() for k, v in scenarios.items()},
+        "scenarios": {k: {**v.model_dump(), "applicable": plan_applicable} for k, v in scenarios.items()},
         "risks": [r.model_dump() for r in risks],
         "gpa_what_if": what_if,
         "confidence": conf,

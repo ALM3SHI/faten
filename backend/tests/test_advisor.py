@@ -119,11 +119,16 @@ def test_gpa_counts_every_attempt_and_skips_non_gpa_grades():
     assert [t["gpa"] for t in p.term_gpas] == [2.4, 1.2]  # T1: 24/10, T2: 6/5
 
 
-def test_duplicate_rows_count_once_and_stated_gpa_wins():
+def test_duplicate_rows_count_once_and_the_computed_gpa_wins():
+    # record["gpa"] is recomputed by Faten's parser (not the printed official figure), so the
+    # de-duplicated computation is used and the difference is shown.
+    from services.advisor.profile import effective_gpa, gpa_source
+
     row = fx.course("CS1701", 3, "B", fx.T1)
     p = build_profile(fx.record([row, dict(row)], gpa=3.4))
     assert p.gpa_hours == 3 and any("مرة واحدة" in n for n in p.notes)
-    assert p.gpa_discrepancy == 0.4 and any("يختلف" in n for n in p.notes)
+    assert p.gpa_discrepancy == 0.4 and any("ليس الرقم المطبوع" in n for n in p.notes)
+    assert effective_gpa(p) == 3.0 and gpa_source(p) == "courses"
 
 
 @pytest.mark.parametrize("label,expected", [

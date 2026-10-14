@@ -92,6 +92,7 @@ export default function AdvisorPage() {
   };
 
   const detected = run?.program.source === "record" ? run.program.id : null;
+  const planOk = run?.plan_applicable !== false;
 
   return (
     <div className="min-h-screen bg-background pb-28" dir="rtl">
@@ -151,7 +152,7 @@ export default function AdvisorPage() {
                 <Stat
                   label="المعدل"
                   value={run.profile.gpa !== null ? run.profile.gpa.toFixed(2) : "—"}
-                  hint={run.profile.gpa_source === "transcript" ? "من السجل الرسمي" : "محسوب من المقررات"}
+                  hint={run.profile.gpa_source === "record_field" ? "من بيانات سجلك المحفوظة" : "محسوب من مقررات سجلك"}
                 />
                 <Stat
                   label="مقررات الخطة المنجزة"
@@ -160,14 +161,22 @@ export default function AdvisorPage() {
                 />
                 <Stat label="درجة الثقة" value={CONFIDENCE_LABEL[run.confidence.level]} hint="حسب اكتمال البيانات" />
               </div>
-              <div className="rounded-2xl bg-uqu-accent/5 border border-uqu-accent/20 p-4 text-sm leading-7">
-                <p className="font-black">
-                  المسار المقترح: {STRATEGY_LABEL[run.recommended_strategy]} — تخرج متوقع{" "}
-                  {run.scenarios[run.recommended_strategy].graduation_label ?? "غير محدد"}
+              {planOk ? (
+                <div className="rounded-2xl bg-uqu-accent/5 border border-uqu-accent/20 p-4 text-sm leading-7">
+                  <p className="font-black">
+                    المسار المقترح: {STRATEGY_LABEL[run.recommended_strategy]} — تخرج محسوب{" "}
+                    {run.scenarios[run.recommended_strategy].graduation_label ?? "غير محدد"}
+                  </p>
+                  <p className="text-muted-foreground">{run.strategy_reason}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {run.load.basis}. الموعد ممكن رياضياً وفق الخطة المنشورة وليس مؤكداً للتسجيل.
+                  </p>
+                </div>
+              ) : (
+                <p role="alert" className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm leading-7 font-bold">
+                  {run.withheld_reason}
                 </p>
-                <p className="text-muted-foreground">{run.strategy_reason}</p>
-                <p className="text-xs text-muted-foreground mt-1">{run.load.basis}.</p>
-              </div>
+              )}
               <FitAlert run={run} />
               <StandingCard run={run} />
               {run.summary && (
@@ -195,8 +204,8 @@ export default function AdvisorPage() {
               label="المرشد الأكاديمي"
               defaultValue="next"
               tabs={[
-                { value: "next", label: "الفصل القادم", content: <NextTermPanel run={run} /> },
-                { value: "paths", label: "مسارات التخرج", content: <ScenariosPanel run={run} /> },
+                { value: "next", label: "الفصل القادم", content: planOk ? <NextTermPanel run={run} /> : <Withheld text={run.withheld_reason} /> },
+                { value: "paths", label: "مسارات التخرج", content: planOk ? <ScenariosPanel run={run} /> : <Withheld text={run.withheld_reason} /> },
                 { value: "risks", label: "المخاطر والبيانات", content: <RisksPanel run={run} /> },
                 { value: "check", label: "فحص جدول", content: <ScheduleChecker /> },
                 { value: "majors", label: "مقارنة التخصصات", content: <MajorsCompare interests={settings.interests ?? []} /> },
@@ -216,6 +225,10 @@ export default function AdvisorPage() {
       </main>
     </div>
   );
+}
+
+function Withheld({ text }: { text?: string | null }) {
+  return <p className="text-sm leading-7 text-muted-foreground">{text ?? "لا نستطيع اقتراح خطة لسجلك."}</p>;
 }
 
 function Stat({ label, value, hint }: { label: string; value: string; hint: string }) {

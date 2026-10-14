@@ -156,7 +156,7 @@ def test_rules_separate_regulation_from_planning_default():
     (2.40, 2.0, "clear", "student_threshold"),
 ])
 def test_warning_status_uses_only_verified_or_student_given_thresholds(gpa, threshold, status, basis):
-    p = build_profile(fx.record([fx.course("CS1701", 3, "C", fx.T1)], gpa=gpa))
+    p = build_profile(fx.record([], gpa=gpa))  # no graded rows → the record's GPA field is the only figure
     st = academic_standing(p, AdvisorPreferences(program_grad_gpa=threshold))
     assert (st["warning"]["status"], st["warning"]["basis"]) == (status, basis)
     assert st["graduation"]["floor"] == 1.0

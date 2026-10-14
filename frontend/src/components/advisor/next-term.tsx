@@ -60,7 +60,7 @@ export function NextTermPanel({ run }: { run: AdvisorRun }) {
               </ul>
               <div className="flex flex-wrap gap-1.5">
                 {c.tags.map((t) => (
-                  <Tag key={t} tone={t === "critical" || t === "repeat" ? "accent" : t === "heavy" || t === "ahead_of_plan" || t === "needs_approval" ? "warn" : "muted"}>
+                  <Tag key={t} tone={t === "critical" || t === "repeat" ? "accent" : t === "heavy" || t === "ahead_of_plan" || t === "needs_approval" || t === "conditional" ? "warn" : "muted"}>
                     {tagLabel(t)}
                   </Tag>
                 ))}

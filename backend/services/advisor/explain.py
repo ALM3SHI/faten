@@ -26,6 +26,13 @@ STRATEGY_AR = {"fastest": "الأسرع تخرجاً", "balanced": "المتوا
 
 
 def summarize_run(run: dict) -> dict:
+    if run.get("plan_applicable") is False:
+        reason = run.get("withheld_reason") or ""
+        return {"what": reason, "why": [], "alternatives": [], "effect": [],
+                "uncertain": list((run.get("confidence") or {}).get("reasons") or []),
+                "next_steps": ["أكّد إصدار خطتك مع القسم أو من نظام التسجيل.",
+                               "إن كانت خطتك هي المنشورة حالياً فصحّح سجلك (مقررات معادلة مثلاً) ثم أعد التحليل."],
+                "confidence": (run.get("confidence") or {}).get("level")}
     nt = run.get("next_term") or {}
     courses = nt.get("courses") or []
     sc = run.get("scenarios") or {}
@@ -43,12 +50,13 @@ def summarize_run(run: dict) -> dict:
         if not s or key == chosen:
             continue
         if s.get("complete"):
-            alts.append(f"مسار {STRATEGY_AR[key]}: {s['terms_needed']} فصول، تخرج متوقع {s['graduation_label']} (حد العبء {s['load_cap']}).")
+            alts.append(f"مسار {STRATEGY_AR[key]}: {s['terms_needed']} فصول، تخرج محسوب {s['graduation_label']} (حد العبء {s['load_cap']}).")
         else:
             alts.append(f"مسار {STRATEGY_AR[key]}: لم يكتمل ضمن الأفق الزمني.")
     effect = []
     if picked.get("graduation_label"):
-        effect.append(f"التخرج المتوقع في المسار المقترح: {picked['graduation_label']} ({picked['terms_needed']} فصول).")
+        effect.append(f"موعد التخرج المحسوب في المسار المقترح: {picked['graduation_label']} ({picked['terms_needed']} فصول) — "
+                      "ممكن رياضياً وفق الخطة المنشورة، وغير مؤكد للتسجيل.")
     wi = run.get("gpa_what_if") or {}
     if wi.get("available"):
         rows = {r["term_average"]: r["resulting_gpa"] for r in wi["rows"]}
@@ -92,6 +100,8 @@ def facts_for_llm(run: dict) -> dict:
         "recommended_strategy": run.get("recommended_strategy"),
         "strategy_reason": run.get("strategy_reason"),
         "load": run.get("load"),
+        "plan_applicable": run.get("plan_applicable", True),
+        "withheld_reason": run.get("withheld_reason"),
         "next_term": {"label": nt.get("label"), "credits": nt.get("credits"),
                       "courses": [{k: c.get(k) for k in ("code", "name", "credits", "reasons", "unlocks", "delay_cost_terms")}
                                   for c in nt.get("courses") or []],

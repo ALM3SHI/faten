@@ -218,9 +218,16 @@ def build_profile(record: dict | None, corrections: dict | None = None) -> Stude
         disc = _round2(abs(computed - stated_gpa))
         if disc > 0.02:
             notes.append(
-                f"المعدل المحسوب من المقررات ({computed:.2f}) يختلف عن المعدل المذكور في السجل ({stated_gpa:.2f}). "
-                "نعتمد معدل السجل الرسمي في التقييم ونعرض الفرق للمراجعة (قد يكون مقرر لم يُقرأ من الملف)."
+                f"المعدل المحفوظ مع سجلك ({stated_gpa:.2f}) يختلف عن المحسوب من مقرراتك ({computed:.2f}). "
+                "المحفوظ يحسبه قارئ السجل في فطن وليس الرقم المطبوع في السجل الرسمي؛ نعتمد المحسوب "
+                "(بعد حذف الصفوف المكررة) ونعرض الفرق للمراجعة."
             )
+
+    if stated_hours is not None and stated_hours != earned:
+        notes.append(
+            f"الساعات المجتازة في رأس السجل ({stated_hours}) تختلف عن مجموع ساعات المقررات المجتازة المقروءة ({earned}). "
+            "قد تكون مقررات معادلة أو صفوف لم تُقرأ من الملف؛ التدقيق يعتمد على المقررات المقروءة فقط."
+        )
 
     # Per-term GPA (from attempts), with the transcript's own SGPA when present.
     terms: dict[tuple, dict] = {}
@@ -256,7 +263,7 @@ def build_profile(record: dict | None, corrections: dict | None = None) -> Stude
                             impact="لا يمكن قياس اتجاه الأداء عبر الفصول."))
     if stated_gpa is None and computed is None and attempts:
         gaps.append(DataGap(field="gpa", message="المعدل التراكمي غير متوفر.", impact="تقييم المخاطر الأكاديمية سيكون محدوداً."))
-    if not current and attempts:
+    if attempts and not any(a.status == "in_progress" for a in attempts):
         gaps.append(DataGap(field="current_courses", message="لا توجد مقررات مسجلة للفصل الحالي في السجل.",
                             impact="سنفترض أنك لا تدرس شيئاً الآن؛ إن كنت مسجلاً أضف مقرراتك الحالية حتى لا نقترحها مجدداً."))
 
@@ -272,8 +279,16 @@ def build_profile(record: dict | None, corrections: dict | None = None) -> Stude
 
 
 def effective_gpa(p: StudentProfile) -> float | None:
-    """The official figure wins; our computation is the fallback."""
-    return p.stated_gpa if p.stated_gpa is not None else p.computed_gpa
+    """GPA computed from the record's own course rows (duplicates removed).
+
+    `stated_gpa` (record["gpa"]) is NOT the printed official figure: Faten's
+    transcript parser recomputes it from the same rows without de-duplicating,
+    so it is only a fallback when no graded rows exist."""
+    return p.computed_gpa if p.computed_gpa is not None else p.stated_gpa
+
+
+def gpa_source(p: StudentProfile) -> str:
+    return "courses" if p.computed_gpa is not None else ("record_field" if p.stated_gpa is not None else "none")
 
 
 def _as_float(v) -> float | None:
