@@ -21,6 +21,7 @@
  * Always call `logoutAndPurge()` — never call `signOut(auth)` directly.
  */
 
+import { clearLectureFiles } from "@/lib/lecture-files";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useChatHistoryStore } from "@/store/chatHistoryStore";
@@ -279,6 +280,9 @@ export function clearAllAppData(): void {
   } catch (err) {
     console.warn("[auth] sessionStorage purge failed:", err);
   }
+
+  // 5. Lecture PDFs kept on this device for the study mode's slide viewer.
+  clearLectureFiles();
 }
 
 /**

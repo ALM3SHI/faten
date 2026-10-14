@@ -3,6 +3,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
+import { linkPageRefs, slideFromHref } from "@/lib/tutor";
 
 /**
  * BotMarkdown
@@ -25,7 +26,11 @@ import Link from "next/link";
 
 const INTERNAL_PATH_RE = /^\/[a-zA-Z0-9_\-/?&=#%.]*$/;
 
-export function BotMarkdown({ content }: { content: string }) {
+/**
+ * `onSlide` (study mode): citations like «[ص 12]» become buttons that open
+ * page 12 of the original lecture. Without it nothing changes.
+ */
+export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (page: number) => void }) {
   return (
     <div className="text-[15px] leading-relaxed text-foreground break-words [&_p]:my-0 [&_p+p]:mt-2 [&>:first-child]:mt-0 [&>:last-child]:mb-0">
       <ReactMarkdown
@@ -103,6 +108,18 @@ export function BotMarkdown({ content }: { content: string }) {
           // ── Inline & code ────────────────────────────────────
           a: ({ href, children }) => {
             const raw = typeof href === "string" ? href : "";
+            const slide = onSlide ? slideFromHref(raw) : null;
+            if (slide !== null && onSlide) {
+              return (
+                <button
+                  type="button"
+                  onClick={() => onSlide(slide)}
+                  className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-md bg-uqu-accent/10 border border-uqu-accent/25 text-uqu-accent text-[12px] font-bold hover:bg-uqu-accent/20 transition-colors align-baseline"
+                >
+                  {children}
+                </button>
+              );
+            }
             // Internal path → Next.js <Link> for SPA soft-nav.
             if (raw && INTERNAL_PATH_RE.test(raw)) {
               return (
@@ -149,7 +166,7 @@ export function BotMarkdown({ content }: { content: string }) {
           },
         }}
       >
-        {content}
+        {onSlide ? linkPageRefs(content) : content}
       </ReactMarkdown>
     </div>
   );

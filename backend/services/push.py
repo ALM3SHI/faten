@@ -1,7 +1,7 @@
 """Phone/browser push notifications through Firebase Cloud Messaging.
 
 Devices:   users/{uid}/devices/{id}  {token, platform, createdAt, lastSeen}
-Prefs:     users/{uid}.notificationPrefs {lectures, attendance, exams}
+Prefs:     users/{uid}.notificationPrefs {lectures, attendance, exams, reviews}
 Sent log:  users/{uid}/push_log/{key}    (one reminder per key, ever)
 
 The reminder texts are built by small pure functions (exam_reminders,
@@ -22,7 +22,7 @@ from services.exams import describe, load_exams, upcoming
 
 logger = logging.getLogger(__name__)
 
-PREF_KEYS = ("lectures", "attendance", "exams")
+PREF_KEYS = ("lectures", "attendance", "exams", "reviews")
 DEFAULT_PREFS = {k: True for k in PREF_KEYS}
 MAX_DEVICES = 10
 EXAM_REMINDER_DAYS = (0, 1, 3, 7)
@@ -149,6 +149,36 @@ def lecture_reminders(slots: list[dict], now: dt.datetime, window: tuple[int, in
 _DEAD_TOKEN_ERRORS = ("UnregisteredError", "SenderIdMismatchError", "InvalidArgumentError")
 
 
+def tutor_review_reminder(due: list[tuple[dict, list[str]]], today: dt.date) -> list[dict]:
+    """One morning nudge when topics mastered in the study mode are due for
+    their spaced review (services/tutor/mastery.py) — retrieval at the right
+    time is what keeps them from being forgotten."""
+    due = [(lec, tids) for lec, tids in due if tids]
+    if not due:
+        return []
+    n = sum(len(t) for _, t in due)
+    first = due[0][0]
+    others = f" و{_count_ar(len(due) - 1, 'محاضرة أخرى', 'محاضرتين أخريين', 'محاضرات أخرى')}" if len(due) > 1 else ""
+    return [{
+        "key": f"tutor-review:{today.isoformat()}",  # at most one a day
+        "title": f"🧠 مراجعة اليوم: {_count_ar(n, 'موضوع واحد', 'موضوعان', 'موضوعات')}",
+        "body": f"أسئلة سريعة مما أتقنته في «{first.get('title') or 'محاضرتك'}»{others} — دقائق قليلة تثبّتها قبل أن تُنسى.",
+        "url": f"/tutor/?lecture={first['id']}&review=1",
+    }]
+
+
+def tutor_due(db, uid: str, today: dt.date) -> list[tuple[dict, list[str]]]:
+    from services.tutor import mastery, store
+
+    out = []
+    for lec in store.list_lectures(db, uid):
+        prog = store.load_progress(db, uid, lec["id"]) or {}
+        tids = mastery.due_reviews(prog.get("topics") or {}, today.isoformat())
+        if tids:
+            out.append((lec, tids))
+    return out
+
+
 def _send_each(messages: list) -> Any:  # pragma: no cover - thin wrapper, patched in tests
     from firebase_admin import messaging
 
@@ -214,6 +244,8 @@ def daily_items(db, uid: str, today: dt.date) -> list[dict]:
         if courses:
             rows = _status_rows(courses, _load_attendance(db, uid), st.current_term(today))
             items += attendance_reminders(rows, today)
+    if prefs["reviews"]:
+        items += tutor_review_reminder(tutor_due(db, uid, today), today)
     return items
 
 

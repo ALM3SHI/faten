@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BarChart3, Bell, EyeOff, Flag, Loader2, MessageSquare, RefreshCw, ShieldAlert, ThumbsDown, ThumbsUp, UserPlus, Users } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { TutorInsights } from "@/components/admin/tutor-insights";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ApiError } from "@/lib/api";
@@ -106,7 +107,7 @@ function Dashboard({ data, at, onChanged }: { data: AdminOverview; at: Date; onC
         <Stat icon={Users} label="المستخدمون" value={data.users.total} hint={`+${data.users.new_7d} هذا الأسبوع`} />
         <Stat icon={UserPlus} label="جدد آخر 30 يوم" value={data.users.new_30d} />
         <Stat icon={MessageSquare} label="استخدموا المساعد اليوم" value={data.usage.active_today} hint={`${data.usage.active_7d} آخر 7 أيام`} />
-        <Stat icon={BarChart3} label="طلبات اليوم" value={data.usage.requests_today} hint="بالرصيد اليومي" />
+        <Stat icon={BarChart3} label="طلبات اليوم" value={data.usage.requests_today} hint={data.usage.refunded_today ? `بالرصيد اليومي · أُعيد ${data.usage.refunded_today} بسبب أعطال` : "بالرصيد اليومي"} />
         <Stat icon={Bell} label="فعّلوا الإشعارات" value={data.devices} />
         <Stat
           icon={ThumbsUp}
@@ -115,6 +116,8 @@ function Dashboard({ data, at, onChanged }: { data: AdminOverview; at: Date; onC
           hint={`${fb.up} 👍 · ${fb.down} 👎`}
         />
       </div>
+
+      <TutorInsights />
 
       <Card className="glass rounded-3xl p-6 space-y-4">
         <h2 className="text-lg font-black">تقييم الإجابات حسب الأداة</h2>

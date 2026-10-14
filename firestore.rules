@@ -44,9 +44,15 @@ service cloud.firestore {
         // Agent memory is written only by the server (it filters sensitive
         // facts and caps the size before the text reaches the AI prompt);
         // the student can still read and delete it.
-        allow create, update: if isOwner(uid) && coll != 'agent_memory';
+        // The dynamic study mode (tutor_lectures: mastery evidence, exam
+        // results) is written only by the server so scores cannot be edited
+        // from the browser.
+        allow create, update: if isOwner(uid) && coll != 'agent_memory' && coll != 'tutor_lectures';
       }
     }
+
+    // tutor_cache (shared lecture analysis) and tutor_stats (anonymous
+    // aggregates) are server-only: they fall under the default deny below.
 
     // Default deny — anything not matched above is unreachable from clients.
     match /{document=**} {

@@ -28,6 +28,8 @@ export interface StudyPack {
   quiz: QuizQuestion[];
   /** Flashcard progress per term (lib/flashcards.ts), synced with the pack. */
   reviews?: Record<string, CardState>;
+  /** Set when the pack was made from a lecture in the smart study mode (/tutor). */
+  lectureId?: string;
 }
 
 interface StudyState {
@@ -39,6 +41,8 @@ interface StudyState {
   ownerUid: string | null;
   addPack: (p: Omit<StudyPack, "id" | "createdAt">) => StudyPack;
   removePack: (id: string) => void;
+  /** Add key terms to an existing pack (skips terms it already has). */
+  addTerms: (packId: string, terms: { term: string; definition: string }[]) => void;
   /** Save a flashcard rating (spaced repetition) inside its pack. */
   reviewCard: (packId: string, key: string, rating: Rating, today: string) => void;
   clearPacks: () => void;
@@ -68,6 +72,18 @@ export const useStudyStore = create<StudyState>()(
           deletedIds: capTombstones([...s.deletedIds, id]),
           lastUpdated: new Date().toISOString(),
         })),
+      addTerms: (packId, terms) => {
+        const now = new Date().toISOString();
+        set((s) => ({
+          packs: s.packs.map((p) => {
+            if (p.id !== packId) return p;
+            const have = new Set(p.key_terms.map((t) => t.term.trim().toLowerCase()));
+            const fresh = terms.filter((t) => !have.has(t.term.trim().toLowerCase()));
+            return fresh.length ? { ...p, key_terms: [...p.key_terms, ...fresh], updatedAt: now } : p;
+          }),
+          lastUpdated: now,
+        }));
+      },
       reviewCard: (packId, key, rating, today) => {
         const now = new Date().toISOString();
         set((s) => ({

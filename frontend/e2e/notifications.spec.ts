@@ -14,5 +14,5 @@ test("profile shows the notifications card and saves preferences", async ({ page
   await expect(exams).toBeChecked();
   const saved = page.waitForRequest((r) => r.url().endsWith("/api/notifications/prefs") && r.method() === "PUT");
   await exams.uncheck();
-  expect((await saved).postDataJSON()).toEqual({ lectures: true, attendance: true, exams: false });
+  expect((await saved).postDataJSON()).toEqual({ lectures: true, attendance: true, exams: false, reviews: true });
 });

@@ -7,6 +7,7 @@ compatibility issues with different API key types.
 ================================================================
 """
 import json
+import re
 import logging
 from typing import Any
 import httpx
@@ -17,6 +18,7 @@ from common.errors import (
     AI_BLOCKED_MESSAGE,
     AI_EMPTY_REPLY_MESSAGE,
     AI_KEY_MISSING_MESSAGE,
+    AI_TIMEOUT_MESSAGE,
     UpstreamAIError,
 )
 
@@ -28,6 +30,79 @@ logger = logging.getLogger(__name__)
 # instructions, multimodal inline_data, etc.) is supported here.
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
 
+_VALID_ESCAPES = frozenset('"\\/bfnrtu')
+_HEX4 = re.compile(r"[0-9a-fA-F]{4}")
+
+
+def repair_json_escapes(text: str) -> str:
+    r"""Double every backslash that does not start a valid JSON escape.
+
+    Lessons about the command line put regexes and paths (grep '\d+',
+    sed 's/\s//', C:\Users) inside JSON strings with a single backslash,
+    which strict JSON rejects. Valid escapes (\n, \", \\ …) are kept.
+    """
+    out: list[str] = []
+    i, n = 0, len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "\\":
+            nxt = text[i + 1] if i + 1 < n else ""
+            if nxt == "u" and not _HEX4.fullmatch(text[i + 2 : i + 6]):
+                nxt = ""  # "\users" is a path, not a \uXXXX escape
+            if nxt and nxt in _VALID_ESCAPES:
+                out.append(ch + nxt)
+                i += 2
+                continue
+            out.append("\\\\")
+            i += 1
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def _loads_lenient(text: str) -> Any:
+    """Strict JSON, then raw control characters allowed, then repaired escapes."""
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    try:
+        return json.loads(text, strict=False)  # raw tabs/newlines inside strings
+    except json.JSONDecodeError:
+        pass
+    return json.loads(repair_json_escapes(text), strict=False)
+
+
+def parse_json_text(text_content: str) -> Any:
+    """JSON from a model reply. The reply itself is tried first: a JSON answer
+    may contain ``` code blocks inside its strings (lessons with code), so
+    fences are only stripped when they wrap the whole reply."""
+    try:
+        return _loads_lenient(text_content)
+    except json.JSONDecodeError:
+        pass
+    stripped = text_content.strip()
+    if stripped.startswith("```"):
+        first_nl = stripped.find("\n")
+        body = stripped[first_nl + 1 :] if first_nl != -1 else ""
+        if body.rstrip().endswith("```"):
+            body = body.rstrip()[:-3]
+        try:
+            return _loads_lenient(body)
+        except json.JSONDecodeError:
+            stripped = body.strip()
+    # Fallback: the outermost {...} or [...]
+    for open_c, close_c in (("{", "}"), ("[", "]")):
+        start, end = stripped.find(open_c), stripped.rfind(close_c)
+        if start != -1 and end > start:
+            try:
+                return _loads_lenient(stripped[start : end + 1])
+            except json.JSONDecodeError:
+                continue
+    raise ValueError(f"Invalid JSON response: {text_content[:100]}")
+
+
 async def call_gemini(
     system_prompt: str,
     user_content: str,
@@ -38,7 +113,18 @@ async def call_gemini(
     timeout_seconds: float = 60.0,
     max_output_tokens: int | None = None,
     model: str | None = None,
+    response_json_schema: dict | None = None,
+    thinking_level: str | None = None,
 ) -> Any:
+    """One generateContent call whose reply is JSON.
+
+    response_json_schema  constrains the reply to that JSON Schema
+                          (structured output), so it cannot come back malformed.
+    thinking_level        Gemini 3 reasoning effort ("minimal" | "low" | …).
+                          Thinking tokens count against max_output_tokens.
+    Timeouts and network failures raise UpstreamAIError (Arabic message,
+    `upstream_status` kept) like HTTP errors do, so callers can retry.
+    """
     settings = get_settings()
     if not settings.GEMINI_API_KEY:
         raise HTTPException(status_code=503, detail=AI_KEY_MISSING_MESSAGE)
@@ -83,10 +169,21 @@ async def call_gemini(
     # and the JSON gets truncated mid-array).
     if max_output_tokens is not None:
         payload["generationConfig"]["maxOutputTokens"] = max_output_tokens
+    if response_json_schema is not None:
+        payload["generationConfig"]["responseJsonSchema"] = response_json_schema
+    if thinking_level:
+        payload["generationConfig"]["thinkingConfig"] = {"thinkingLevel": thinking_level}
 
-    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
-        response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
-        
+    try:
+        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+            response = await client.post(url, json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
+    except httpx.TimeoutException as exc:
+        logger.error("Gemini timeout after %.0fs (model=%s): %r", timeout_seconds, model or settings.GEMINI_MODEL, exc)
+        raise UpstreamAIError(upstream_status=504, status_code=504, detail=AI_TIMEOUT_MESSAGE) from exc
+    except httpx.HTTPError as exc:
+        logger.error("Gemini network error (model=%s): %r", model or settings.GEMINI_MODEL, exc)
+        raise UpstreamAIError(upstream_status=503, status_code=502) from exc
+
     if response.status_code != 200:
         logger.error(f"Gemini API Error (HTTP {response.status_code}): {response.text}")
         # Try to extract a structured error message — Google returns
@@ -98,11 +195,16 @@ async def call_gemini(
             err_status = err.get("status") or f"HTTP {response.status_code}"
             logger.error("Gemini %s: %s", err_status, err_msg)
         except Exception:
-            logger.error("Gemini HTTP %s: %s", response.status_code, response.text[:400])
-        raise UpstreamAIError(
+            err_msg = response.text[:400]
+            logger.error("Gemini HTTP %s: %s", response.status_code, err_msg)
+        upstream = UpstreamAIError(
             upstream_status=response.status_code,
             status_code=429 if response.status_code == 429 else 502,
         )
+        # Kept for callers that react to *why* a request was refused (e.g. a
+        # model that does not accept thinkingConfig / responseJsonSchema).
+        upstream.upstream_message = str(err_msg)[:500]
+        raise upstream
 
     data = response.json()
     
@@ -123,37 +225,26 @@ async def call_gemini(
              raise HTTPException(status_code=502, detail=AI_BLOCKED_MESSAGE)
 
         parts = candidate.get('content', {}).get('parts', [])
-        if not parts or 'text' not in parts[0]:
+        # Join every text part (a long answer can arrive split); skip thought parts.
+        texts = [p['text'] for p in parts if isinstance(p, dict) and 'text' in p and not p.get('thought')]
+        if not texts:
             logger.error(f"Gemini API Error (No text in parts): {data}")
             raise HTTPException(status_code=502, detail=AI_EMPTY_REPLY_MESSAGE)
-
-        text_content = parts[0]['text'].strip()
-        
-        # Clean JSON if it's wrapped in markdown blocks
-        if "```json" in text_content:
-            text_content = text_content.split("```json")[1].split("```")[0].strip()
-        elif "```" in text_content:
-            text_content = text_content.split("```")[1].split("```")[0].strip()
-            
+        text = "".join(texts).strip()
         try:
-            return json.loads(text_content)
-        except json.JSONDecodeError:
-            # Fallback: find the first { and last }
-            start = text_content.find("{")
-            end = text_content.rfind("}")
-            if start != -1 and end != -1:
-                return json.loads(text_content[start:end+1])
-            
-            # If it's a list (some schedules return lists)
-            start_list = text_content.find("[")
-            end_list = text_content.rfind("]")
-            if start_list != -1 and end_list != -1:
-                return json.loads(text_content[start_list:end_list+1])
-                
-            raise ValueError(f"Invalid JSON response: {text_content[:100]}")
-            
+            return parse_json_text(text)
+        except ValueError as e:
+            # Enough to tell a cut-off reply from malformed JSON, without
+            # dumping the whole response (or the prompt) into the log.
+            logger.error(
+                "Gemini unreadable JSON (model=%s finishReason=%s usage=%s chars=%d): %s | head=%r | tail=%r",
+                model or settings.GEMINI_MODEL, candidate.get('finishReason'), data.get('usageMetadata'),
+                len(text), e, text[:300], text[-300:],
+            )
+            raise HTTPException(status_code=502, detail=AI_BAD_REPLY_MESSAGE)
+
     except (KeyError, IndexError, ValueError) as e:
-        logger.error(f"Gemini Parsing Error: {str(e)} | Data: {data}")
+        logger.error(f"Gemini Parsing Error: {str(e)} | Data: {str(data)[:2000]}")
         raise HTTPException(status_code=502, detail=AI_BAD_REPLY_MESSAGE)
 
 

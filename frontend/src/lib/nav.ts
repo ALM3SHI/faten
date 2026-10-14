@@ -22,7 +22,14 @@ export interface NavSection {
 
 export const SECTIONS: NavSection[] = [
   { id: "home", label: "الرئيسية", pages: [{ href: "/dashboard", label: "الرئيسية" }] },
-  { id: "chat", label: "الدردشة", pages: [{ href: "/chat", label: "الدردشة" }] },
+  {
+    id: "chat",
+    label: "الدردشة",
+    pages: [
+      { href: "/chat", label: "الدردشة" },
+      { href: "/tutor", label: "المذاكرة الذكية" },
+    ],
+  },
   {
     id: "study",
     label: "دراستي",

@@ -63,7 +63,7 @@ def test_overview_numbers_and_no_personal_data(fake_db):
     _seed(fake_db)
     out = admin.overview(fake_db, TODAY)
     assert out["users"] == {"total": 3, "new_7d": 1, "new_30d": 2}
-    assert out["usage"] == {"active_today": 1, "active_7d": 2, "requests_today": 7}
+    assert out["usage"] == {"active_today": 1, "active_7d": 2, "requests_today": 7, "refunded_today": 0}
     assert out["devices"] == 1
     fb = out["feedback"]
     assert (fb["up"], fb["down"], fb["satisfaction"]) == (1, 1, 50)

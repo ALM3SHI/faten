@@ -4,7 +4,7 @@ import { api } from "@/lib/api";
 
 export interface AdminOverview {
   users: { total: number; new_7d: number; new_30d: number };
-  usage: { active_today: number; active_7d: number; requests_today: number };
+  usage: { active_today: number; active_7d: number; requests_today: number; refunded_today?: number };
   devices: number;
   feedback: {
     days: number;

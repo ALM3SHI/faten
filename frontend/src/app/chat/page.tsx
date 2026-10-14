@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { AIService, Message as AIMessage } from "@/lib/ai";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChatInput } from "@/components/chat-input";
+import { ChatModeSwitch } from "@/components/tutor/mode-switch";
 import { ChatHistoryDrawer } from "@/components/chat-history-drawer";
 import {
   DropdownMenu,
@@ -367,15 +368,18 @@ function ChatPageContent() {
               className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium"
             >
               <History className="w-4 h-4" />
-              <span>سجل الدردشات</span>
+              <span className="hidden sm:inline">سجل الدردشات</span>
             </button>
+
+            {/* Middle: general chat ↔ guided study mode (/tutor) */}
+            <ChatModeSwitch active="chat" />
 
             {/* Left: Settings dropdown (Task 2) */}
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium outline-none"
               >
-                <span>الإعدادات</span>
+                <span className="hidden sm:inline">الإعدادات</span>
                 <Settings className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent

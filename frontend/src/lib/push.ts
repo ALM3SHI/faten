@@ -30,6 +30,8 @@ export interface NotificationPrefs {
   lectures: boolean;
   attendance: boolean;
   exams: boolean;
+  /** spaced reviews due in the smart study mode (/tutor) */
+  reviews?: boolean;
 }
 
 function storedDeviceId(): string | null {

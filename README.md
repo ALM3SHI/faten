@@ -37,6 +37,7 @@ The experience is **RTL-first** (Arabic UI) with a modern glassmorphism design, 
 | Module | Route | Description |
 |--------|-------|-------------|
 | **AI Chat** | `/chat` | Function-calling agent with 20+ tools — calendar lookup, GPA analysis, navigation, client-side actions, voice input (STT) |
+| **Smart Study Mode** | `/tutor` | «المذاكرة الذكية»: a private tutor that teaches an uploaded lecture topic by topic, checks understanding, re-teaches mistakes and only moves on at mastery — then a final exam and a review plan |
 | **Dashboard** | `/dashboard` | Bento-grid analytics: cumulative GPA chart, upcoming academic events, high-ROI courses, study adherence |
 | **Indoor Map** | `/locations` | Pan/zoom floor plan, room search, A* routing from main entrance (or any room), smooth animated paths |
 | **GPA Planner** | `/gpa` | Live semester simulator on the official UQU 4.00 scale with transcript integration |
@@ -262,6 +263,74 @@ The navigation system is a faithful React port of the legacy UQU floor-plan PWA.
 
 ---
 
+## 🎓 Smart Study Mode (`/tutor`)
+
+A separate mode of the chat section (the normal chat is untouched and shares no state with it).
+The server owns the learning state; the model writes explanations and questions, **code decides
+what happens next**.
+
+**Lecture ingestion** (`backend/services/tutor/ingest.py`, `extract.py`)
+1. `pdfplumber` reads every page in order — text (code keeps its indentation), tables as Markdown,
+   image count/coverage. Free and deterministic.
+2. Pages with no usable text layer (scans, screenshots, diagrams) are cut into a small PDF
+   (`pypdfium2`) and read by Gemini vision — never the whole file. Pages that still can't be read
+   are reported to the student, not invented.
+3. Gemini splits the lecture into topics with page ranges, objectives, concepts, prerequisites,
+   importance and time (lectures over 45 pages are processed in batches of 40).
+4. Code validates it: ranges clamped, every page attached to a topic, ≤ 12 topics, ids assigned.
+   Results are cached by the file's SHA-256 (`tutor_cache/{hash}`), so the same file is never paid
+   for twice — not even by another student.
+
+**Per topic** (`engine.py`): goal → explanation in 2–4 parts, each with a check question (wrong once →
+why that reasoning fails + hint + retry) → adaptive mastery quiz (3–6 new questions, staircase
+difficulty, targets weak concepts and missing application) → if not mastered, a rule-based
+diagnosis picks the re-teaching strategy (prerequisite / worked examples / contrast / re-explain)
+and re-tests with new questions → after two rounds the student moves on with the topic marked
+"needs review". Free questions are answered from the lecture with page citations `[ص N]`, which
+open the original slide (pdf.js, file kept in the browser's IndexedDB).
+
+**Mastery** (`mastery.py`) is explainable rules on evidence, separate from activity points:
+weighted accuracy ≥ 80 % (recent answers weigh more), ≥ 3 assessed answers, a correct
+application/analysis answer without a hint, a correct medium/hard answer, enough varied evidence
+(confidence ≥ 0.6) and not two misses in a row. Mastered topics enter spaced review
+(1 → 3 → 7 → 14 → 30 days).
+
+**Final exam**: questions per topic in proportion to importance, unseen items, mixed levels; the
+report explains *why* each weak topic is weak and builds a dated review plan. Key terms can be
+sent to the existing flashcards (`studyStore`), focus sessions are logged to `/api/pomodoro/log`.
+
+**Storage**: `users/{uid}/tutor_lectures/{id}` (+ `progress`, `messages`, `extras`) — server-only
+writes (see `firestore.rules`); each step is committed in a transaction with a version check, so
+two tabs can't corrupt progress. Anonymous counters in `tutor_stats/{hash}` feed the admin page
+(hidden below 10 students).
+
+**Credits**: reading a new lecture 5 · a topic's lesson 2 · grading a written answer / re-explaining /
+a free question 1. Choice questions, hints, mastery, selection and short command answers that
+match an accepted answer cost nothing. If a step or an upload fails (Gemini error, timeout, a
+save conflict), every credit charged during that request is refunded once, same day only
+(`CreditLedger` / `refund_ai_credits` in `services/quota.py`; `ai_usage.refunded` keeps the count).
+
+**Reliability** (`services/tutor/ai.py`, `services/gemini.py`): every tutor call sends a JSON Schema
+(structured output, `services/tutor/schemas.py`) and `thinkingLevel: low`; if a model refuses either
+option (HTTP 400) the call is retried without it and the option stays off for the process. Replies
+are read leniently (raw control characters, single backslashes from shell commands/regexes are
+repaired); unreadable replies are logged with `finishReason` and token usage; timeouts and network
+errors become retryable Arabic errors. Then the main → fast model fallback as before.
+
+**Learning signals**: every answer is sent with the student's confidence (متأكد / أظن / أخمّن).
+A correct guess earns half credit and is probed with another form of question; a confident
+mistake is flagged and steers re-teaching to confronting the misconception. Mastery also
+requires correct answers in two different kinds of question (transfer, not one memorised
+pattern). Each new topic opens with 1–2 retrieval questions from earlier topics (prerequisites
+first). Students can report a question: it leaves their evidence at once and is retired for
+everyone after 3 reports. Due spaced reviews appear on the `/tutor` home and in one morning push
+(«مراجعة المذاكرة الذكية» preference). Topic time estimates are computed from the slides.
+
+**Try it locally without keys**: `python backend/tests/e2e_tutor_server.py` runs the real API with
+an in-memory Firestore and a scripted model on port 8787.
+
+---
+
 ## 🤖 AI Agent
 
 The backend agent (`backend/agent/`) runs a **tool-augmented loop**:
@@ -319,6 +388,11 @@ Faten/
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/chat` | POST | AI agent conversation |
+| `/api/tutor/lectures` | POST · GET | Upload a lecture PDF (reused if already processed) · list lectures with progress |
+| `/api/tutor/lectures/{id}` | GET · DELETE | Full study session (lecture, state, messages, timer) · delete |
+| `/api/tutor/lectures/{id}/step` | POST | One tutor step `{action, payload, version}` |
+| `/api/tutor/lectures/{id}/focus` | PUT | Save the session's Pomodoro (absolute times) |
+| `/api/admin/tutor-insights` | GET | Anonymous aggregate learning statistics (admins) |
 | `/api/analytics/dashboard` | POST | Dashboard GPA analytics |
 | `/api/nav/route` | POST | Server-side indoor routing |
 | `/api/nav/status` | GET | Navigation engine health |

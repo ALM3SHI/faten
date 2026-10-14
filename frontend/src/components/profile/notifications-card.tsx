@@ -20,6 +20,7 @@ const PREF_LABELS: [keyof NotificationPrefs, string, string][] = [
   ["lectures", "المحاضرات", "قبل كل محاضرة بساعة"],
   ["attendance", "الغياب", "إذا قربت من حد الحرمان"],
   ["exams", "الاختبارات", "قبل الاختبار بأسبوع و3 أيام ويوم"],
+  ["reviews", "مراجعة المذاكرة الذكية", "صباحاً إذا حان وقت مراجعة موضوع أتقنته"],
 ];
 
 const STATE_TEXT: Record<PushState, string> = {

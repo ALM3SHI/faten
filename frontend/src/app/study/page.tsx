@@ -3,8 +3,11 @@
 import { useMemo, useState } from "react";
 import { useHydrated } from "@/lib/use-hydrated";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
+  ArrowLeft,
   ArrowRight,
+  GraduationCap,
   BookOpenCheck,
   CheckCircle2,
   FileText,
@@ -88,6 +91,20 @@ export default function StudyPage() {
             <p className="text-muted-foreground text-sm">ارفع ملف المحاضرة، وخذ ملخصاً ومصطلحات واختباراً قصيراً منه.</p>
           </div>
         </div>
+
+        {!active && (
+          <Link
+            href="/tutor"
+            className="flex items-center gap-3 p-4 mb-6 rounded-2xl border border-uqu-accent/30 bg-uqu-accent/[0.05] hover:bg-uqu-accent/10 transition-colors"
+          >
+            <GraduationCap className="w-8 h-8 text-uqu-accent shrink-0" aria-hidden />
+            <span className="flex-1">
+              <span className="block font-black">جرّب المذاكرة الذكية</span>
+              <span className="block text-[13px] text-muted-foreground leading-6">معلم يدرّسك المحاضرة موضوعاً موضوعاً، يتأكد من فهمك، ويعالج أخطاءك حتى تتقنها.</span>
+            </span>
+            <ArrowLeft className="w-4 h-4 text-uqu-accent" aria-hidden />
+          </Link>
+        )}
 
         {!mounted ? null : active ? (
           <PackView pack={active} />

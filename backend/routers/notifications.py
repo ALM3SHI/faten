@@ -19,6 +19,7 @@ class PrefsBody(BaseModel):
     lectures: bool = True
     attendance: bool = True
     exams: bool = True
+    reviews: bool = True  # spaced reviews due in the smart study mode
 
 
 @router.post("/devices")

@@ -109,7 +109,7 @@ def test_send_dedupes_and_forgets_dead_tokens(db, fcm):
 
 
 def test_prefs_default_on_and_can_be_switched_off(db):
-    assert push.load_prefs(db, UID) == {"lectures": True, "attendance": True, "exams": True}
+    assert push.load_prefs(db, UID) == {"lectures": True, "attendance": True, "exams": True, "reviews": True}
     push.save_prefs(db, UID, {"exams": False})
     assert push.load_prefs(db, UID)["exams"] is False
 

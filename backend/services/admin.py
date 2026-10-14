@@ -37,6 +37,8 @@ def usage_stats(db, today: dt.date) -> dict[str, int]:
         "active_today": sum(1 for r in rows if r.get("date") == day),
         "active_7d": sum(1 for r in rows if str(r.get("date") or "") >= _since(today, 7)),
         "requests_today": sum(int(r.get("used") or 0) for r in rows if r.get("date") == day),
+        # credits given back today because the AI request failed
+        "refunded_today": sum(int(r.get("refunded") or 0) for r in rows if r.get("date") == day),
     }
 
 

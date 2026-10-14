@@ -13,7 +13,7 @@ export function normalizePath(path: string | null | undefined): string {
 }
 
 /** Pages that show personal data and need a signed-in user. */
-const PROTECTED = ["/dashboard", "/chat", "/gpa", "/plan", "/profile", "/schedule", "/transcript", "/community", "/attendance", "/study", "/exams", "/admin"];
+const PROTECTED = ["/dashboard", "/chat", "/gpa", "/plan", "/profile", "/schedule", "/transcript", "/community", "/attendance", "/study", "/tutor", "/exams", "/admin"];
 
 export function isProtectedPath(path: string | null | undefined): boolean {
   const p = normalizePath(path);

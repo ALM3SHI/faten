@@ -7,10 +7,11 @@
 // can assert what the app sent.
 
 import http from "node:http";
+import { handleTutor } from "./tutor-mock.mjs";
 
 const PORT = Number(process.env.MOCK_PORT || 8787);
 const requests = [];
-const prefs = { lectures: true, attendance: true, exams: true };
+const prefs = { lectures: true, attendance: true, exams: true, reviews: true };
 
 const COMPLETED = [
   { code: "CS1101", nameAr: "مقدمة في البرمجة", nameEn: "Intro to Programming", creditHours: 4, grade: "A+", gradePoints: 4, semester: "الفصل الأول 1444", semesterStatus: "completed" },
@@ -173,6 +174,7 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/pomodoro/log") return send(res, 200, { success: true });
   if (p === "/api/memory") return send(res, 200, { items: [] });
   if (p === "/api/study/pdf") return send(res, 200, STUDY_PACK);
+  if (handleTutor(req, p, body, send, res)) return;
   if (p === "/api/notifications/prefs") {
     // Echo the saved prefs without keeping them, so parallel tests stay independent.
     return send(res, 200, { success: true, prefs: req.method === "PUT" && body ? { ...prefs, ...body } : prefs });
