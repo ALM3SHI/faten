@@ -16,6 +16,7 @@ Unreadable pages are reported, never filled in.
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import logging
 import re
@@ -67,7 +68,7 @@ async def read_visual_pages(pdf: bytes, pages: list[PageContent]) -> dict[str, A
     batch, skipped = wanted[:VISION_MAX_PAGES], wanted[VISION_MAX_PAGES:]
     report["skipped"] = skipped
     try:
-        small = sub_pdf(pdf, batch)
+        small = await asyncio.to_thread(sub_pdf, pdf, batch)
         raw = await ai.ask_json(
             prompts.VISION.format(pages=", ".join(f"صفحة {n}" for n in batch)),
             "Read the attached pages.",
@@ -318,7 +319,11 @@ def _looks_like_code(text: str) -> bool:
 async def build_lecture(pdf: bytes, file_name: str) -> tuple[dict, list[PageContent]]:
     """Run the pipeline. Returns (lecture document, pages)."""
     try:
-        pages = extract_pages(pdf)
+        # pdfplumber is CPU-heavy and synchronous. Run it in a worker thread so
+        # the event loop keeps answering (/health included): on Render's single
+        # small instance, blocking here made the health check time out and the
+        # platform restart the server in the middle of the upload.
+        pages = await asyncio.to_thread(extract_pages, pdf)
     except ExtractError as exc:
         raise IngestError(str(exc)) from exc
 

@@ -110,7 +110,11 @@ def _page_content(page, n: int) -> PageContent:
 
     tables: list[str] = []
     try:
-        for t in (page.extract_tables() or [])[:MAX_TABLES_PER_PAGE]:
+        # The default ("lines") table finder builds tables only from ruling lines
+        # and rectangle edges — a page with almost none cannot hold a table, so the
+        # costly search is skipped there (same result, much less CPU).
+        has_rules = len(getattr(page, "lines", []) or []) + len(getattr(page, "rects", []) or []) >= 2
+        for t in (page.extract_tables() if has_rules else [])[:MAX_TABLES_PER_PAGE]:
             md = table_to_markdown(t)
             if md:
                 tables.append(md[:2000])
