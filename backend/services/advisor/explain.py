@@ -57,9 +57,17 @@ def summarize_run(run: dict) -> dict:
     if tgt:
         effect.append(tgt.get("message", ""))
     uncertain = list((run.get("confidence") or {}).get("reasons") or [])
+    for u in run.get("uncertainties") or []:
+        uncertain.append(f"{u['message']} الأثر: {u['effect']}")
+    warn = ((run.get("standing") or {}).get("warning") or {})
+    if warn.get("status") == "unknown" and warn.get("message"):
+        uncertain.append(warn["message"])
     for g in run.get("data_gaps") or []:
         uncertain.append(f"{g['message']} {g['impact']}")
     nxt = []
+    fit = run.get("curriculum_fit") or {}
+    if fit.get("verdict") in ("other_edition", "mismatch"):
+        nxt.append("أكّد إصدار خطتك مع القسم قبل الاعتماد على هذه النتائج.")
     if any(r["severity"] == "high" for r in run.get("risks") or []):
         nxt.append("راجع مرشدك الأكاديمي بخصوص المخاطر المرتفعة قبل التسجيل.")
     if run.get("data_gaps"):
@@ -94,6 +102,8 @@ def facts_for_llm(run: dict) -> dict:
         "risks": [{"severity": r["severity"], "basis": r["basis"], "message": r["message"]} for r in run.get("risks") or []],
         "gpa_what_if": run.get("gpa_what_if"),
         "data_gaps": [g["message"] for g in run.get("data_gaps") or []],
+        "academic_standing": {k: (v or {}).get("message") for k, v in (run.get("standing") or {}).items()},
+        "uncertainties": [{"what": u["message"], "effect": u["effect"]} for u in run.get("uncertainties") or []],
         "confidence": run.get("confidence"),
     }
 

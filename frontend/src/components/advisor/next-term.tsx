@@ -2,6 +2,7 @@
 
 import { AlertTriangle, ArrowLeftRight, BookOpen, Calculator, Lightbulb } from "lucide-react";
 import { delayLabel, tagLabel, type AdvisorRun } from "@/lib/advisor";
+import { ElectiveOptionsList } from "@/components/advisor/evidence";
 
 function Tag({ children, tone = "muted" }: { children: React.ReactNode; tone?: "muted" | "accent" | "warn" }) {
   const cls =
@@ -59,7 +60,7 @@ export function NextTermPanel({ run }: { run: AdvisorRun }) {
               </ul>
               <div className="flex flex-wrap gap-1.5">
                 {c.tags.map((t) => (
-                  <Tag key={t} tone={t === "critical" || t === "repeat" ? "accent" : t === "heavy" || t === "ahead_of_plan" ? "warn" : "muted"}>
+                  <Tag key={t} tone={t === "critical" || t === "repeat" ? "accent" : t === "heavy" || t === "ahead_of_plan" || t === "needs_approval" ? "warn" : "muted"}>
                     {tagLabel(t)}
                   </Tag>
                 ))}
@@ -75,6 +76,8 @@ export function NextTermPanel({ run }: { run: AdvisorRun }) {
           );
         })}
       </ul>
+
+      <ElectiveOptionsList run={run} />
 
       {nt.alternatives.length > 0 && (
         <details className="rounded-2xl border border-foreground/10 p-4">

@@ -246,10 +246,12 @@ def test_3_low_gpa_gets_a_recovery_plan():
 
 
 def test_3b_warning_status_is_not_claimed_without_the_program_threshold():
-    _, r = run(fx.low_gpa_recovery())
+    _, r = run(fx.low_gpa_recovery())  # GPA 1.55, program graduation GPA not given
     kinds = {x["kind"]: x for x in r["risks"]}
-    assert "academic_warning" not in kinds
-    assert kinds["possible_warning"]["basis"] == "estimate"
+    assert "academic_warning" not in kinds and "possible_warning" not in kinds
+    assert r["standing"]["warning"]["status"] == "unknown"
+    assert r["standing"]["graduation"]["program_gpa_source"] == "unknown"
+    assert "2.00" not in r["standing"]["warning"]["message"]  # no invented universal threshold
 
 
 def test_4_near_graduation():

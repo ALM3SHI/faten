@@ -2,6 +2,7 @@
 
 import { AlertOctagon, Database, FileCheck2, Info, ShieldAlert } from "lucide-react";
 import { CONFIDENCE_LABEL, VERIFICATION_LABEL, type AdvisorRun } from "@/lib/advisor";
+import { DocumentsList, RulesByKind, UncertaintyList } from "@/components/advisor/evidence";
 
 const SEVERITY = {
   high: { label: "مرتفع", cls: "border-rose-500/30 bg-rose-500/10" },
@@ -40,6 +41,8 @@ export function RisksPanel({ run }: { run: AdvisorRun }) {
           </ul>
         )}
       </section>
+
+      <UncertaintyList run={run} />
 
       <section aria-labelledby="gaps-title" className="space-y-3">
         <h3 id="gaps-title" className="font-black flex items-center gap-2">
@@ -91,20 +94,8 @@ export function RisksPanel({ run }: { run: AdvisorRun }) {
             <li key={i.code + i.message}>{i.message}</li>
           ))}
         </ul>
-        <details className="text-sm rounded-2xl border border-foreground/10 p-4">
-          <summary className="cursor-pointer font-bold">قواعد اللائحة التي طُبّقت</summary>
-          <ul className="mt-2 space-y-2 leading-7">
-            {run.rules.map((r) => (
-              <li key={r.rule}>
-                <span className={r.status === "verified" ? "text-emerald-700 dark:text-emerald-300 font-bold" : "text-amber-700 dark:text-amber-300 font-bold"}>
-                  {r.status === "verified" ? "موثّقة: " : "غير منشورة: "}
-                </span>
-                {r.text}
-                {r.article && <span className="text-muted-foreground"> — {r.article}</span>}
-              </li>
-            ))}
-          </ul>
-        </details>
+        <DocumentsList run={run} />
+        <RulesByKind rules={run.rules} />
         <p className="text-xs text-muted-foreground">
           نسخة المحرك {run.engine_version} · معرّف التحليل <span dir="ltr">{run.run_id}</span> — نفس البيانات تعطي نفس النتيجة.
         </p>

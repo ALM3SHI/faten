@@ -30,9 +30,56 @@ export interface ProgramSummary {
 export interface RuleCite {
   rule: string;
   text: string;
-  status: "verified" | "unavailable";
+  status: "verified" | "unavailable" | "assumption";
+  kind?: "hard" | "standing" | "default" | "unknown" | "info";
   source: string;
+  source_url?: string | null;
   article: string | null;
+  checked?: string | null;
+}
+
+export interface Standing {
+  graduation: { program_gpa: number | null; program_gpa_source: "student" | "unknown"; floor: number; message: string };
+  warning: { status: "warning" | "clear" | "unknown"; basis: string; message: string; summer_note: string };
+}
+
+export interface CurriculumFit {
+  verdict: "consistent" | "other_edition" | "mismatch" | "insufficient_data";
+  message: string;
+  passed: number;
+  in_plan: number;
+  editions: { label: string; total_hours: number | null; url?: string; matched_codes: string[] }[];
+}
+
+export interface ElectiveOptions {
+  options: {
+    code: string;
+    title: string;
+    credits: number;
+    level: number | null;
+    prerequisites: string[];
+    corequisites: string[];
+    taken: boolean;
+    eligible: boolean;
+    missing_prerequisites: string[];
+    corequisites_to_pair: string[];
+    source_url: string;
+    document: { title: string; version: string | null; date: string | null } | null;
+  }[];
+  complete: boolean;
+  required_hours: number;
+  note: string | null;
+}
+
+export interface OfficialDocument {
+  id: string;
+  type: string;
+  title: string;
+  url: string;
+  version: string | null;
+  date: string | null;
+  applicability: "applicable" | "not_applicable" | "partial";
+  reason: string | null;
 }
 
 export interface CatalogOverview {
@@ -169,6 +216,12 @@ export interface AdvisorRun {
         note: string;
       };
   confidence: { level: "high" | "medium" | "low"; reasons: string[] };
+  standing?: Standing;
+  curriculum_fit?: CurriculumFit;
+  elective_options?: ElectiveOptions;
+  uncertainties?: { topic: string; message: string; effect: string }[];
+  documents?: OfficialDocument[];
+  prep_year?: { in_prep: boolean; notice: string | null; levels: number[]; hours: number } | null;
   rules: RuleCite[];
   summary?: RunSummary;
 }
@@ -189,6 +242,7 @@ export interface ScheduleCheck {
   courses: { input: string; code: string; ok: boolean; problems: string[] }[];
   violations: { rule: string; message: string; course?: string }[];
   warnings: { rule: string; message: string }[];
+  notes?: { rule: string; course: string }[];
 }
 
 export interface MajorRow {
@@ -289,6 +343,16 @@ const TAG_LABEL: Record<string, string> = {
   heavy: "ثقيل",
   summer_unverified: "صيفي غير مؤكد",
   ahead_of_plan: "قبل موعده في الخطة",
+  needs_approval: "يتطلب موافقة القسم",
+  spec_verified: "مؤكد في التوصيف الرسمي",
+};
+
+export const RULE_KIND_LABEL: Record<string, string> = {
+  hard: "قيود تسجيل نظامية",
+  standing: "التخرج والإنذار",
+  default: "افتراضات فطن للتخطيط (ليست لائحة)",
+  unknown: "غير منشور رسمياً",
+  info: "معلومات",
 };
 
 /** Human labels for planner tags; "unlocks:3" → "يفتح 3". */

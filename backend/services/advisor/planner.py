@@ -175,6 +175,25 @@ def _is_unavailable(code: str, term: Term, first: Term, rules_list: list[dict]) 
     return False
 
 
+PREP_NOTICE = ("في السنة التأهيلية تُسجَّل مقررات المستوى كاملة دون النظر إلى المتطلبات السابقة ولا يجوز حذفها (القواعد التنفيذية، "
+               "المادة الثالثة عشرة)؛ مقررات هذا الفصل تحددها الجامعة، والخطة هنا للعرض والتقدير.")
+
+
+def prep_status(profile: StudentProfile, cur: Curriculum) -> tuple[bool, set[str]]:
+    """Is the student still inside the official preparatory year of this plan?
+
+    Only when the catalog verified that the plan's first levels ARE the prep-year
+    program (same courses and hours). «Inside» = some prep course is still open and
+    nothing beyond the prep levels has been passed or registered."""
+    py = cur.prep_year
+    if not py or not py.matches_plan:
+        return False, set()
+    prep = {c.code for c in cur.courses if c.level in py.levels}
+    taken = set(profile.passed) | set(profile.in_progress)
+    beyond = {c.code for c in cur.courses if c.level > max(py.levels)}
+    return bool(prep - taken) and not (taken & beyond), prep
+
+
 def plan(
     profile: StudentProfile,
     catalog: Catalog,
@@ -226,6 +245,7 @@ def plan(
             return (-heights.get(code, 1), -unlocks.get(code, 0), plan_courses[code].level, code)
         return (repeat_first, plan_courses[code].level, -heights.get(code, 1), -unlocks.get(code, 0), code)
 
+    in_prep, prep_codes = prep_status(profile, cur)
     done = set(completed)
     todo = set(remaining) - blocked_ic - unsatisfiable
     # Plan level the student is at: the lowest level with unfinished courses.
@@ -257,18 +277,24 @@ def plan(
             chosen.append(_planned(c, catalog, cur, heights, unlocks, profile, heavy, term, standing + len(terms)))
             load = plan_courses[c].credits
         else:
-            for c in candidates:
-                pc = plan_courses[c]
-                if pc.kind == "coop":
-                    continue
-                if load + pc.credits > limit:
-                    continue
-                is_heavy = c in heavy
-                if is_heavy and heavy_left <= 0:
-                    continue
-                chosen.append(_planned(c, catalog, cur, heights, unlocks, profile, heavy, term, standing + len(terms)))
-                load += pc.credits
-                heavy_left -= 1 if is_heavy else 0
+            # Two passes so a co-requisite placed later in the order can still unlock its partner this term.
+            picked: set[str] = set()
+            for _pass in (0, 1):
+                for c in candidates:
+                    pc = plan_courses[c]
+                    if c in picked or pc.kind == "coop":
+                        continue
+                    if any(q not in done and q not in picked for q in pc.corequisites):
+                        continue  # co-requisite must be passed or taken in the same term
+                    if load + pc.credits > limit:
+                        continue
+                    is_heavy = c in heavy
+                    if is_heavy and heavy_left <= 0:
+                        continue
+                    chosen.append(_planned(c, catalog, cur, heights, unlocks, profile, heavy, term, standing + len(terms)))
+                    picked.add(c)
+                    load += pc.credits
+                    heavy_left -= 1 if is_heavy else 0
             while elective_queue and load + elective_queue[0].credits <= limit:
                 e = elective_queue.pop(0)
                 if term.is_summer:
@@ -286,6 +312,12 @@ def plan(
             warnings.append("لا يوجد مقرر يمكن تسجيله في هذا الفصل بسبب المتطلبات أو عدم الطرح.")
         if term.is_summer and chosen:
             warnings.append("طرح المقررات في الصيف غير مؤكد — تحقق من جدول القسم.")
+        for pcourse in chosen:
+            pc = plan_courses.get(pcourse.code)
+            for cond in (pc.special_conditions if pc else []):
+                warnings.append(f"{pcourse.code}: {cond['text']}.")
+        if in_prep and any(c.code in prep_codes for c in chosen):
+            warnings.append(PREP_NOTICE)
         for pcourse in chosen:
             if pcourse.kind != "elective":
                 todo.discard(pcourse.code)
@@ -320,9 +352,15 @@ def plan(
         "المتطلبات المتعددة عوملت كلها لازمة (و).",
         "التدريب التعاوني يُجدول بعد إنهاء مقررات المستويات التي تسبقه في الخطة، ووحده في فصله.",
         "قيود التسجيل حسب المستوى أو عدد الساعات المجتازة غير منشورة؛ المقررات الموسومة «قبل موعدها» قد يمنعها النظام.",
+        "المتطلب المتزامن (إن وُجد في توصيف المقرر) يُسمح بأخذه في الفصل نفسه وفق تعريف اللائحة.",
     ]
+    if any(pc.special_conditions for pc in cur.courses):
+        assumptions.append("مقررات «تتطلب موافقة القسم» جُدولت كأن الموافقة ستُمنح؛ لا يمكن لفطن التحقق منها.")
+    if in_prep:
+        assumptions.append(PREP_NOTICE)
     if settings.max_regular_load_is_default:
-        assumptions.append(f"حد العبء {settings.max_regular_load} ساعة افتراض للتخطيط (لم نجد حداً أعلى منشوراً)؛ عدّله من الإعدادات.")
+        assumptions.append(f"حد العبء {settings.max_regular_load} ساعة افتراض تخطيطي من فطن وليس من اللائحة "
+                           "(لا يوجد حد أعلى للفصل العادي في القواعد التنفيذية)؛ عدّله من الإعدادات.")
     if electives:
         assumptions.append(f"جُدولت {cur.unlisted_hours} ساعة اختيارية كخانات عامة لأن قائمتها غير منشورة.")
     return PlanResult(
@@ -348,6 +386,10 @@ def _planned(code, catalog, cur, heights, unlocks, profile, heavy, term, expecte
         tags.append("heavy")
     if term.is_summer:
         tags.append("summer_unverified")
+    if pc.special_conditions:
+        tags.append("needs_approval")
+    if pc.evidence:
+        tags.append("spec_verified")
     return PlannedCourse(code=code, name=catalog.course_name(code), credits=pc.credits, kind=pc.kind, tags=tags,
                          verification=pc.verification, unlocks=unlocks.get(code, 0))
 
@@ -424,47 +466,83 @@ def validate_schedule(
     settings: PlanSettings,
     summer_term: bool = False,
 ) -> dict:
-    """Check a proposed next-term registration against the hard rules."""
+    """Check a proposed next-term registration against the hard rules.
+
+    Prerequisites must be passed before the term (in-progress ones are reported as
+    conditional); co-requisites may be passed or in the same proposal; prep-year
+    courses are registered by level without prerequisite checks (regulation), so
+    for a student still in the prep year a missing prerequisite there is a note,
+    not a violation."""
     plan_courses = {c.code: c for c in cur.courses}
+    options = {o.code: o for o in cur.elective_options}
     passed, progress = set(profile.passed), set(profile.in_progress)
+    in_prep, prep_codes = prep_status(profile, cur)
     normalized = [normalize_code(c) for c in codes]
-    items, violations, warnings = [], [], []
+    items, violations, warnings, notes = [], [], [], []
     chosen = [c for c in normalized if c]
     if len(chosen) != len(set(chosen)):
         violations.append({"rule": "duplicate", "message": "مقرر مكرر في الجدول المقترح."})
     for raw, code in zip(codes, normalized):
-        entry = {"input": raw, "code": code, "ok": True, "problems": []}
+        entry = {"input": raw, "code": code, "ok": True, "problems": [], "source": None}
         pc = plan_courses.get(code)
+        opt = options.get(code)
+        prereqs = pc.prerequisites if pc else (opt.prerequisites if opt else [])
+        coreqs = pc.corequisites if pc else (opt.corequisites if opt else [])
         if not code:
             entry.update(ok=False, problems=["رمز مقرر غير صالح"])
-        elif pc is None:
-            entry["problems"].append("المقرر ليس ضمن خطتك المنشورة (قد يكون اختيارياً — تحقق من القسم).")
+            items.append(entry)
+            continue
+        if pc is None and opt is None:
+            entry["problems"].append("المقرر ليس ضمن خطتك المنشورة ولا ضمن الاختياريات الموثّقة — تحقق من القسم.")
+            items.append(entry)
+            continue
+        if opt is not None:
+            entry["source"] = opt.source
+            entry["problems"].append("مقرر اختياري موثّق في توصيفه الرسمي (القائمة الكاملة للاختياريات غير منشورة).")
+        if code in passed:
+            entry["ok"] = False
+            entry["problems"].append("سبق أن اجتزته.")
+        prep_exempt = in_prep and code in prep_codes
+        missing = [p for p in prereqs if p not in passed]
+        same_term = [p for p in missing if p in chosen]
+        pending = [p for p in missing if p in progress]
+        hard_missing = [p for p in missing if p not in progress and p not in same_term]
+        if prep_exempt and (same_term or hard_missing):
+            entry["problems"].append("في السنة التأهيلية تُسجَّل مقررات المستوى دون النظر للمتطلبات السابقة.")
+            notes.append({"rule": "prep_year_registration", "course": code, "cite": rules.cite("prep_year_registration")})
         else:
-            if code in passed:
-                entry["ok"] = False
-                entry["problems"].append("سبق أن اجتزته.")
-            missing = [p for p in pc.prerequisites if p not in passed]
-            same_term = [p for p in missing if p in chosen]
-            pending = [p for p in missing if p in progress]
-            hard_missing = [p for p in missing if p not in progress]
             if same_term:
                 entry["ok"] = False
-                entry["problems"].append(f"المتطلب {', '.join(same_term)} في نفس الفصل — يجب اجتيازه قبله.")
-            if [p for p in hard_missing if p not in same_term]:
+                entry["problems"].append(f"المتطلب السابق {', '.join(same_term)} في نفس الفصل — يجب اجتيازه قبله.")
+            if hard_missing:
                 entry["ok"] = False
-                entry["problems"].append(f"متطلب سابق غير مجتاز: {', '.join(p for p in hard_missing if p not in same_term)}.")
+                entry["problems"].append(f"متطلب سابق غير مجتاز: {', '.join(hard_missing)}.")
             if pending:
                 entry["problems"].append(f"يعتمد على نجاحك في {', '.join(pending)} هذا الفصل.")
-            ic = [p for p in pc.prerequisites if p in profile.incomplete]
-            if ic:
-                entry["ok"] = False
-                entry["problems"].append(f"متطلبه {', '.join(ic)} مرصود «غير مكتمل» (IC).")
+        co_missing = [q for q in coreqs if q not in passed and q not in progress and q not in chosen]
+        if co_missing:
+            entry["ok"] = False
+            entry["problems"].append(f"متطلب متزامن {', '.join(co_missing)}: اجتزه قبله أو سجّله معه في الفصل نفسه.")
+        ic = [p for p in prereqs if p in profile.incomplete]
+        if ic:
+            entry["ok"] = False
+            entry["problems"].append(f"متطلبه {', '.join(ic)} مرصود «غير مكتمل» (IC).")
+        for cond in (pc.special_conditions if pc else []):
+            entry["problems"].append(cond["text"] + ".")
+            warnings.append({"rule": "special_condition", "course": code, "message": f"{code}: {cond['text']}.",
+                             "source_url": cond.get("source_url")})
         items.append(entry)
     for e in items:
         if not e["ok"] and any("متطلب" in p for p in e["problems"]):
-            violations.append({"rule": "prerequisites_required", "course": e["code"],
-                               "message": " ".join(e["problems"]), "cite": rules.cite("prerequisites_required")})
-    credits = sum(plan_courses[c].credits for c in chosen if c in plan_courses)
+            rule_id = "corequisites" if any("متزامن" in p for p in e["problems"]) and not any("سابق" in p for p in e["problems"]) else "prerequisites_required"
+            violations.append({"rule": rule_id, "course": e["code"], "message": " ".join(e["problems"]), "cite": rules.cite(rule_id)})
+
+    def credits_of(c: str) -> int:
+        if c in plan_courses:
+            return plan_courses[c].credits
+        return options[c].credits if c in options else 0
+
+    credits = sum(credits_of(c) for c in chosen)
     coop = [c for c in chosen if c in plan_courses and plan_courses[c].kind == "coop"]
     if coop and len(chosen) > 1:
         violations.append({"rule": "coop_exclusive", "message": "لا يجوز الجمع بين التدريب التعاوني ومقررات أخرى.",
@@ -478,7 +556,9 @@ def validate_schedule(
             warnings.append({"rule": "min_regular_load", "message": f"{credits} ساعة أقل من الحد الأدنى ({settings.min_regular_load}).",
                              "cite": rules.cite("min_regular_load")})
         if credits > settings.max_regular_load:
-            warnings.append({"rule": "max_regular_load",
-                             "message": f"{credits} ساعة أكثر من الحد الذي اخترته ({settings.max_regular_load}).",
-                             "cite": rules.cite("max_regular_load")})
-    return {"valid": not violations, "credits": credits, "courses": items, "violations": violations, "warnings": warnings}
+            warnings.append({"rule": "default_max_regular_load",
+                             "message": (f"{credits} ساعة أكثر من الحد الذي تخطط به ({settings.max_regular_load}). "
+                                         "هذا ليس حداً نظامياً منشوراً؛ نظام التسجيل قد يسمح أو لا."),
+                             "cite": rules.cite("default_max_regular_load")})
+    return {"valid": not violations, "credits": credits, "courses": items, "violations": violations,
+            "warnings": warnings, "notes": notes}

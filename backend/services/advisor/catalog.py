@@ -75,6 +75,54 @@ class PlanCourse(BaseModel):
     kind: Literal["required", "coop"] = "required"
     source_url: str = ""
     verification: Verification = "verified"
+    # Evidence from official documents other than the plan page (course specifications).
+    # The plan page stays the base; a document can corroborate it, add a condition the
+    # page does not show, or disagree with it — never silently replace it.
+    evidence: list[str] = Field(default_factory=list)  # document ids that agree with this entry
+    special_conditions: list[dict] = Field(default_factory=list)  # [{kind, text, source}]
+    prereq_list_corroborated: bool = False  # the same prerequisite list appears in a course specification
+
+
+class ElectiveOption(BaseModel):
+    """A course an official document names as an elective of this program.
+
+    Known options are a partial list unless a document says otherwise; the
+    unnamed elective hours stay unnamed requirements."""
+
+    code: str
+    title: str
+    credits: int
+    level: int | None
+    prerequisites: list[str] = Field(default_factory=list)
+    corequisites: list[str] = Field(default_factory=list)
+    source: str  # document id
+    source_url: str
+
+
+class PrepYear(BaseModel):
+    source_id: str
+    hours: int
+    levels: list[int]
+    matches_plan: bool
+    source: str
+
+
+class Document(BaseModel):
+    id: str
+    type: Literal["regulation", "degree_catalog", "course_spec", "program_handbook"]
+    title: str
+    url: str
+    sha256: str | None = None
+    bytes: int | None = None
+    doc_version: str | None = None
+    doc_date: str | None = None
+    doc_date_label: str | None = None
+    approval: str | None = None
+    retrieved_at: str
+    applicability: Literal["applicable", "not_applicable", "partial"]
+    applicability_reason: str | None = None
+    applies_to: dict = Field(default_factory=dict)
+    facts: dict = Field(default_factory=dict)
 
 
 class Curriculum(BaseModel):
@@ -89,6 +137,11 @@ class Curriculum(BaseModel):
     courses: list[PlanCourse]
     verification: Verification
     issues: list[Issue] = Field(default_factory=list)
+    elective_options: list[ElectiveOption] = Field(default_factory=list)
+    elective_options_complete: bool = False
+    prep_year: PrepYear | None = None
+    other_editions: list[dict] = Field(default_factory=list)  # [{label, total_hours, document}]
+    documents: list[str] = Field(default_factory=list)
     _idx: dict[str, PlanCourse] | None = PrivateAttr(default=None)
 
     def course(self, code: str) -> PlanCourse | None:
@@ -116,13 +169,14 @@ class University(BaseModel):
 
 
 class Catalog(BaseModel):
-    schema_version: int = 1
+    schema_version: int = 2
     generated_at: str
     university: University
     courses: dict[str, Course]
     programs: dict[str, Program]
     curricula: dict[str, Curriculum]
     issues: list[Issue] = Field(default_factory=list)
+    documents: dict[str, Document] = Field(default_factory=dict)
 
     def curriculum_for(self, program_id: str, curriculum_id: str | None = None) -> Curriculum | None:
         prog = self.programs.get(program_id)

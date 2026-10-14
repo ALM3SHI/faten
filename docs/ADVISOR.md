@@ -35,6 +35,22 @@ its output is rejected if it leaves the computed facts.
 | Course workload/difficulty | existing verified `course_reviews` (students who took the course) | Used only with ≥ 5 reviews. |
 | Qaym (qaym.com) | **not integrated** | No public API or data-use permission found; origin returned Cloudflare 522 on 2026-10-14. `QaymProvider` reports this and returns nothing. |
 
+### Official documents cross-checked (`backend/knowledge/catalog/uqu/documents.json`)
+
+Each entry stores URL, SHA-256 of the exact file, version/date, retrieval date and the facts copied from it.
+`services/advisor/evidence.py` compares them with the plan snapshots: agreement → evidence on the plan entry;
+new detail → added beside the plan data with its source; conflict → an Issue (the plan is never overwritten).
+
+| Document | Applies to | Result |
+|---|---|---|
+| [Executive study & exam rules](https://uqu.edu.sa/App/Regulations/1480) (last modified 2026-07-13) | all | Live page = repo copy (423/424 paragraphs; the extra one is the footer). No regular-term maximum load anywhere. |
+| [Department programs page](https://uqu.edu.sa/App/Degrees?dept=1&faculty=14) | CS 478, AI 1490 | Totals 137 / 132 confirmed. |
+| Prep-year programs 2195 / 2196 / 2200 | CS, AI, SE | Identical to levels 1–2 of each plan (codes and hours 35 / 36 / 36). |
+| [CS3809 specification](https://drive.uqu.edu.sa/_/ccomp_csai/files/8489c1d4-98af-4555-9883-9f682862812a.pdf) v1.0, rev. 22/4/2025 | CS 478 | Level 5, 3 h, required, prerequisites DS2201 + SE1201 — agrees with the plan. |
+| [AI3501 specification](https://drive.uqu.edu.sa/_/ccomp_csai/files/126df5c2-8730-47de-ae82-c46f125177c8.pdf) v1.0, rev. 2 Jan 2025 | AI 1490 | Level 6, 3 h, AI3101 + SE1201 — agrees; adds **«Department Approval»**. |
+| AI4107, AI4205, AI4207, AI4208, AI4209, AI4308 specifications | AI 1490 | Documented **elective options** (partial list); AI4209 has co-requisite AI3202. |
+| CS Program Manual (Plan 44, 201 h), AI Handbook 2023 (Plan 44, 185 h), SE Guidebook 2023-24 (181 h) | — | **Not applicable** to the current plans; used only to recognise a record from an older edition. |
+
 ### Known gaps in the official data (shown to students, never filled in)
 
 * **Unlisted electives.** Each plan page lists fewer hours than the program total (CS 126/137, AI 124/132,
@@ -44,9 +60,16 @@ its output is rejected if it leaves the computed facts.
   not confirmed for registration*. Students can mark a course «not offered» and the planner respects it.
 * **Plan edition** is not shown on the page. A student on an older plan is compared with the current one; the
   confidence note says so. New snapshots become new curriculum versions (old ones are kept).
-* **Regular-term maximum load** and each **program's graduation GPA** are not in the published rules — the
-  planner uses the student's own setting (default 18 h, reported as an assumption) and never declares an
-  academic warning without the student-entered threshold (below 2.00 it reports a *possible* warning).
+* **Regular-term maximum load** is not in the executive rules (re-checked 2026-10-14). 18 h is a Faten planning
+  default (rule `default_max_regular_load`, kind *default*), never presented as regulation.
+* **Program graduation GPA** is set per program by the University Council and is not published for these
+  programs. Graduation and academic warning are modelled separately; a warning is stated as fact only when the
+  GPA is below 1.00 (the «مقبول» floor no program can go under) or below a threshold the student entered.
+  Otherwise the status is shown as *unknown* — no universal 2.00 is assumed.
+* **Electives:** only the AI program has documented options, and they are a partial list; elective hours stay
+  unnamed slots in every plan.
+* **Plan editions:** older editions (Plan 44) are documented; a record matching one is flagged and confidence
+  drops to *low*.
 * The prerequisite cards on course pages show the *dependent* course's hours; the ingest detects and ignores this.
 
 ## Deterministic rules
@@ -117,5 +140,8 @@ Then run the backend and frontend as usual and open **سجلي → المرشد*
 
 * Four programs integrated, not all 337. The pipeline is generic, but each program needs a browser capture.
 * Instructor recommendations will say «no recommendation» until enough verified reviews exist — by design.
+* «Department Approval» (AI3501) cannot be checked; plans assume it will be granted and say so.
+* Prep-year students: registration of prep levels is automatic per regulation; the plan for those terms is
+  informational, and the schedule checker does not flag prerequisites inside the prep year.
 * No labour-market data; the major comparison says so explicitly.
 * The LLM layer is optional; without an API key the deterministic summary is used.

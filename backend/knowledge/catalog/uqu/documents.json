@@ -1,0 +1,220 @@
+{
+ "_about": "Official documents checked against the published study plans. Hand-curated: every fact below is copied from the cited document (text extracted in a browser with pdf.js from the exact bytes whose SHA-256 is recorded). ingest_uqu.py compares these facts with raw/degree-*.psv and reports agreement or conflict; it never overwrites the plan snapshot.",
+ "retrieved_at": "2026-10-14",
+ "documents": [
+  {
+   "id": "uqu-regulation-1480",
+   "type": "regulation",
+   "title": "القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى",
+   "url": "https://uqu.edu.sa/App/Regulations/1480",
+   "doc_date": "2026-07-13",
+   "doc_date_label": "تاريخ آخر تعديل: 2026/07/13",
+   "effective": "يُعمل بهذه اللائحة اعتباراً من تاريخ بداية العام الدراسي 1444هـ",
+   "applicability": "applicable",
+   "applies_to": {"university": "uqu", "level": "undergraduate"},
+   "comparison": "424 normalised paragraphs on the live page; 423 identical to knowledge/regulations/القواعد التنفيذية للائحة الدراسة والاختبارات للمرحلة الجامعية بجامعة أم القرى.txt; the only extra paragraph is the page footer with the last-modified date.",
+   "facts": {
+    "graduation_gpa": "يتخرج الطالب بعد إنهاء متطلبات التخرج بنجاح حسب النظام الدراسي والخطة الدراسية المقرة من مجلس الجامعة، على ألا يقل معدله التراكمي عن المعدل الذي يحدده مجلس الجامعة لكل تخصص، على ألا يقل في كل الأحوال عن تقدير \"مقبول\".",
+    "warning": "يُعد انخفاض المعدل التراكمي للطالب عن المعدل التراكمي المحدد للتخرج إنذاراً أكاديمياً موجهاً له، ويُشار إلى ذلك في السجل الأكاديمي للطالب.",
+    "warning_summer": "لا يُحتسب الفصل الدراسي الصيفي ضمن الفصول التي تُمنح فيها إنذارات أكاديمية للطالب في حال انخفاض معدله عن المعدل المحدد للتخرج.",
+    "dismissal": "يُفصل الطالب من الجامعة في حال حصوله على ثلاثة إنذارات متتالية لانخفاض معدله التراكمي عن المعدل التراكمي المحدد للتخرج وفقاً لتخصصه.",
+    "min_load": "لا يقل الحد الأدنى من العبء الدراسي للطالب عن عشر ساعات دراسية ولا يشمل ذلك الطالب المتوقع تخرجه في نفس الفصل الدراسي ومتبقي له أقل من عشر ساعات، أو غير الملتزم بالخطة الدراسية، أو المتعثر لعدم وجود مقررات مطروحة للتسجيل من قبل الأقسام أو الزائر لجامعة أخرى.",
+    "max_summer_load": "يكون الحد الأعلى للعبء الدراسي للطالب في الفصل الدراسي الصيفي هو عشر ساعات دراسية. ولا يشمل ذلك المقررات المعادلة.",
+    "max_regular_load": null,
+    "max_regular_load_note": "No maximum for a regular semester appears anywhere in the text (searched for العبء، الحد الأعلى، الحد الأقصى).",
+    "prerequisites": "يجب عند تسجيل الطالب للمقررات الدراسية مراعاة عدم التعارض في الجدول الدراسي، واستيفاء المتطلبات السابقة للمقرر أو المقررات المراد تسجيلها، وعلى المشرف الأكاديمي الموافقة أو الرفض في تجاوز المتطلب، ويعتمد الإجراء من رئيس القسم.",
+    "corequisite_definition": "ويجوز أن تُدرس مستقلة، أو أن يكون لها متطلب سابق أو متطلب متزامن معها.",
+    "prep_year_registration": "تسجل جميع مقررات المستوى الدراسي للطلبة ببرامج السنة الأولى والسنة التأهيلية في كل فصل دراسي، دون النظر إلى استيفاء المتطلبات السابقة للمقررات المراد تسجيلها.",
+    "prep_year_no_drop": "لا يجوز للطالب حذف مقرر دراسي في برامج السنة الأولى أو السنة التأهيلية أو المقررات الدراسية في نظام السنة الدراسية الكاملة.",
+    "prerequisite_and_or": null
+   }
+  },
+  {
+   "id": "uqu-degrees-csai-catalog",
+   "type": "degree_catalog",
+   "title": "برامج الجامعة — قسم علوم الحاسب والذكاء الاصطناعي، كلية الحاسبات",
+   "url": "https://uqu.edu.sa/App/Degrees?dept=1&faculty=14",
+   "doc_date": null,
+   "applicability": "applicable",
+   "applies_to": {"program_ids": ["uqu-478", "uqu-1490"]},
+   "facts": {
+    "programs": [
+     {"name": "الذكاء الاصطناعي", "degree_type": "بكالوريوس", "hours": 132, "program_id": "uqu-1490"},
+     {"name": "الذكاء الاصطناعي ( السنة التأهيلية )", "degree_type": "برنامج السنة التأهيلية", "hours": 36, "source_id": "2196"},
+     {"name": "علوم الحاسب الآلي", "degree_type": "بكالوريوس", "hours": 137, "program_id": "uqu-478"},
+     {"name": "علوم الحاسب الآلي", "degree_type": "ماجستير", "hours": 42},
+     {"name": "علوم الحاسب الآلي (الذكاء الاصطناعي)", "degree_type": "ماجستير", "hours": 42},
+     {"name": "علوم الحاسب الآلي (السنة التأهيلية)", "degree_type": "برنامج السنة التأهيلية", "hours": 35, "source_id": "2195"}
+    ]
+   }
+  },
+  {
+   "id": "uqu-prep-years",
+   "type": "degree_catalog",
+   "title": "صفحات برامج السنة التأهيلية (كلية الحاسبات)",
+   "url": "https://uqu.edu.sa/App/Degrees/2195",
+   "urls": ["https://uqu.edu.sa/App/Degrees/2195", "https://uqu.edu.sa/App/Degrees/2196", "https://uqu.edu.sa/App/Degrees/2200"],
+   "doc_date": null,
+   "applicability": "applicable",
+   "applies_to": {"program_ids": ["uqu-478", "uqu-1490", "uqu-1510"]},
+   "facts": {
+    "prep_years": [
+     {"program_id": "uqu-478", "source_id": "2195", "hours": 35, "courses": {
+      "1": ["QR1101", "IND1101", "MTH1141", "ELIE1201", "CS1701", "CS1302"],
+      "2": ["QR2102", "CUR1101", "CS1704", "MTH1602", "PHYS1113", "ELIE1202", "CS1303"]}},
+     {"program_id": "uqu-1490", "source_id": "2196", "hours": 36, "courses": {
+      "1": ["IND1101", "MTH1141", "CS1011", "MTH1602", "ELIE1201", "MTH1441"],
+      "2": ["QR1101", "CUR1101", "ELIE1202", "CS1302", "CEN2011", "CS1012", "MTH2144"]}},
+     {"program_id": "uqu-1510", "source_id": "2200", "hours": 36, "courses": {
+      "1": ["QR1101", "IND1101", "CEN1012", "PHYS1113", "ELIE1201", "CS1701"],
+      "2": ["QR2102", "CUR1101", "MTH1181", "SE1101", "MTH1402", "SE1201", "ELIE1202"]}}
+    ],
+    "note": "Hours for 2195 and 2196 are from the departmental catalog page; 2200 (36 h) from the programs search on the same site."
+   }
+  },
+  {
+   "id": "spec-CS3809",
+   "type": "course_spec",
+   "title": "Course Specification — CS3809 Software Implementation Systems",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/8489c1d4-98af-4555-9883-9f682862812a.pdf",
+   "sha256": "861e70702e288bfcd9789a7cb030ab906efdd877fa17466e28171ec5f954df98",
+   "bytes": 1230269,
+   "pages": 7,
+   "doc_version": "1.0",
+   "doc_date": "2025-04-22",
+   "doc_date_label": "Last Revision Date: 22/4/2025",
+   "approval": "Computer Science and Artificial Intelligence Department Council — THE 16TH MEETING FOR THE ACADEMIC YEAR 1446H — 22/04/2025",
+   "applicability": "applicable",
+   "applies_to": {"program_ids": ["uqu-478"], "stated_program": "Bachelor of Science in Computer Science"},
+   "facts": {
+    "code": "CS3809", "title": "Software Implementation Systems", "credits": 3, "level": 5,
+    "level_label": "Level 5/ 3rd year", "requirement": "required", "category": "department",
+    "prerequisites": ["DS2201", "SE1201"],
+    "prerequisites_text": "DS2201 - Introduction to Database\nSE1201 - Foundation of Software Engineering",
+    "corequisites": [], "special_conditions": []
+   }
+  },
+  {
+   "id": "spec-AI3501",
+   "type": "course_spec",
+   "title": "Course Specification — AI3501 Graduation Project I",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/126df5c2-8730-47de-ae82-c46f125177c8.pdf",
+   "sha256": "9ca9836e2abc80d6d9e548d1a88806cfe6d0d8929face5d78a4a0e9950271ae6",
+   "bytes": 1390369,
+   "pages": 8,
+   "doc_version": "1.0",
+   "doc_date": "2025-01-02",
+   "doc_date_label": "Last Revision Date: 2 January 2025",
+   "approval": "COMPUTER SCIENCE AND ARTIFICIAL INTELLIGENCE DEPARTMENT COUNCIL — THE 16TH MEETING FOR THE ACADEMIC YEAR 1446H — 22/04/2025",
+   "applicability": "applicable",
+   "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {
+    "code": "AI3501", "title": "Graduation Project I", "credits": 3, "level": 6,
+    "level_label": "level 6 / 3rd year", "requirement": "required", "category": "department",
+    "prerequisites": ["AI3101", "SE1201"],
+    "prerequisites_text": "AI3101 Principles and Techniques of AI\nSE1201 Foundations of Software Engineering\nDepartment Approval",
+    "corequisites": [], "special_conditions": ["department_approval"]
+   }
+  },
+  {
+   "id": "spec-AI4107", "type": "course_spec", "title": "Course Specification — AI4107 AI Research Methods",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/afe8ebcd-c1e1-4ded-8575-3a0ed02242b6.pdf",
+   "sha256": "6913f767b1a19886150cb5e57d09fa175aa5ad3bd9e312a3a580d57055e6ce03", "bytes": 1268272, "pages": 7,
+   "doc_version": "1.0", "doc_date": "2025-01-08", "doc_date_label": "Last Revision Date: 8 January 2025",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4107", "title": "AI Research Methods", "credits": 3, "level": 8, "level_label": "level 8/ 4 th year",
+             "requirement": "elective", "category": "department", "prerequisites": ["AI3201"], "prerequisites_text": "AI3201- Machine Learning",
+             "corequisites": [], "special_conditions": []}
+  },
+  {
+   "id": "spec-AI4205", "type": "course_spec", "title": "Course Specification — AI4205 Adversarial Machine Learning",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/4e991861-9c7d-4db9-8e25-b183361b9dbc.pdf",
+   "sha256": "ab987669fc8448f070d8be5e58b0a21b94189d9d8cf0d7eeb30de6fe16d859be", "bytes": 1477429, "pages": 9,
+   "doc_version": "1.0", "doc_date": "2025-01", "doc_date_label": "Last Revision Date: January 2025 Pick Revision Date.",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4205", "title": "Adversarial Machine Learning", "credits": 3, "level": 8, "level_label": "level 8 / 4 th year",
+             "requirement": "elective", "category": "department", "prerequisites": ["SEC1101"], "prerequisites_text": "SEC1101 Introduction to Cybersecurity",
+             "corequisites": [], "special_conditions": []}
+  },
+  {
+   "id": "spec-AI4207", "type": "course_spec", "title": "Course Specification — AI4207 AI Decision Making Analytics",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/36f390ee-0233-4ab8-a147-47bbf41911c3.pdf",
+   "sha256": "0ca51cc6dbec1bc6f59af24cbc4038241fec8719146a1f5427b2bf39fb21151d", "bytes": 1225317, "pages": 7,
+   "doc_version": "1", "doc_date": "2025-01", "doc_date_label": "Last Revision Date: Jan 2025",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4207", "title": "AI Decision Making Analytics", "credits": 3, "level": 8, "level_label": "Level 8/4 th year",
+             "requirement": "elective", "category": "department", "prerequisites": ["AI3201"], "prerequisites_text": "AI3201-Machine Learning",
+             "corequisites": [], "special_conditions": []}
+  },
+  {
+   "id": "spec-AI4208", "type": "course_spec", "title": "Course Specification — AI4208 Advanced Machine Learning",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/f79c6b82-598b-4385-bfde-2ffa5979c964.pdf",
+   "sha256": "8d02b333fd5cfefa4393fd080bbe0e95d907ec222f8c8694a93fb47a074bc3c3", "bytes": 1214582, "pages": 7,
+   "doc_version": "1", "doc_date": "2025-01", "doc_date_label": "Last Revision Date: Jan 2025",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4208", "title": "Advanced Machine Learning", "credits": 3, "level": 8, "level_label": "Level 8/ Year 4",
+             "requirement": "elective", "category": "department", "prerequisites": ["AI3201"], "prerequisites_text": "AI3201 Machine Learning",
+             "corequisites": [], "special_conditions": []}
+  },
+  {
+   "id": "spec-AI4209", "type": "course_spec", "title": "Course Specification — AI4209 Reinforcement Learning",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/8079c801-03a7-4a41-a2b4-0c0dc66fd2be.pdf",
+   "sha256": "5ad07f0415e0280f4c04630486596ae920a948acc22788f3d2a5638d434ca95e", "bytes": 543972, "pages": 7,
+   "doc_version": "1", "doc_date": null, "doc_date_label": "Last Revision Date: Pick Revision Date. (not filled in)",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4209", "title": "Reinforcement Learning", "credits": 3, "level": 8, "level_label": "Level 8/ 4 th year",
+             "requirement": "elective", "category": "department", "prerequisites": ["AI3201"], "prerequisites_text": "AI3201 Machine Learning",
+             "corequisites": ["AI3202"], "corequisites_text": "AI3202 Introduction to Deep Learning", "special_conditions": []}
+  },
+  {
+   "id": "spec-AI4308", "type": "course_spec", "title": "Course Specification — AI4308 Cloud Computing for AI",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/f33aaa56-2b57-4e53-9529-2426a2ffd90b.pdf",
+   "sha256": "d88eb1a94a64c0d67201cca7cdb1c888deed8ab980483a822470e63a005b30ee", "bytes": 1279795, "pages": 7,
+   "doc_version": "1", "doc_date": "2025-01-03", "doc_date_label": "Last Revision Date: 3 January 2025",
+   "applicability": "applicable", "applies_to": {"program_ids": ["uqu-1490"], "stated_program": "Bachelor of Science in Artificial Intelligence"},
+   "facts": {"code": "AI4308", "title": "Cloud Computing for AI", "credits": 3, "level": 8, "level_label": "Level 8/4 th year",
+             "requirement": "elective", "category": "department", "prerequisites": ["CEN3011"], "prerequisites_text": "CEN3011-Computer Networks",
+             "corequisites": [], "special_conditions": []}
+  },
+  {
+   "id": "handbook-cs-plan44",
+   "type": "program_handbook",
+   "title": "Computer Science Program — Program Manual (Plan Number 44, Year 2023)",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/%D8%A7%D9%84%D8%A3%D8%AF%D9%84%D8%A9/451-Program%20Manual-CS.pdf",
+   "sha256": "4ac42f0366cfd4370215f9ad43d7cfef17f3a3dae5da316ddd087e398dcf43cd", "bytes": 802946, "pages": 18,
+   "doc_version": "Plan Number 44", "doc_date": "2023-11-30", "doc_date_label": "PDF CreationDate 2023-11-30; 'Year 2023'",
+   "applicability": "not_applicable",
+   "applicability_reason": "يصف الخطة رقم 44 بإجمالي 201 ساعة ورموز مقررات مختلفة، والخطة المنشورة حالياً للبرنامج 478 مجموعها 137 ساعة؛ لذلك لا تُطبَّق على الخطة الحالية.",
+   "applies_to": {"program_ids": ["uqu-478"], "edition": "plan-44"},
+   "facts": {"plan_number": "44", "total_hours": 201,
+             "course_codes_extracted": ["AI2101","ARS1500","BA1901","BIO2101","CEN2000","CEN2001","CEN3002","CS1101","CS1211","CS1312","CS2102","CS2113","CS2121","CS2214","CS2231","CS2315","CS2322","CS2341","CS2342","CS3116","CS3123","CS3132","CS3143","CS3224","CS3251","CS3370","CS4103","CS4152","CS4171","CS4217","CS4225","CS4244","CS4253","CS4272","CS4345","CS4373","DS1302","ELCE1201","ELCE1202","ELCE1203","HCI2004","ICC1201","ICC2202","ICC3203","ICC4204","MTH1105","MTH1211","MTH1501","PHY1110","QR1101","QR2102","QR3103","QR4104","SE1101","SE2102","SE3037","SEC2101","SEC3023"],
+             "course_codes_note": "Codes found by pattern in the study-plan pages (9–11); used only to recognise a record that follows this older plan."}
+  },
+  {
+   "id": "handbook-ai-plan44",
+   "type": "program_handbook",
+   "title": "Artificial Intelligence Program Handbook 2023 (Plan Number 44)",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/%D8%A7%D9%84%D8%A3%D8%AF%D9%84%D8%A9/Artificial%20Intelligence%20Program%20Manual%202023.pdf",
+   "sha256": "0721be4dec013521897731d21f704fb57d318fa764d9f4bcae32dae2b527c044", "bytes": 1604718, "pages": 19,
+   "doc_version": "Plan Number 44", "doc_date": "2023", "doc_date_label": "'Year 2023'",
+   "applicability": "not_applicable",
+   "applicability_reason": "يصف الخطة رقم 44 بإجمالي 185 ساعة (12 مستوى، والتدريب التعاوني AI3399 بـ 8 ساعات)، والخطة المنشورة حالياً للبرنامج 1490 مجموعها 132 ساعة؛ لذلك لا تُطبَّق اختيارياته على الخطة الحالية.",
+   "applies_to": {"program_ids": ["uqu-1490"], "edition": "plan-44"},
+   "facts": {"plan_number": "44", "total_hours": 185,
+             "course_codes_extracted": ["AI2123","AI2224","AI2360","AI3110","AI3135","AI3170","AI3271","AI3284","AI3285","AI3399","AI4175","AI4181","AI4196","AI4272","AI4297","AI4373","AI4398","ARS1601","BA1901","CEN2002","CEN2003","CS1101","CS1211","CS1312","CS2041","CS2051","CS2052","CS2102","CS2214","CS2315","CS2322","CS3123","CS4345","DS1302","ELCE1201","ELCE1202","ELCE1203","ICC1201","ICC2202","ICC3203","ICC4204","MTH1105","MTH1211","MTH1501","PHY1110","QR1101","QR2102","QR3103","QR4104","SE1101","SE2102"],
+             "course_codes_note": "Codes found by pattern in the study-plan pages (8–11); used only to recognise a record that follows this older plan."}
+  },
+  {
+   "id": "handbook-se-2023",
+   "type": "program_handbook",
+   "title": "Software Engineering Program Guidebook 2023-2024",
+   "url": "https://drive.uqu.edu.sa/_/ccomp_se/files/%D8%A7%D9%84%D8%A3%D8%AF%D9%84%D8%A9/SEGuideUpdated.pdf",
+   "sha256": "426054cf481a5545d551441859b838ccf6a2b18ef1d9eb64a7cfd660599df893", "bytes": 1248381, "pages": 17,
+   "doc_version": null, "doc_date": "2023-11-30", "doc_date_label": "PDF CreationDate 2023-11-30",
+   "applicability": "not_applicable",
+   "applicability_reason": "هيكل الخطة فيه 181 ساعة والمقررات مذكورة بأسمائها دون رموز، والخطة المنشورة حالياً للبرنامج 1510 مجموعها 134 ساعة؛ لذلك لا يُطبَّق على الخطة الحالية.",
+   "applies_to": {"program_ids": ["uqu-1510"], "edition": "2023-2024 guidebook"},
+   "facts": {"total_hours": 181}
+  }
+ ]
+}

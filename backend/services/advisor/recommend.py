@@ -19,7 +19,7 @@ from common.grade_scale import GRADE_POINTS
 from services.advisor import rules
 from services.advisor.audit import DegreeAudit, audit
 from services.advisor.catalog import Catalog, Curriculum
-from services.advisor.planner import PlanResult, PlanSettings, Strategy, plan
+from services.advisor.planner import PREP_NOTICE, PlanResult, PlanSettings, Strategy, plan, prep_status
 from services.advisor.profile import StudentProfile, effective_gpa
 
 ENGINE_VERSION = "advisor-1.0"
@@ -183,17 +183,10 @@ def detect_risks(profile: StudentProfile, cur: Curriculum, aud: DegreeAudit, pre
                           message=f"{code} مرصود «غير مكتمل» ويمنع تسجيل {len(blocked)} مقرر حتى يُعدَّل.",
                           evidence=[rules.cite("ic_blocks_dependents")["text"]]))
 
-    gpa = effective_gpa(profile)
-    if gpa is not None:
-        if prefs.program_grad_gpa is not None and gpa < prefs.program_grad_gpa:
-            risks.append(Risk(kind="academic_warning", severity="high", basis="fact",
-                              message=f"معدلك {gpa:.2f} أقل من معدل التخرج لتخصصك ({prefs.program_grad_gpa:.2f}) — هذا إنذار أكاديمي.",
-                              evidence=[rules.cite("warning_below_grad_gpa")["text"]]))
-        elif prefs.program_grad_gpa is None and gpa < 2.0:
-            risks.append(Risk(kind="possible_warning", severity="high", basis="estimate",
-                              message=(f"معدلك {gpa:.2f} أقل من 2.00. معدل التخرج لتخصصك غير منشور لدينا؛ "
-                                       "إن كان 2.00 أو أعلى فأنت في حالة إنذار. أدخله من الإعدادات لنحسم ذلك."),
-                              evidence=[rules.cite("program_grad_gpa")["text"]]))
+    standing = academic_standing(profile, prefs)
+    if standing["warning"]["status"] == "warning":
+        risks.append(Risk(kind="academic_warning", severity="high", basis="fact", message=standing["warning"]["message"],
+                          evidence=[rules.cite("warning_below_grad_gpa")["text"], rules.cite("dismissal_three_warnings")["text"]]))
     recent = [t for t in profile.term_gpas if t.get("gpa") is not None and (t.get("hours") or 0) >= 6]
     if len(recent) >= 3 and recent[-1]["gpa"] < recent[-2]["gpa"] < recent[-3]["gpa"]:
         risks.append(Risk(kind="declining_trend", severity="medium", basis="fact",
@@ -221,7 +214,133 @@ def detect_risks(profile: StudentProfile, cur: Curriculum, aud: DegreeAudit, pre
     return sorted(risks, key=lambda r: (order[r.severity], r.kind, r.message))
 
 
-def confidence(profile: StudentProfile, cur: Curriculum, prefs: AdvisorPreferences, program_source: str) -> dict:
+def academic_standing(profile: StudentProfile, prefs: AdvisorPreferences) -> dict:
+    """Graduation requirement and warning status — two different rules sharing one threshold.
+
+    The threshold is each program's graduation GPA, set by the University Council
+    and not published for these programs. The only verified number is the floor:
+    no program's graduation GPA can be below «مقبول» (1.00/4.00)."""
+    gpa = effective_gpa(profile)
+    floor = float(rules.rule("grad_gpa_floor").value or 1.0)
+    threshold = prefs.program_grad_gpa
+    graduation = {
+        "rule": rules.cite("graduation_requirement"),
+        "program_gpa": threshold,
+        "program_gpa_source": "student" if threshold is not None else "unknown",
+        "floor": floor,
+        "message": (f"معدل التخرج لتخصصك حسب ما أدخلته: {threshold:.2f} (غير موثّق من مصدر رسمي لدينا)."
+                    if threshold is not None else
+                    "معدل التخرج لتخصصك يحدده مجلس الجامعة ولم نجده منشوراً؛ المؤكد فقط أنه لا يقل عن 1.00 (مقبول)."),
+    }
+    if gpa is None:
+        warning = {"status": "unknown", "basis": "no_gpa", "message": "لا يوجد معدل تراكمي لتقييم حالة الإنذار."}
+    elif threshold is not None:
+        warning = ({"status": "warning", "basis": "student_threshold",
+                    "message": f"معدلك {gpa:.2f} أقل من معدل التخرج الذي أدخلته لتخصصك ({threshold:.2f}) — وهذا بحسب اللائحة إنذار أكاديمي."}
+                   if gpa < threshold else
+                   {"status": "clear", "basis": "student_threshold",
+                    "message": f"معدلك {gpa:.2f} ليس أقل من معدل التخرج الذي أدخلته ({threshold:.2f})."})
+    elif gpa < floor:
+        warning = {"status": "warning", "basis": "floor",
+                   "message": (f"معدلك {gpa:.2f} أقل من 1.00، وهو أدنى معدل تخرج تسمح به اللائحة لأي تخصص؛ "
+                               "لذا فهو أقل من معدل تخرج تخصصك أياً كان — وهذا إنذار أكاديمي.")}
+    else:
+        warning = {"status": "unknown", "basis": "threshold_unknown",
+                   "message": (f"لا يمكن الجزم بحالة الإنذار: معدلك {gpa:.2f}، ومعدل التخرج لتخصصك غير منشور. "
+                               "أدخله من الإعدادات إن عرفته من القسم أو من نظام التسجيل.")}
+    warning["rule"] = rules.cite("warning_below_grad_gpa")
+    warning["summer_note"] = rules.cite("summer_no_warning")["text"]
+    return {"graduation": graduation, "warning": warning}
+
+
+def curriculum_fit(profile: StudentProfile, cur: Curriculum) -> dict:
+    """Does the student's record look like THIS curriculum or a documented older edition?
+
+    Measured, not guessed: share of passed courses found in the plan, and course codes
+    that appear only in a documented other edition (e.g. a Plan 44 handbook)."""
+    passed = sorted(profile.passed)
+    plan_codes = {c.code for c in cur.courses} | {o.code for o in cur.elective_options}
+    in_plan = [c for c in passed if c in plan_codes]
+    editions = []
+    for ed in cur.other_editions:
+        exclusive = set(ed.get("codes") or []) - plan_codes
+        hits = sorted(set(passed) & exclusive)
+        if hits:
+            editions.append({"label": ed["label"], "total_hours": ed.get("total_hours"), "document": ed["document"],
+                             "url": ed.get("url"), "matched_codes": hits})
+    ratio = len(in_plan) / len(passed) if passed else None
+    if not passed:
+        verdict, message = "insufficient_data", "لا توجد مقررات مجتازة لمقارنتها بالخطة."
+    elif any(len(e["matched_codes"]) >= 2 for e in editions):
+        e = max(editions, key=lambda e: len(e["matched_codes"]))
+        verdict = "other_edition"
+        message = (f"{len(e['matched_codes'])} من مقرراتك المجتازة تظهر في {e['label']} ({e['total_hours']} ساعة) ولا تظهر في الخطة المنشورة "
+                   f"({cur.stated_total_hours} ساعة): {', '.join(e['matched_codes'][:6])}. غالباً أنت على إصدار مختلف؛ "
+                   "المقارنة بالخطة الحالية قد لا تنطبق عليك — أكّد خطتك مع القسم.")
+    elif len(passed) >= 6 and ratio is not None and ratio < 0.5:
+        verdict = "mismatch"
+        message = (f"{len(in_plan)} فقط من {len(passed)} مقرراً مجتازاً موجودة في الخطة المنشورة؛ "
+                   "قد تكون على خطة أخرى أو تخصص آخر.")
+    else:
+        verdict = "consistent"
+        message = f"{len(in_plan)} من {len(passed)} مقرراً مجتازاً موجودة في الخطة المنشورة."
+    return {"verdict": verdict, "message": message, "passed": len(passed), "in_plan": len(in_plan),
+            "ratio": round(ratio, 2) if ratio is not None else None, "editions": editions}
+
+
+def elective_options_for(profile: StudentProfile, catalog: Catalog, cur: Curriculum) -> dict:
+    passed = set(profile.passed) | set(profile.in_progress)
+    rows = []
+    for o in cur.elective_options:
+        missing = [p for p in o.prerequisites if p not in passed]
+        co_missing = [q for q in o.corequisites if q not in passed]
+        doc = catalog.documents.get(o.source)
+        rows.append({"code": o.code, "title": o.title, "credits": o.credits, "level": o.level,
+                     "prerequisites": o.prerequisites, "corequisites": o.corequisites,
+                     "taken": o.code in profile.passed,
+                     "eligible": not missing and o.code not in profile.passed,
+                     "missing_prerequisites": missing, "corequisites_to_pair": co_missing,
+                     "source_url": o.source_url,
+                     "document": {"title": doc.title, "version": doc.doc_version, "date": doc.doc_date_label} if doc else None})
+    return {"options": rows, "complete": cur.elective_options_complete, "required_hours": cur.unlisted_hours,
+            "note": ("مقررات وُصفت بأنها اختيارية في توصيفاتها الرسمية. القائمة جزئية: لا نعرف كل الخيارات ولا توزيع "
+                     f"الـ {cur.unlisted_hours} ساعة بين اختياري جامعة وقسم؛ تبقى الخانات في الخطة بلا أسماء.")
+            if rows else None}
+
+
+def uncertainties(cur: Curriculum, prefs: AdvisorPreferences, standing: dict, fit: dict, plan_uses_default: bool) -> list[dict]:
+    """What we do not know, and exactly how it bends the recommendation."""
+    out = []
+    if cur.unlisted_hours:
+        out.append({"topic": "electives", "message": f"{cur.unlisted_hours} ساعة اختيارية بلا قائمة رسمية كاملة.",
+                    "effect": "جُدولت كخانات عامة؛ موعد التخرج يفترض أنك ستجد مقررات اختيارية مطروحة بهذا القدر."})
+    out.append({"topic": "offerings", "message": "المقررات المطروحة لكل فصل غير منشورة.",
+                "effect": "الخطة ممكنة رياضياً وقد يتأخر مقرر غير مطروح؛ علّم «غير مطروح» ليعيد المخطط الحساب."})
+    out.append({"topic": "prerequisite_semantics", "message": "لا يُنص على أن المتطلبات المتعددة «و» أو «أو».",
+                "effect": "نعتبرها كلها لازمة، فقد يقترح المخطط تأجيل مقرر يمكن أخذه فعلاً بمتطلب واحد."})
+    if plan_uses_default:
+        out.append({"topic": "max_load", "message": "لا يوجد حد أعلى منشور للعبء في الفصل العادي.",
+                    "effect": f"نخطط بحد افتراضي {rules.DEFAULT_MAX_REGULAR_LOAD} ساعة؛ لو كان النظام يسمح بأقل فسيطول المسار الأسرع."})
+    if standing["graduation"]["program_gpa_source"] == "unknown":
+        out.append({"topic": "graduation_gpa", "message": "معدل التخرج لتخصصك غير منشور.",
+                    "effect": "لا نحكم بالإنذار إلا تحت 1.00؛ عبء التعافي يُقترح بناءً على أدائك الفصلي فقط."})
+    out.append({"topic": "level_restrictions", "message": "قيود التسجيل حسب المستوى أو الساعات المجتازة غير منشورة.",
+                "effect": "مقررات «قبل موعدها» قد يرفضها نظام التسجيل."})
+    if any(pc.special_conditions for pc in cur.courses):
+        codes = [pc.code for pc in cur.courses if pc.special_conditions]
+        out.append({"topic": "approvals", "message": f"مقررات تتطلب موافقة القسم حسب توصيفها: {', '.join(codes)}.",
+                    "effect": "جُدولت بافتراض حصولك على الموافقة."})
+    if fit["verdict"] in ("other_edition", "mismatch"):
+        out.append({"topic": "curriculum_version", "message": fit["message"],
+                    "effect": "قد تكون المقررات المتبقية وساعات التخرج مختلفة لديك؛ النتائج تقديرية حتى تؤكد خطتك."})
+    else:
+        out.append({"topic": "curriculum_version", "message": "إصدار خطتك غير معروف؛ نقارنك بالخطة المنشورة حالياً.",
+                    "effect": "إن التحقت بإصدار أقدم فقد تختلف بعض المقررات."})
+    return out
+
+
+def confidence(profile: StudentProfile, cur: Curriculum, prefs: AdvisorPreferences, program_source: str,
+               fit: dict | None = None) -> dict:
     """Qualitative confidence from data completeness — no invented percentages."""
     reasons, level = [], "high"
 
@@ -244,6 +363,8 @@ def confidence(profile: StudentProfile, cur: Curriculum, prefs: AdvisorPreferenc
         lower("medium", "المعدل المحسوب يختلف عن معدل السجل.")
     if profile.student_entered:
         lower("medium", "بعض المقررات أُدخلت يدوياً ولم تُوثَّق.")
+    if fit and fit["verdict"] in ("other_edition", "mismatch"):
+        lower("low", "سجلك لا يطابق الخطة المنشورة (انظر «مطابقة الخطة»).")
     reasons.append("طرح المقررات في كل فصل غير منشور؛ الخطة ممكنة رياضياً لا مؤكدة للتسجيل.")
     reasons.append("خطتك تُقارن بالخطة المنشورة حالياً؛ إن التحقت بخطة أقدم فقد تختلف بعض المقررات.")
     return {"level": level, "reasons": reasons}
@@ -323,6 +444,11 @@ def analyze(
                 reasons.append("تأجيله فصلاً لا يغيّر موعد التخرج المتوقع (فيه مرونة).")
             if not reasons:
                 reasons.append(f"من مقررات المستوى {cur.course(pcourse.code).level} في خطتك ومتطلباته مستوفاة.")
+            pc_full = cur.course(pcourse.code)
+            for cond in pc_full.special_conditions:
+                reasons.append(f"تنبيه: {cond['text']}.")
+            if pc_full.evidence:
+                reasons.append("متطلباته ومستواه مؤكدة أيضاً في توصيف المقرر الرسمي.")
             stats = review_stats.get(pcourse.code)
             next_courses.append(CourseAdvice(
                 code=pcourse.code, name=pcourse.name, credits=pcourse.credits, reasons=reasons, unlocks=direct,
@@ -354,7 +480,9 @@ def analyze(
     risks = detect_risks(profile, cur, aud, prefs, next_credits, heavy_next, load_info)
     target_gpa = None
     what_if = gpa_what_if(profile, next_credits, target_gpa)
-    conf = confidence(profile, cur, prefs, program_source)
+    fit = curriculum_fit(profile, cur)
+    standing = academic_standing(profile, prefs)
+    conf = confidence(profile, cur, prefs, program_source, fit)
 
     inputs_fingerprint = hashlib.sha256(json.dumps({
         "attempts": [a.model_dump() for a in profile.attempts], "prefs": prefs.model_dump(),
@@ -392,9 +520,31 @@ def analyze(
         "risks": [r.model_dump() for r in risks],
         "gpa_what_if": what_if,
         "confidence": conf,
-        "rules": [rules.cite(r) for r in ("min_regular_load", "max_summer_load", "prerequisites_required", "coop_exclusive",
-                                           "warning_below_grad_gpa", "max_regular_load", "program_grad_gpa", "offerings")],
+        "standing": standing,
+        "prep_year": _prep_info(profile, cur),
+        "curriculum_fit": fit,
+        "elective_options": elective_options_for(profile, catalog, cur),
+        "uncertainties": uncertainties(cur, prefs, standing, fit, prefs.max_load is None),
+        "documents": [
+            {"id": d.id, "type": d.type, "title": d.title, "url": d.url, "version": d.doc_version,
+             "date": d.doc_date_label, "applicability": d.applicability, "reason": d.applicability_reason}
+            for d in (catalog.documents.get(i) for i in cur.documents) if d
+        ] + ([{"id": "uqu-regulation-1480", "type": "regulation", "title": rules.STUDY_RULES_DOC, "url": rules.STUDY_RULES_URL,
+               "version": None, "date": f"تاريخ آخر تعديل: {rules.STUDY_RULES_DOC_DATE}", "applicability": "applicable", "reason": None}]),
+        "rules": [rules.cite(r) for r in ("min_regular_load", "max_summer_load", "prerequisites_required", "corequisites",
+                                           "coop_exclusive", "prep_year_registration", "graduation_requirement",
+                                           "warning_below_grad_gpa", "dismissal_three_warnings", "max_regular_load",
+                                           "default_max_regular_load", "program_grad_gpa", "prereq_and_or", "offerings")],
     }
+
+
+def _prep_info(profile: StudentProfile, cur: Curriculum) -> dict | None:
+    if not cur.prep_year:
+        return None
+    in_prep, _ = prep_status(profile, cur)
+    return {"in_prep": in_prep, "levels": cur.prep_year.levels, "hours": cur.prep_year.hours,
+            "source_id": cur.prep_year.source_id, "matches_plan": cur.prep_year.matches_plan,
+            "notice": PREP_NOTICE if in_prep else None, "rule": rules.cite("prep_year_registration")}
 
 
 def _workload(stats: dict | None) -> dict | None:

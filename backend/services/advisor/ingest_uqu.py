@@ -292,10 +292,16 @@ def build_catalog(raw_dir: Path = RAW) -> Catalog:
         courses[code] = Course(code=code, name_ar=sorted(e["ar"])[0], name_en=sorted(e["en"])[0],
                                credits=credits, seen_in=sorted(e["seen"]))
 
-    return Catalog(
+    catalog = Catalog(
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
         university=UQU, courses=courses, programs=programs, curricula=curricula, issues=global_issues,
     )
+    docs = raw_dir.parent / "documents.json"
+    if docs.is_file():
+        from services.advisor.evidence import apply_documents
+
+        apply_documents(catalog, docs)
+    return catalog
 
 
 def main(argv: list[str] | None = None) -> int:

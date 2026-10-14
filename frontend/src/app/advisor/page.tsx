@@ -22,6 +22,7 @@ import { NextTermPanel } from "@/components/advisor/next-term";
 import { ScenariosPanel } from "@/components/advisor/scenarios";
 import { RisksPanel } from "@/components/advisor/risks";
 import { AskAdvisor, InstructorsPanel, MajorsCompare, ScheduleChecker } from "@/components/advisor/tools";
+import { FitAlert, StandingCard } from "@/components/advisor/evidence";
 import { ApiError } from "@/lib/api";
 import {
   CONFIDENCE_LABEL,
@@ -167,6 +168,8 @@ export default function AdvisorPage() {
                 <p className="text-muted-foreground">{run.strategy_reason}</p>
                 <p className="text-xs text-muted-foreground mt-1">{run.load.basis}.</p>
               </div>
+              <FitAlert run={run} />
+              <StandingCard run={run} />
               {run.summary && (
                 <details className="text-sm">
                   <summary className="cursor-pointer font-bold">الخلاصة في ست نقاط</summary>

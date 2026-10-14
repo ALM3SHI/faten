@@ -73,6 +73,11 @@ export function ScheduleChecker() {
               </li>
             ))}
           </ul>
+          {(result.notes ?? []).length > 0 && (
+            <p className="text-sm text-muted-foreground">
+              مقررات السنة التأهيلية تُسجَّل حسب المستوى دون النظر للمتطلبات السابقة (اللائحة).
+            </p>
+          )}
           {[...result.violations, ...result.warnings].map((v) => (
             <p key={v.rule + v.message} className="text-sm text-amber-800 dark:text-amber-300">
               {v.message}

@@ -9,6 +9,9 @@ test("advisor: set goals, get a grounded plan, compare paths, check a schedule",
   // Saved settings exist but no run yet → the student starts the analysis.
   await page.getByRole("button", { name: "حلّل وضعي" }).click();
   await expect(page.getByText("المسار المقترح: التعافي")).toBeVisible();
+  // GPA 1.62 with no published program threshold → warning status is not claimed either way.
+  await expect(page.getByText("الإنذار الأكاديمي: غير محسوم")).toBeVisible();
+  await expect(page.getByText("شرط التخرج")).toBeVisible();
   await expect(page.getByText("علوم الحاسب الآلي").first()).toBeVisible();
 
   // Next term: the failed gatekeeper course comes first, with its reasons.
@@ -26,6 +29,10 @@ test("advisor: set goals, get a grounded plan, compare paths, check a schedule",
   await page.getByRole("tab", { name: "المخاطر والبيانات" }).click();
   await expect(page.getByText("حقيقة من سجلك").first()).toBeVisible();
   await expect(page.getByRole("link", { name: "صفحة الخطة الرسمية" })).toHaveAttribute("href", "https://uqu.edu.sa/App/Degrees/478");
+  await expect(page.getByRole("heading", { name: "ما لا نعرفه وأثره على التوصية" })).toBeVisible();
+  await page.getByText(/الوثائق الرسمية المستخدمة/).click();
+  await expect(page.getByRole("link", { name: /CS3809 Software Implementation Systems/ })).toBeVisible();
+  await expect(page.getByText(/لا تنطبق على الخطة الحالية/).first()).toBeVisible();
 
   // Schedule check rejects a same-term prerequisite.
   await page.getByRole("tab", { name: "فحص جدول" }).click();
