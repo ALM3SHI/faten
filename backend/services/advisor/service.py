@@ -166,7 +166,9 @@ def run_analysis(db, uid: str, overrides: dict | None = None, today: dt.date | N
         })
     cur = catalog.curriculum_for(pid, settings.get("curriculum_id"))
     profile = build_profile(record, settings.get("corrections"))
-    prefs = AdvisorPreferences(**{k: v for k, v in settings.items() if k in AdvisorPreferences.model_fields}, program_id=pid)
+    fields = {k: v for k, v in settings.items() if k in AdvisorPreferences.model_fields}
+    fields["program_id"] = pid  # resolved value wins; never pass the key twice
+    prefs = AdvisorPreferences(**fields)
     plan_codes = [c.code for c in cur.courses if c.code not in profile.passed]
     stats = review_stats(db, plan_codes[:25])
     result = analyze(profile, catalog, cur, prefs, program_source=source, review_stats=stats, today=today)

@@ -166,3 +166,23 @@ def test_chat_tool_reads_the_engine(fake_db):
     assert "ممكنة رياضياً" in out["note"]
     none = asyncio.run(execute_tool("get_academic_plan", {}, OTHER, fake_db))
     assert none["success"] is False and "/advisor" in none["message"]
+
+
+def test_analysis_after_saving_settings(api):
+    """Real UI flow: the student saves settings (always incl. program_id), then analyses.
+    Regression: program_id was passed twice → TypeError → 500 without CORS headers."""
+    client, db = api
+    seed_record(db, UID, fx.failed_prerequisites())
+    assert client.put("/api/advisor/settings", json={"program_id": "uqu-478", "priority": "protect_gpa", "max_load": 15,
+                                                     "summer": True, "target_term": "1450-2", "program_grad_gpa": 2.0,
+                                                     "weekly_work_hours": 10, "interests": ["الشبكات"],
+                                                     "unavailable": [{"code": "CS1701", "term": "next"}]}).status_code == 200
+    r = client.post("/api/advisor/analyze", json={})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["program"]["source"] == "student" and body["scenarios"]["fastest"]["load_cap"] == 15
+    assert "CS1701" not in {c["code"] for c in body["next_term"]["courses"]}
+    # what-if overrides on top of saved settings take the same path
+    r2 = client.post("/api/advisor/analyze", json={"overrides": {"program_id": "uqu-478", "max_load": 18}})
+    assert r2.status_code == 200, r2.text
+    assert client.get("/api/advisor/latest").json()["run"]["run_id"]
