@@ -93,6 +93,7 @@ export default function AdvisorPage() {
 
   const detected = run?.program.source === "record" ? run.program.id : null;
   const planOk = run?.plan_applicable !== false;
+  const graduated = run?.record_status?.status === "graduated" || run?.record_status?.status === "likely_graduated";
 
   return (
     <div className="min-h-screen bg-background pb-28" dir="rtl">
@@ -172,9 +173,25 @@ export default function AdvisorPage() {
                     {run.load.basis}. الموعد ممكن رياضياً وفق الخطة المنشورة وليس مؤكداً للتسجيل.
                   </p>
                 </div>
+              ) : graduated ? (
+                <div role="status" className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm leading-7 flex gap-3">
+                  <GraduationCap className="w-5 h-5 mt-1 shrink-0 text-emerald-700 dark:text-emerald-300" aria-hidden />
+                  <div>
+                    <p className="font-bold">{run.withheld_reason}</p>
+                    {run.record_status?.reasons.map((r) => (
+                      <p key={r} className="text-xs text-muted-foreground">{r}</p>
+                    ))}
+                  </div>
+                </div>
               ) : (
                 <p role="alert" className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm leading-7 font-bold">
                   {run.withheld_reason}
+                </p>
+              )}
+              {run.record_status?.status === "between_terms" && (
+                <p className="text-xs text-muted-foreground leading-6">
+                  سجلك مرصود بالكامل ولا توجد مقررات مسجلة حالياً، فنخطط لك من الفصل القادم.
+                  {run.record_status.reasons.length > 0 && ` ${run.record_status.reasons.join(" ")}`}
                 </p>
               )}
               <FitAlert run={run} />

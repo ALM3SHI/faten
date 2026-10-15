@@ -29,6 +29,8 @@ import {
 } from "@/lib/transcript-parser";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { FAILING_GRADES, STRONG_GRADES, WEAK_GRADES } from "@/lib/grade-scale";
+import { assessRecord } from "@/lib/record-status";
+import { RecordStatusNote } from "@/components/record-status-note";
 
 interface Step1Props {
   // Passing `null` for `parsed` signals: "use the transcript already in
@@ -103,14 +105,8 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
         ? parsed.registeredCourses
         : parsed.allCourses.filter((c) => !c.grade);
 
-      if (current.length === 0) {
-        setState({
-          kind: "error",
-          message:
-            "لم نتمكن من تحديد مواد الترم الحالي في سجلك. تأكد أن السجل يحتوي على فصل دراسي مسجّل وغير منتهي.",
-        });
-        return;
-      }
+      // Every record is accepted: a fully graded one (between terms, or a
+      // graduate) simply has no current courses — the review explains it.
       setState({ kind: "review", parsed, currentCourses: current });
     } catch (err) {
       const error = err as Error;
@@ -405,9 +401,9 @@ function SummaryView({
           title={`مواد الترم الحالي · ${currentCourses.length}`}
         />
         {currentCourses.length === 0 ? (
-          <p className="text-xs text-muted-foreground py-4 text-center">
-            لا توجد مواد مسجّلة في الترم الحالي.
-          </p>
+          <RecordStatusNote
+            assessment={assessRecord({ completedCourses, registeredCourses: currentCourses, earnedHours, planHours })}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {currentCourses.map((c) => (
@@ -429,13 +425,12 @@ function SummaryView({
         </Button>
         <Button
           onClick={onNext}
-          disabled={currentCourses.length === 0}
           className={cn(
             "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold mr-auto",
             "shadow-[0_0_24px_hsla(245,78%,62%,0.4)] disabled:opacity-50 disabled:shadow-none",
           )}
         >
-          التالي: الجدول الدراسي
+          {currentCourses.length > 0 ? "التالي: الجدول الدراسي" : "التالي"}
           <ArrowLeft className="w-5 h-5" />
         </Button>
       </div>
@@ -457,6 +452,8 @@ function ReviewView({
   onReset: () => void;
 }) {
   const [editedCourses, setEditedCourses] = useState<EnrichedCourse[]>(() => currentCourses);
+  const assessment = useMemo(() => assessRecord(parsed), [parsed]);
+  const hasCurrent = currentCourses.length > 0;
 
   const setCourseHours = (code: string, creditHours: number) => {
     setEditedCourses((prev) =>
@@ -477,15 +474,26 @@ function ReviewView({
     >
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1">مواد الترم الحالي</h2>
+          <h2 className="text-2xl font-black tracking-tight mb-1">{hasCurrent ? "مواد الترم الحالي" : "السجل الأكاديمي"}</h2>
           <p className="text-sm text-muted-foreground">
-            تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{currentCourses.length}</strong> مادة
-            من السجل (دقة {parsed.confidence}%). راجعها وأكّدها للمتابعة.
+            {hasCurrent ? (
+              <>
+                تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{currentCourses.length}</strong> مادة
+                من السجل (دقة {parsed.confidence}%). راجعها وأكّدها للمتابعة.
+              </>
+            ) : (
+              <>
+                تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{parsed.completedCourses.length}</strong> مادة
+                مرصودة من السجل (دقة {parsed.confidence}%).
+              </>
+            )}
           </p>
-          <p className="text-xs text-muted-foreground/90 leading-relaxed mt-2 max-w-xl">
-            قد تظهر ساعات مواد الترم الحالي بصفر لأنها لا تُحتسب في السجل إلا بعد رصد الدرجة. يمكنك
-            تعديلها يدويًا قبل المتابعة.
-          </p>
+          {hasCurrent && (
+            <p className="text-xs text-muted-foreground/90 leading-relaxed mt-2 max-w-xl">
+              قد تظهر ساعات مواد الترم الحالي بصفر لأنها لا تُحتسب في السجل إلا بعد رصد الدرجة. يمكنك
+              تعديلها يدويًا قبل المتابعة.
+            </p>
+          )}
         </div>
         <Button
           variant="outline"
@@ -497,6 +505,8 @@ function ReviewView({
           رفع ملف آخر
         </Button>
       </header>
+
+      <RecordStatusNote assessment={assessment} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {editedCourses.map((c) => (
@@ -516,7 +526,7 @@ function ReviewView({
             "shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
           )}
         >
-          تأكيد والمتابعة لإعداد الجدول
+          {hasCurrent ? "تأكيد والمتابعة لإعداد الجدول" : "تأكيد وحفظ السجل"}
           <ArrowLeft className="w-5 h-5" />
         </Button>
       </div>

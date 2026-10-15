@@ -40,11 +40,17 @@ def test_every_instructor_has_a_complete_analysis():
         assert p["stats"]["reviews"] == p["data"]["reviews_analyzed"]
 
 
-def test_truncated_files_are_marked_partial():
-    partial = {p["name"]: p["data"] for p in DATA["instructors"] if not p["data"]["complete"]}
-    assert set(partial) == {"احمد حسن يحي لال الهندي", "غسان فاروق جودة باتي"}
-    for d in partial.values():
-        assert d["reviews_analyzed"] < d["reviews_stated"]
+def test_all_files_complete_and_truncated_files_keep_whole_reviews_only(tmp_path):
+    assert all(p["data"]["complete"] and p["data"]["reviews_analyzed"] == p["data"]["reviews_stated"] for p in DATA["instructors"])
+    text = (
+        '{"professor_profile": {"name": "د. س", "total_reviews": 3}, "reviews": ['
+        '{"course": "شبكات", "ratings": {"explanation": 100}}, {"course": "شبكات", "ratings": {"explanation": 60}},'
+        ' {"course": "شبكات", "comment": "مقطو'
+    )
+    f = tmp_path / "x.json"
+    f.write_text(text, encoding="utf-8")
+    data, complete = build.load(f)
+    assert not complete and len(data["reviews"]) == 2
 
 
 def test_course_links_point_to_real_plan_courses():
@@ -62,6 +68,7 @@ def test_wording_to_course_family():
         "هياكل بيانات جافا نظري": ["CS2105"],
         "برمجة 2 عملي": ["CS1704", "CS1012", "CS1013", "SE1101"],
         "تنظيم وعمارة الحاسب COA": ["CEN2012"],
+        "هياكل المتقطعه": ["CS1302", "DS1901", "SEC1201"],
         "اساسيات الشبكات و تطبيقاتها": ["CEN1501"],
         "هياكل حسابية ٢": ["SE3402"],
         "برمجة بلغة جافا عملي": ["CS1701"],

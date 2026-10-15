@@ -10,6 +10,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api";
 import { parseTranscriptPDF, type ParsedTranscript } from "@/lib/transcript-parser";
+import { assessRecord } from "@/lib/record-status";
+import { RecordStatusNote } from "@/components/record-status-note";
 import { useTranscriptStore } from "@/store/transcriptStore";
 
 // What the UI works with: the parsed transcript + optional AI analysis
@@ -202,6 +204,7 @@ export default function TranscriptParserPage() {
             {/* Successful local parse — render immediately, AI advisory streams in */}
             {parsedData && !("error" in parsedData) && (
               <>
+                <RecordStatusNote assessment={assessRecord(parsedData)} />
                 <div className="grid md:grid-cols-4 gap-4">
                   <div className="glass p-6 rounded-3xl border-foreground/10">
                     <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">المعدل التراكمي</div>

@@ -1,6 +1,6 @@
 {
  "schema_version": 2,
- "generated_at": "2026-10-15T09:47:06+00:00",
+ "generated_at": "2026-10-15T10:49:57+00:00",
  "university": {
   "id": "uqu",
   "name_ar": "جامعة أم القرى",
@@ -4449,7 +4449,7 @@
      "credits": 3,
      "prerequisites": [
       "DS2201",
-      "DS1103"
+      "DS2301"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4460,8 +4460,11 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201",
+      "DS1103"
+     ]
     },
     {
      "code": "DS2202",
@@ -4487,7 +4490,7 @@
      "level": 4,
      "credits": 3,
      "prerequisites": [
-      "DS2201"
+      "AI2001"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4498,16 +4501,18 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201"
+     ]
     },
     {
      "code": "DS2401",
      "level": 4,
      "credits": 3,
      "prerequisites": [
-      "MTH2902",
-      "DS1103"
+      "MTH1441",
+      "MTH2902"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4518,15 +4523,18 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH2902",
+      "DS1103"
+     ]
     },
     {
      "code": "SEC3011",
      "level": 5,
      "credits": 3,
      "prerequisites": [
-      "DS1102"
+      "DS2201"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4537,8 +4545,10 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS1102"
+     ]
     },
     {
      "code": "SE1201",
@@ -4562,7 +4572,7 @@
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "MTH1141",
+      "DS2202",
       "DS2401"
      ],
      "prereq_relation": "all_of",
@@ -4574,15 +4584,18 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH1141",
+      "DS2401"
+     ]
     },
     {
      "code": "DS3302",
      "level": 5,
      "credits": 3,
      "prerequisites": [
-      "DS1103"
+      "DS2301"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4593,15 +4606,17 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS1103"
+     ]
     },
     {
      "code": "CEN1014",
      "level": 5,
      "credits": 3,
      "prerequisites": [
-      "DS1103"
+      "CS1011"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4612,8 +4627,10 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS1103"
+     ]
     },
     {
      "code": "DS3205",
@@ -4688,7 +4705,7 @@
      "level": 7,
      "credits": 3,
      "prerequisites": [
-      "DS3402"
+      "DS2401"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4699,8 +4716,10 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS3402"
+     ]
     },
     {
      "code": "DS4701",
@@ -4724,7 +4743,7 @@
      "level": 7,
      "credits": 2,
      "prerequisites": [
-      "DS3402"
+      "DS2401"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4735,15 +4754,17 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS3402"
+     ]
     },
     {
      "code": "QR3104",
      "level": 8,
      "credits": 2,
      "prerequisites": [
-      "QR1101"
+      "QR2103"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4754,8 +4775,10 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "QR1101"
+     ]
     },
     {
      "code": "BUS1099",
@@ -4778,7 +4801,9 @@
      "code": "DS4802",
      "level": 8,
      "credits": 3,
-     "prerequisites": [],
+     "prerequisites": [
+      "DS4801"
+     ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
@@ -4788,8 +4813,8 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": []
     },
     {
      "code": "DS4502",
@@ -4815,8 +4840,8 @@
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "DS2401",
-      "DS3302"
+      "DS2202",
+      "DS3402"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4827,8 +4852,11 @@
      "evidence": [],
      "special_conditions": [],
      "prereq_list_corroborated": false,
-     "prereq_source": "plan_page",
-     "plan_page_prerequisites": null
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2401",
+      "DS3302"
+     ]
     }
    ],
    "verification": "incomplete",
@@ -4856,6 +4884,84 @@
      "code": "no_offering_data",
      "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
      "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN1014: المتطلبات المعتمدة ['CS1011'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS1103'].",
+     "subject": "CEN1014"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS2203: المتطلبات المعتمدة ['AI2001'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201'].",
+     "subject": "DS2203"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS2303: المتطلبات المعتمدة ['DS2201', 'DS2301'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201', 'DS1103'].",
+     "subject": "DS2303"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS2401: المتطلبات المعتمدة ['MTH1441', 'MTH2902'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH2902', 'DS1103'].",
+     "subject": "DS2401"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS3302: المتطلبات المعتمدة ['DS2301'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS1103'].",
+     "subject": "DS3302"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS3402: المتطلبات المعتمدة ['DS2202', 'DS2401'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH1141', 'DS2401'].",
+     "subject": "DS3402"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS4104: المتطلبات المعتمدة ['DS2401'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS3402'].",
+     "subject": "DS4104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS4503: المتطلبات المعتمدة ['DS2401'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS3402'].",
+     "subject": "DS4503"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS4511: المتطلبات المعتمدة ['DS2202', 'DS3402'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2401', 'DS3302'].",
+     "subject": "DS4511"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS4802: المتطلبات المعتمدة ['DS4801'] من قائمة الكلية؛ صفحة الخطة تذكر لا شيء.",
+     "subject": "DS4802"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "QR3104: المتطلبات المعتمدة ['QR2103'] من قائمة الكلية؛ صفحة الخطة تذكر ['QR1101'].",
+     "subject": "QR3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3011: المتطلبات المعتمدة ['DS2201'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS1102'].",
+     "subject": "SEC3011"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 12 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
+     "subject": null
     }
    ],
    "elective_options": [],
@@ -4863,7 +4969,15 @@
    "prep_year": null,
    "other_editions": [],
    "documents": [],
-   "college_list": null
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "ds.json",
+    "original_name": "علم البيانات.json",
+    "sha256": "0d81b997d55998b85dc851ea0aa444cd32660f7651d16e14aab700dd6958bb93",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
   },
   "uqu-1510@2026-10-14": {
    "id": "uqu-1510@2026-10-14",
@@ -8669,14 +8783,7 @@
    }
   }
  },
- "issues": [
-  {
-   "severity": "info",
-   "code": "college_list_rejected",
-   "message": "قائمة «علم البيانات.json» لم تُعتمد: الملف مقطوع عند المستوى الخامس (ينتهي داخل مقرر CEN1014) وليس JSON صالحاً؛ بقيت متطلبات صفحة الخطة.",
-   "subject": "uqu-1508"
-  }
- ],
+ "issues": [],
  "documents": {
   "uqu-regulation-1480": {
    "id": "uqu-regulation-1480",

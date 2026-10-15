@@ -40,16 +40,15 @@
    "original_name": "الامن السبراني.json",
    "program_id": "uqu-1738",
    "sha256": "92e18db0d7c667900095b51194c553a918c26fbab09162a500b2406d7c60ef82"
-  }
- ],
- "rejected": [
+  },
   {
+   "file": "ds.json",
    "original_name": "علم البيانات.json",
    "program_id": "uqu-1508",
-   "sha256": "e8e980d6cdb6d3f55fd8d26b85c3d367f2a848846e27d2d6d8fc99114618a881",
-   "reason": "الملف مقطوع عند المستوى الخامس (ينتهي داخل مقرر CEN1014) وليس JSON صالحاً؛ بقيت متطلبات صفحة الخطة."
+   "sha256": "0d81b997d55998b85dc851ea0aa444cd32660f7651d16e14aab700dd6958bb93"
   }
  ],
+ "rejected": [],
  "code_aliases": {
   "PHY1114": {
    "code": "PHYS1114",

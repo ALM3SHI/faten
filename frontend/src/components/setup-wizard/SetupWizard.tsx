@@ -58,7 +58,8 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
   const handleStep1Confirmed = (parsed: any, courses: EnrichedCourse[]) => {
     setTranscriptRaw(parsed);
     setCurrentCourses(courses);
-    setStep(2);
+    // Between terms or graduated: nothing to schedule — go straight to saving.
+    setStep(courses.length > 0 ? 2 : 3);
   };
 
   const handleStep2Done = (slots: ScheduleSlot[], source: ScheduleSource) => {

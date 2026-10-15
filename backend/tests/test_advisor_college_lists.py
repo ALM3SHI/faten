@@ -14,9 +14,8 @@ def test_every_listed_file_is_recorded_with_its_hash():
     cs = CAT.curriculum_for("uqu-478")
     assert cs.college_list and cs.college_list["file"] == "cs.json"
     assert cs.college_list["original_name"] == "computer_science_curriculum.json"
-    for pid in ("uqu-478", "uqu-1490", "uqu-1510", "uqu-1492", "uqu-1981", "uqu-1738"):
+    for pid in ("uqu-478", "uqu-1490", "uqu-1510", "uqu-1492", "uqu-1981", "uqu-1738", "uqu-1508"):
         assert CAT.curriculum_for(pid).college_list is not None
-    assert CAT.curriculum_for("uqu-1508").college_list is None  # truncated file rejected
 
 
 def test_differences_keep_the_plan_page_value_and_are_reported():
@@ -31,12 +30,11 @@ def test_differences_keep_the_plan_page_value_and_are_reported():
     assert cs.listed_hours == 126 and cs.course("CS3608").credits == 4
 
 
-def test_code_alias_and_rejected_file():
+def test_code_alias():
     ce = CAT.curriculum_for("uqu-1492")
     # The list writes PHY1114; the plan and student records use PHYS1114.
     assert ce.course("EE1101").prereq_source == "plan_page"
     assert not any(i.subject == "PHY1114" for i in ce.issues)
-    assert any(i.code == "college_list_rejected" and i.subject == "uqu-1508" for i in CAT.issues)
 
 
 def _rebuild_with(tmp_path, edit):
@@ -95,3 +93,13 @@ def test_record_major_names_resolve_to_the_new_programs():
                        ("علوم الحاسب الآلي", "uqu-478"), ("الذكاء الاصطناعي", "uqu-1490"),
                        ("الأمن السيبراني", "uqu-1738"), ("Cybersecurity", "uqu-1738")):
         assert resolve_program({}, {"major": major}, CAT) == (pid, "record"), major
+
+
+def test_rejected_files_are_reported(tmp_path):
+    def edit(folder):
+        m = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
+        m["rejected"] = [{"original_name": "x.json", "program_id": "uqu-1508", "reason": "مقطوع"}]
+        (folder / "manifest.json").write_text(json.dumps(m, ensure_ascii=False), encoding="utf-8")
+
+    cat = _rebuild_with(tmp_path, edit)
+    assert any(i.code == "college_list_rejected" and i.subject == "uqu-1508" for i in cat.issues)

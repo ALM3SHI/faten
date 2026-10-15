@@ -264,8 +264,8 @@ def build_profile(record: dict | None, corrections: dict | None = None) -> Stude
     if stated_gpa is None and computed is None and attempts:
         gaps.append(DataGap(field="gpa", message="المعدل التراكمي غير متوفر.", impact="تقييم المخاطر الأكاديمية سيكون محدوداً."))
     if attempts and not any(a.status == "in_progress" for a in attempts):
-        gaps.append(DataGap(field="current_courses", message="لا توجد مقررات مسجلة للفصل الحالي في السجل.",
-                            impact="سنفترض أنك لا تدرس شيئاً الآن؛ إن كنت مسجلاً أضف مقرراتك الحالية حتى لا نقترحها مجدداً."))
+        gaps.append(DataGap(field="current_courses", message="كل مقررات السجل مرصودة ولا توجد مقررات مسجلة حالياً (سجل بين فصلين).",
+                            impact="نخطط من الفصل القادم بناءً على كل ما رُصد؛ إن سجّلت مقررات بعد رفع السجل أضفها حتى لا نقترحها مجدداً."))
 
     return StudentProfile(
         attempts=attempts, passed=passed, failed_unresolved=failed_unresolved, in_progress=in_progress,

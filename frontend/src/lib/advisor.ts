@@ -225,6 +225,14 @@ export interface AdvisorRun {
   /** false when the record matches another curriculum edition: no course or date advice is given. */
   plan_applicable?: boolean;
   withheld_reason?: string | null;
+  record_status?: {
+    status: "enrolled" | "between_terms" | "graduated" | "likely_graduated";
+    final_project: "passed" | "part1_only" | "missing";
+    training: "passed" | "missing";
+    earned_hours: number;
+    plan_hours: number | null;
+    reasons: string[];
+  };
   rules: RuleCite[];
   summary?: RunSummary;
 }

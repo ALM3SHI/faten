@@ -47,6 +47,12 @@ export function Step3Complete({ slotsCount, coursesCount, onCommit }: Step3Props
         تم إعداد ملفك الأكاديمي بنجاح!
       </h2>
 
+      {coursesCount === 0 && (
+        <p className="text-sm text-muted-foreground max-w-md leading-7">
+          لا توجد مواد مسجلة في سجلك حالياً، فتخطّينا خطوة الجدول. تقدر تضيف جدولك لاحقاً من الملف الشخصي.
+        </p>
+      )}
+
       <div className="grid grid-cols-2 gap-3 w-full max-w-md">
         <StatPill
           icon={<BookOpen className="w-4 h-4 text-emerald-400" />}

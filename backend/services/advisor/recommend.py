@@ -16,7 +16,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from common.grade_scale import GRADE_POINTS
-from services.advisor import rules
+from services.advisor import record_status, rules
 from services.advisor.audit import DegreeAudit, audit
 from services.advisor.catalog import Catalog, Curriculum
 from services.advisor.planner import PREP_NOTICE, PlanResult, PlanSettings, Strategy, plan, prep_status
@@ -397,6 +397,7 @@ def analyze(
     program_source: str = "student",
     review_stats: dict[str, dict] | None = None,
     today: dt.date | None = None,
+    record_plan_hours: int | None = None,
 ) -> dict:
     """Full advisory run. Pure function of its inputs (reproducible)."""
     review_stats = review_stats or {}
@@ -505,13 +506,21 @@ def analyze(
         what_if = {"available": False, "reason": "withheld_other_curriculum"}
         # Keep only risks that come from the record itself, not from the current plan's structure.
         risks = [r for r in risks if r.kind in ("academic_warning", "declining_trend", "repeated_course")]
+    rec_status = record_status.assess(profile, catalog, cur, aud, record_plan_hours)
+    if rec_status["status"] in ("graduated", "likely_graduated"):
+        # Nothing left to plan: suggesting courses or a graduation date to a graduate is wrong advice.
+        plan_applicable = False
+        withheld_reason = record_status.GRADUATE_MESSAGE
+        next_courses, alternatives = [], []
+        what_if = {"available": False, "reason": "graduated"}
+        risks = []
     conf = confidence(profile, cur, prefs, program_source, fit)
 
     inputs_fingerprint = hashlib.sha256(json.dumps({
         "attempts": [a.model_dump() for a in profile.attempts], "prefs": prefs.model_dump(),
         "curriculum": cur.id, "raw": cur.provenance.raw_sha256, "reviews": review_stats,
         "start": scenarios["balanced"].terms[0].term if scenarios["balanced"].terms else None,
-        "engine": ENGINE_VERSION,
+        "engine": ENGINE_VERSION, "record_plan_hours": record_plan_hours,
     }, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
 
     return {
@@ -536,6 +545,7 @@ def analyze(
         "strategy_reason": _strategy_reason(chosen, load_info, prefs),
         "plan_applicable": plan_applicable,
         "withheld_reason": withheld_reason,
+        "record_status": rec_status,
         "next_term": {
             "term": first.term if first else None, "label": first.label if first else None,
             "credits": next_credits if plan_applicable else 0, "courses": [c.model_dump() for c in next_courses],

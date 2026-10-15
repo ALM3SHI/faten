@@ -106,6 +106,21 @@ new detail → added beside the plan data with its source; conflict → an Issue
   drops to *low*.
 * The prerequisite cards on course pages show the *dependent* course's hours; the ingest detects and ignores this.
 
+## Record status — every record is accepted
+
+A transcript is accepted whatever its state (`frontend/src/lib/record-status.ts`, mirrored server-side in
+`services/advisor/record_status.py`):
+
+| Status | When | What happens |
+|---|---|---|
+| `enrolled` | courses registered / in progress | normal flow |
+| `between_terms` | everything graded, nothing registered | upload accepted, schedule step skipped; the advisor plans from the next term |
+| `graduated` | the current plan is fully covered, **or** the final graduation-project part is passed and earned hours reach the plan total printed on the record | upload accepted; the advisor withholds course suggestions and congratulates |
+| `likely_graduated` | no plan total on the record, but final project + training passed and ≥ 118 h | same, worded as "likely" |
+
+The number of terms or levels is **never** used: a student who changed majors (many terms, e.g. 98 h after
+the ninth level) is still `between_terms`. «مشروع تخرج 1» alone is not the final part; a failed project never counts.
+
 ## Deterministic rules
 
 Hard (a plan that breaks one is never produced; covered by a 40-student randomised property test × 3 strategies):

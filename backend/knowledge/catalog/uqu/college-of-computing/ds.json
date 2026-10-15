@@ -1,0 +1,345 @@
+{
+  "major": {
+    "code": "DS",
+    "name_ar": "علوم البيانات",
+    "name_en": "Data Science",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1141",
+            "name_ar": "التفاضل والتكامل 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1011",
+            "name_ar": "برمجة الحاسب بلغة بايثون",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "DS1102",
+            "name_ar": "مقدمة في علوم البيانات",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          },
+          {
+            "code": "DS1901",
+            "name_ar": "هياكل متقطعة",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "DS1103",
+            "name_ar": "البرمجة المتقدمة لعلوم البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1441",
+            "name_ar": "الجبر الخطي",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "DS2201",
+            "name_ar": "مقدمة في قواعد البيانات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH2902",
+            "name_ar": "الإحصاء التطبيقي في علوم البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1602"
+            ]
+          },
+          {
+            "code": "DS2301",
+            "name_ar": "جمع ومعالجة البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS1102",
+              "DS1103"
+            ]
+          },
+          {
+            "code": "DS2206",
+            "name_ar": "هياكل البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS1103",
+              "DS1901"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "DS2303",
+            "name_ar": "تحليل بيانات الويب",
+            "credits": 3,
+            "prerequisites": [
+              "DS2301",
+              "DS2201"
+            ]
+          },
+          {
+            "code": "DS2202",
+            "name_ar": "تكامل و مخازن البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS2201"
+            ]
+          },
+          {
+            "code": "DS2203",
+            "name_ar": "تمثيل المعرفة و الاستنتاج",
+            "credits": 3,
+            "prerequisites": [
+              "AI2001"
+            ]
+          },
+          {
+            "code": "DS2401",
+            "name_ar": "تعلم الآلة لعلوم البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1441",
+              "MTH2902"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "SEC3011",
+            "name_ar": "أمن وخصوصية البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS2201"
+            ]
+          },
+          {
+            "code": "SE1201",
+            "name_ar": "اسس هندسة البرمجيات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "DS3402",
+            "name_ar": "نمذجة البيانات",
+            "credits": 4,
+            "prerequisites": [
+              "DS2401",
+              "DS2202"
+            ]
+          },
+          {
+            "code": "DS3302",
+            "name_ar": "تصوير البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS2301"
+            ]
+          },
+          {
+            "code": "CEN1014",
+            "name_ar": "نظم التشغيل و الشبكات",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          },
+          {
+            "code": "DS3205",
+            "name_ar": "إدارة البيانات",
+            "credits": 2,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "DS3803",
+            "name_ar": "التدريب التعاوني",
+            "credits": 6,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "DS4801",
+            "name_ar": "مشروع تخرج 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "DS4503",
+            "name_ar": "تطبيقات معالجة اللغات الطبيعية",
+            "credits": 3,
+            "prerequisites": [
+              "DS2401"
+            ]
+          },
+          {
+            "code": "DS4701",
+            "name_ar": "أخلاقيات و حوكمة البيانات",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "DS4104",
+            "name_ar": "مواضيع خاصة في علوم البيانات",
+            "credits": 2,
+            "prerequisites": [
+              "DS2401"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "DS4802",
+            "name_ar": "مشروع تخرج 2",
+            "credits": 3,
+            "prerequisites": [
+              "DS4801"
+            ]
+          },
+          {
+            "code": "DS4502",
+            "name_ar": "تحسين تحليل البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "DS3402"
+            ]
+          },
+          {
+            "code": "DS4511",
+            "name_ar": "التنقيب في البيانات الضخمة",
+            "credits": 3,
+            "prerequisites": [
+              "DS3402",
+              "DS2202"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -174,7 +174,9 @@ def run_analysis(db, uid: str, overrides: dict | None = None, today: dt.date | N
     prefs = AdvisorPreferences(**fields)
     plan_codes = [c.code for c in cur.courses if c.code not in profile.passed]
     stats = review_stats(db, plan_codes[:25])
-    result = analyze(profile, catalog, cur, prefs, program_source=source, review_stats=stats, today=today)
+    plan_hours = record.get("planHours")
+    result = analyze(profile, catalog, cur, prefs, program_source=source, review_stats=stats, today=today,
+                     record_plan_hours=plan_hours if isinstance(plan_hours, int) else None)
     run_id = result["inputs_fingerprint"][:20]
     result["run_id"] = run_id
     result["created_at"] = datetime.now(timezone.utc).isoformat()

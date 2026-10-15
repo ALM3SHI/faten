@@ -83,6 +83,8 @@ export default function PlanPage() {
 
   // ── Derived state ─────────────────────────────────────────────────
   const hasTranscript = currentCourses.length > 0;
+  // A fully graded record (between terms, or a graduate) has no current courses.
+  const hasGradedRecord = useTranscriptStore((s) => s.completedCourses.length > 0);
   const hasSchedule = schedule.length > 0;
   const canGenerate = hasTranscript && !isGenerating;
 
@@ -288,8 +290,12 @@ export default function PlanPage() {
         {/* ── Prerequisite gates ──────────────────────────────────── */}
         {!hasTranscript && (
           <PrerequisiteCard
-            title="ارفع سجلك الأكاديمي أولاً"
-            description="نحتاج قائمة مواد ترمك الحالي حتى يتمكن الذكاء الاصطناعي من جدولة جلسات مراجعة مخصصة لك."
+            title={hasGradedRecord ? "لا توجد مواد مسجلة في سجلك حالياً" : "ارفع سجلك الأكاديمي أولاً"}
+            description={
+              hasGradedRecord
+                ? "سجلك المرفوع مرصود بالكامل (بين فصلين أو بعد التخرج). بعد تسجيل مواد الفصل الجديد أعد رفع السجل لنبني لك خطة المذاكرة."
+                : "نحتاج قائمة مواد ترمك الحالي حتى يتمكن الذكاء الاصطناعي من جدولة جلسات مراجعة مخصصة لك."
+            }
             icon={<GraduationCap className="w-6 h-6" />}
             href="/profile"
             cta="انتقل إلى الملف الأكاديمي"
