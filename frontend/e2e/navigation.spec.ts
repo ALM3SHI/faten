@@ -1,23 +1,40 @@
 import { expect, test } from "@playwright/test";
 import { signIn } from "./helpers";
 
-test("five sections, sub-tabs, and a section remembers its last page", async ({ page }, info) => {
+test("four spaces; a detail page links back to its hub", async ({ page }, info) => {
   await signIn(page);
   await page.goto("/exams/");
   const nav = page.getByRole("navigation", { name: info.project.name === "mobile" ? "التنقل الرئيسي" : "الأقسام" });
-  await expect(nav.getByRole("link")).toHaveCount(5);
-  await expect(nav.getByRole("link", { name: "دراستي" })).toHaveAttribute("aria-current", "page");
+  await expect(nav.getByRole("link")).toHaveText(["اليوم", "وقتي", "فطن", "معدّلي"]);
+  await expect(nav.getByRole("link", { name: "وقتي" })).toHaveAttribute("aria-current", "page");
 
-  const tabs = page.getByRole("navigation", { name: "صفحات دراستي" });
-  await expect(tabs.getByRole("link")).toHaveText(["الخطة", "الاختبارات", "المذاكرة", "بومودورو"]);
-  await expect(tabs.getByRole("link", { name: "الاختبارات" })).toHaveAttribute("aria-current", "page");
-  await tabs.getByRole("link", { name: "المذاكرة" }).click();
-  await expect(page).toHaveURL(/\/study\/?$/);
+  // no sub-tabs: a back link to the space instead
+  const crumb = page.getByRole("navigation", { name: "مسار الصفحة" });
+  await expect(crumb.getByText("الاختبارات")).toBeVisible();
+  await crumb.getByRole("link", { name: "وقتي" }).click();
+  await expect(page).toHaveURL(/\/time\/?$/);
 
-  await nav.getByRole("link", { name: "الرئيسية" }).click();
+  await nav.getByRole("link", { name: "معدّلي" }).click();
+  await expect(page).toHaveURL(/\/record\/?$/);
+  await nav.getByRole("link", { name: "اليوم" }).click();
   await expect(page).toHaveURL(/\/dashboard\/?$/);
-  await expect(nav.getByRole("link", { name: "دراستي" })).toHaveAttribute("href", /\/study\/?$/);
-  // pages that were only reachable from inside other pages are now in «سجلي»
-  await nav.getByRole("link", { name: "سجلي" }).click();
-  await expect(page.getByRole("navigation", { name: "صفحات سجلي" }).getByRole("link", { name: "الجدول" })).toBeVisible();
+});
+
+test("فطن has two modes: ask and study", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/study/");
+  const modes = page.getByRole("navigation", { name: "وضع فطن" });
+  await expect(modes.getByRole("link", { name: "ذاكر محاضرة" })).toHaveAttribute("aria-current", "page");
+  await modes.getByRole("link", { name: "اسأل" }).click();
+  await expect(page).toHaveURL(/\/chat\/?$/);
+});
+
+test("the account menu holds the pages outside the spaces", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/dashboard/");
+  await page.getByRole("button", { name: "حسابي والقائمة" }).click();
+  await expect(page.getByRole("menuitem", { name: "الملف الشخصي والأهداف" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "تقييمات المواد" })).toBeVisible();
+  await page.getByRole("menuitem", { name: "القاعات والخريطة" }).click();
+  await expect(page).toHaveURL(/\/locations\/?$/);
 });

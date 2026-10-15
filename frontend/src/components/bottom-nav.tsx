@@ -8,10 +8,10 @@ import { NO_APP_NAV, sectionFor } from "@/lib/nav";
 import { useSectionLinks } from "@/components/nav-sections";
 
 /**
- * Thumb-reachable bar for phones with the five sections (hidden from lg up,
- * where the top navbar shows them). A section opens the page last used in
- * it; its other pages are tabs at the top of the page. Full-height pages
- * reserve the bar's space through --bottom-nav-h (globals.css).
+ * Thumb-reachable bar for phones with the four spaces (hidden from lg up,
+ * where the top navbar shows them). A space opens its hub; detail pages
+ * link back to it. Full-height pages reserve the bar's space through
+ * --bottom-nav-h (globals.css).
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -26,7 +26,7 @@ export function BottomNav() {
         aria-label="التنقل الرئيسي"
         className="fixed bottom-0 inset-x-0 z-40 lg:hidden border-t border-border bg-background/90 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       >
-        <ul className="grid grid-cols-5 h-16">
+        <ul className="grid grid-cols-4 h-16">
           {sections.map(({ id, label, href, Icon }) => {
             const on = active === id;
             return (
@@ -37,7 +37,7 @@ export function BottomNav() {
                   prefetch={false}
                   aria-current={on ? "page" : undefined}
                   className={cn(
-                    "h-full flex flex-col items-center justify-center gap-1 text-[11px] font-bold transition-colors",
+                    "h-full flex flex-col items-center justify-center gap-1 text-xs font-bold transition-colors",
                     on ? "text-uqu-accent" : "text-muted-foreground hover:text-foreground",
                   )}
                 >

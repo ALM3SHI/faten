@@ -23,7 +23,7 @@ describe("advisor helpers", () => {
     expect(delayLabel(1)).toBe("تأجيله يؤخر التخرج فصلاً");
   });
 
-  it("is a protected page in the record section", () => {
+  it("is a protected page in the record space", () => {
     expect(isProtectedPath("/advisor/")).toBe(true);
     expect(sectionFor("/advisor")?.id).toBe("record");
   });

@@ -57,7 +57,7 @@ test("advisor: set goals, get a grounded plan, compare paths, check a schedule",
   await expect(page.getByText(/هذا الملخص المحسوب/)).toBeVisible();
 });
 
-test("advisor appears under «سجلي» and requires sign-in", async ({ page }) => {
+test("advisor appears under «معدّلي» and requires sign-in", async ({ page }) => {
   await page.goto("/advisor/");
   await expect(page).toHaveURL(/login/);
 });

@@ -14,7 +14,7 @@ import { LogoMark } from "@/components/logo";
 
 import { useAuth } from "@/components/auth-provider";
 import { useProfileStore } from "@/store/profileStore";
-import { User } from "lucide-react";
+import { AccountMenu } from "@/components/account-menu";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -93,27 +93,10 @@ export function Navbar() {
                 aria-hidden
               />
             ) : user ? (
-              <Link
-                href="/profile"
-                prefetch={false}
-                aria-label="الملف الشخصي"
-                aria-current={isActivePath(pathname, "/profile") ? "page" : undefined}
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("rounded-xl gap-2 hover:bg-foreground/5", isActivePath(pathname, "/profile") && "bg-uqu-accent/10")}
-                  tabIndex={-1}
-                  aria-hidden
-                >
-                  <div className="w-8 h-8 rounded-full bg-uqu-accent/20 flex items-center justify-center text-uqu-accent">
-                     <User className="w-4 h-4" />
-                  </div>
-                  <span className="hidden sm:inline lg:hidden xl:inline text-xs font-bold text-foreground">
-                    {profileName || user.displayName || user.email?.split("@")[0]}
-                  </span>
-                </Button>
-              </Link>
+              <AccountMenu
+                name={profileName || user.displayName || user.email?.split("@")[0] || ""}
+                active={["/profile", "/locations", "/community", "/admin"].some((h) => isActivePath(pathname, h))}
+              />
             ) : (
               <Link href="/login">
                 <Button size="sm" className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white font-bold px-6">

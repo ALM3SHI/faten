@@ -62,13 +62,16 @@ test("study mode: upload → lecture map → goal → lesson → check with retr
   await expect(page.getByRole("button", { name: "الموضوع التالي" })).toBeVisible();
 });
 
-test("the normal chat and the study mode are separate modes of the chat section", async ({ page }) => {
+test("asking and studying are the two separate modes of فطن", async ({ page }) => {
   await asNewStudent(page, "modes");
   await page.goto("/chat/");
-  const modes = page.getByRole("navigation", { name: "وضع المساعد" });
-  await expect(modes.getByRole("link", { name: "الدردشة العامة" })).toHaveAttribute("aria-current", "page");
-  await modes.getByRole("link", { name: "المذاكرة الذكية" }).click();
+  const modes = page.getByRole("navigation", { name: "وضع فطن" });
+  await expect(modes.getByRole("link", { name: "اسأل" })).toHaveAttribute("aria-current", "page");
+  await modes.getByRole("link", { name: "ذاكر محاضرة" }).click();
+  await expect(page).toHaveURL(/\/study\/$/);
+  await page.getByRole("link", { name: /جرّب المذاكرة الذكية/ }).click();
   await expect(page).toHaveURL(/\/tutor\/$/);
+  await expect(page.getByRole("navigation", { name: "وضع فطن" }).getByRole("link", { name: "ذاكر محاضرة" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByText("لم ترفع محاضرة بعد")).toBeVisible();
   // the study mode never writes into the chat history
   const chats = await page.evaluate(() => localStorage.getItem("uqu_chat_history_v1"));

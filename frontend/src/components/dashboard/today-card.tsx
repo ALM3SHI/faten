@@ -101,7 +101,7 @@ export function TodayCard() {
       <ul className="divide-y divide-foreground/5">
         {lecture ? (
           <Row
-            href="/schedule"
+            href="/time"
             icon={Clock}
             title={lecture.slot.course_name || lecture.slot.course_code}
             detail={[
@@ -145,7 +145,7 @@ export function TodayCard() {
 
         {hasPlan ? (
           <Row
-            href="/plan"
+            href="/time"
             icon={ListChecks}
             iconTone={todayTasks && todayTasks.total > 0 && todayTasks.done === todayTasks.total ? "emerald" : "accent"}
             title={todayTasks && todayTasks.total > 0 ? `مهام اليوم: ${todayTasks.done} من ${todayTasks.total}` : "ما عندك مهام اليوم في الخطة"}

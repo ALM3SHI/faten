@@ -1,13 +1,24 @@
 /**
- * App navigation: five sections, the same on phones (bottom bar) and
- * desktop (top bar). Sections with several pages show them as sub-tabs at
- * the top of each page (components/section-tabs.tsx), so every page is at
- * most two taps away without nested menus.
+ * App navigation: four spaces, the same on phones (bottom bar) and desktop
+ * (top bar). Each space answers one question the student has:
+ *
+ *   اليوم   — what do I have right now?        /dashboard
+ *   وقتي    — what's coming up?                 /time   (+ schedule, plan, exams, attendance, pomodoro)
+ *   فطن     — I want to ask or to study         /chat   (+ study, tutor)
+ *   معدّلي  — how am I doing academically?      /record (+ gpa, advisor, transcript)
+ *
+ * The first page of a space is its hub. The other pages are detail pages
+ * reached from the hub, with a back link to it (components/section-tabs.tsx)
+ * instead of a row of sub-tabs. Every old URL keeps working, so the agent's
+ * navigation actions and saved links still land in the right place.
+ *
+ * Pages outside the spaces (profile, rooms, course reviews, admin) live in
+ * the account menu (ACCOUNT_LINKS).
  */
 
 import { normalizePath } from "@/lib/routes";
 
-export type SectionId = "home" | "chat" | "study" | "record" | "university";
+export type SectionId = "today" | "time" | "faten" | "record";
 
 export interface NavPage {
   href: string;
@@ -17,48 +28,58 @@ export interface NavPage {
 export interface NavSection {
   id: SectionId;
   label: string;
+  /** The hub first, then its detail pages. */
   pages: NavPage[];
 }
 
 export const SECTIONS: NavSection[] = [
-  { id: "home", label: "الرئيسية", pages: [{ href: "/dashboard", label: "الرئيسية" }] },
+  { id: "today", label: "اليوم", pages: [{ href: "/dashboard", label: "اليوم" }] },
   {
-    id: "chat",
-    label: "الدردشة",
+    id: "time",
+    label: "وقتي",
     pages: [
-      { href: "/chat", label: "الدردشة" },
+      { href: "/time", label: "وقتي" },
+      { href: "/schedule", label: "الجدول" },
+      { href: "/plan", label: "خطة المذاكرة" },
+      { href: "/exams", label: "الاختبارات" },
+      { href: "/attendance", label: "الغياب" },
+      { href: "/pomodoro", label: "جلسة تركيز" },
+    ],
+  },
+  {
+    id: "faten",
+    label: "فطن",
+    pages: [
+      { href: "/chat", label: "اسأل" },
+      { href: "/study", label: "ذاكر محاضرة" },
       { href: "/tutor", label: "المذاكرة الذكية" },
     ],
   },
   {
-    id: "study",
-    label: "دراستي",
-    pages: [
-      { href: "/plan", label: "الخطة" },
-      { href: "/exams", label: "الاختبارات" },
-      { href: "/study", label: "المذاكرة" },
-      { href: "/pomodoro", label: "بومودورو" },
-    ],
-  },
-  {
     id: "record",
-    label: "سجلي",
+    label: "معدّلي",
     pages: [
-      { href: "/gpa", label: "المعدل" },
-      { href: "/advisor", label: "المرشد" },
-      { href: "/attendance", label: "الغياب" },
-      { href: "/schedule", label: "الجدول" },
-      { href: "/transcript", label: "السجل" },
+      { href: "/record", label: "معدّلي" },
+      { href: "/gpa", label: "محاكي المعدل" },
+      { href: "/advisor", label: "المرشد الأكاديمي" },
+      { href: "/transcript", label: "السجل الأكاديمي" },
     ],
   },
-  {
-    id: "university",
-    label: "الجامعة",
-    pages: [
-      { href: "/locations", label: "القاعات" },
-      { href: "/community", label: "المجتمع" },
-    ],
-  },
+];
+
+export interface AccountLink {
+  href: string;
+  label: string;
+  /** Shown only to admins (checked against the server). */
+  adminOnly?: boolean;
+}
+
+/** The account menu (avatar): everything that is not part of a space. */
+export const ACCOUNT_LINKS: AccountLink[] = [
+  { href: "/profile", label: "الملف الشخصي والأهداف" },
+  { href: "/locations", label: "القاعات والخريطة" },
+  { href: "/community", label: "تقييمات المواد" },
+  { href: "/admin", label: "لوحة الإدارة", adminOnly: true },
 ];
 
 /** Pages with their own full-screen layout and no app navigation bar. */
@@ -68,38 +89,26 @@ function pageMatches(path: string, href: string): boolean {
   return path === href || path.startsWith(href + "/");
 }
 
-/** The section a path belongs to (null for pages outside the sections, e.g. /profile). */
+/** The space a path belongs to (null for pages outside the spaces, e.g. /profile). */
 export function sectionFor(path: string | null | undefined): NavSection | null {
   const p = normalizePath(path);
   return SECTIONS.find((s) => s.pages.some((pg) => pageMatches(p, pg.href))) ?? null;
 }
 
-/** The page of a section the path is on, if any. */
+/** The page of a space the path is on, if any. */
 export function pageFor(path: string | null | undefined): NavPage | null {
   const p = normalizePath(path);
   for (const s of SECTIONS) for (const pg of s.pages) if (pageMatches(p, pg.href)) return pg;
   return null;
 }
 
-const LAST_KEY = "uqu_nav_last_v1";
-
-/** Remember the page last opened in each section, so the section link returns there. */
-export function rememberPage(path: string | null | undefined): void {
-  const section = sectionFor(path);
-  const page = pageFor(path);
-  if (!section || !page || section.pages.length < 2) return;
-  try {
-    const all = JSON.parse(localStorage.getItem(LAST_KEY) || "{}") as Record<string, string>;
-    if (all[section.id] === page.href) return;
-    localStorage.setItem(LAST_KEY, JSON.stringify({ ...all, [section.id]: page.href }));
-    window.dispatchEvent(new Event("uqu-nav-last"));
-  } catch {
-    // storage unavailable — the section link falls back to its first page
-  }
+/** Where a space link goes: always its hub. */
+export function sectionHref(section: NavSection): string {
+  return section.pages[0].href;
 }
 
-/** Where a section link goes: the last page opened there, or the section's first page. */
-export function sectionHref(section: NavSection, stored?: Record<string, string> | null): string {
-  const last = stored?.[section.id];
-  return last && section.pages.some((p) => p.href === last) ? last : section.pages[0].href;
+/** True when the path is a space's hub (not one of its detail pages). */
+export function isHub(path: string | null | undefined): boolean {
+  const p = normalizePath(path);
+  return SECTIONS.some((s) => pageMatches(p, s.pages[0].href));
 }
