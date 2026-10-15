@@ -31,7 +31,11 @@ def test_no_comments_or_raw_reviews_are_shipped():
 
 
 def test_every_instructor_has_a_complete_analysis():
-    assert len(DATA["instructors"]) == 10
+    import json
+    from pathlib import Path
+    analysed = json.loads((Path(__file__).resolve().parent.parent / "knowledge/instructors/uqu/analysis.json").read_text(encoding="utf-8"))
+    # every instructor with an analysis is published, and none without one
+    assert len(DATA["instructors"]) == len(analysed["instructors"]) >= 11
     for p in DATA["instructors"]:
         a = p["analysis"]
         assert a["verdict"] in DATA["verdict_labels"]
