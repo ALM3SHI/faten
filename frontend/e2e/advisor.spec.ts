@@ -40,10 +40,15 @@ test("advisor: set goals, get a grounded plan, compare paths, check a schedule",
   await page.getByRole("button", { name: /افحص/ }).click();
   await expect(page.getByText("الجدول يخالف قواعد التسجيل")).toBeVisible();
 
-  // Instructors: no data → no recommendation, and why Qaym is not used.
+  // Instructors: no verified ratings → no pick; the team's analysed profiles are shown separately.
   await page.getByRole("tab", { name: "المحاضرون" }).click();
+  await expect(page.getByText(/مقررات خطتك التي لدينا تحليل لمحاضريها/)).toBeVisible();
   await page.getByRole("button", { name: "اعرض الأدلة" }).click();
   await expect(page.getByText("لا نرشّح أحداً").first()).toBeVisible();
+  const card = page.getByRole("article").first();
+  await expect(card).toBeVisible();
+  await card.getByText("التفاصيل ودليل النجاة").click();
+  await expect(card.getByText("دليل النجاة", { exact: true })).toBeVisible();
 
   // Follow-up question falls back to the computed summary when the AI strays.
   await page.getByRole("tab", { name: "اسأل المرشد" }).click();

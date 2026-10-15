@@ -458,6 +458,9 @@ def analyze(
                 reasons.append(f"تنبيه: {cond['text']}.")
             if pc_full.evidence:
                 reasons.append("متطلباته ومستواه مؤكدة أيضاً في توصيف المقرر الرسمي.")
+            if pc_full.prereq_source == "college_list":
+                page = "، ".join(pc_full.plan_page_prerequisites or []) or "لا شيء"
+                reasons.append(f"متطلباته حسب قائمة الكلية المعتمدة في فطن؛ صفحة الخطة في موقع الجامعة تذكر: {page}.")
             stats = review_stats.get(pcourse.code)
             next_courses.append(CourseAdvice(
                 code=pcourse.code, name=pcourse.name, credits=pcourse.credits, reasons=reasons, unlocks=direct,
@@ -517,7 +520,7 @@ def analyze(
         "program": {"id": cur.program_id, "name": catalog.programs[cur.program_id].name_ar, "source": program_source},
         "curriculum": {"id": cur.id, "label": cur.version_label, "verification": cur.verification,
                        "source_url": cur.provenance.source_url, "retrieved_at": cur.provenance.retrieved_at,
-                       "issues": [i.model_dump() for i in cur.issues if i.severity != "info" or i.code in ("prereq_relation_assumed", "no_offering_data")]},
+                       "issues": [i.model_dump() for i in cur.issues if i.severity != "info" or i.code in ("prereq_relation_assumed", "no_offering_data", "college_list_applied")]},
         "profile": {
             "gpa": effective_gpa(profile), "gpa_source": gpa_source(profile),
             "computed_gpa": profile.computed_gpa, "stated_gpa": profile.stated_gpa, "gpa_hours": profile.gpa_hours,

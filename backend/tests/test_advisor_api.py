@@ -108,7 +108,7 @@ def test_compare_majors_endpoint(api):
     client, db = api
     seed_record(db, UID, fx.python_track_student())
     out = client.post("/api/advisor/compare-majors", json={"interests": ["تعلم"]}).json()
-    assert len(out["programs"]) == 4 and out["disclaimer"]
+    assert len(out["programs"]) == 7 and out["disclaimer"]
     assert client.post("/api/advisor/compare-majors", json={"program_ids": ["x"]}).status_code == 400
 
 
@@ -148,6 +148,11 @@ def test_instructor_reviews_are_verified_and_sparse_data_gives_no_pick(api, monk
     empty = client.get("/api/advisor/instructors/CS2105").json()
     assert empty["verdict"] == "no_data"
     assert {p["name"]: p["available"] for p in empty["providers"]} == {"faten_verified_students": True, "qaym": False}
+    assert empty["imported"]["profiles"] and empty["imported"]["source"]["kind"] == "team_compiled_student_reviews"
+    assert all(p["name"] != "أحمد" for p in empty["instructors"])  # imported profiles never enter the verified numbers
+    mp = client.get("/api/advisor/instructor-map", params={"program_id": "uqu-478"})
+    assert mp.status_code == 200 and mp.json()["courses"]
+    assert client.get("/api/advisor/instructor-map", params={"program_id": "nope"}).status_code == 404
     review = {"instructor": "د. أحمد", "clarity": 5, "organization": 4, "fairness": 5, "workload": 3, "recommend": True}
     assert client.put("/api/advisor/instructors/CS2105/review", json=review).status_code == 403  # not in record
     seed_record(db, UID, fx.record([fx.course("CS2105", 3, "B", fx.T1)]))

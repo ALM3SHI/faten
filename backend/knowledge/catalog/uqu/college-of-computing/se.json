@@ -1,0 +1,350 @@
+{
+  "major": {
+    "code": "SE",
+    "name_ar": "هندسة البرمجيات",
+    "name_en": "Software Engineering",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN1012",
+            "name_ar": "تنظيم الحاسوب والمنطق الرقمي",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1701",
+            "name_ar": "برمجة الحاسب بلغة جافا",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1181",
+            "name_ar": "التفاضل والتكامل للهندسة (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "SE1101",
+            "name_ar": "تطوير التطبيقات كائنية التوجه",
+            "credits": 3,
+            "prerequisites": [
+              "CS1701"
+            ]
+          },
+          {
+            "code": "MTH1402",
+            "name_ar": "الهياكل الحسابية (1)",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "SE1201",
+            "name_ar": "اسس هندسة البرمجيات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1182",
+            "name_ar": "التفاضل والتكامل للهندسة (2)",
+            "credits": 4,
+            "prerequisites": [
+              "MTH1181"
+            ]
+          },
+          {
+            "code": "CS2105",
+            "name_ar": "هياكل البيانات والخوازميات جافا",
+            "credits": 3,
+            "prerequisites": [
+              "SE1101"
+            ]
+          },
+          {
+            "code": "SE2202",
+            "name_ar": "الممارسة المهنية وأخلاقيات هندسة البرمجيات",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SE2203",
+            "name_ar": "هندسة المتطلبات",
+            "credits": 3,
+            "prerequisites": [
+              "SE1201"
+            ]
+          },
+          {
+            "code": "SE2204",
+            "name_ar": "إدارة مشاريع تقنية المعلومات",
+            "credits": 2,
+            "prerequisites": [
+              "SE1201"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CS2016",
+            "name_ar": "نظم التشغيل",
+            "credits": 3,
+            "prerequisites": [
+              "CS2105"
+            ]
+          },
+          {
+            "code": "SE2301",
+            "name_ar": "نمذجة وتحليل البرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "SE2203"
+            ]
+          },
+          {
+            "code": "SE3402",
+            "name_ar": "الهياكل الحسابية (2)",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1402"
+            ]
+          },
+          {
+            "code": "DS2201",
+            "name_ar": "مقدمة في قواعد البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "CS2105"
+            ]
+          },
+          {
+            "code": "MTH2143",
+            "name_ar": "معادلات تفاضلية و الجبر خطي",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1182"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1181"
+            ]
+          },
+          {
+            "code": "SE3501",
+            "name_ar": "مشروع تخرج (1)",
+            "credits": 4,
+            "prerequisites": [
+              "SE2301"
+            ]
+          },
+          {
+            "code": "SE3102",
+            "name_ar": "تصميم ومعمارية البرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "SE2301"
+            ]
+          },
+          {
+            "code": "SE3104",
+            "name_ar": "هندسة تطبيقات الجوال والويب",
+            "credits": 3,
+            "prerequisites": [
+              "DS2201"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "CEN3011",
+            "name_ar": "شبكات الحاسب الآلي",
+            "credits": 3,
+            "prerequisites": [
+              "CEN1012"
+            ]
+          },
+          {
+            "code": "SE3302",
+            "name_ar": "بناء البرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "SE3102"
+            ]
+          },
+          {
+            "code": "SE3103",
+            "name_ar": "اختبار البرمجيات وضمان الجودة",
+            "credits": 3,
+            "prerequisites": [
+              "SE3102"
+            ]
+          },
+          {
+            "code": "AI3011",
+            "name_ar": "الذكاء الاصطناعي والتعلم الآلي",
+            "credits": 3,
+            "prerequisites": [
+              "AI2001",
+              "CS2105"
+            ]
+          },
+          {
+            "code": "SE3502",
+            "name_ar": "مشروع تخرج (2)",
+            "credits": 4,
+            "prerequisites": [
+              "SE3501"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "SE4502",
+            "name_ar": "التدريب تعاوني",
+            "credits": 6,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC4012",
+            "name_ar": "التطوير الآمن للبرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "SE3302"
+            ]
+          },
+          {
+            "code": "SE4205",
+            "name_ar": "مقاييس البرمجيات",
+            "credits": 2,
+            "prerequisites": [
+              "SE3103"
+            ]
+          },
+          {
+            "code": "SE4206",
+            "name_ar": "تطوير وتشغيل البرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "SE3302"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

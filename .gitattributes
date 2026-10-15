@@ -1,0 +1,3 @@
+# Hashed source snapshots: keep their exact bytes on every checkout (no CRLF conversion).
+backend/knowledge/catalog/*/raw/*.psv -text
+backend/knowledge/catalog/*/college-of-computing/*.json -text

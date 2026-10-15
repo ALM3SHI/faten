@@ -122,6 +122,9 @@ def save_settings(db, uid: str, payload: dict) -> dict:
 
 
 _MAJOR_HINTS = [
+    (re.compile(r"تفاعل\s*الإنسان|تفاعل\s*الانسان|human[-\s]*computer", re.I), "uqu-1981"),
+    (re.compile(r"علم\s*البيانات|علوم\s*البيانات|data\s*science", re.I), "uqu-1508"),
+    (re.compile(r"الأمن\s*السيبراني|الامن\s*السيبراني|أمن\s*سيبراني|cyber", re.I), "uqu-1738"),
     (re.compile(r"ذكاء|artificial", re.I), "uqu-1490"),
     (re.compile(r"برمجيات|software", re.I), "uqu-1510"),
     (re.compile(r"هندسة الحاسب|شبكات|computer eng|network", re.I), "uqu-1492"),

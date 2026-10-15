@@ -6,7 +6,7 @@
    "name_en": "Umm Al-Qura University",
    "website": "https://uqu.edu.sa"
   },
-  "generated_at": "2026-10-14T20:48:18+00:00",
+  "generated_at": "2026-10-15T09:47:06+00:00",
   "programs": [
    {
     "id": "uqu-1490",
@@ -51,6 +51,27 @@
     }
    },
    {
+    "id": "uqu-1508",
+    "university": "uqu",
+    "source_id": "1508",
+    "name_ar": "علم البيانات",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "علم البيانات",
+    "curricula": [
+     "uqu-1508@2026-10-15"
+    ],
+    "curriculum": {
+     "id": "uqu-1508@2026-10-15",
+     "verification": "incomplete",
+     "stated_total_hours": 126,
+     "listed_hours": 118,
+     "unlisted_hours": 8,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1508",
+     "retrieved_at": "2026-10-15T08:29:10.241Z"
+    }
+   },
+   {
     "id": "uqu-1510",
     "university": "uqu",
     "source_id": "1510",
@@ -69,6 +90,48 @@
      "unlisted_hours": 14,
      "source_url": "https://uqu.edu.sa/App/Degrees/1510",
      "retrieved_at": "2026-10-14T19:35:23.856Z"
+    }
+   },
+   {
+    "id": "uqu-1738",
+    "university": "uqu",
+    "source_id": "1738",
+    "name_ar": "الأمن السيبراني",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "الأمن السيبراني",
+    "curricula": [
+     "uqu-1738@2026-10-15"
+    ],
+    "curriculum": {
+     "id": "uqu-1738@2026-10-15",
+     "verification": "incomplete",
+     "stated_total_hours": 134,
+     "listed_hours": 126,
+     "unlisted_hours": 8,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1738",
+     "retrieved_at": "2026-10-15T09:44:32.224Z"
+    }
+   },
+   {
+    "id": "uqu-1981",
+    "university": "uqu",
+    "source_id": "1981",
+    "name_ar": "تفاعل الإنسان مع الحاسب",
+    "degree_type": "بكالوريوس",
+    "college_ar": "الحاسبات",
+    "department_ar": "هندسة البرمجيات",
+    "curricula": [
+     "uqu-1981@2026-10-15"
+    ],
+    "curriculum": {
+     "id": "uqu-1981@2026-10-15",
+     "verification": "incomplete",
+     "stated_total_hours": 125,
+     "listed_hours": 114,
+     "unlisted_hours": 11,
+     "source_url": "https://uqu.edu.sa/App/Degrees/1981",
+     "retrieved_at": "2026-10-15T08:27:40.129Z"
     }
    },
    {
@@ -353,6 +416,12 @@
      "severity": "info",
      "code": "no_offering_data",
      "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 7 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
      "subject": null
     }
    ]
@@ -741,13 +810,9 @@
      "level": 4,
      "credits": 3,
      "state": "remaining",
-     "prerequisites": [
-      "MTH1441"
-     ],
-     "missing_prerequisites": [
-      "MTH1441"
-     ],
-     "eligible_next_term": false,
+     "prerequisites": [],
+     "missing_prerequisites": [],
+     "eligible_next_term": true,
      "blocked_by_incomplete": [],
      "verification": "verified"
     },
@@ -781,9 +846,7 @@
      "level": 4,
      "credits": 2,
      "state": "remaining",
-     "prerequisites": [
-      "QR1101"
-     ],
+     "prerequisites": [],
      "missing_prerequisites": [],
      "eligible_next_term": true,
      "blocked_by_incomplete": [],
@@ -808,10 +871,10 @@
      "credits": 3,
      "state": "remaining",
      "prerequisites": [
-      "CS2107"
+      "AI2001"
      ],
      "missing_prerequisites": [
-      "CS2107"
+      "AI2001"
      ],
      "eligible_next_term": false,
      "blocked_by_incomplete": [],
@@ -840,10 +903,10 @@
      "credits": 4,
      "state": "remaining",
      "prerequisites": [
-      "CEN2012"
+      "CS2105"
      ],
      "missing_prerequisites": [
-      "CEN2012"
+      "CS2105"
      ],
      "eligible_next_term": false,
      "blocked_by_incomplete": [],
@@ -886,10 +949,10 @@
      "credits": 3,
      "state": "remaining",
      "prerequisites": [
-      "DS2201"
+      "CS1704"
      ],
      "missing_prerequisites": [
-      "DS2201"
+      "CS1704"
      ],
      "eligible_next_term": false,
      "blocked_by_incomplete": [],
@@ -914,10 +977,12 @@
      "credits": 3,
      "state": "remaining",
      "prerequisites": [
-      "AI4101"
+      "AI4101",
+      "MTH1602"
      ],
      "missing_prerequisites": [
-      "AI4101"
+      "AI4101",
+      "MTH1602"
      ],
      "eligible_next_term": false,
      "blocked_by_incomplete": [],
@@ -978,10 +1043,12 @@
      "credits": 3,
      "state": "remaining",
      "prerequisites": [
-      "CS3809"
+      "CS3809",
+      "CS3810"
      ],
      "missing_prerequisites": [
-      "CS3809"
+      "CS3809",
+      "CS3810"
      ],
      "eligible_next_term": false,
      "blocked_by_incomplete": [],
@@ -1112,26 +1179,31 @@
      "tags": [
       "repeat",
       "critical",
-      "unlocks:6",
+      "unlocks:9",
       "heavy"
+     ]
+    },
+    {
+     "code": "MTH1602",
+     "name": "الإحصاء والاحتمالات في الحاسبات",
+     "credits": 3,
+     "reasons": [
+      "متطلب سابق لـ 1 مقرر: AI4202.",
+      "تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة)."
+     ],
+     "unlocks": [
+      "AI4202"
+     ],
+     "delay_cost_terms": 0,
+     "workload_evidence": null,
+     "tags": [
+      "unlocks:1"
      ]
     },
     {
      "code": "CUR1101",
      "name": "مهارات جامعية",
      "credits": 0,
-     "reasons": [
-      "تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة)."
-     ],
-     "unlocks": [],
-     "delay_cost_terms": 0,
-     "workload_evidence": null,
-     "tags": []
-    },
-    {
-     "code": "MTH1602",
-     "name": "الإحصاء والاحتمالات في الحاسبات",
-     "credits": 3,
      "reasons": [
       "تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة)."
      ],
@@ -1167,7 +1239,7 @@
      "workload_evidence": null,
      "tags": [
       "ahead_of_plan",
-      "unlocks:5"
+      "unlocks:3"
      ]
     }
    ],
@@ -1218,6 +1290,13 @@
      "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
     },
     {
+     "code": "CS2206",
+     "name": "الرسومات بالحاسب",
+     "credits": 3,
+     "level": 4,
+     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
+    },
+    {
      "code": "DS2201",
      "name": "مقدمة في قواعد البيانات",
      "credits": 3,
@@ -1237,13 +1316,6 @@
      "credits": 2,
      "level": 4,
      "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
-    },
-    {
-     "code": "SE1201",
-     "name": "اسس هندسة البرمجيات",
-     "credits": 3,
-     "level": 4,
-     "why_not_now": "لم يتسع له العبء المقترح، ومقررات أخرى أولى منه (أطول سلسلة متطلبات أو مستوى أبكر)."
     }
    ]
   },
@@ -1256,7 +1328,7 @@
       "term": "1448-2",
       "label": "الفصل الثاني 1448",
       "summer": false,
-      "credits": 18,
+      "credits": 17,
       "courses": [
        {
         "code": "CS1701",
@@ -1266,23 +1338,11 @@
         "tags": [
          "repeat",
          "critical",
-         "unlocks:6",
+         "unlocks:9",
          "heavy"
         ],
         "verification": "verified",
-        "unlocks": 6
-       },
-       {
-        "code": "CEN2011",
-        "name": "التصميم الرقمي المنطقي",
-        "credits": 3,
-        "kind": "required",
-        "tags": [
-         "ahead_of_plan",
-         "unlocks:5"
-        ],
-        "verification": "verified",
-        "unlocks": 5
+        "unlocks": 9
        },
        {
         "code": "DS2201",
@@ -1291,10 +1351,22 @@
         "kind": "required",
         "tags": [
          "ahead_of_plan",
-         "unlocks:5"
+         "unlocks:4"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 4
+       },
+       {
+        "code": "CEN2011",
+        "name": "التصميم الرقمي المنطقي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:3"
+        ],
+        "verification": "verified",
+        "unlocks": 3
        },
        {
         "code": "SE1201",
@@ -1309,6 +1381,18 @@
         "unlocks": 3
        },
        {
+        "code": "AI2001",
+        "name": "مقدمة في الذكاء الاصطناعي",
+        "credits": 2,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
         "code": "CS1302",
         "name": "هياكل متقطعة 1",
         "credits": 3,
@@ -1317,18 +1401,6 @@
          "repeat",
          "unlocks:1",
          "heavy"
-        ],
-        "verification": "verified",
-        "unlocks": 1
-       },
-       {
-        "code": "MTH1441",
-        "name": "الجبر الخطي",
-        "credits": 3,
-        "kind": "required",
-        "tags": [
-         "ahead_of_plan",
-         "unlocks:1"
         ],
         "verification": "verified",
         "unlocks": 1
@@ -1359,10 +1431,10 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:8"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 8
        },
        {
         "code": "CEN2012",
@@ -1371,10 +1443,10 @@
         "kind": "required",
         "tags": [
          "ahead_of_plan",
-         "unlocks:4"
+         "unlocks:2"
         ],
         "verification": "verified",
-        "unlocks": 4
+        "unlocks": 2
        },
        {
         "code": "CS3809",
@@ -1390,6 +1462,29 @@
         "unlocks": 2
        },
        {
+        "code": "MTH1602",
+        "name": "الإحصاء والاحتمالات في الحاسبات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "AI4101",
+        "name": "مبادئ الذكاء الإصطناعي",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
         "code": "CS3713",
         "name": "لغات البرمجة",
         "credits": 2,
@@ -1400,24 +1495,6 @@
         ],
         "verification": "verified",
         "unlocks": 1
-       },
-       {
-        "code": "CS1303",
-        "name": "هياكل متقطعة 2",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
-       },
-       {
-        "code": "MTH1602",
-        "name": "الإحصاء والاحتمالات في الحاسبات",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
        }
       ],
       "warnings": [
@@ -1442,6 +1519,18 @@
         "unlocks": 3
        },
        {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "ahead_of_plan",
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
         "code": "CEN3011",
         "name": "شبكات الحاسب الآلي",
         "credits": 3,
@@ -1454,12 +1543,49 @@
         "unlocks": 1
        },
        {
+        "code": "CS1303",
+        "name": "هياكل متقطعة 2",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "PHYS1113",
+        "name": "الفيزياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       },
+       {
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": [
+       "في السنة التأهيلية تُسجَّل مقررات المستوى كاملة دون النظر إلى المتطلبات السابقة ولا يجوز حذفها (القواعد التنفيذية، المادة الثالثة عشرة)؛ مقررات هذا الفصل تحددها الجامعة، والخطة هنا للعرض والتقدير."
+      ]
+     },
+     {
+      "term": "1450-1",
+      "label": "الفصل الأول 1450",
+      "summer": false,
+      "credits": 18,
+      "courses": [
+       {
         "code": "CS3608",
         "name": "نظم التشغيل",
         "credits": 4,
         "kind": "required",
         "tags": [
-         "ahead_of_plan",
          "unlocks:1"
         ],
         "verification": "verified",
@@ -1478,48 +1604,8 @@
         "unlocks": 1
        },
        {
-        "code": "PHYS1113",
-        "name": "الفيزياء العامة",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
-       },
-       {
-        "code": "AI2001",
-        "name": "مقدمة في الذكاء الاصطناعي",
-        "credits": 2,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
-       }
-      ],
-      "warnings": [
-       "في السنة التأهيلية تُسجَّل مقررات المستوى كاملة دون النظر إلى المتطلبات السابقة ولا يجوز حذفها (القواعد التنفيذية، المادة الثالثة عشرة)؛ مقررات هذا الفصل تحددها الجامعة، والخطة هنا للعرض والتقدير."
-      ]
-     },
-     {
-      "term": "1450-1",
-      "label": "الفصل الأول 1450",
-      "summer": false,
-      "credits": 18,
-      "courses": [
-       {
-        "code": "CS2107",
-        "name": "تصميم وتحليل الخوارزميات",
-        "credits": 3,
-        "kind": "required",
-        "tags": [
-         "unlocks:2"
-        ],
-        "verification": "verified",
-        "unlocks": 2
-       },
-       {
-        "code": "BIO3101",
-        "name": "الاحياء العامة",
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
         "credits": 3,
         "kind": "required",
         "tags": [],
@@ -1544,6 +1630,24 @@
         "verification": "verified",
         "unlocks": 0
        },
+       {
+        "code": "CS2107",
+        "name": "تصميم وتحليل الخوارزميات",
+        "credits": 3,
+        "kind": "required",
+        "tags": [],
+        "verification": "verified",
+        "unlocks": 0
+       }
+      ],
+      "warnings": []
+     },
+     {
+      "term": "1450-2",
+      "label": "الفصل الثاني 1450",
+      "summer": false,
+      "credits": 18,
+      "courses": [
        {
         "code": "CS2206",
         "name": "الرسومات بالحاسب",
@@ -1570,33 +1674,15 @@
         "tags": [],
         "verification": "verified",
         "unlocks": 0
-       }
-      ],
-      "warnings": []
-     },
-     {
-      "term": "1450-2",
-      "label": "الفصل الثاني 1450",
-      "summer": false,
-      "credits": 17,
-      "courses": [
+       },
        {
-        "code": "AI4101",
-        "name": "مبادئ الذكاء الإصطناعي",
+        "code": "AI4202",
+        "name": "مبادئ تعلم الآلة",
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:1"
+         "ahead_of_plan"
         ],
-        "verification": "verified",
-        "unlocks": 1
-       },
-       {
-        "code": "CS3810",
-        "name": "تطوير الويب",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
         "verification": "verified",
         "unlocks": 0
        },
@@ -1614,17 +1700,6 @@
        {
         "code": "CS4411",
         "name": "قواعد البيانات المتقدمة",
-        "credits": 3,
-        "kind": "required",
-        "tags": [
-         "ahead_of_plan"
-        ],
-        "verification": "verified",
-        "unlocks": 0
-       },
-       {
-        "code": "CS4612",
-        "name": "الحوسبة المتوازية و الموزعة",
         "credits": 3,
         "kind": "required",
         "tags": [
@@ -1672,8 +1747,8 @@
       "credits": 18,
       "courses": [
        {
-        "code": "AI4202",
-        "name": "مبادئ تعلم الآلة",
+        "code": "CS4612",
+        "name": "الحوسبة المتوازية و الموزعة",
         "credits": 3,
         "kind": "required",
         "tags": [],
@@ -1782,7 +1857,7 @@
     "lower_bound": {
      "terms": 8,
      "by": "credits",
-     "chain_terms": 6,
+     "chain_terms": 5,
      "credit_terms": 8,
      "earliest_term": "1452-1",
      "earliest_label": "الفصل الأول 1452"
@@ -1826,11 +1901,11 @@
         "tags": [
          "repeat",
          "critical",
-         "unlocks:6",
+         "unlocks:9",
          "heavy"
         ],
         "verification": "verified",
-        "unlocks": 6
+        "unlocks": 9
        },
        {
         "code": "CS1302",
@@ -1846,18 +1921,20 @@
         "unlocks": 1
        },
        {
-        "code": "CUR1101",
-        "name": "مهارات جامعية",
-        "credits": 0,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
-       },
-       {
         "code": "MTH1602",
         "name": "الإحصاء والاحتمالات في الحاسبات",
         "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CUR1101",
+        "name": "مهارات جامعية",
+        "credits": 0,
         "kind": "required",
         "tags": [],
         "verification": "verified",
@@ -1878,10 +1955,11 @@
         "credits": 2,
         "kind": "required",
         "tags": [
-         "ahead_of_plan"
+         "ahead_of_plan",
+         "unlocks:2"
         ],
         "verification": "verified",
-        "unlocks": 0
+        "unlocks": 2
        }
       ],
       "warnings": [
@@ -1900,10 +1978,10 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:8"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 8
        },
        {
         "code": "CS1303",
@@ -1920,21 +1998,19 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:3"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 3
        },
        {
-        "code": "MTH1441",
-        "name": "الجبر الخطي",
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
         "credits": 3,
         "kind": "required",
-        "tags": [
-         "unlocks:1"
-        ],
+        "tags": [],
         "verification": "verified",
-        "unlocks": 1
+        "unlocks": 0
        },
        {
         "code": "QR2103",
@@ -1968,8 +2044,8 @@
         "unlocks": 3
        },
        {
-        "code": "BIO3101",
-        "name": "الاحياء العامة",
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
         "credits": 3,
         "kind": "required",
         "tags": [],
@@ -1991,10 +2067,10 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:4"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 4
        },
        {
         "code": "ICC1201",
@@ -2031,21 +2107,19 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:4"
+         "unlocks:2"
         ],
         "verification": "verified",
-        "unlocks": 4
+        "unlocks": 2
        },
        {
         "code": "CS2107",
         "name": "تصميم وتحليل الخوارزميات",
         "credits": 3,
         "kind": "required",
-        "tags": [
-         "unlocks:2"
-        ],
+        "tags": [],
         "verification": "verified",
-        "unlocks": 2
+        "unlocks": 0
        },
        {
         "code": "CS2206",
@@ -2072,7 +2146,7 @@
       "term": "1450-2",
       "label": "الفصل الثاني 1450",
       "summer": false,
-      "credits": 13,
+      "credits": 14,
       "courses": [
        {
         "code": "CS3809",
@@ -2082,6 +2156,17 @@
         "tags": [
          "unlocks:2",
          "spec_verified"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
         ],
         "verification": "verified",
         "unlocks": 2
@@ -2109,9 +2194,9 @@
         "unlocks": 1
        },
        {
-        "code": "CS3608",
-        "name": "نظم التشغيل",
-        "credits": 4,
+        "code": "CS3713",
+        "name": "لغات البرمجة",
+        "credits": 2,
         "kind": "required",
         "tags": [
          "unlocks:1"
@@ -2126,27 +2211,18 @@
       "term": "1451-1",
       "label": "الفصل الأول 1451",
       "summer": false,
-      "credits": 14,
+      "credits": 13,
       "courses": [
        {
-        "code": "CS3713",
-        "name": "لغات البرمجة",
-        "credits": 2,
+        "code": "CS3608",
+        "name": "نظم التشغيل",
+        "credits": 4,
         "kind": "required",
         "tags": [
          "unlocks:1"
         ],
         "verification": "verified",
         "unlocks": 1
-       },
-       {
-        "code": "CS3810",
-        "name": "تطوير الويب",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
        },
        {
         "code": "CS4901",
@@ -2342,7 +2418,7 @@
     "lower_bound": {
      "terms": 10,
      "by": "credits",
-     "chain_terms": 6,
+     "chain_terms": 5,
      "credit_terms": 10,
      "earliest_term": "1453-1",
      "earliest_label": "الفصل الأول 1453"
@@ -2386,25 +2462,27 @@
         "tags": [
          "repeat",
          "critical",
-         "unlocks:6",
+         "unlocks:9",
          "heavy"
         ],
         "verification": "verified",
-        "unlocks": 6
-       },
-       {
-        "code": "CUR1101",
-        "name": "مهارات جامعية",
-        "credits": 0,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
+        "unlocks": 9
        },
        {
         "code": "MTH1602",
         "name": "الإحصاء والاحتمالات في الحاسبات",
         "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:1"
+        ],
+        "verification": "verified",
+        "unlocks": 1
+       },
+       {
+        "code": "CUR1101",
+        "name": "مهارات جامعية",
+        "credits": 0,
         "kind": "required",
         "tags": [],
         "verification": "verified",
@@ -2426,10 +2504,10 @@
         "kind": "required",
         "tags": [
          "ahead_of_plan",
-         "unlocks:5"
+         "unlocks:3"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 3
        }
       ],
       "warnings": [
@@ -2461,26 +2539,26 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:8"
         ],
         "verification": "verified",
-        "unlocks": 5
-       },
-       {
-        "code": "MTH1441",
-        "name": "الجبر الخطي",
-        "credits": 3,
-        "kind": "required",
-        "tags": [
-         "unlocks:1"
-        ],
-        "verification": "verified",
-        "unlocks": 1
+        "unlocks": 8
        },
        {
         "code": "AI2001",
         "name": "مقدمة في الذكاء الاصطناعي",
         "credits": 2,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
+        "code": "BIO3101",
+        "name": "الاحياء العامة",
+        "credits": 3,
         "kind": "required",
         "tags": [],
         "verification": "verified",
@@ -2518,8 +2596,8 @@
         "unlocks": 3
        },
        {
-        "code": "BIO3101",
-        "name": "الاحياء العامة",
+        "code": "MTH1441",
+        "name": "الجبر الخطي",
         "credits": 3,
         "kind": "required",
         "tags": [],
@@ -2561,10 +2639,10 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:5"
+         "unlocks:4"
         ],
         "verification": "verified",
-        "unlocks": 5
+        "unlocks": 4
        },
        {
         "code": "SE1201",
@@ -2583,10 +2661,10 @@
         "credits": 3,
         "kind": "required",
         "tags": [
-         "unlocks:4"
+         "unlocks:2"
         ],
         "verification": "verified",
-        "unlocks": 4
+        "unlocks": 2
        }
       ],
       "warnings": []
@@ -2602,11 +2680,9 @@
         "name": "تصميم وتحليل الخوارزميات",
         "credits": 3,
         "kind": "required",
-        "tags": [
-         "unlocks:2"
-        ],
+        "tags": [],
         "verification": "verified",
-        "unlocks": 2
+        "unlocks": 0
        },
        {
         "code": "CS2206",
@@ -2668,6 +2744,17 @@
         "unlocks": 2
        },
        {
+        "code": "CS3810",
+        "name": "تطوير الويب",
+        "credits": 3,
+        "kind": "required",
+        "tags": [
+         "unlocks:2"
+        ],
+        "verification": "verified",
+        "unlocks": 2
+       },
+       {
         "code": "AI4101",
         "name": "مبادئ الذكاء الإصطناعي",
         "credits": 3,
@@ -2688,15 +2775,6 @@
         ],
         "verification": "verified",
         "unlocks": 1
-       },
-       {
-        "code": "CS3810",
-        "name": "تطوير الويب",
-        "credits": 3,
-        "kind": "required",
-        "tags": [],
-        "verification": "verified",
-        "unlocks": 0
        }
       ],
       "warnings": []
@@ -2912,7 +2990,7 @@
     "lower_bound": {
      "terms": 11,
      "by": "credits",
-     "chain_terms": 6,
+     "chain_terms": 5,
      "credit_terms": 11,
      "earliest_term": "1453-2",
      "earliest_label": "الفصل الثاني 1453"
@@ -2944,15 +3022,15 @@
     "kind": "failed_prerequisite",
     "severity": "high",
     "basis": "fact",
-    "message": "رسبت في CS1701 مرتين ولم تجتزه بعد، وهو متطلب لـ 6 مقرر في خطتك.",
+    "message": "رسبت في CS1701 مرتين ولم تجتزه بعد، وهو متطلب لـ 9 مقرر في خطتك.",
     "evidence": [
      "الفصل الأول 1446/1447: F",
      "الفصل الثاني 1446/1447: F",
-     "AI4101",
-     "AI4202",
      "CS1704",
      "CS2105",
      "CS2107",
+     "CS3608",
+     "CS3810",
      "CS4108"
     ]
    },
@@ -3325,12 +3403,12 @@
   "run_id": "c550ce9e3abd7b1f001d",
   "created_at": "2026-10-14T12:00:00+00:00",
   "summary": {
-   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، CUR1101 مهارات جامعية، MTH1602 الإحصاء والاحتمالات في الحاسبات، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
+   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، MTH1602 الإحصاء والاحتمالات في الحاسبات، CUR1101 مهارات جامعية، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
    "why": [
     "اخترنا مسار التعافي: عبء أخف وأولوية لإعادة المقررات المفتاحية. معدل آخر فصل 1.78.",
     "CS1701: إعادة مقرر لم تجتزه بعد.",
+    "MTH1602: متطلب سابق لـ 1 مقرر: AI4202.",
     "CUR1101: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة).",
-    "MTH1602: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة).",
     "PHYS1113: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة)."
    ],
    "alternatives": [
@@ -3441,6 +3519,114 @@
  },
  "compare": {
   "programs": [
+   {
+    "program_id": "uqu-1508",
+    "name": "علم البيانات",
+    "department": "علم البيانات",
+    "stated_total_hours": 126,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "MTH1141",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 17,
+    "remaining_listed_hours": 101,
+    "unlisted_hours": 8,
+    "main_areas": [
+     "DS",
+     "MTH",
+     "QR",
+     "ELIE"
+    ],
+    "related_performance": 2.2,
+    "interest_matches": [],
+    "fastest_terms": 7,
+    "fastest_graduation": "الفصل الثاني 1451",
+    "evidence": [
+     "اجتزت 6 من مقرراته (17 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 2.20 من 4 (MTH: 1.00 في 3 ساعة، QR: 3.00 في 4 ساعة، ELIE: 2.25 في 8 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1508"
+   },
+   {
+    "program_id": "uqu-1738",
+    "name": "الأمن السيبراني",
+    "department": "الأمن السيبراني",
+    "stated_total_hours": 134,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "MTH1141",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 17,
+    "remaining_listed_hours": 109,
+    "unlisted_hours": 8,
+    "main_areas": [
+     "SEC",
+     "CS",
+     "QR",
+     "ELIE"
+    ],
+    "related_performance": 1.43,
+    "interest_matches": [],
+    "fastest_terms": 8,
+    "fastest_graduation": "الفصل الأول 1452",
+    "evidence": [
+     "اجتزت 6 من مقرراته (17 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 1.43 من 4 (CS: 0.00 في 9 ساعة، QR: 3.00 في 4 ساعة، ELIE: 2.25 في 8 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1738"
+   },
+   {
+    "program_id": "uqu-1981",
+    "name": "تفاعل الإنسان مع الحاسب",
+    "department": "هندسة البرمجيات",
+    "stated_total_hours": 125,
+    "overlap_courses": [
+     "ELIE1201",
+     "ELIE1202",
+     "IND1101",
+     "MTH1141",
+     "QR1101",
+     "QR2102"
+    ],
+    "overlap_hours": 17,
+    "remaining_listed_hours": 97,
+    "unlisted_hours": 11,
+    "main_areas": [
+     "HCI",
+     "QR",
+     "ELIE",
+     "CS"
+    ],
+    "related_performance": 1.43,
+    "interest_matches": [],
+    "fastest_terms": 7,
+    "fastest_graduation": "الفصل الثاني 1451",
+    "evidence": [
+     "اجتزت 6 من مقرراته (17 ساعة).",
+     "متوسط نقاطك في مجالاته الرئيسية 1.43 من 4 (QR: 3.00 في 4 ساعة، ELIE: 2.25 في 8 ساعة، CS: 0.00 في 9 ساعة)."
+    ],
+    "missing": [
+     "لم تذكر اهتماماتك؛ أضفها لتحسين المقارنة."
+    ],
+    "curriculum_verification": "incomplete",
+    "source_url": "https://uqu.edu.sa/App/Degrees/1981"
+   },
    {
     "program_id": "uqu-1492",
     "name": "هندسة الحاسب آلي والشبكات",
@@ -3600,7 +3786,7 @@
   ],
   "gpa": 1.5,
   "disclaimer": "المقارنة مبنية على سجلك والخطط المنشورة فقط. لا يضمن أي تخصص وظيفة أو نجاحاً؛ بيانات سوق العمل مصدر منفصل يتغير مع الوقت ولم تُدمج هنا. القبول والتحويل يحددهما القسم.",
-  "coverage_note": "الخطط المتاحة حالياً: 4 برامج من كلية الحاسبات. بقية برامج الجامعة لم تُضف بعد."
+  "coverage_note": "الخطط المتاحة حالياً: 7 برامج من كلية الحاسبات. بقية برامج الجامعة لم تُضف بعد."
  },
  "instructors": {
   "verdict": "no_data",
@@ -3626,6 +3812,1093 @@
     "reason": "لم نجد واجهة برمجية عامة أو إذناً باستخدام بيانات موقع «قيم»، وتعذّر الوصول لخادمه عند الفحص (2026-10-14، خطأ 522). لا نجمع بياناته آلياً دون إذن.",
     "data_policy": "يُفعَّل فقط عبر اتفاقية بيانات أو مجموعة بيانات مرخّصة."
    }
+  ],
+  "imported": {
+   "course_code": "CS1701",
+   "profiles": [
+    {
+     "id": "a62f4c58e2f2637b",
+     "name": "محمد علي عيد الغامدي",
+     "department": "علوم الحاسب الآلي",
+     "verdict": "recommended",
+     "verdict_label": "يُنصح به",
+     "headline": "من أعلى المحاضرين تقييماً: شرح مبسط، بونص سخي، واهتمام بالفهم وسوق العمل.",
+     "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+     "fits": [
+      "أغلب الطلاب، خصوصاً المبتدئين في البرمجة"
+     ],
+     "not_for": [
+      "من لا يلتزم بقواعد الحضور الصارمة"
+     ],
+     "strengths": [
+      "البونص السخي أكثر ما يتكرر في التقييمات.",
+      "يبسط المادة ويهتم بأن تخرج فاهماً، ويتحدث عن سوق العمل والمستقبل المهني.",
+      "يقدم محاضرات اختيارية إضافية للأسئلة (ذُكر أكثر من مرة)."
+     ],
+     "weaknesses": [
+      "اختباراته توصف بالصعبة أو ضيقة الوقت، خصوصاً في البداية (برمجة 1).",
+      "قواعد صارمة داخل القاعة: يمنع الجوال، وذُكر التشديد على اللباس الرسمي.",
+      "عدد من الطلاب اشتكوا أن توزيع الدرجات بدا لهم غير متسق بين الطلاب."
+     ],
+     "modes": [
+      {
+       "context": "نظري",
+       "pattern": "أغلب التقييمات عن مقررات نظرية (برمجة 1 و2، الهياكل الحسابية)؛ لا تكفي لمقارنة النظري بالعملي."
+      }
+     ],
+     "survival": [
+      "لا تحبط من أول كويز أو ميد صعب؛ الطلاب يذكرون أن النهائي والبونص يعوضان.",
+      "التزم بقواعد القاعة (الجوال واللباس) من أول محاضرة.",
+      "احضر المحاضرات الاختيارية واسأل؛ يقدّر الطالب المهتم.",
+      "في الأسئلة المكتوبة لا تترك فراغاً؛ اكتب ما تعرفه.",
+      "تدرّب على البرمجة يومياً؛ هذا ما يصنع الفرق في اختباراته."
+     ],
+     "caveats": [],
+     "data": {
+      "reviews_analyzed": 48,
+      "reviews_stated": 48,
+      "complete": true
+     },
+     "overall": {
+      "reviews": 48,
+      "average": 4.18,
+      "positive_share": 0.77,
+      "recent_reviews": 41
+     },
+     "badges": [
+      {
+       "label": "يعطي بونس",
+       "share": 0.77
+      },
+      {
+       "label": "متعاون و متفهم",
+       "share": 0.71
+      },
+      {
+       "label": "يوصل المعلومة",
+       "share": 0.65
+      },
+      {
+       "label": "محاضرة ممتعة",
+       "share": 0.62
+      },
+      {
+       "label": "يختصر لك المعلومة",
+       "share": 0.54
+      }
+     ],
+     "course": {
+      "family": "برمجة الحاسب 1",
+      "confidence": "ambiguous",
+      "reviews": 17,
+      "average": 4.07,
+      "positive_share": 0.71,
+      "recent_reviews": 14,
+      "thin": false
+     }
+    },
+    {
+     "id": "4f8af2dfb8ea29ab",
+     "name": "رياض مطيران سعيد الرحيلي",
+     "department": "علوم الحاسب الآلي",
+     "verdict": "mixed",
+     "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+     "headline": "طيب ومتعاون وسخي في الدرجات، لكن الشرح ضعيف والتعليمات والمواعيد تتغير كثيراً.",
+     "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+     "fits": [
+      "من يتعلم ذاتياً ويهمه التقدير",
+      "العملي (لابات ودرجات ميسرة)"
+     ],
+     "not_for": [
+      "من يحتاج شرحاً منظماً",
+      "من يتوتر من تغيّر المواعيد والتعليمات"
+     ],
+     "strengths": [
+      "متعاون ومتفهم وسخي بالبونص في أغلب التقييمات.",
+      "في العملي: يمدد تسليم اللابات ويتساهل في المشروع، وأغلب الطلاب ينالون درجة العملي كاملة.",
+      "تعامله محترم وهادئ."
+     ],
+     "weaknesses": [
+      "الشرح أضعف جوانبه، وذُكر أنه يعيد نفس الشرح لأسابيع.",
+      "يغيّر كلامه في المواعيد والواجبات وتوزيع الدرجات (أكثر شكوى متكررة).",
+      "كويزات وواجبات كثيرة، وتأخر في إعلان الدرجات أحياناً.",
+      "لا يشارك سلايداته، والرد على البريد بطيء.",
+      "في عملي قواعد البيانات قبل نحو سنتين: خصم درجات على ساعات الغياب."
+     ],
+     "modes": [
+      {
+       "context": "نظري",
+       "pattern": "كويزات كثيرة واختبارات متوسطة، مع بونص في النهاية."
+      },
+      {
+       "context": "عملي",
+       "pattern": "شرح قليل داخل المعمل، لكن الدرجات ميسرة وتسليم مرن؛ قد يسألك عن كودك."
+      }
+     ],
+     "survival": [
+      "اعتمد على الكتاب أو مصادر خارجية للفهم من أول الأسبوع.",
+      "وثّق أي تعليمات أو مواعيد يعلنها (رسالة أو صورة إعلان)، وتابع البلاك بورد يومياً.",
+      "احضر ولا تتغيب بلا عذر؛ ذُكر خصم على الغياب في العملي.",
+      "اكتب كودك بنفسك وكن مستعداً لشرحه.",
+      "تابع درجاتك وصحّحها مبكراً."
+     ],
+     "caveats": [
+      "الآراء متباينة جداً حتى في نفس الفصل."
+     ],
+     "data": {
+      "reviews_analyzed": 118,
+      "reviews_stated": 118,
+      "complete": true
+     },
+     "overall": {
+      "reviews": 118,
+      "average": 3.28,
+      "positive_share": 0.46,
+      "recent_reviews": 93
+     },
+     "badges": [
+      {
+       "label": "متعاون و متفهم",
+       "share": 0.48
+      },
+      {
+       "label": "يعطي بونس",
+       "share": 0.47
+      },
+      {
+       "label": "محاضرة مملة",
+       "share": 0.44
+      },
+      {
+       "label": "واجبات كثيرة",
+       "share": 0.29
+      },
+      {
+       "label": "يوصل المعلومة",
+       "share": 0.19
+      }
+     ],
+     "course": {
+      "family": "برمجة الحاسب 1",
+      "confidence": "ambiguous",
+      "reviews": 13,
+      "average": 2.67,
+      "positive_share": 0.15,
+      "recent_reviews": 4,
+      "thin": false
+     }
+    },
+    {
+     "id": "6cc70a2720273ef0",
+     "name": "ثامر محمد تاج الدين قدح",
+     "department": "علوم الحاسب الآلي",
+     "verdict": "avoid_if_alternative",
+     "verdict_label": "اختر غيره إن أمكن",
+     "headline": "تعامله طيب أحياناً ويساعد بالبونص، لكن الشرح ضعيف والاختبارات صعبة في أغلب التقييمات.",
+     "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+     "fits": [
+      "من يذاكر مسبقاً من مصادر خارجية ولغته الإنجليزية قوية"
+     ],
+     "not_for": [
+      "من يعتمد على شرح المحاضرة",
+      "المبتدئون في البرمجة"
+     ],
+     "strengths": [
+      "يعطي بونص في عدد من الفصول، وبعض الطلاب ذكروا أنه ساعدهم في الدرجات نهاية الفصل.",
+      "بعض الطلاب وصفوا تعامله بالطيب، وأنه يتعاون في المشاريع."
+     ],
+     "weaknesses": [
+      "الشرح الأضعف تقييماً بين المحاضرين في هذه البيانات، والمحاضرة توصف بالمملة في أغلب التقييمات.",
+      "الاختبارات صعبة وخياراتها طويلة بمصطلحات إنجليزية متقدمة.",
+      "متطلبات عملية إضافية: تسجيل فيديو تشرح فيه كل لاب، واستخدام برامج محددة.",
+      "لا يرد على البريد الإلكتروني عند عدد من الطلاب.",
+      "تكرر أن شروط البونص المعلنة تغيّرت قبل النهائي."
+     ],
+     "modes": [
+      {
+       "context": "نظري",
+       "pattern": "الشكوى الأساسية: الشرح غير واضح والاختبار أصعب من الشرح."
+      },
+      {
+       "context": "عملي",
+       "pattern": "طلبات كثيرة (فيديو لكل لاب، برامج محددة) مع شرح قليل داخل اللاب."
+      }
+     ],
+     "survival": [
+      "ذاكر الدرس من مصدر خارجي قبل المحاضرة وبعدها.",
+      "اجمع قائمة بالمصطلحات الإنجليزية للمادة؛ الأسئلة تعتمد على صياغات دقيقة.",
+      "سلّم اللابات والفيديوهات أولاً بأول، ولا تؤجل.",
+      "احتفظ بشروط البونص وتوزيع الدرجات مكتوبة من أول الفصل.",
+      "تحقق إن كان الاختبار النهائي موحداً في مقررك."
+     ],
+     "caveats": [
+      "تقييمات مقرر تركيب المترجمات قليلة وقديمة، وأحدها يذكر أنه تغيّر للأفضل في تلك المادة."
+     ],
+     "data": {
+      "reviews_analyzed": 40,
+      "reviews_stated": 40,
+      "complete": true
+     },
+     "overall": {
+      "reviews": 40,
+      "average": 2.35,
+      "positive_share": 0.15,
+      "recent_reviews": 20
+     },
+     "badges": [
+      {
+       "label": "محاضرة مملة",
+       "share": 0.8
+      },
+      {
+       "label": "اختبارات صعبة",
+       "share": 0.55
+      },
+      {
+       "label": "يعطيك حقك",
+       "share": 0.38
+      },
+      {
+       "label": "يعطي بونس",
+       "share": 0.33
+      },
+      {
+       "label": "متعاون و متفهم",
+       "share": 0.33
+      }
+     ],
+     "course": {
+      "family": "برمجة الحاسب 1",
+      "confidence": "ambiguous",
+      "reviews": 8,
+      "average": 2.29,
+      "positive_share": 0.0,
+      "recent_reviews": 1,
+      "thin": false
+     }
+    },
+    {
+     "id": "788e61abcaab883c",
+     "name": "محمد خضر محمد نور",
+     "department": "علوم الحاسب الآلي",
+     "verdict": "recommended",
+     "verdict_label": "يُنصح به",
+     "headline": "متعاون ومرن، شرحه النظري جيد عند الأغلبية، والعملي يحتاج التزاماً كاملاً باللابات.",
+     "recommendation": "خيار جيد لمن يلتزم باللابات والمشاركة؛ تأكد أولاً أنه ما زال يدرّس، فتقييمات حديثة تذكر أنه غادر الجامعة.",
+     "fits": [
+      "من يلتزم بحل اللابات والمشاركة",
+      "من أساسه في البرمجة جيد"
+     ],
+     "not_for": [
+      "من يريد مادة بلا واجبات"
+     ],
+     "strengths": [
+      "متعاون ومتفهم ومرن مع الظروف (تعويض الحضور في شعبة أخرى ذُكر أكثر من مرة).",
+      "يوصل المعلومة ويعطي بونص في أغلب التقييمات.",
+      "يقدّر من يشارك معه ويتذكر الطلاب المشاركين."
+     ],
+     "weaknesses": [
+      "واجبات ومشاريع كثيرة.",
+      "اختبارات هياكل البيانات توصف بالصعبة وفيها كتابة أكواد باليد.",
+      "السلايدات قديمة أو غير مرتبة عند بعض الطلاب.",
+      "يمنع استخدام الجوال في المحاضرة منعاً تاماً.",
+      "عدد قليل من التقييمات سلبي جداً عن وضوح الشرح وصعوبة الأسئلة."
+     ],
+     "modes": [
+      {
+       "context": "نظري",
+       "pattern": "الشرح جيد عند الأغلبية، والاختبارات متوسطة إلى صعبة."
+      },
+      {
+       "context": "عملي",
+       "pattern": "اللاب قد يستغرق الوقت كاملاً، ويطلب منك شرح حلّك؛ من لا يحل اللابات يخسر في العملي."
+      }
+     ],
+     "survival": [
+      "حلّ كل اللابات بنفسك واستعد لشرحها في نهاية الفصل.",
+      "تدرّب على كتابة الكود على الورق قبل الاختبارات.",
+      "راجع الاختبارات السابقة؛ ذُكر أن أسئلته قريبة منها.",
+      "أبعد الجوال تماماً وشارك في المحاضرة.",
+      "قوِّ أساسك في الجافا قبل هياكل البيانات."
+     ],
+     "caveats": [
+      "أحدث تقييمين يذكران أنه غادر أو سيغادر الجامعة؛ تحقق من جدول الشعب قبل الاعتماد على هذا التقييم."
+     ],
+     "data": {
+      "reviews_analyzed": 44,
+      "reviews_stated": 44,
+      "complete": true
+     },
+     "overall": {
+      "reviews": 44,
+      "average": 4.05,
+      "positive_share": 0.59,
+      "recent_reviews": 25
+     },
+     "badges": [
+      {
+       "label": "متعاون و متفهم",
+       "share": 0.61
+      },
+      {
+       "label": "يوصل المعلومة",
+       "share": 0.5
+      },
+      {
+       "label": "محاضرة ممتعة",
+       "share": 0.5
+      },
+      {
+       "label": "يعطي بونس",
+       "share": 0.45
+      },
+      {
+       "label": "يختصر لك المعلومة",
+       "share": 0.39
+      }
+     ],
+     "course": {
+      "family": "برمجة الحاسب 1",
+      "confidence": "ambiguous",
+      "reviews": 3,
+      "average": 3.56,
+      "positive_share": 0.33,
+      "recent_reviews": 3,
+      "thin": false
+     }
+    },
+    {
+     "id": "f8486a20de1c6f76",
+     "name": "خالد محمد جميل خياط",
+     "department": "هندسة الحاسب الآلي",
+     "verdict": "recommended_if",
+     "verdict_label": "يُنصح به بشروط",
+     "headline": "حريص جداً على فهم الطالب لكن الضغط كبير: كويزات أسبوعية وواجبات كثيرة واختبارات صعبة، مع تعويض في نهاية الفصل.",
+     "recommendation": "سجّل عنده إذا كنت مستعداً لعمل أسبوعي منتظم وجدولك خفيف؛ ستخرج فاهماً للمادة لكن بجهد كبير.",
+     "fits": [
+      "المجتهد المنتظم الذي جدوله خفيف",
+      "من يريد فهم الشبكات بعمق",
+      "طلاب التدريب الصيفي"
+     ],
+     "not_for": [
+      "من جدوله مزدحم بمواد ثقيلة",
+      "من يذاكر قبل الاختبار فقط"
+     ],
+     "strengths": [
+      "يعيد فتح الواجبات واللابات والكويزات لمن فاتته، وأعاد ميداً في بعض الفصول، وقلّما يرسب طالب عنده.",
+      "الكويزات والواجبات الكثيرة تجعل المذاكرة تراكمية، وكثيرون قالوا إنها سهّلت الميد والفاينل.",
+      "في التدريب الصيفي: تقييمات إيجابية بالإجماع؛ إرشاد مفصل لكتابة التقرير وفرص غير محدودة للتعديل.",
+      "عدة طلاب لاحظوا أنه تحسّن كثيراً بين فصل وآخر (اختبارات أسهل وبونص)."
+     ],
+     "weaknesses": [
+      "أعلى عبء عمل في هذه البيانات: كويز كل أسبوع تقريباً، وواجب لكل فصل وكويز على كل واجب، وميدان.",
+      "الكويزات والاختبارات تُجرى غالباً في وقت الاستراحة (بريك الظهر)، والمحاضرة تبدأ متأخرة وتمتد بعد وقتها.",
+      "المنهج يتوسع خارج المقرر (سلايدات طويلة ومعادلات إضافية)، والاختبارات صعبة وبنماذج متعددة.",
+      "توزيع الدرجات والبونص بالنقاط غير واضح لكثير من الطلاب.",
+      "ذكر بعض الطلاب أنه تحدث عن تقييمات الموقع معهم؛ لذلك قد تكون بعض التقييمات (إيجاباً أو سلباً) متأثرة."
+     ],
+     "modes": [
+      {
+       "context": "نظري (الشبكات)",
+       "pattern": "شرح يراه البعض جيداً وآخرون مملاً وطويلاً؛ الاختبارات صعبة والنهائي أحياناً موحد."
+      },
+      {
+       "context": "عملي",
+       "pattern": "تقارير وتجارب كثيرة، لكن الدرجة غالباً ميسرة لمن يسلّم كل شيء، وتطبيق فعلي على أجهزة الشبكات."
+      },
+      {
+       "context": "تدريب صيفي",
+       "pattern": "أفضل تجارب الطلاب معه: متطلبات كثيرة لكن واضحة وتعاون كبير."
+      },
+      {
+       "context": "برمجة بايثون (عملي)",
+       "pattern": "تقييمات إيجابية: يشرح اللابات ويعطي فرصاً متعددة للتسليم."
+      }
+     ],
+     "survival": [
+      "خفّف جدولك في الفصل الذي تسجل عنده مادة الشبكات.",
+      "ذاكر أولاً بأول، وحل أسئلة موقع الكتاب؛ ذُكر أن أسئلته قريبة منها.",
+      "توقع كويزات في وقت الاستراحة؛ رتّب يومك على ذلك.",
+      "سلّم كل واجب ولاب حتى لو متأخراً؛ كثيراً ما يعيد فتحها.",
+      "احتفظ بجدول لدرجاتك ونقاط البونص بنفسك.",
+      "في التقارير اتبع النموذج والتعليمات حرفياً."
+     ],
+     "caveats": [
+      "التقييمات منقسمة بحدة، وعدد منها يذكر تحسناً واضحاً في الفصول الأحدث."
+     ],
+     "data": {
+      "reviews_analyzed": 142,
+      "reviews_stated": 142,
+      "complete": true
+     },
+     "overall": {
+      "reviews": 142,
+      "average": 2.87,
+      "positive_share": 0.4,
+      "recent_reviews": 130
+     },
+     "badges": [
+      {
+       "label": "واجبات كثيرة",
+       "share": 0.7
+      },
+      {
+       "label": "محاضرة مملة",
+       "share": 0.53
+      },
+      {
+       "label": "اختبارات صعبة",
+       "share": 0.51
+      },
+      {
+       "label": "شديد في التصحيح",
+       "share": 0.39
+      },
+      {
+       "label": "متعاون و متفهم",
+       "share": 0.37
+      }
+     ],
+     "course": {
+      "family": "برمجة الحاسب 1",
+      "confidence": "ambiguous",
+      "reviews": 1,
+      "average": 3.17,
+      "positive_share": 0.0,
+      "recent_reviews": 1,
+      "thin": true
+     }
+    }
+   ],
+   "source": {
+    "kind": "team_compiled_student_reviews",
+    "description": "تقييمات طلاب عامة جمعها فريق فطن (2026-10-15). لا تُعرض نصوصها؛ المعروض أرقام مجمّعة وتحليل كتبه فطن.",
+    "files": 10
+   },
+   "caveats": [
+    "تقييمات اختيارية يكتبها من أراد؛ لا تمثل كل من درس عند المحاضر.",
+    "الدرجة الواحدة لا تتنبأ بدرجتك، وتجربة المحاضر قد تتغير من فصل لآخر.",
+    "ربط اسم المقرر برمز الخطة استنتاج من صياغة الطالب، وقد يكون المقرر من خطة أقدم."
+   ]
+  }
+ },
+ "instructor_map": {
+  "program_id": "uqu-478",
+  "courses": [
+   {
+    "code": "CS1302",
+    "name": "هياكل متقطعة 1",
+    "level": 1,
+    "instructors": [
+     {
+      "id": "054453d3c917491d",
+      "name": "احمد حسن يحي لال الهندي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ شاهد المقاطع قبل المحاضرة وحل الكويزات ليكون الفاينل سهلاً.",
+      "reviews": 14,
+      "average": 4.7,
+      "recent_reviews": 10,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "7fffac76ad0851eb",
+      "name": "حاتم سعد براك السواط",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة، واستعد للفاينل بالتركيز على النظري لأنه يختلف عن الميد.",
+      "reviews": 8,
+      "average": 4.81,
+      "recent_reviews": 1,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS1701",
+    "name": "برمجة الحاسب بلغة جافا",
+    "level": 1,
+    "instructors": [
+     {
+      "id": "a62f4c58e2f2637b",
+      "name": "محمد علي عيد الغامدي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+      "reviews": 17,
+      "average": 4.07,
+      "recent_reviews": 14,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 13,
+      "average": 2.67,
+      "recent_reviews": 4,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "6cc70a2720273ef0",
+      "name": "ثامر محمد تاج الدين قدح",
+      "verdict": "avoid_if_alternative",
+      "verdict_label": "اختر غيره إن أمكن",
+      "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+      "reviews": 8,
+      "average": 2.29,
+      "recent_reviews": 1,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "788e61abcaab883c",
+      "name": "محمد خضر محمد نور",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "خيار جيد لمن يلتزم باللابات والمشاركة؛ تأكد أولاً أنه ما زال يدرّس، فتقييمات حديثة تذكر أنه غادر الجامعة.",
+      "reviews": 3,
+      "average": 3.56,
+      "recent_reviews": 3,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "a62f4c58e2f2637b",
+      "name": "محمد علي عيد الغامدي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+      "reviews": 2,
+      "average": 2.75,
+      "recent_reviews": 2,
+      "thin": true,
+      "confidence": "likely"
+     },
+     {
+      "id": "f8486a20de1c6f76",
+      "name": "خالد محمد جميل خياط",
+      "verdict": "recommended_if",
+      "verdict_label": "يُنصح به بشروط",
+      "recommendation": "سجّل عنده إذا كنت مستعداً لعمل أسبوعي منتظم وجدولك خفيف؛ ستخرج فاهماً للمادة لكن بجهد كبير.",
+      "reviews": 1,
+      "average": 3.17,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 1,
+      "average": 2.17,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS1303",
+    "name": "هياكل متقطعة 2",
+    "level": 2,
+    "instructors": [
+     {
+      "id": "7fffac76ad0851eb",
+      "name": "حاتم سعد براك السواط",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة، واستعد للفاينل بالتركيز على النظري لأنه يختلف عن الميد.",
+      "reviews": 2,
+      "average": 4.83,
+      "recent_reviews": 0,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS1704",
+    "name": "البرمجة الشيئية بلغة جافا",
+    "level": 2,
+    "instructors": [
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 19,
+      "average": 4.29,
+      "recent_reviews": 18,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "a62f4c58e2f2637b",
+      "name": "محمد علي عيد الغامدي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+      "reviews": 8,
+      "average": 4.4,
+      "recent_reviews": 8,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "6cc70a2720273ef0",
+      "name": "ثامر محمد تاج الدين قدح",
+      "verdict": "avoid_if_alternative",
+      "verdict_label": "اختر غيره إن أمكن",
+      "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+      "reviews": 5,
+      "average": 2.43,
+      "recent_reviews": 1,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "054453d3c917491d",
+      "name": "احمد حسن يحي لال الهندي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ شاهد المقاطع قبل المحاضرة وحل الكويزات ليكون الفاينل سهلاً.",
+      "reviews": 4,
+      "average": 4.92,
+      "recent_reviews": 1,
+      "thin": false,
+      "confidence": "ambiguous"
+     }
+    ]
+   },
+   {
+    "code": "AI2001",
+    "name": "مقدمة في الذكاء الاصطناعي",
+    "level": 3,
+    "instructors": [
+     {
+      "id": "e9b0b8d659a73e24",
+      "name": "حسن رويزق رديد الهذلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب جداً في تطوير الويب وجمع البيانات؛ في نظم التشغيل استعد لاختبارات صعبة غير مباشرة أو اختر شعبة أخرى إن وُجدت.",
+      "reviews": 1,
+      "average": 2.33,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CEN2011",
+    "name": "التصميم الرقمي المنطقي",
+    "level": 3,
+    "instructors": [
+     {
+      "id": "f8486a20de1c6f76",
+      "name": "خالد محمد جميل خياط",
+      "verdict": "recommended_if",
+      "verdict_label": "يُنصح به بشروط",
+      "recommendation": "سجّل عنده إذا كنت مستعداً لعمل أسبوعي منتظم وجدولك خفيف؛ ستخرج فاهماً للمادة لكن بجهد كبير.",
+      "reviews": 6,
+      "average": 3.28,
+      "recent_reviews": 4,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "d77f6bf9b5075610",
+      "name": "غسان فاروق جودة باتي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ اعتمد على شروحه في يوتيوب واكتب لاباتك بنفسك.",
+      "reviews": 4,
+      "average": 5.0,
+      "recent_reviews": 4,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS2105",
+    "name": "هياكل البيانات والخوازميات جافا",
+    "level": 3,
+    "instructors": [
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 18,
+      "average": 3.69,
+      "recent_reviews": 18,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "788e61abcaab883c",
+      "name": "محمد خضر محمد نور",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "خيار جيد لمن يلتزم باللابات والمشاركة؛ تأكد أولاً أنه ما زال يدرّس، فتقييمات حديثة تذكر أنه غادر الجامعة.",
+      "reviews": 15,
+      "average": 4.28,
+      "recent_reviews": 1,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "7fffac76ad0851eb",
+      "name": "حاتم سعد براك السواط",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة، واستعد للفاينل بالتركيز على النظري لأنه يختلف عن الميد.",
+      "reviews": 6,
+      "average": 4.61,
+      "recent_reviews": 6,
+      "thin": false,
+      "confidence": "ambiguous"
+     },
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 3,
+      "average": 2.45,
+      "recent_reviews": 3,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CEN2012",
+    "name": "تنظيم وعمارة الحاسب الآلي",
+    "level": 4,
+    "instructors": [
+     {
+      "id": "d77f6bf9b5075610",
+      "name": "غسان فاروق جودة باتي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ اعتمد على شروحه في يوتيوب واكتب لاباتك بنفسك.",
+      "reviews": 26,
+      "average": 4.83,
+      "recent_reviews": 26,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "d77f6bf9b5075610",
+      "name": "غسان فاروق جودة باتي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ اعتمد على شروحه في يوتيوب واكتب لاباتك بنفسك.",
+      "reviews": 16,
+      "average": 4.57,
+      "recent_reviews": 16,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "6cc70a2720273ef0",
+      "name": "ثامر محمد تاج الدين قدح",
+      "verdict": "avoid_if_alternative",
+      "verdict_label": "اختر غيره إن أمكن",
+      "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+      "reviews": 1,
+      "average": 1.5,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS2107",
+    "name": "تصميم وتحليل الخوارزميات",
+    "level": 4,
+    "instructors": [
+     {
+      "id": "7fffac76ad0851eb",
+      "name": "حاتم سعد براك السواط",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة، واستعد للفاينل بالتركيز على النظري لأنه يختلف عن الميد.",
+      "reviews": 15,
+      "average": 4.34,
+      "recent_reviews": 0,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS2206",
+    "name": "الرسومات بالحاسب",
+    "level": 4,
+    "instructors": [
+     {
+      "id": "576487f3a72be749",
+      "name": "محمد عارف سيد حامد",
+      "verdict": "recommended_if",
+      "verdict_label": "يُنصح به بشروط",
+      "recommendation": "سجّل عنده إذا كانت إنجليزيتك جيدة وتذاكر بنفسك، وجهّز جيداً لمناقشة الكود أو العرض.",
+      "reviews": 6,
+      "average": 4.64,
+      "recent_reviews": 6,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "DS2201",
+    "name": "مقدمة في قواعد البيانات",
+    "level": 4,
+    "instructors": [
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 15,
+      "average": 3.06,
+      "recent_reviews": 12,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "6cc70a2720273ef0",
+      "name": "ثامر محمد تاج الدين قدح",
+      "verdict": "avoid_if_alternative",
+      "verdict_label": "اختر غيره إن أمكن",
+      "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+      "reviews": 3,
+      "average": 3.56,
+      "recent_reviews": 0,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "a62f4c58e2f2637b",
+      "name": "محمد علي عيد الغامدي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+      "reviews": 1,
+      "average": 5.0,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "AI4101",
+    "name": "مبادئ الذكاء الإصطناعي",
+    "level": 5,
+    "instructors": [
+     {
+      "id": "576487f3a72be749",
+      "name": "محمد عارف سيد حامد",
+      "verdict": "recommended_if",
+      "verdict_label": "يُنصح به بشروط",
+      "recommendation": "سجّل عنده إذا كانت إنجليزيتك جيدة وتذاكر بنفسك، وجهّز جيداً لمناقشة الكود أو العرض.",
+      "reviews": 2,
+      "average": 2.92,
+      "recent_reviews": 0,
+      "thin": true,
+      "confidence": "ambiguous"
+     }
+    ]
+   },
+   {
+    "code": "CEN3011",
+    "name": "شبكات الحاسب الآلي",
+    "level": 5,
+    "instructors": [
+     {
+      "id": "f8486a20de1c6f76",
+      "name": "خالد محمد جميل خياط",
+      "verdict": "recommended_if",
+      "verdict_label": "يُنصح به بشروط",
+      "recommendation": "سجّل عنده إذا كنت مستعداً لعمل أسبوعي منتظم وجدولك خفيف؛ ستخرج فاهماً للمادة لكن بجهد كبير.",
+      "reviews": 64,
+      "average": 2.34,
+      "recent_reviews": 56,
+      "thin": false,
+      "confidence": "ambiguous"
+     }
+    ]
+   },
+   {
+    "code": "CS3608",
+    "name": "نظم التشغيل",
+    "level": 5,
+    "instructors": [
+     {
+      "id": "e9b0b8d659a73e24",
+      "name": "حسن رويزق رديد الهذلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب جداً في تطوير الويب وجمع البيانات؛ في نظم التشغيل استعد لاختبارات صعبة غير مباشرة أو اختر شعبة أخرى إن وُجدت.",
+      "reviews": 16,
+      "average": 4.12,
+      "recent_reviews": 15,
+      "thin": false,
+      "confidence": "likely"
+     },
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 11,
+      "average": 3.55,
+      "recent_reviews": 11,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS3809",
+    "name": "نظم بناء البرمجيات",
+    "level": 5,
+    "instructors": [
+     {
+      "id": "788e61abcaab883c",
+      "name": "محمد خضر محمد نور",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "خيار جيد لمن يلتزم باللابات والمشاركة؛ تأكد أولاً أنه ما زال يدرّس، فتقييمات حديثة تذكر أنه غادر الجامعة.",
+      "reviews": 1,
+      "average": 3.5,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS3810",
+    "name": "تطوير الويب",
+    "level": 5,
+    "instructors": [
+     {
+      "id": "e9b0b8d659a73e24",
+      "name": "حسن رويزق رديد الهذلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب جداً في تطوير الويب وجمع البيانات؛ في نظم التشغيل استعد لاختبارات صعبة غير مباشرة أو اختر شعبة أخرى إن وُجدت.",
+      "reviews": 12,
+      "average": 4.9,
+      "recent_reviews": 12,
+      "thin": false,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "AI4202",
+    "name": "مبادئ تعلم الآلة",
+    "level": 7,
+    "instructors": [
+     {
+      "id": "a62f4c58e2f2637b",
+      "name": "محمد علي عيد الغامدي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+      "reviews": 2,
+      "average": 4.83,
+      "recent_reviews": 2,
+      "thin": true,
+      "confidence": "likely"
+     },
+     {
+      "id": "d77f6bf9b5075610",
+      "name": "غسان فاروق جودة باتي",
+      "verdict": "recommended",
+      "verdict_label": "يُنصح به",
+      "recommendation": "سجّل عنده بثقة؛ اعتمد على شروحه في يوتيوب واكتب لاباتك بنفسك.",
+      "reviews": 1,
+      "average": 5.0,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS4411",
+    "name": "قواعد البيانات المتقدمة",
+    "level": 7,
+    "instructors": [
+     {
+      "id": "4f8af2dfb8ea29ab",
+      "name": "رياض مطيران سعيد الرحيلي",
+      "verdict": "mixed",
+      "verdict_label": "متباين — حسب المقرر ونوع الطالب",
+      "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+      "reviews": 1,
+      "average": 0.83,
+      "recent_reviews": 1,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   },
+   {
+    "code": "CS4714",
+    "name": "تركيب المترجمات",
+    "level": 8,
+    "instructors": [
+     {
+      "id": "6cc70a2720273ef0",
+      "name": "ثامر محمد تاج الدين قدح",
+      "verdict": "avoid_if_alternative",
+      "verdict_label": "اختر غيره إن أمكن",
+      "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+      "reviews": 2,
+      "average": 2.5,
+      "recent_reviews": 0,
+      "thin": true,
+      "confidence": "likely"
+     }
+    ]
+   }
+  ],
+  "covered": 19,
+  "plan_courses": 45,
+  "instructors_total": 10,
+  "source": {
+   "kind": "team_compiled_student_reviews",
+   "description": "تقييمات طلاب عامة جمعها فريق فطن (2026-10-15). لا تُعرض نصوصها؛ المعروض أرقام مجمّعة وتحليل كتبه فطن.",
+   "files": 10
+  },
+  "caveats": [
+   "تقييمات اختيارية يكتبها من أراد؛ لا تمثل كل من درس عند المحاضر.",
+   "الدرجة الواحدة لا تتنبأ بدرجتك، وتجربة المحاضر قد تتغير من فصل لآخر.",
+   "ربط اسم المقرر برمز الخطة استنتاج من صياغة الطالب، وقد يكون المقرر من خطة أقدم."
   ]
  },
  "ask": {
@@ -3635,12 +4908,12 @@
    "رموز مقررات غير موجودة في الحقائق: ['CS9999']"
   ],
   "summary": {
-   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، CUR1101 مهارات جامعية، MTH1602 الإحصاء والاحتمالات في الحاسبات، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
+   "what": "سجّل في الفصل الثاني 1448 هذه المقررات (12 ساعة): CS1701 برمجة الحاسب بلغة جافا، MTH1602 الإحصاء والاحتمالات في الحاسبات، CUR1101 مهارات جامعية، PHYS1113 الفيزياء العامة، CEN2011 التصميم الرقمي المنطقي",
    "why": [
     "اخترنا مسار التعافي: عبء أخف وأولوية لإعادة المقررات المفتاحية. معدل آخر فصل 1.78.",
     "CS1701: إعادة مقرر لم تجتزه بعد.",
+    "MTH1602: متطلب سابق لـ 1 مقرر: AI4202.",
     "CUR1101: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة).",
-    "MTH1602: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة).",
     "PHYS1113: تأجيله فصلاً لا يغيّر موعد التخرج المحسوب (فيه مرونة ضمن افتراضات الخطة)."
    ],
    "alternatives": [

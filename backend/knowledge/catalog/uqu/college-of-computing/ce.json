@@ -1,0 +1,406 @@
+{
+  "major": {
+    "code": "CEN",
+    "name_ar": "هندسة حاسب آلي وشبكات",
+    "name_en": "Computer Engineering and Networks",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "MTH1181",
+            "name_ar": "التفاضل والتكامل للهندسة (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1011",
+            "name_ar": "برمجة الحاسب بلغة بايثون",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN0601",
+            "name_ar": "نماذج متقطعة",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1182",
+            "name_ar": "التفاضل والتكامل للهندسة (2)",
+            "credits": 4,
+            "prerequisites": [
+              "MTH1181"
+            ]
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          },
+          {
+            "code": "CS1013",
+            "name_ar": "البرمجة الشيئية بلغة C++",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          },
+          {
+            "code": "CEN0301",
+            "name_ar": "التصميم الرقمي المنطقي",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CHM1109",
+            "name_ar": "الكيمياء لمهندسي الحاسب",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CS2014",
+            "name_ar": "هياكل البيانات والخوارزميات باستخدام C++",
+            "credits": 3,
+            "prerequisites": [
+              "CS1013",
+              "CEN0601"
+            ]
+          },
+          {
+            "code": "MTH2143",
+            "name_ar": "معادلات تفاضلية و الجبر خطي",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1182"
+            ]
+          },
+          {
+            "code": "PHY1114",
+            "name_ar": "فيزياء المهندسين",
+            "credits": 4,
+            "prerequisites": [
+              "PHYS1113"
+            ]
+          },
+          {
+            "code": "CEN1501",
+            "name_ar": "أساسيات الشبكات و تطبيقاتها",
+            "credits": 4,
+            "prerequisites": [
+              "CS1011"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1181"
+            ]
+          },
+          {
+            "code": "CEN2603",
+            "name_ar": "طرق التحليل الهندسية",
+            "credits": 4,
+            "prerequisites": [
+              "MTH2143"
+            ]
+          },
+          {
+            "code": "CEN1201",
+            "name_ar": "تنسيق و تصميم الحاسب الآلي",
+            "credits": 4,
+            "prerequisites": [
+              "CEN0301"
+            ]
+          },
+          {
+            "code": "EE1101",
+            "name_ar": "نظرية الدوائر",
+            "credits": 4,
+            "prerequisites": [
+              "MTH1182",
+              "PHY1114"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN1701",
+            "name_ar": "الإشارات و النظم",
+            "credits": 4,
+            "prerequisites": [
+              "CEN2603"
+            ]
+          },
+          {
+            "code": "CEN2202",
+            "name_ar": "عمارة الحاسب الآلي",
+            "credits": 3,
+            "prerequisites": [
+              "CEN1201"
+            ]
+          },
+          {
+            "code": "CEN2901",
+            "name_ar": "هندسة البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "CS2014"
+            ]
+          },
+          {
+            "code": "EE2102",
+            "name_ar": "الدوائر الإلكترونية",
+            "credits": 4,
+            "prerequisites": [
+              "EE1101",
+              "PHY1114"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN2801",
+            "name_ar": "عملية وأدوات التصميم الهندسي",
+            "credits": 3,
+            "prerequisites": [
+              "CEN2202"
+            ]
+          },
+          {
+            "code": "CEN2502",
+            "name_ar": "اتصالات البيانات",
+            "credits": 4,
+            "prerequisites": [
+              "CEN1501"
+            ]
+          },
+          {
+            "code": "CEN2302",
+            "name_ar": "تصميم الأنظمة الرقمية",
+            "credits": 4,
+            "prerequisites": [
+              "CEN0301",
+              "EE2102"
+            ]
+          },
+          {
+            "code": "CEN2401",
+            "name_ar": "تصميم أنظمة الحاسبات الصغيرة",
+            "credits": 4,
+            "prerequisites": [
+              "CEN2202"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CS2016",
+            "name_ar": "نظم التشغيل",
+            "credits": 3,
+            "prerequisites": [
+              "CS2014"
+            ]
+          },
+          {
+            "code": "SE2204",
+            "name_ar": "إدارة مشاريع تقنية المعلومات",
+            "credits": 2,
+            "prerequisites": [
+              "CS1013"
+            ]
+          },
+          {
+            "code": "CEN3802",
+            "name_ar": "المهارات الإحترافية للتصميم الهندسي",
+            "credits": 2,
+            "prerequisites": [
+              "CEN2801"
+            ]
+          },
+          {
+            "code": "CEN3902",
+            "name_ar": "مقدمة في الأنظمة الذكية",
+            "credits": 3,
+            "prerequisites": [
+              "AI2001",
+              "CS2014"
+            ]
+          },
+          {
+            "code": "CEN3503",
+            "name_ar": "الشبكات اللاسلكية",
+            "credits": 3,
+            "prerequisites": [
+              "CEN2502"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC4011",
+            "name_ar": "أمن الحاسب والشبكات",
+            "credits": 4,
+            "prerequisites": [
+              "CEN2502"
+            ]
+          },
+          {
+            "code": "CEN3804",
+            "name_ar": "مشروع التخرج 1",
+            "credits": 3,
+            "prerequisites": [
+              "CEN3802"
+            ]
+          },
+          {
+            "code": "CEN3504",
+            "name_ar": "هندسة الشبكات",
+            "credits": 3,
+            "prerequisites": [
+              "CEN2502"
+            ]
+          },
+          {
+            "code": "CEN3402",
+            "name_ar": "الأنظمة المتضمنة",
+            "credits": 4,
+            "prerequisites": [
+              "CEN2401"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 9,
+        "courses": [
+          {
+            "code": "CEN3803",
+            "name_ar": "التدريب التعاوني",
+            "credits": 6,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 10,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN4805",
+            "name_ar": "مشروع التخرج 2",
+            "credits": 3,
+            "prerequisites": [
+              "CEN3804"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

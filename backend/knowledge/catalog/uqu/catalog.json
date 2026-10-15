@@ -1,6 +1,6 @@
 {
  "schema_version": 2,
- "generated_at": "2026-10-14T20:48:18+00:00",
+ "generated_at": "2026-10-15T09:47:06+00:00",
  "university": {
   "id": "uqu",
   "name_ar": "جامعة أم القرى",
@@ -16,7 +16,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -181,7 +184,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -203,6 +209,15 @@
     "uqu-1492"
    ]
   },
+  "CEN1011": {
+   "code": "CEN1011",
+   "name_ar": "المنطق الرقمي وتنظيم الحاسوب",
+   "name_en": "Digital Logic and Computer Organization",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
   "CEN1012": {
    "code": "CEN1012",
    "name_ar": "تنظيم الحاسوب والمنطق الرقمي",
@@ -210,6 +225,24 @@
    "credits": 3,
    "seen_in": [
     "uqu-1510"
+   ]
+  },
+  "CEN1013": {
+   "code": "CEN1013",
+   "name_ar": "شبكات الحاسب الآلي",
+   "name_en": "Computer Networks",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "CEN1014": {
+   "code": "CEN1014",
+   "name_ar": "نظم التشغيل و الشبكات",
+   "name_en": "Operating Systems and Networks",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
    ]
   },
   "CEN1201": {
@@ -421,7 +454,9 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
-    "uqu-1492"
+    "uqu-1492",
+    "uqu-1508",
+    "uqu-1981"
    ]
   },
   "CS1012": {
@@ -442,6 +477,15 @@
     "uqu-1492"
    ]
   },
+  "CS1018": {
+   "code": "CS1018",
+   "name_ar": "مقدمة في نظم الحاسب",
+   "name_en": "Introduction to Computer Systems",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
   "CS1302": {
    "code": "CS1302",
    "name_ar": "هياكل متقطعة 1",
@@ -449,6 +493,7 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -468,6 +513,7 @@
    "credits": 3,
    "seen_in": [
     "uqu-1510",
+    "uqu-1738",
     "uqu-478"
    ]
   },
@@ -477,6 +523,7 @@
    "name_en": "Object Oriented Programming with Java",
    "credits": 3,
    "seen_in": [
+    "uqu-1738",
     "uqu-478"
    ]
   },
@@ -505,7 +552,8 @@
    "credits": 3,
    "seen_in": [
     "uqu-1492",
-    "uqu-1510"
+    "uqu-1510",
+    "uqu-1738"
    ]
   },
   "CS2105": {
@@ -515,6 +563,7 @@
    "credits": 3,
    "seen_in": [
     "uqu-1510",
+    "uqu-1738",
     "uqu-478"
    ]
   },
@@ -535,6 +584,15 @@
    "credits": 3,
    "seen_in": [
     "uqu-478"
+   ]
+  },
+  "CS3019": {
+   "code": "CS3019",
+   "name_ar": "تصميم وتحليل الخوازميات",
+   "name_en": "Design & Analysis of Algorithms",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1738"
    ]
   },
   "CS3608": {
@@ -663,8 +721,38 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
+   ]
+  },
+  "DS1102": {
+   "code": "DS1102",
+   "name_ar": "مقدمة في علوم البيانات",
+   "name_en": "Introduction to Data Science",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS1103": {
+   "code": "DS1103",
+   "name_ar": "البرمجة المتقدمة لعلوم البيانات",
+   "name_en": "Advanced Programming for Data Science",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS1901": {
+   "code": "DS1901",
+   "name_ar": "هياكل متقطعة",
+   "name_en": "Discrete Structures",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1508"
    ]
   },
   "DS2201": {
@@ -674,8 +762,163 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1981",
     "uqu-478"
+   ]
+  },
+  "DS2202": {
+   "code": "DS2202",
+   "name_ar": "تكامل و مخازن البيانات",
+   "name_en": "Data Integration and Warehousing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS2203": {
+   "code": "DS2203",
+   "name_ar": "تمثيل المعرفة و الاستنتاج",
+   "name_en": "Knowledge Representation and Inference",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS2206": {
+   "code": "DS2206",
+   "name_ar": "هياكل البيانات",
+   "name_en": "Data Structures",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS2301": {
+   "code": "DS2301",
+   "name_ar": "جمع ومعالجة البيانات",
+   "name_en": "Data Collection and Preprocessing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS2303": {
+   "code": "DS2303",
+   "name_ar": "تحليل بيانات الويب",
+   "name_en": "Web Data Analysis",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS2401": {
+   "code": "DS2401",
+   "name_ar": "تعلم الآلة لعلوم البيانات",
+   "name_en": "Machine Learning for Data Science",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS3205": {
+   "code": "DS3205",
+   "name_ar": "إدارة البيانات",
+   "name_en": "Data Management",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS3302": {
+   "code": "DS3302",
+   "name_ar": "تصوير البيانات",
+   "name_en": "Data Visualization",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS3402": {
+   "code": "DS3402",
+   "name_ar": "نمذجة البيانات",
+   "name_en": "Data Modelling",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS3803": {
+   "code": "DS3803",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "COOP",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4104": {
+   "code": "DS4104",
+   "name_ar": "مواضيع خاصة في علوم البيانات",
+   "name_en": "Special Topics in Data Science",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4502": {
+   "code": "DS4502",
+   "name_ar": "تحسين تحليل البيانات",
+   "name_en": "Optimization for Data Analysis",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4503": {
+   "code": "DS4503",
+   "name_ar": "تطبيقات معالجة اللغات الطبيعية",
+   "name_en": "Applied Natural Language Processing",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4511": {
+   "code": "DS4511",
+   "name_ar": "التنقيب في البيانات الضخمة",
+   "name_en": "Big Data Mining",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4701": {
+   "code": "DS4701",
+   "name_ar": "أخلاقيات و حوكمة البيانات",
+   "name_en": "Data Ethics and Governance",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4801": {
+   "code": "DS4801",
+   "name_ar": "مشروع تخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "DS4802": {
+   "code": "DS4802",
+   "name_ar": "مشروع تخرج 2",
+   "name_en": "Graduation Project 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
    ]
   },
   "EE1101": {
@@ -704,7 +947,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -716,8 +962,29 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
+   ]
+  },
+  "HCI1201": {
+   "code": "HCI1201",
+   "name_ar": "أساسيات تفاعل الإنسان مع الحاسب",
+   "name_en": "Fundementals of Human-Computer Interaction",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI1202": {
+   "code": "HCI1202",
+   "name_ar": "التصميم للإنسان",
+   "name_en": "Human Factors in Design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1981"
    ]
   },
   "HCI2011": {
@@ -729,6 +996,150 @@
     "uqu-1490"
    ]
   },
+  "HCI2101": {
+   "code": "HCI2101",
+   "name_ar": "تصميم واجهات المستخدم 1",
+   "name_en": "User Interface Design 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI2102": {
+   "code": "HCI2102",
+   "name_ar": "تصميم واجهات المستخدم 2",
+   "name_en": "User Interface Design 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI2203": {
+   "code": "HCI2203",
+   "name_ar": "أبحاث المستخدم",
+   "name_en": "User Research",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI2204": {
+   "code": "HCI2204",
+   "name_ar": "أخلاقيات في تفاعل الإنسان مع الحاسب",
+   "name_en": "Ethics in Human-Computer Interaction",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3103": {
+   "code": "HCI3103",
+   "name_ar": "التصميم المتمركز حول الإنسان",
+   "name_en": "User Centred Design",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3104": {
+   "code": "HCI3104",
+   "name_ar": "التصميم الشامل",
+   "name_en": "Inclusive Design",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3105": {
+   "code": "HCI3105",
+   "name_ar": "معمارية المعلومات",
+   "name_en": "Information Architecture",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3205": {
+   "code": "HCI3205",
+   "name_ar": "تقييم قابلية الاستخدام",
+   "name_en": "Usability Evaluation",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3301": {
+   "code": "HCI3301",
+   "name_ar": "طرق النمذجة",
+   "name_en": "Prototyping Methods",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3302": {
+   "code": "HCI3302",
+   "name_ar": "تطوير تطبيقات الجوال",
+   "name_en": "Mobile Application Development",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3401": {
+   "code": "HCI3401",
+   "name_ar": "تصميم تصوير البيانات",
+   "name_en": "Data Visulisation Design",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI3502": {
+   "code": "HCI3502",
+   "name_ar": "مشروع تخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI4106": {
+   "code": "HCI4106",
+   "name_ar": "نظم التصميم",
+   "name_en": "Design Systems",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI4303": {
+   "code": "HCI4303",
+   "name_ar": "تفاعل متعدد الوسائط",
+   "name_en": "Advanced Interaction",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI4503": {
+   "code": "HCI4503",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "Cooperative Training",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "HCI4504": {
+   "code": "HCI4504",
+   "name_ar": "مشروع تخرج 2",
+   "name_en": "Graduation Project 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
   "ICC1201": {
    "code": "ICC1201",
    "name_ar": "القيم والأخلاق",
@@ -737,7 +1148,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -749,7 +1163,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -761,7 +1178,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -772,6 +1192,9 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1508",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -811,6 +1234,7 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1508",
     "uqu-478"
    ]
   },
@@ -822,7 +1246,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -845,6 +1272,15 @@
     "uqu-1490"
    ]
   },
+  "MTH2902": {
+   "code": "MTH2902",
+   "name_ar": "الإحصاء التطبيقي في علوم البيانات",
+   "name_en": "Applied Statistics for Data Science",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
   "PHYS1113": {
    "code": "PHYS1113",
    "name_ar": "الفيزياء العامة",
@@ -853,7 +1289,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -874,7 +1313,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -886,7 +1328,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -898,7 +1343,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -910,7 +1358,10 @@
    "seen_in": [
     "uqu-1490",
     "uqu-1492",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1738",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -920,7 +1371,8 @@
    "name_en": "Object-oriented Application Development",
    "credits": 3,
    "seen_in": [
-    "uqu-1510"
+    "uqu-1510",
+    "uqu-1981"
    ]
   },
   "SE1201": {
@@ -930,7 +1382,9 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1508",
     "uqu-1510",
+    "uqu-1981",
     "uqu-478"
    ]
   },
@@ -959,7 +1413,8 @@
    "credits": 2,
    "seen_in": [
     "uqu-1492",
-    "uqu-1510"
+    "uqu-1510",
+    "uqu-1981"
    ]
   },
   "SE2301": {
@@ -1068,7 +1523,179 @@
    "credits": 3,
    "seen_in": [
     "uqu-1490",
+    "uqu-1738",
     "uqu-478"
+   ]
+  },
+  "SEC1201": {
+   "code": "SEC1201",
+   "name_ar": "هياكل متقطعة للأمن السيبراني",
+   "name_en": "Discrete Structures for Cybersecurity",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC1202": {
+   "code": "SEC1202",
+   "name_ar": "التشفير التطبيقي",
+   "name_en": "Applied Cryptography",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2011": {
+   "code": "SEC2011",
+   "name_ar": "أساسيات في شبكات الحاسب والأمن السيبراني",
+   "name_en": "Foundations of Computer Networks and Cybersecurity",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1981"
+   ]
+  },
+  "SEC2102": {
+   "code": "SEC2102",
+   "name_ar": "حوكمة و أخلاقيات الامن السيبراني والموائمة",
+   "name_en": "Cybersecurity Ethics, Governance & Compliance",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2203": {
+   "code": "SEC2203",
+   "name_ar": "إدارة وأمن قواعد البيانات",
+   "name_en": "Databases Administration & Security",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2301": {
+   "code": "SEC2301",
+   "name_ar": "امن نظم التشغيل",
+   "name_en": "Operating Systems Security",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2303": {
+   "code": "SEC2303",
+   "name_ar": "برمجة النظام والكتابة النصية",
+   "name_en": "System Programming & Scripting",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2401": {
+   "code": "SEC2401",
+   "name_ar": "التهديدات السيبرانية والأستجابة للحوادث",
+   "name_en": "Cyber Threats & Incident Response",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC2402": {
+   "code": "SEC2402",
+   "name_ar": "مبادئ وتصميم أمن تكنولوجيا المعلومات",
+   "name_en": "IT Security Principles and Design",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3011": {
+   "code": "SEC3011",
+   "name_ar": "أمن وخصوصية البيانات",
+   "name_en": "Data Security and Privacy",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1508"
+   ]
+  },
+  "SEC3103": {
+   "code": "SEC3103",
+   "name_ar": "كتابة التقارير التقنية في الأمن السيبراني",
+   "name_en": "Technical Report Writing in Cybersecurity",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3104": {
+   "code": "SEC3104",
+   "name_ar": "إدارة المخاطر الامنية",
+   "name_en": "Security Risk Management",
+   "credits": 2,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3106": {
+   "code": "SEC3106",
+   "name_ar": "عمليات الأمن السيبراني",
+   "name_en": "Cybersecurity Operations",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3107": {
+   "code": "SEC3107",
+   "name_ar": "مشروع تخرج 1",
+   "name_en": "Graduation Project 1",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3204": {
+   "code": "SEC3204",
+   "name_ar": "أمن البرامج",
+   "name_en": "Software Security",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3205": {
+   "code": "SEC3205",
+   "name_ar": "تطوير وأمن الويب",
+   "name_en": "Web Development & Security",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3206": {
+   "code": "SEC3206",
+   "name_ar": "التحقق الرقمي الجنائي",
+   "name_en": "Digital Forensics",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3214": {
+   "code": "SEC3214",
+   "name_ar": "تشفير متقدم",
+   "name_en": "Advanced Cryptography",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC3302": {
+   "code": "SEC3302",
+   "name_ar": "أمن الشبكات",
+   "name_en": "Network Security",
+   "credits": 4,
+   "seen_in": [
+    "uqu-1738"
    ]
   },
   "SEC4011": {
@@ -1087,6 +1714,33 @@
    "credits": 3,
    "seen_in": [
     "uqu-1510"
+   ]
+  },
+  "SEC4105": {
+   "code": "SEC4105",
+   "name_ar": "التدريب التعاوني",
+   "name_en": "COOP Trainning",
+   "credits": 6,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC4108": {
+   "code": "SEC4108",
+   "name_ar": "مشروع تخرج 2",
+   "name_en": "Graduation Project 2",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
+   ]
+  },
+  "SEC4403": {
+   "code": "SEC4403",
+   "name_ar": "الهاكر الأخلاقي",
+   "name_en": "Ethical Hacking",
+   "credits": 3,
+   "seen_in": [
+    "uqu-1738"
    ]
   }
  },
@@ -1115,6 +1769,18 @@
     "uqu-1492@2026-10-14"
    ]
   },
+  "uqu-1508": {
+   "id": "uqu-1508",
+   "university": "uqu",
+   "source_id": "1508",
+   "name_ar": "علم البيانات",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "علم البيانات",
+   "curricula": [
+    "uqu-1508@2026-10-15"
+   ]
+  },
   "uqu-1510": {
    "id": "uqu-1510",
    "university": "uqu",
@@ -1125,6 +1791,30 @@
    "department_ar": "هندسة البرمجيات",
    "curricula": [
     "uqu-1510@2026-10-14"
+   ]
+  },
+  "uqu-1738": {
+   "id": "uqu-1738",
+   "university": "uqu",
+   "source_id": "1738",
+   "name_ar": "الأمن السيبراني",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "الأمن السيبراني",
+   "curricula": [
+    "uqu-1738@2026-10-15"
+   ]
+  },
+  "uqu-1981": {
+   "id": "uqu-1981",
+   "university": "uqu",
+   "source_id": "1981",
+   "name_ar": "تفاعل الإنسان مع الحاسب",
+   "degree_type": "بكالوريوس",
+   "college_ar": "الحاسبات",
+   "department_ar": "هندسة البرمجيات",
+   "curricula": [
+    "uqu-1981@2026-10-15"
    ]
   },
   "uqu-478": {
@@ -1170,7 +1860,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1141",
@@ -1185,7 +1877,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1011",
@@ -1200,7 +1894,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1602",
@@ -1215,7 +1911,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1201",
@@ -1230,7 +1928,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1441",
@@ -1245,7 +1945,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR1101",
@@ -1260,7 +1962,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CUR1101",
@@ -1275,7 +1979,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1202",
@@ -1292,7 +1998,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1302",
@@ -1307,7 +2015,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2011",
@@ -1322,7 +2032,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1012",
@@ -1339,7 +2051,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH2144",
@@ -1356,7 +2070,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR2102",
@@ -1371,7 +2087,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC1201",
@@ -1386,7 +2104,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI2001",
@@ -1401,7 +2121,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "BUS1099",
@@ -1416,7 +2138,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "PHYS1113",
@@ -1431,14 +2155,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "DS2201",
      "level": 3,
      "credits": 3,
      "prerequisites": [
-      "CS1012"
+      "CS1011"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1448,7 +2174,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS1012"
+     ]
     },
     {
      "code": "CEN2012",
@@ -1465,14 +2195,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2015",
      "level": 3,
      "credits": 3,
      "prerequisites": [
-      "CS1011"
+      "CS1012"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1482,7 +2214,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS1011"
+     ]
     },
     {
      "code": "QR2103",
@@ -1497,7 +2233,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN3011",
@@ -1514,14 +2252,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE1201",
      "level": 4,
      "credits": 3,
      "prerequisites": [
-      "DS2201"
+      "CS1012"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1531,7 +2271,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201"
+     ]
     },
     {
      "code": "CS2107",
@@ -1548,14 +2292,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS3608",
      "level": 4,
      "credits": 4,
      "prerequisites": [
-      "CEN2012"
+      "CS2015"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1565,14 +2311,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN2012"
+     ]
     },
     {
      "code": "QR3104",
      "level": 5,
      "credits": 2,
      "prerequisites": [
-      "QR1101"
+      "QR2103"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1582,7 +2332,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "QR1101"
+     ]
     },
     {
      "code": "SEC1101",
@@ -1599,7 +2353,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "HCI2011",
@@ -1616,14 +2372,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI3101",
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "CS2015"
+      "AI2001"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1633,14 +2391,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS2015"
+     ]
     },
     {
      "code": "AI3301",
      "level": 5,
      "credits": 2,
      "prerequisites": [
-      "DS2201"
+      "MTH1602"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1650,15 +2412,19 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201"
+     ]
     },
     {
      "code": "AI3201",
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "MTH1441",
-      "CS2107"
+      "AI2001",
+      "MTH1441"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1668,7 +2434,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH1441",
+      "CS2107"
+     ]
     },
     {
      "code": "AI3202",
@@ -1685,14 +2456,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI3103",
      "level": 6,
      "credits": 2,
      "prerequisites": [
-      "AI3101"
+      "AI2001"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1702,15 +2475,19 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "AI3101"
+     ]
     },
     {
      "code": "AI3104",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "SE1201",
-      "AI3201"
+      "AI3101",
+      "SE1201"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1720,25 +2497,28 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE1201",
+      "AI3201"
+     ]
     },
     {
      "code": "AI3501",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "SE1201",
-      "AI3101"
+      "AI3101",
+      "AI3201"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
      "kind": "required",
      "source_url": "https://uqu.edu.sa/en/App/Degrees/1490/39987",
-     "verification": "verified",
-     "evidence": [
-      "spec-AI3501"
-     ],
+     "verification": "conflicting",
+     "evidence": [],
      "special_conditions": [
       {
        "kind": "department_approval",
@@ -1747,7 +2527,12 @@
        "source_url": "https://drive.uqu.edu.sa/_/ccomp_csai/files/126df5c2-8730-47de-ae82-c46f125177c8.pdf"
       }
      ],
-     "prereq_list_corroborated": true
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE1201",
+      "AI3101"
+     ]
     },
     {
      "code": "AI3302",
@@ -1755,7 +2540,7 @@
      "credits": 3,
      "prerequisites": [
       "AI3201",
-      "MTH1441"
+      "MTH2144"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1765,7 +2550,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "AI3201",
+      "MTH1441"
+     ]
     },
     {
      "code": "AI3102",
@@ -1782,7 +2572,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI4401",
@@ -1797,7 +2589,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC4202",
@@ -1812,7 +2606,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI4502",
@@ -1829,7 +2625,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI4203",
@@ -1846,14 +2644,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI4303",
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "AI3202"
+      "AI3201"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -1863,7 +2663,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "AI3202"
+     ]
     }
    ],
    "verification": "incomplete",
@@ -1894,6 +2698,90 @@
     },
     {
      "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3101: المتطلبات المعتمدة ['AI2001'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS2015'].",
+     "subject": "AI3101"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3103: المتطلبات المعتمدة ['AI2001'] من قائمة الكلية؛ صفحة الخطة تذكر ['AI3101'].",
+     "subject": "AI3103"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3104: المتطلبات المعتمدة ['AI3101', 'SE1201'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE1201', 'AI3201'].",
+     "subject": "AI3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3201: المتطلبات المعتمدة ['AI2001', 'MTH1441'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH1441', 'CS2107'].",
+     "subject": "AI3201"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3301: المتطلبات المعتمدة ['MTH1602'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201'].",
+     "subject": "AI3301"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3302: المتطلبات المعتمدة ['AI3201', 'MTH2144'] من قائمة الكلية؛ صفحة الخطة تذكر ['AI3201', 'MTH1441'].",
+     "subject": "AI3302"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3501: المتطلبات المعتمدة ['AI3101', 'AI3201'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE1201', 'AI3101'].",
+     "subject": "AI3501"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI4303: المتطلبات المعتمدة ['AI3201'] من قائمة الكلية؛ صفحة الخطة تذكر ['AI3202'].",
+     "subject": "AI4303"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS2015: المتطلبات المعتمدة ['CS1012'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS1011'].",
+     "subject": "CS2015"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS3608: المتطلبات المعتمدة ['CS2015'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN2012'].",
+     "subject": "CS3608"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS2201: المتطلبات المعتمدة ['CS1011'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS1012'].",
+     "subject": "DS2201"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "QR3104: المتطلبات المعتمدة ['QR2103'] من قائمة الكلية؛ صفحة الخطة تذكر ['QR1101'].",
+     "subject": "QR3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE1201: المتطلبات المعتمدة ['CS1012'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201'].",
+     "subject": "SE1201"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 13 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "info",
      "code": "total_hours_confirmed",
      "message": "إجمالي ساعات البرنامج (132) يطابق صفحة القسم في دليل البرامج.",
      "subject": null
@@ -1905,9 +2793,9 @@
      "subject": null
     },
     {
-     "severity": "info",
-     "code": "spec_agrees",
-     "message": "AI3501: المستوى والساعات وقائمة المتطلبات تطابق Course Specification — AI3501 Graduation Project I (الإصدار 1.0، Last Revision Date: 2 January 2025).",
+     "severity": "warning",
+     "code": "spec_conflict",
+     "message": "AI3501: تعارض بين بيانات الخطة المعتمدة وCourse Specification — AI3501 Graduation Project I (الإصدار 1.0، Last Revision Date: 2 January 2025) — المتطلبات: المعتمدة من قائمة الكلية ['AI3101', 'AI3201'] والتوصيف ['AI3101', 'SE1201'] (يطابق صفحة الخطة). أُبقيت البيانات المعتمدة كما هي.",
      "subject": "AI3501"
     },
     {
@@ -2124,7 +3012,16 @@
     "spec-AI4308",
     "uqu-degrees-csai-catalog",
     "uqu-prep-years"
-   ]
+   ],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "ai.json",
+    "original_name": "الذكاء الاصطناعي.json",
+    "sha256": "96b869898f60526f3d6492df69269458d5c962b2568be64af45caad0d9126556",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
   },
   "uqu-1492@2026-10-14": {
    "id": "uqu-1492@2026-10-14",
@@ -2155,7 +3052,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1011",
@@ -2170,7 +3069,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "PHYS1113",
@@ -2185,7 +3086,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1201",
@@ -2200,7 +3103,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN0601",
@@ -2215,7 +3120,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CUR1101",
@@ -2230,7 +3137,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1182",
@@ -2247,7 +3156,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1202",
@@ -2264,7 +3175,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1013",
@@ -2281,7 +3194,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN0301",
@@ -2296,7 +3211,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CHM1109",
@@ -2311,7 +3228,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI2001",
@@ -2326,7 +3245,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "IND1101",
@@ -2341,7 +3262,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2014",
@@ -2359,7 +3282,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH2143",
@@ -2376,14 +3301,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN1501",
      "level": 3,
      "credits": 4,
      "prerequisites": [
-      "CEN0601"
+      "CS1011"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2393,7 +3320,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN0601"
+     ]
     },
     {
      "code": "PHYS1114",
@@ -2410,7 +3341,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC1201",
@@ -2425,7 +3358,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1602",
@@ -2442,7 +3377,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2603",
@@ -2459,7 +3396,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN1201",
@@ -2476,7 +3415,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "EE1101",
@@ -2494,7 +3435,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR1101",
@@ -2509,14 +3452,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN1701",
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "MTH2143"
+      "CEN2603"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2526,7 +3471,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH2143"
+     ]
     },
     {
      "code": "CEN2202",
@@ -2543,7 +3492,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2901",
@@ -2560,15 +3511,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "EE2102",
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "CHM1109",
-      "EE1101"
+      "EE1101",
+      "PHYS1114"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2578,7 +3531,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CHM1109",
+      "EE1101"
+     ]
     },
     {
      "code": "QR2102",
@@ -2593,14 +3551,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2801",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "CEN1201"
+      "CEN2202"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2610,14 +3570,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1201"
+     ]
     },
     {
      "code": "CEN2502",
      "level": 6,
      "credits": 4,
      "prerequisites": [
-      "CEN1701"
+      "CEN1501"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2627,7 +3591,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1701"
+     ]
     },
     {
      "code": "CEN2302",
@@ -2645,14 +3613,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2401",
      "level": 6,
      "credits": 4,
      "prerequisites": [
-      "CEN1201"
+      "CEN2202"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2662,7 +3632,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1201"
+     ]
     },
     {
      "code": "QR2103",
@@ -2677,14 +3651,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2016",
      "level": 7,
      "credits": 3,
      "prerequisites": [
-      "CEN2202"
+      "CS2014"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2694,14 +3670,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN2202"
+     ]
     },
     {
      "code": "SE2204",
      "level": 7,
      "credits": 2,
      "prerequisites": [
-      "CEN2801"
+      "CS1013"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2711,7 +3691,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN2801"
+     ]
     },
     {
      "code": "CEN3802",
@@ -2728,15 +3712,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN3902",
      "level": 7,
      "credits": 3,
      "prerequisites": [
-      "MTH2143",
-      "MTH1602"
+      "AI2001",
+      "CS2014"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2746,7 +3732,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH2143",
+      "MTH1602"
+     ]
     },
     {
      "code": "CEN3503",
@@ -2763,7 +3754,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC4202",
@@ -2778,14 +3771,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SEC4011",
      "level": 8,
      "credits": 4,
      "prerequisites": [
-      "CEN1501"
+      "CEN2502"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2795,14 +3790,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1501"
+     ]
     },
     {
      "code": "CEN3804",
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "CEN2801"
+      "CEN3802"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2812,14 +3811,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN2801"
+     ]
     },
     {
      "code": "CEN3504",
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "CEN1501"
+      "CEN2502"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2829,7 +3832,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1501"
+     ]
     },
     {
      "code": "CEN3402",
@@ -2846,7 +3853,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN3803",
@@ -2861,14 +3870,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR3104",
      "level": 10,
      "credits": 2,
      "prerequisites": [
-      "QR1101"
+      "QR2103"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -2878,7 +3889,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "QR1101"
+     ]
     },
     {
      "code": "BUS1099",
@@ -2893,7 +3908,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN4805",
@@ -2910,7 +3927,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     }
    ],
    "verification": "incomplete",
@@ -2938,13 +3957,913 @@
      "code": "no_offering_data",
      "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
      "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN1501: المتطلبات المعتمدة ['CS1011'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN0601'].",
+     "subject": "CEN1501"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN1701: المتطلبات المعتمدة ['CEN2603'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH2143'].",
+     "subject": "CEN1701"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN2401: المتطلبات المعتمدة ['CEN2202'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1201'].",
+     "subject": "CEN2401"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN2502: المتطلبات المعتمدة ['CEN1501'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1701'].",
+     "subject": "CEN2502"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN2801: المتطلبات المعتمدة ['CEN2202'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1201'].",
+     "subject": "CEN2801"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN3504: المتطلبات المعتمدة ['CEN2502'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1501'].",
+     "subject": "CEN3504"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN3804: المتطلبات المعتمدة ['CEN3802'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN2801'].",
+     "subject": "CEN3804"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN3902: المتطلبات المعتمدة ['AI2001', 'CS2014'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH2143', 'MTH1602'].",
+     "subject": "CEN3902"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS2016: المتطلبات المعتمدة ['CS2014'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN2202'].",
+     "subject": "CS2016"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "EE2102: المتطلبات المعتمدة ['EE1101', 'PHYS1114'] من قائمة الكلية؛ صفحة الخطة تذكر ['CHM1109', 'EE1101'].",
+     "subject": "EE2102"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "QR3104: المتطلبات المعتمدة ['QR2103'] من قائمة الكلية؛ صفحة الخطة تذكر ['QR1101'].",
+     "subject": "QR3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE2204: المتطلبات المعتمدة ['CS1013'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN2801'].",
+     "subject": "SE2204"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC4011: المتطلبات المعتمدة ['CEN2502'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1501'].",
+     "subject": "SEC4011"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 13 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
+     "subject": null
     }
    ],
    "elective_options": [],
    "elective_options_complete": false,
    "prep_year": null,
    "other_editions": [],
-   "documents": []
+   "documents": [],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "ce.json",
+    "original_name": "هندسة حاسب.json",
+    "sha256": "9a4c4c679b78ab0fee4177646917c8ddb5ce9dbc2d0d95ec57c133976579be76",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
+  },
+  "uqu-1508@2026-10-15": {
+   "id": "uqu-1508@2026-10-15",
+   "program_id": "uqu-1508",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-15)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1508",
+    "retrieved_at": "2026-10-15T08:29:10.241Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1508.psv",
+    "raw_sha256": "97dafcf5509cfb72c8cf5b86dd095d049084541a30365e808a49f70c382129ee"
+   },
+   "stated_total_hours": 126,
+   "listed_hours": 118,
+   "unlisted_hours": 8,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "QR1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38520",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "AI2001",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38526",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38528",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1141",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38534",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1011",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38540",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39071",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS1102",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39725",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR2102",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38521",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ICC1201",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38524",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38530",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1602",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38602",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39086",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS1901",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39729",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS1103",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39731",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR2103",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38522",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1441",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39084",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2201",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39315",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH2902",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1602"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39733",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2301",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "DS1103",
+      "DS1102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39734",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2206",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "DS1103",
+      "DS1901"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/41100",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "PHYS1113",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39020",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2303",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201",
+      "DS1103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39736",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2202",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39738",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2203",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39740",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2401",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH2902",
+      "DS1103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/41101",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC3011",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS1102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38854",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SE1201",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39061",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS3402",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "MTH1141",
+      "DS2401"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39744",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS3302",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS1103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39745",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CEN1014",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS1103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/42414",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS3205",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/42585",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS3803",
+     "level": 6,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/42415",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ICC4202",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38525",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4801",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39754",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4503",
+     "level": 7,
+     "credits": 3,
+     "prerequisites": [
+      "DS3402"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39755",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4701",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39757",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4104",
+     "level": 7,
+     "credits": 2,
+     "prerequisites": [
+      "DS3402"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39761",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR3104",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [
+      "QR1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38523",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "BUS1099",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/38590",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4802",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39763",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4502",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "DS3402"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39771",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS4511",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "DS2401",
+      "DS3302"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1508/39773",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "6 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 126 ساعة، والمقررات المنشورة في الخطة مجموعها 118 ساعة. 8 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    }
+   ],
+   "elective_options": [],
+   "elective_options_complete": false,
+   "prep_year": null,
+   "other_editions": [],
+   "documents": [],
+   "college_list": null
   },
   "uqu-1510@2026-10-14": {
    "id": "uqu-1510@2026-10-14",
@@ -2975,7 +4894,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "IND1101",
@@ -2990,7 +4911,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN1012",
@@ -3005,7 +4928,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "PHYS1113",
@@ -3020,7 +4945,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1201",
@@ -3035,7 +4962,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1701",
@@ -3050,7 +4979,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR2102",
@@ -3065,7 +4996,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CUR1101",
@@ -3080,7 +5013,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1181",
@@ -3095,7 +5030,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE1101",
@@ -3112,7 +5049,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1402",
@@ -3127,7 +5066,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE1201",
@@ -3142,13 +5083,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1202",
      "level": 2,
      "credits": 4,
-     "prerequisites": [],
+     "prerequisites": [
+      "ELIE1201"
+     ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
@@ -3157,7 +5102,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": []
     },
     {
      "code": "QR2103",
@@ -3172,7 +5119,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI2001",
@@ -3187,7 +5136,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1182",
@@ -3204,7 +5155,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2105",
@@ -3221,7 +5174,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE2202",
@@ -3236,7 +5191,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE2203",
@@ -3253,7 +5210,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE2204",
@@ -3270,13 +5229,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR3104",
      "level": 4,
      "credits": 2,
-     "prerequisites": [],
+     "prerequisites": [
+      "QR2103"
+     ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
@@ -3285,7 +5248,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": []
     },
     {
      "code": "ICC1201",
@@ -3300,14 +5265,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2016",
      "level": 4,
      "credits": 3,
      "prerequisites": [
-      "CEN1012"
+      "CS2105"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3317,7 +5284,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN1012"
+     ]
     },
     {
      "code": "SE2301",
@@ -3334,7 +5305,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE3402",
@@ -3351,14 +5324,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "DS2201",
      "level": 4,
      "credits": 3,
      "prerequisites": [
-      "CS1701"
+      "CS2105"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3368,7 +5343,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS1701"
+     ]
     },
     {
      "code": "MTH2143",
@@ -3385,7 +5364,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1602",
@@ -3402,7 +5383,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE3501",
@@ -3419,27 +5402,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE3102",
-     "level": 5,
-     "credits": 3,
-     "prerequisites": [
-      "SE1201"
-     ],
-     "prereq_relation": "all_of",
-     "prereq_relation_status": "inferred",
-     "corequisites": [],
-     "kind": "required",
-     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39125",
-     "verification": "verified",
-     "evidence": [],
-     "special_conditions": [],
-     "prereq_list_corroborated": false
-    },
-    {
-     "code": "SE3104",
      "level": 5,
      "credits": 3,
      "prerequisites": [
@@ -3449,18 +5417,43 @@
      "prereq_relation_status": "inferred",
      "corequisites": [],
      "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39125",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE1201"
+     ]
+    },
+    {
+     "code": "SE3104",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "DS2201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
      "source_url": "https://uqu.edu.sa/en/App/Degrees/1510/39153",
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE2301"
+     ]
     },
     {
      "code": "CEN3011",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "CS2016"
+      "CEN1012"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3470,14 +5463,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS2016"
+     ]
     },
     {
      "code": "SE3302",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "SE1201"
+      "SE3102"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3487,14 +5484,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE1201"
+     ]
     },
     {
      "code": "SE3103",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "SE1201"
+      "SE3102"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3504,15 +5505,19 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE1201"
+     ]
     },
     {
      "code": "AI3011",
      "level": 6,
      "credits": 3,
      "prerequisites": [
-      "MTH1602",
-      "MTH2143"
+      "AI2001",
+      "CS2105"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3522,7 +5527,12 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH1602",
+      "MTH2143"
+     ]
     },
     {
      "code": "SE3502",
@@ -3539,7 +5549,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE4502",
@@ -3554,7 +5566,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC4202",
@@ -3569,7 +5583,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "BUS1099",
@@ -3584,14 +5600,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SEC4012",
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "SE3103"
+      "SE3302"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3601,14 +5619,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE3103"
+     ]
     },
     {
      "code": "SE4205",
      "level": 8,
      "credits": 2,
      "prerequisites": [
-      "SE2204"
+      "SE3103"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3618,14 +5640,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE2204"
+     ]
     },
     {
      "code": "SE4206",
      "level": 8,
      "credits": 3,
      "prerequisites": [
-      "SE3103"
+      "SE3302"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -3635,7 +5661,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE3103"
+     ]
     }
    ],
    "verification": "incomplete",
@@ -3662,6 +5692,90 @@
      "severity": "info",
      "code": "no_offering_data",
      "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI3011: المتطلبات المعتمدة ['AI2001', 'CS2105'] من قائمة الكلية؛ صفحة الخطة تذكر ['MTH1602', 'MTH2143'].",
+     "subject": "AI3011"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN3011: المتطلبات المعتمدة ['CEN1012'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS2016'].",
+     "subject": "CEN3011"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS2016: المتطلبات المعتمدة ['CS2105'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN1012'].",
+     "subject": "CS2016"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "DS2201: المتطلبات المعتمدة ['CS2105'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS1701'].",
+     "subject": "DS2201"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "ELIE1202: المتطلبات المعتمدة ['ELIE1201'] من قائمة الكلية؛ صفحة الخطة تذكر لا شيء.",
+     "subject": "ELIE1202"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "QR3104: المتطلبات المعتمدة ['QR2103'] من قائمة الكلية؛ صفحة الخطة تذكر لا شيء.",
+     "subject": "QR3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE3102: المتطلبات المعتمدة ['SE2301'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE1201'].",
+     "subject": "SE3102"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE3103: المتطلبات المعتمدة ['SE3102'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE1201'].",
+     "subject": "SE3103"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE3104: المتطلبات المعتمدة ['DS2201'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE2301'].",
+     "subject": "SE3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE3302: المتطلبات المعتمدة ['SE3102'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE1201'].",
+     "subject": "SE3302"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE4205: المتطلبات المعتمدة ['SE3103'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE2204'].",
+     "subject": "SE4205"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SE4206: المتطلبات المعتمدة ['SE3302'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE3103'].",
+     "subject": "SE4206"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC4012: المتطلبات المعتمدة ['SE3302'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE3103'].",
+     "subject": "SEC4012"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 13 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
      "subject": null
     },
     {
@@ -3701,7 +5815,1824 @@
    "documents": [
     "handbook-se-2023",
     "uqu-prep-years"
-   ]
+   ],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "se.json",
+    "original_name": "هندسة برمجيات.json",
+    "sha256": "23a6e923fd3bdce274e63abfbe512e049260030e67b63ef3faa3cd78386769aa",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
+  },
+  "uqu-1738@2026-10-15": {
+   "id": "uqu-1738@2026-10-15",
+   "program_id": "uqu-1738",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-15)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1738",
+    "retrieved_at": "2026-10-15T09:44:32.224Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1738.psv",
+    "raw_sha256": "b766e9efe4a65eaac89f366af59f02f7ae8e2a27c1e2e94273c82fd335fc8a73"
+   },
+   "stated_total_hours": 134,
+   "listed_hours": 126,
+   "unlisted_hours": 8,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "QR1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38520",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38528",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38542",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC1101",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38548",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/39071",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1701",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/39316",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR2102",
+     "level": 2,
+     "credits": 2,
+     "prerequisites": [
+      "QR1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38521",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38530",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1141",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38534",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1704",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1701"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38554",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CEN1011",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38561",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "SEC1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38565",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/39086",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": []
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38526",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2203",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1704"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38572",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS2016",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CEN1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38583",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS2105",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1704"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38588",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1602",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1141"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38602",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2102",
+     "level": 3,
+     "credits": 4,
+     "prerequisites": [
+      "SEC1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38616",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ICC1201",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38524",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2301",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CS2016"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38628",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2401",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "SEC1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38630",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2402",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38635",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2303",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "CS1704",
+      "CS2016"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38639",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS2016",
+      "CS1701"
+     ]
+    },
+    {
+     "code": "CEN1013",
+     "level": 4,
+     "credits": 4,
+     "prerequisites": [
+      "CEN1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/41852",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS2016"
+     ]
+    },
+    {
+     "code": "QR2103",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "QR2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38522",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC3104",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "SEC2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38643",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC2401"
+     ]
+    },
+    {
+     "code": "SEC3205",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "SEC2203"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38762",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "PHYS1113",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/39020",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC3204",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "CS2105"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/41853",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC2303"
+     ]
+    },
+    {
+     "code": "SEC3302",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "SEC1202",
+      "CEN1013"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/41854",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS3019",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "CS2105"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/41894",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR3104",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [
+      "QR2103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38523",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "BUS1099",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38590",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC3107",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SEC3204",
+      "SEC3302"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38769",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC3204",
+      "SEC2402"
+     ]
+    },
+    {
+     "code": "SEC3106",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SEC2401"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38770",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC3104"
+     ]
+    },
+    {
+     "code": "SEC3206",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SEC2301"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38777",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC3302"
+     ]
+    },
+    {
+     "code": "SEC3103",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38784",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC3214",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SEC1202"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/41855",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC4105",
+     "level": 7,
+     "credits": 6,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38790",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ICC4202",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38525",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC4403",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "SEC3204",
+      "SEC3302"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38801",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC4108",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "SEC3106",
+      "SEC3107"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1738/38804",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SEC3103",
+      "SEC3107"
+     ]
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "11 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 134 ساعة، والمقررات المنشورة في الخطة مجموعها 126 ساعة. 8 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CEN1013: المتطلبات المعتمدة ['CEN1011'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS2016'].",
+     "subject": "CEN1013"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "ELIE1202: المتطلبات المعتمدة ['ELIE1201'] من قائمة الكلية؛ صفحة الخطة تذكر لا شيء.",
+     "subject": "ELIE1202"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC2303: المتطلبات المعتمدة ['CS1704', 'CS2016'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS2016', 'CS1701'].",
+     "subject": "SEC2303"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3104: المتطلبات المعتمدة ['SEC2102'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC2401'].",
+     "subject": "SEC3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3106: المتطلبات المعتمدة ['SEC2401'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC3104'].",
+     "subject": "SEC3106"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3107: المتطلبات المعتمدة ['SEC3204', 'SEC3302'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC3204', 'SEC2402'].",
+     "subject": "SEC3107"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3204: المتطلبات المعتمدة ['CS2105'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC2303'].",
+     "subject": "SEC3204"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC3206: المتطلبات المعتمدة ['SEC2301'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC3302'].",
+     "subject": "SEC3206"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "SEC4108: المتطلبات المعتمدة ['SEC3106', 'SEC3107'] من قائمة الكلية؛ صفحة الخطة تذكر ['SEC3103', 'SEC3107'].",
+     "subject": "SEC4108"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 9 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
+     "subject": null
+    }
+   ],
+   "elective_options": [],
+   "elective_options_complete": false,
+   "prep_year": null,
+   "other_editions": [],
+   "documents": [],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "cyber.json",
+    "original_name": "الامن السبراني.json",
+    "sha256": "92e18db0d7c667900095b51194c553a918c26fbab09162a500b2406d7c60ef82",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
+  },
+  "uqu-1981@2026-10-15": {
+   "id": "uqu-1981@2026-10-15",
+   "program_id": "uqu-1981",
+   "version_label": "الخطة المنشورة على موقع الجامعة (استُرجعت 2026-10-15)",
+   "provenance": {
+    "source_url": "https://uqu.edu.sa/App/Degrees/1981",
+    "retrieved_at": "2026-10-15T08:27:40.129Z",
+    "method": "browser capture of public page",
+    "raw_file": "raw/degree-1981.psv",
+    "raw_sha256": "a418f3f079d1b252db62315b9d8de3394e1264e873cf7c96b393ae47c2eef337"
+   },
+   "stated_total_hours": 125,
+   "listed_hours": 114,
+   "unlisted_hours": 11,
+   "levels": 8,
+   "courses": [
+    {
+     "code": "QR1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38520",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "IND1101",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38528",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39071",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1302",
+     "level": 1,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39337",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI1201",
+     "level": 1,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41699",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1018",
+     "level": 1,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/42580",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CUR1101",
+     "level": 2,
+     "credits": 0,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38530",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1141",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38534",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "CS1011",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [
+      "CS1018"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38540",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS1302"
+     ]
+    },
+    {
+     "code": "SE1201",
+     "level": 2,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39061",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ELIE1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [
+      "ELIE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39086",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI1202",
+     "level": 2,
+     "credits": 4,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41700",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR2102",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38521",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "ICC1201",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38524",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "AI2001",
+     "level": 3,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38526",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SE1101",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "CS1011"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39037",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "DS2201",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39315",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI2203",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "HCI1202"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41701",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI1201"
+     ]
+    },
+    {
+     "code": "HCI2101",
+     "level": 3,
+     "credits": 3,
+     "prerequisites": [
+      "HCI1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41702",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR2103",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [
+      "QR2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38522",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "MTH1602",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "MTH1141"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38602",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SEC2011",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38849",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "PHYS1113",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39020",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "SE2204",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [
+      "SE1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/39104",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI2102",
+     "level": 4,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41703",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI2204",
+     "level": 4,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41704",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "QR3104",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "QR2103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38523",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI3401",
+     "level": 5,
+     "credits": 4,
+     "prerequisites": [
+      "HCI2102",
+      "MTH1602"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41705",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201",
+      "HCI2203"
+     ]
+    },
+    {
+     "code": "HCI3103",
+     "level": 5,
+     "credits": 2,
+     "prerequisites": [
+      "HCI2203"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41706",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI3301",
+     "level": 5,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41707",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI2101"
+     ]
+    },
+    {
+     "code": "ICC4202",
+     "level": 6,
+     "credits": 2,
+     "prerequisites": [
+      "ICC1201"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38525",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI3104",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "HCI3103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41708",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI2101"
+     ]
+    },
+    {
+     "code": "HCI3105",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41709",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI3205",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2203"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41710",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI3301"
+     ]
+    },
+    {
+     "code": "HCI3502",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2102",
+      "HCI3103"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41711",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "SE2204",
+      "HCI3103"
+     ]
+    },
+    {
+     "code": "HCI3302",
+     "level": 6,
+     "credits": 3,
+     "prerequisites": [
+      "SE1101"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41712",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI4503",
+     "level": 7,
+     "credits": 6,
+     "prerequisites": [
+      "HCI3502"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "coop",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41713",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI2204"
+     ]
+    },
+    {
+     "code": "BUS1099",
+     "level": 8,
+     "credits": 2,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/38590",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI4303",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41714",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    },
+    {
+     "code": "HCI4106",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "HCI2102"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41715",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "HCI3301"
+     ]
+    },
+    {
+     "code": "HCI4504",
+     "level": 8,
+     "credits": 3,
+     "prerequisites": [
+      "HCI3502"
+     ],
+     "prereq_relation": "all_of",
+     "prereq_relation_status": "inferred",
+     "corequisites": [],
+     "kind": "required",
+     "source_url": "https://uqu.edu.sa/en/App/Degrees/1981/41716",
+     "verification": "verified",
+     "evidence": [],
+     "special_conditions": [],
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
+    }
+   ],
+   "verification": "incomplete",
+   "issues": [
+    {
+     "severity": "info",
+     "code": "prereq_card_hours_ignored",
+     "message": "9 بطاقة متطلب سابق تعرض ساعات المقرر التابع لا ساعات المتطلب نفسه؛ اعتُمدت ساعات الخطة الرئيسية.",
+     "subject": null
+    },
+    {
+     "severity": "warning",
+     "code": "unlisted_hours",
+     "message": "البرنامج 125 ساعة، والمقررات المنشورة في الخطة مجموعها 114 ساعة. 11 ساعة (غالباً مقررات اختيارية) لم تُنشر قائمتها في صفحة الخطة.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_relation_assumed",
+     "message": "الصفحة لا توضّح إن كانت المتطلبات المتعددة «و» أو «أو»؛ عوملت كلها كمتطلبات لازمة (و).",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "no_offering_data",
+     "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS1011: المتطلبات المعتمدة ['CS1018'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS1302'].",
+     "subject": "CS1011"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI2203: المتطلبات المعتمدة ['HCI1202'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI1201'].",
+     "subject": "HCI2203"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI3104: المتطلبات المعتمدة ['HCI3103'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI2101'].",
+     "subject": "HCI3104"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI3205: المتطلبات المعتمدة ['HCI2203'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI3301'].",
+     "subject": "HCI3205"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI3301: المتطلبات المعتمدة ['HCI2102'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI2101'].",
+     "subject": "HCI3301"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI3401: المتطلبات المعتمدة ['HCI2102', 'MTH1602'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201', 'HCI2203'].",
+     "subject": "HCI3401"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI3502: المتطلبات المعتمدة ['HCI2102', 'HCI3103'] من قائمة الكلية؛ صفحة الخطة تذكر ['SE2204', 'HCI3103'].",
+     "subject": "HCI3502"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI4106: المتطلبات المعتمدة ['HCI2102'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI3301'].",
+     "subject": "HCI4106"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "HCI4503: المتطلبات المعتمدة ['HCI3502'] من قائمة الكلية؛ صفحة الخطة تذكر ['HCI2204'].",
+     "subject": "HCI4503"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 9 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
+     "subject": null
+    }
+   ],
+   "elective_options": [],
+   "elective_options_complete": false,
+   "prep_year": null,
+   "other_editions": [],
+   "documents": [],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "hci.json",
+    "original_name": "تفاعل الانسان مع الالة.json",
+    "sha256": "d547b3ddef86f54221d498b3adb7a799cf64269d7bae5acabc6b551558f9bcbd",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
   },
   "uqu-478@2026-10-14": {
    "id": "uqu-478@2026-10-14",
@@ -3732,7 +7663,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "IND1101",
@@ -3747,7 +7680,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1141",
@@ -3762,7 +7697,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1201",
@@ -3777,7 +7714,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1701",
@@ -3792,7 +7731,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1302",
@@ -3807,7 +7748,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR2102",
@@ -3822,7 +7765,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CUR1101",
@@ -3837,7 +7782,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1704",
@@ -3854,7 +7801,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1602",
@@ -3869,7 +7818,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "PHYS1113",
@@ -3884,7 +7835,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ELIE1202",
@@ -3901,7 +7854,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS1303",
@@ -3918,7 +7873,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR2103",
@@ -3933,7 +7890,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI2001",
@@ -3948,7 +7907,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SEC1101",
@@ -3963,7 +7924,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2105",
@@ -3980,7 +7943,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "MTH1441",
@@ -3995,7 +7960,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "BIO3101",
@@ -4010,7 +7977,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2011",
@@ -4025,15 +7994,15 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "QR3104",
      "level": 4,
      "credits": 2,
-     "prerequisites": [
-      "QR1101"
-     ],
+     "prerequisites": [],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
@@ -4042,7 +8011,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "QR1101"
+     ]
     },
     {
      "code": "ICC1201",
@@ -4057,7 +8030,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "SE1201",
@@ -4072,7 +8047,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "DS2201",
@@ -4087,15 +8064,15 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS2206",
      "level": 4,
      "credits": 3,
-     "prerequisites": [
-      "MTH1441"
-     ],
+     "prerequisites": [],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
      "corequisites": [],
@@ -4104,7 +8081,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "MTH1441"
+     ]
     },
     {
      "code": "CS2107",
@@ -4121,7 +8102,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN2012",
@@ -4138,7 +8121,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CEN3011",
@@ -4155,14 +8140,16 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS3608",
      "level": 5,
      "credits": 4,
      "prerequisites": [
-      "CEN2012"
+      "CS2105"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4172,7 +8159,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CEN2012"
+     ]
     },
     {
      "code": "CS3809",
@@ -4192,14 +8183,16 @@
       "spec-CS3809"
      ],
      "special_conditions": [],
-     "prereq_list_corroborated": true
+     "prereq_list_corroborated": true,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS3810",
      "level": 5,
      "credits": 3,
      "prerequisites": [
-      "DS2201"
+      "CS1704"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4209,14 +8202,18 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "DS2201"
+     ]
     },
     {
      "code": "AI4101",
      "level": 5,
      "credits": 3,
      "prerequisites": [
-      "CS2107"
+      "AI2001"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4226,7 +8223,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS2107"
+     ]
     },
     {
      "code": "CS3713",
@@ -4241,7 +8242,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS3901",
@@ -4256,7 +8259,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "ICC4202",
@@ -4271,14 +8276,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4901",
      "level": 7,
      "credits": 3,
      "prerequisites": [
-      "CS3809"
+      "CS3809",
+      "CS3810"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4288,7 +8296,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "CS3809"
+     ]
     },
     {
      "code": "CS4411",
@@ -4305,7 +8317,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4612",
@@ -4322,14 +8336,17 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "AI4202",
      "level": 7,
      "credits": 3,
      "prerequisites": [
-      "AI4101"
+      "AI4101",
+      "MTH1602"
      ],
      "prereq_relation": "all_of",
      "prereq_relation_status": "inferred",
@@ -4339,7 +8356,11 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "college_list",
+     "plan_page_prerequisites": [
+      "AI4101"
+     ]
     },
     {
      "code": "CS4108",
@@ -4356,7 +8377,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "BUS1099",
@@ -4371,7 +8394,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4902",
@@ -4388,7 +8413,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4815",
@@ -4405,7 +8432,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4714",
@@ -4422,7 +8451,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     },
     {
      "code": "CS4216",
@@ -4437,7 +8468,9 @@
      "verification": "verified",
      "evidence": [],
      "special_conditions": [],
-     "prereq_list_corroborated": false
+     "prereq_list_corroborated": false,
+     "prereq_source": "plan_page",
+     "plan_page_prerequisites": null
     }
    ],
    "verification": "incomplete",
@@ -4464,6 +8497,54 @@
      "severity": "info",
      "code": "no_offering_data",
      "message": "لا تنشر الجامعة علناً المقررات المطروحة في كل فصل؛ الخطة متاحة رياضياً لا مؤكدة للتسجيل.",
+     "subject": null
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI4101: المتطلبات المعتمدة ['AI2001'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS2107'].",
+     "subject": "AI4101"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "AI4202: المتطلبات المعتمدة ['AI4101', 'MTH1602'] من قائمة الكلية؛ صفحة الخطة تذكر ['AI4101'].",
+     "subject": "AI4202"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS2206: المتطلبات المعتمدة لا شيء من قائمة الكلية؛ صفحة الخطة تذكر ['MTH1441'].",
+     "subject": "CS2206"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS3608: المتطلبات المعتمدة ['CS2105'] من قائمة الكلية؛ صفحة الخطة تذكر ['CEN2012'].",
+     "subject": "CS3608"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS3810: المتطلبات المعتمدة ['CS1704'] من قائمة الكلية؛ صفحة الخطة تذكر ['DS2201'].",
+     "subject": "CS3810"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "CS4901: المتطلبات المعتمدة ['CS3809', 'CS3810'] من قائمة الكلية؛ صفحة الخطة تذكر ['CS3809'].",
+     "subject": "CS4901"
+    },
+    {
+     "severity": "info",
+     "code": "prereq_from_college_list",
+     "message": "QR3104: المتطلبات المعتمدة لا شيء من قائمة الكلية؛ صفحة الخطة تذكر ['QR1101'].",
+     "subject": "QR3104"
+    },
+    {
+     "severity": "warning",
+     "code": "college_list_applied",
+     "message": "المتطلبات السابقة لـ 7 مقرر مأخوذة من قائمة الكلية التي جمعها فريق فطن (2026-10-15) لأنها تختلف عن صفحة الخطة في موقع الجامعة. عند الشك راجع مرشدك أو نظام التسجيل.",
      "subject": null
     },
     {
@@ -4576,10 +8657,26 @@
     "spec-CS3809",
     "uqu-degrees-csai-catalog",
     "uqu-prep-years"
-   ]
+   ],
+   "college_list": {
+    "id": "college-lists-2026-10-15",
+    "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+    "file": "cs.json",
+    "original_name": "computer_science_curriculum.json",
+    "sha256": "5b5dc241abedd3c3896c96016828d6dc7094e10d01e51c2a1942c560fcfa443a",
+    "compiled_at": "2026-10-15",
+    "compiled_by": "فريق فطن (عمر المعشي)"
+   }
   }
  },
- "issues": [],
+ "issues": [
+  {
+   "severity": "info",
+   "code": "college_list_rejected",
+   "message": "قائمة «علم البيانات.json» لم تُعتمد: الملف مقطوع عند المستوى الخامس (ينتهي داخل مقرر CEN1014) وليس JSON صالحاً؛ بقيت متطلبات صفحة الخطة.",
+   "subject": "uqu-1508"
+  }
+ ],
  "documents": {
   "uqu-regulation-1480": {
    "id": "uqu-regulation-1480",

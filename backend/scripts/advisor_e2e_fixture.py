@@ -17,7 +17,7 @@ sys.path.insert(0, str(BACKEND))
 sys.path.insert(0, str(BACKEND / "tests"))
 
 import advisor_fixtures as fx  # noqa: E402
-from services.advisor import explain, instructors, rules  # noqa: E402
+from services.advisor import explain, instructor_profiles, instructors, rules  # noqa: E402
 from services.advisor.catalog import load_catalog  # noqa: E402
 from services.advisor.majors import compare_programs  # noqa: E402
 from services.advisor.planner import PlanSettings, validate_schedule  # noqa: E402
@@ -54,7 +54,9 @@ def main() -> None:
         "run": run,
         "validate": validate_schedule(["CS1704", "CS2105"], profile, cat, cur, PlanSettings()),
         "compare": compare_programs(profile, cat, start_term="1448-2", today=fx.TODAY),
-        "instructors": instructors.evidence_for_course("CS1701", [instructors.QaymProvider()], fx.TODAY),
+        "instructors": {**instructors.evidence_for_course("CS1701", [instructors.QaymProvider()], fx.TODAY),
+                        "imported": instructor_profiles.for_course("CS1701")},
+        "instructor_map": instructor_profiles.for_program(cat, "uqu-478"),
         "ask": {"source": "deterministic", "reason": "رُفضت صياغة الذكاء الاصطناعي لأنها خرجت عن الحقائق",
                 "problems": ["رموز مقررات غير موجودة في الحقائق: ['CS9999']"], "summary": run["summary"]},
     }

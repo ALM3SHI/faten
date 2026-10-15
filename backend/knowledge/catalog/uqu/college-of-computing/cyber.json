@@ -1,0 +1,364 @@
+{
+  "major": {
+    "code": "SEC",
+    "name_ar": "الأمن السيبراني",
+    "name_en": "Cybersecurity",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC1201",
+            "name_ar": "هياكل متقطعة للأمن السيبراني",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC1101",
+            "name_ar": "مقدمة في الأمن السيبراني",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1701",
+            "name_ar": "برمجة الحاسب بلغة جافا",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": [
+              "QR1101"
+            ]
+          },
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1141",
+            "name_ar": "التفاضل والتكامل 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1704",
+            "name_ar": "البرمجة الشيئية بلغة جافا",
+            "credits": 3,
+            "prerequisites": [
+              "CS1701"
+            ]
+          },
+          {
+            "code": "CEN1011",
+            "name_ar": "المنطق الرقمي وتنظيم الحاسوب",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC1202",
+            "name_ar": "التشفير التطبيقي",
+            "credits": 4,
+            "prerequisites": [
+              "SEC1201"
+            ]
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC2203",
+            "name_ar": "إدارة وأمن قواعد البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "CS1704"
+            ]
+          },
+          {
+            "code": "CS2016",
+            "name_ar": "نظم التشغيل",
+            "credits": 3,
+            "prerequisites": [
+              "CEN1011"
+            ]
+          },
+          {
+            "code": "CS2105",
+            "name_ar": "هياكل البيانات والخوازميات جافا",
+            "credits": 3,
+            "prerequisites": [
+              "CS1704"
+            ]
+          },
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1141"
+            ]
+          },
+          {
+            "code": "SEC2102",
+            "name_ar": "حوكمة و أخلاقيات الامن السيبراني والموائمة",
+            "credits": 4,
+            "prerequisites": [
+              "SEC1101"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC2301",
+            "name_ar": "امن نظم التشغيل",
+            "credits": 3,
+            "prerequisites": [
+              "CS2016"
+            ]
+          },
+          {
+            "code": "SEC2401",
+            "name_ar": "التهديدات السيبرانية والأستجابة للحوادث",
+            "credits": 4,
+            "prerequisites": [
+              "SEC1101"
+            ]
+          },
+          {
+            "code": "SEC2402",
+            "name_ar": "مبادئ وتصميم أمن تكنولوجيا المعلومات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC2303",
+            "name_ar": "برمجة النظام والكتابة النصية",
+            "credits": 3,
+            "prerequisites": [
+              "CS1704",
+              "CS2016"
+            ]
+          },
+          {
+            "code": "CEN1013",
+            "name_ar": "شبكات الحاسب الآلي",
+            "credits": 4,
+            "prerequisites": [
+              "CEN1011"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": [
+              "QR2102"
+            ]
+          },
+          {
+            "code": "SEC3104",
+            "name_ar": "إدارة المخاطر الامنية",
+            "credits": 2,
+            "prerequisites": [
+              "SEC2102"
+            ]
+          },
+          {
+            "code": "SEC3205",
+            "name_ar": "تطوير وأمن الويب",
+            "credits": 4,
+            "prerequisites": [
+              "SEC2203"
+            ]
+          },
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC3204",
+            "name_ar": "أمن البرامج",
+            "credits": 3,
+            "prerequisites": [
+              "CS2105"
+            ]
+          },
+          {
+            "code": "SEC3302",
+            "name_ar": "أمن الشبكات",
+            "credits": 4,
+            "prerequisites": [
+              "CEN1013",
+              "SEC1202"
+            ]
+          },
+          {
+            "code": "CS3019",
+            "name_ar": "تصميم وتحليل الخوازميات",
+            "credits": 2,
+            "prerequisites": [
+              "CS2105"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC3107",
+            "name_ar": "مشروع تخرج 1",
+            "credits": 3,
+            "prerequisites": [
+              "SEC3204",
+              "SEC3302"
+            ]
+          },
+          {
+            "code": "SEC3106",
+            "name_ar": "عمليات الأمن السيبراني",
+            "credits": 3,
+            "prerequisites": [
+              "SEC2401"
+            ]
+          },
+          {
+            "code": "SEC3206",
+            "name_ar": "التحقق الرقمي الجنائي",
+            "credits": 3,
+            "prerequisites": [
+              "SEC2301"
+            ]
+          },
+          {
+            "code": "SEC3103",
+            "name_ar": "كتابة التقارير التقنية في الأمن السيبراني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC3214",
+            "name_ar": "تشفير متقدم",
+            "credits": 3,
+            "prerequisites": [
+              "SEC1202"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "SEC4105",
+            "name_ar": "التدريب التعاوني",
+            "credits": 6,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SEC4403",
+            "name_ar": "الهاكر الأخلاقي",
+            "credits": 3,
+            "prerequisites": [
+              "SEC3302",
+              "SEC3204"
+            ]
+          },
+          {
+            "code": "SEC4108",
+            "name_ar": "مشروع تخرج 2",
+            "credits": 3,
+            "prerequisites": [
+              "SEC3107",
+              "SEC3106"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

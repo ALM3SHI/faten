@@ -60,7 +60,12 @@ def test_cs3809_spec_corroborates_the_plan_without_changing_it():
 
 def test_ai3501_department_approval_is_a_special_condition():
     pc = AI.course("AI3501")
-    assert sorted(pc.prerequisites) == ["AI3101", "SE1201"] and pc.level == 6
+    # Adopted college list (team decision) vs plan page + signed specification: the
+    # disagreement stays visible as a spec_conflict; nothing is silently merged.
+    assert sorted(pc.prerequisites) == ["AI3101", "AI3201"] and pc.level == 6
+    assert sorted(pc.plan_page_prerequisites) == ["AI3101", "SE1201"]
+    assert pc.verification == "conflicting" and not pc.prereq_list_corroborated
+    assert any(i.code == "spec_conflict" and i.subject == "AI3501" and "يطابق صفحة الخطة" in i.message for i in AI.issues)
     assert [c["kind"] for c in pc.special_conditions] == ["department_approval"]
     assert pc.special_conditions[0]["source"] == "spec-AI3501"
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { delayLabel, parseCodes, tagLabel, termOptions } from "@/lib/advisor";
 import { isProtectedPath } from "@/lib/routes";
 import { sectionFor } from "@/lib/nav";
+import { shortName } from "@/components/advisor/instructor-profiles";
 
 describe("advisor helpers", () => {
   it("parses typed course codes in any common format", () => {
@@ -25,5 +26,10 @@ describe("advisor helpers", () => {
   it("is a protected page in the record section", () => {
     expect(isProtectedPath("/advisor/")).toBe(true);
     expect(sectionFor("/advisor")?.id).toBe("record");
+  });
+
+  it("shortens instructor names to first and last name", () => {
+    expect(shortName("محمد علي عيد الغامدي")).toBe("محمد الغامدي");
+    expect(shortName(" حاتم السواط ")).toBe("حاتم السواط");
   });
 });

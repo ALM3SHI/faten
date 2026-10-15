@@ -296,6 +296,11 @@ def build_catalog(raw_dir: Path = RAW) -> Catalog:
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
         university=UQU, courses=courses, programs=programs, curricula=curricula, issues=global_issues,
     )
+    lists = raw_dir.parent / "college-of-computing"
+    if lists.is_dir():
+        from services.advisor.college_lists import apply_college_lists
+
+        apply_college_lists(catalog, lists)
     docs = raw_dir.parent / "documents.json"
     if docs.is_file():
         from services.advisor.evidence import apply_documents

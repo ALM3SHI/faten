@@ -1,0 +1,341 @@
+{
+  "major": {
+    "code": "HCI",
+    "name_ar": "تفاعل الإنسان مع الحاسب",
+    "name_en": "Human-Computer Interaction",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1302",
+            "name_ar": "هياكل متقطعة 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "HCI1201",
+            "name_ar": "أساسيات تفاعل الإنسان مع الحاسب",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1018",
+            "name_ar": "مقدمة في نظم الحاسب",
+            "credits": 2,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1141",
+            "name_ar": "التفاضل والتكامل 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1011",
+            "name_ar": "برمجة الحاسب بلغة بايثون",
+            "credits": 3,
+            "prerequisites": [
+              "CS1018"
+            ]
+          },
+          {
+            "code": "SE1201",
+            "name_ar": "اسس هندسة البرمجيات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          },
+          {
+            "code": "HCI1202",
+            "name_ar": "التصميم للإنسان",
+            "credits": 4,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "SE1101",
+            "name_ar": "تطوير التطبيقات كائنية التوجه",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          },
+          {
+            "code": "DS2201",
+            "name_ar": "مقدمة في قواعد البيانات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "HCI2203",
+            "name_ar": "أبحاث المستخدم",
+            "credits": 3,
+            "prerequisites": [
+              "HCI1202"
+            ]
+          },
+          {
+            "code": "HCI2101",
+            "name_ar": "تصميم واجهات المستخدم 1",
+            "credits": 3,
+            "prerequisites": [
+              "HCI1201"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": [
+              "QR2102"
+            ]
+          },
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1141"
+            ]
+          },
+          {
+            "code": "SEC2011",
+            "name_ar": "أساسيات في شبكات الحاسب والأمن السيبراني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "SE2204",
+            "name_ar": "إدارة مشاريع تقنية المعلومات",
+            "credits": 2,
+            "prerequisites": [
+              "SE1201"
+            ]
+          },
+          {
+            "code": "HCI2102",
+            "name_ar": "تصميم واجهات المستخدم 2",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2101"
+            ]
+          },
+          {
+            "code": "HCI2204",
+            "name_ar": "أخلاقيات في تفاعل الإنسان مع الحاسب",
+            "credits": 2,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "HCI3401",
+            "name_ar": "تصميم تصوير البيانات",
+            "credits": 4,
+            "prerequisites": [
+              "HCI2102",
+              "MTH1602"
+            ]
+          },
+          {
+            "code": "HCI3103",
+            "name_ar": "التصميم المتمركز حول الإنسان",
+            "credits": 2,
+            "prerequisites": [
+              "HCI2203"
+            ]
+          },
+          {
+            "code": "HCI3301",
+            "name_ar": "طرق النمذجة",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2102"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": [
+              "ICC1201"
+            ]
+          },
+          {
+            "code": "HCI3104",
+            "name_ar": "التصميم الشامل",
+            "credits": 3,
+            "prerequisites": [
+              "HCI3103"
+            ]
+          },
+          {
+            "code": "HCI3105",
+            "name_ar": "معمارية المعلومات",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2102"
+            ]
+          },
+          {
+            "code": "HCI3205",
+            "name_ar": "تقييم قابلية الاستخدام",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2203"
+            ]
+          },
+          {
+            "code": "HCI3502",
+            "name_ar": "مشروع تخرج 1",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2102",
+              "HCI3103"
+            ]
+          },
+          {
+            "code": "HCI3302",
+            "name_ar": "تطوير تطبيقات الجوال",
+            "credits": 3,
+            "prerequisites": [
+              "SE1101"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "HCI4503",
+            "name_ar": "التدريب التعاوني",
+            "credits": 6,
+            "prerequisites": [
+              "HCI3502"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "HCI4303",
+            "name_ar": "تفاعل متعدد الوسائط",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "HCI4106",
+            "name_ar": "نظم التصميم",
+            "credits": 3,
+            "prerequisites": [
+              "HCI2102"
+            ]
+          },
+          {
+            "code": "HCI4504",
+            "name_ar": "مشروع تخرج 2",
+            "credits": 3,
+            "prerequisites": [
+              "HCI3502"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

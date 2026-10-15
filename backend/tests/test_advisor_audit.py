@@ -131,9 +131,12 @@ def test_every_planned_course_satisfies_hard_constraints(traced):
 def test_next_term_is_valid_and_marks_conditional_courses(traced):
     _, p, r = traced
     nt = {c["code"]: c for c in r["next_term"]["courses"]}
-    # CEN2012 needs CEN2011 (being retaken), CS2107 needs CS2105, CS2206 needs MTH1441 — all in progress.
-    for code, pending in (("CEN2012", "CEN2011"), ("CS2107", "CS2105"), ("CS2206", "MTH1441")):
+    # CEN2012 needs CEN2011 (being retaken), CS2107 needs CS2105 — both in progress.
+    for code, pending in (("CEN2012", "CEN2011"), ("CS2107", "CS2105")):
         assert "conditional" in nt[code]["tags"] and pending in nt[code]["reasons"][0]
+    # CS2206: the adopted college list has no prerequisite (the plan page says MTH1441) — shown, not hidden.
+    assert "conditional" not in nt["CS2206"]["tags"]
+    assert any("صفحة الخطة" in x and "MTH1441" in x for x in nt["CS2206"]["reasons"])
     assert "conditional" not in nt["ICC1201"]["tags"]
     check = validate_schedule(list(nt), p, CAT, CS, PlanSettings())
     assert check["valid"]

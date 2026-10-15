@@ -289,6 +289,66 @@ export interface InstructorEvidence {
   }[];
   providers: { name: string; available: boolean; reason: string }[];
   caveats: string[];
+  imported?: ImportedProfiles;
+}
+
+export type ProfileVerdict = "recommended" | "recommended_if" | "mixed" | "avoid_if_alternative";
+
+export interface ProfileSource {
+  kind: string;
+  description: string;
+  files: number;
+}
+
+/** Instructor profile built from the team's compiled student reviews (aggregates + analysis, never comments). */
+export interface InstructorProfile {
+  id: string;
+  name: string;
+  department: string | null;
+  verdict: ProfileVerdict;
+  verdict_label: string;
+  headline: string;
+  recommendation: string;
+  fits: string[];
+  not_for: string[];
+  strengths: string[];
+  weaknesses: string[];
+  modes: { context: string; pattern: string }[];
+  survival: string[];
+  caveats: string[];
+  data: { reviews_analyzed: number; reviews_stated: number | null; complete: boolean };
+  overall: { reviews: number; average: number | null; positive_share: number | null; recent_reviews: number };
+  badges: { label: string; share: number }[];
+  course: {
+    family: string;
+    confidence: "likely" | "ambiguous" | "no_plan_course";
+    reviews: number;
+    average: number | null;
+    positive_share: number | null;
+    recent_reviews: number;
+    thin: boolean;
+  } | null;
+}
+
+export interface ImportedProfiles {
+  course_code: string;
+  profiles: InstructorProfile[];
+  source: ProfileSource;
+  caveats: string[];
+}
+
+export interface InstructorMap {
+  program_id: string;
+  covered: number;
+  plan_courses: number;
+  instructors_total: number;
+  courses: {
+    code: string;
+    name: string;
+    level: number;
+    instructors: { id: string; name: string; verdict: ProfileVerdict; verdict_label: string; reviews: number; thin: boolean }[];
+  }[];
+  caveats: string[];
 }
 
 export type AskResult =
@@ -306,6 +366,8 @@ export const advisorApi = {
   ask: (run_id: string, question: string, history: { role: string; content: string }[]) =>
     api.post("/api/advisor/ask", { run_id, question, history }) as Promise<AskResult>,
   instructors: (code: string) => api.get(`/api/advisor/instructors/${encodeURIComponent(code)}`) as Promise<InstructorEvidence>,
+  instructorMap: (programId: string) =>
+    api.get(`/api/advisor/instructor-map?program_id=${encodeURIComponent(programId)}`) as Promise<InstructorMap>,
   reviewInstructor: (code: string, body: Record<string, unknown>) =>
     api.put(`/api/advisor/instructors/${encodeURIComponent(code)}/review`, body) as Promise<InstructorEvidence>,
 };

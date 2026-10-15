@@ -81,6 +81,11 @@ class PlanCourse(BaseModel):
     evidence: list[str] = Field(default_factory=list)  # document ids that agree with this entry
     special_conditions: list[dict] = Field(default_factory=list)  # [{kind, text, source}]
     prereq_list_corroborated: bool = False  # the same prerequisite list appears in a course specification
+    # Where `prerequisites` came from. "college_list" = the Faten team's compiled
+    # college list was adopted over the plan page (a recorded decision); the plan
+    # page's own list is then kept in `plan_page_prerequisites` and shown as a note.
+    prereq_source: Literal["plan_page", "college_list"] = "plan_page"
+    plan_page_prerequisites: list[str] | None = None
 
 
 class ElectiveOption(BaseModel):
@@ -142,6 +147,8 @@ class Curriculum(BaseModel):
     prep_year: PrepYear | None = None
     other_editions: list[dict] = Field(default_factory=list)  # [{label, total_hours, document}]
     documents: list[str] = Field(default_factory=list)
+    # {id, title, file, sha256, compiled_at} of the college list applied to this plan, if any.
+    college_list: dict | None = None
     _idx: dict[str, PlanCourse] | None = PrivateAttr(default=None)
 
     def course(self, code: str) -> PlanCourse | None:

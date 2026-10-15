@@ -29,11 +29,45 @@ its output is rejected if it leaves the computed facts.
 
 | Source | Status | Notes |
 |---|---|---|
-| `uqu.edu.sa/App/Degrees/{id}` (Arabic plan) and `/en/App/Degrees/{id}/{course}` (prerequisites) | **verified, integrated** for 4 programs | Server-rendered; behind a Cloudflare browser challenge, so plain HTTP clients are refused. Captured in a real browser with `capture_degree.js`; every raw snapshot is stored with its SHA-256. |
-| Programs integrated | CS `478` (137 h), AI `1490` (132 h), SE `1510` (134 h), Computer & Network Eng. `1492` (158 h) | College of Computing, Makkah. The catalog lists **337** programs; the pipeline handles any of them (see below). |
+| `uqu.edu.sa/App/Degrees/{id}` (Arabic plan) and `/en/App/Degrees/{id}/{course}` (prerequisites) | **verified, integrated** for 7 programs | Server-rendered; behind a Cloudflare browser challenge, so plain HTTP clients are refused. Captured in a real browser with `capture_degree.js`; every raw snapshot is stored with its SHA-256. |
+| Programs integrated | CS `478` (137 h), AI `1490` (132 h), SE `1510` (134 h), Computer & Network Eng. `1492` (158 h), HCI `1981` (125 h), Data Science `1508` (126 h), Cybersecurity `1738` (134 h; the last three captured 2026-10-15) | College of Computing, Makkah. The catalog lists **337** programs; the pipeline handles any of them (see below). |
 | Study & exam regulations (executive rules) | **verified**, already in `knowledge/regulations/` | Min load 10 h, summer max 10 h, prerequisites required, co-op exclusive, IC blocks dependents, GPA over all attempts, warnings, graduation floor, 20 % retake rule, transfer rules. |
 | Course workload/difficulty | existing verified `course_reviews` (students who took the course) | Used only with ≥ 5 reviews. |
 | Qaym (qaym.com) | **not integrated** | No public API or data-use permission found; origin returned Cloudflare 522 on 2026-10-14. `QaymProvider` reports this and returns nothing. |
+
+### College course lists compiled by the Faten team (`backend/knowledge/catalog/uqu/college-of-computing/`)
+
+On 2026-10-15 the team supplied its own per-program course lists (levels, hours, prerequisites) for CS, AI, SE,
+Computer Eng., HCI and Cybersecurity, and **decided to adopt their prerequisites over the plan pages**. Levels and hours were
+identical to the captured pages; prerequisites differed for 64 courses (CS 7, AI 13, SE 13, CE 13, HCI 9, Cybersecurity 9).
+`services/advisor/college_lists.py` applies them with provenance:
+
+* each file is recorded in `manifest.json` with its SHA-256; an edited file is **not applied** until re-recorded;
+* the plan page's list is kept on the course (`plan_page_prerequisites`), each difference is an Issue, and the
+  advisor tells the student when a suggested course uses the college list instead of the page;
+* where a signed course specification disagrees with the adopted list (AI3501: spec says AI3101 + SE1201, list says
+  AI3101 + AI3201) the course is marked `conflicting` and the conflict is shown;
+* code alias `PHY1114` → `PHYS1114` (the code in the plan and in student records);
+* the Data Science list was truncated mid-file and is **rejected**; DS uses its plan page.
+
+### Instructor profiles (`backend/knowledge/instructors/uqu/`)
+
+The team supplied files for 10 College of Computing instructors (public student reviews; their badges and
+metrics follow the Qaym site's format). **Decision (2026-10-15): comments and raw records are never shown.**
+`scripts/build_instructor_profiles.py <folder>` reads them (two truncated files are read up to their last
+complete review and marked partial: 39/79 and 88/157) and writes `profiles.json` with only:
+
+* aggregates per instructor and per course family (reviews, 1–5 average, positive share, reviews in the last
+  24 months, badge shares, theory/practical/summer split);
+* links from the student's course wording to plan codes in every program, each marked `likely`,
+  `ambiguous` (e.g. «برمجة 1» is Java in CS and Python in AI) or `no_plan_course` (summer training,
+  «واجهة العتاد والبرمجيات», …) — never forced onto a plan course;
+* the qualitative analysis in `analysis.json`, written after reading every review: verdict, who it suits,
+  recurring strengths/weaknesses, theory vs practical vs summer, a survival guide and one recommendation line.
+
+`GET /api/advisor/instructors/{code}` returns these as `imported`, beside — never merged with — Faten's verified
+student ratings; `GET /api/advisor/instructor-map?program_id=` lists the plan courses that have profiles.
+Raw files stay out of the repository.
 
 ### Official documents cross-checked (`backend/knowledge/catalog/uqu/documents.json`)
 

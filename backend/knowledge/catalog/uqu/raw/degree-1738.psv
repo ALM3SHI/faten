@@ -1,0 +1,44 @@
+#degree|1738|الأمن السيبراني|بكالوريوس|الحاسبات|الأمن السيبراني|134|2026-10-15T09:44:32.224Z|https://uqu.edu.sa/App/Degrees/1738
+1|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|SEC1201|هياكل متقطعة للأمن السيبراني|4 ساعات||38542|Discrete Structures for Cybersecurity|4 hours/English|0|
+1|SEC1101|مقدمة في الأمن السيبراني|3 ساعات||38548|Introduction to Cybersecurity|3 hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|CS1701|برمجة الحاسب بلغة جافا|3 ساعات||39316|Computer Programming in Java|3 hours/English|0|
+2|QR2102|حفظ القرآن الكريم 1|ساعتين|متطلب واحد|38521|Memorizing the Holy Quran 1|Two hours/English|1|QR1101~Tajweed of The Holy Quran~Two hours/No requisites
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|MTH1141|التفاضل والتكامل 1|3 ساعات||38534|Calculus 1|3 hours/English|0|
+2|CS1704|البرمجة الشيئية بلغة جافا|3 ساعات|متطلب واحد|38554|Object Oriented Programming with Java|3 hours/English|1|CS1701~Computer Programming in Java~3 hours/No requisites
+2|CEN1011|المنطق الرقمي وتنظيم الحاسوب|3 ساعات||38561|Digital Logic and Computer Organization|3 hours/English|0|
+2|SEC1202|التشفير التطبيقي|4 ساعات|متطلب واحد|38565|Applied Cryptography|4 hours/English|1|SEC1201~Discrete Structures for Cybersecurity~4 hours/No requisites
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات||39086|English Language (2)|4 hours/English|0|
+3|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+3|SEC2203|إدارة وأمن قواعد البيانات|3 ساعات|متطلب واحد|38572|Databases Administration & Security|3 hours/English|1|CS1704~Object Oriented Programming with Java~3 hours/One requisite
+3|CS2016|نظم التشغيل|3 ساعات|متطلب واحد|38583|Operating Systems|3 hours/English|1|CEN1011~Digital Logic and Computer Organization~3 hours/No requisites
+3|CS2105|هياكل البيانات والخوازميات جافا|3 ساعات|متطلب واحد|38588|Data Structures & Algorithms with Java|3 hours/English|1|CS1704~Object Oriented Programming with Java~3 hours/One requisite
+3|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات|متطلب واحد|38602|Statistics and Probabilities in Computing|3 hours/English|1|MTH1141~Calculus 1~3 hours/No requisites
+3|SEC2102|حوكمة و أخلاقيات الامن السيبراني والموائمة|4 ساعات|متطلب واحد|38616|Cybersecurity Ethics, Governance & Compliance|4 hours/English|1|SEC1101~Introduction to Cybersecurity~4 hours/No requisites
+4|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+4|SEC2301|امن نظم التشغيل|3 ساعات|متطلب واحد|38628|Operating Systems Security|3 hours/English|1|CS2016~Operating Systems~3 hours/One requisite
+4|SEC2401|التهديدات السيبرانية والأستجابة للحوادث|4 ساعات|متطلب واحد|38630|Cyber Threats & Incident Response|4 hours/English|1|SEC1101~Introduction to Cybersecurity~4 hours/No requisites
+4|SEC2402|مبادئ وتصميم أمن تكنولوجيا المعلومات|3 ساعات||38635|IT Security Principles and Design|3 hours/English|0|
+4|SEC2303|برمجة النظام والكتابة النصية|3 ساعات|متطلبين|38639|System Programming & Scripting|3 hours/English|1|CS2016~Operating Systems~3 hours/One requisite;CS1701~Computer Programming in Java~3 hours/No requisites
+4|CEN1013|شبكات الحاسب الآلي|4 ساعات|متطلب واحد|41852|Computer Networks|4 hours/English|1|CS2016~Operating Systems~4 hours/One requisite
+5|QR2103|حفظ القرآن الكريم 2|ساعتين|متطلب واحد|38522|Memorizing the Holy Quran 2|Two hours/English|1|QR2102~Memorizing the Holy Quran 1~Two hours/One requisite
+5|SEC3104|إدارة المخاطر الامنية|ساعتين|متطلب واحد|38643|Security Risk Management|Two hours/English|1|SEC2401~Cyber Threats & Incident Response~Two hours/One requisite
+5|SEC3205|تطوير وأمن الويب|4 ساعات|متطلب واحد|38762|Web Development & Security|4 hours/English|1|SEC2203~Databases Administration & Security~4 hours/One requisite
+5|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+5|SEC3204|أمن البرامج|3 ساعات|متطلب واحد|41853|Software Security|3 hours/English|1|SEC2303~System Programming & Scripting~3 hours/Two requisites
+5|SEC3302|أمن الشبكات|4 ساعات|متطلبين|41854|Network Security|4 hours/English|1|SEC1202~Applied Cryptography~4 hours/One requisite;CEN1013~Computer Networks~4 hours/One requisite
+5|CS3019|تصميم وتحليل الخوازميات|ساعتين|متطلب واحد|41894|Design & Analysis of Algorithms|Two hours/English|1|CS2105~Data Structures & Algorithms with Java~Two hours/One requisite
+6|QR3104|ختم القرآن الكريم|ساعتين|متطلب واحد|38523|Seal of the Holy Quran|Two hours/English|1|QR2103~Memorizing the Holy Quran 2~Two hours/One requisite
+6|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+6|SEC3107|مشروع تخرج 1|3 ساعات|متطلبين|38769|Graduation Project 1|3 hours/English|1|SEC3204~Software Security~3 hours/One requisite;SEC2402~IT Security Principles and Design~3 hours/No requisites
+6|SEC3106|عمليات الأمن السيبراني|3 ساعات|متطلب واحد|38770|Cybersecurity Operations|3 hours/English|1|SEC3104~Security Risk Management~3 hours/One requisite
+6|SEC3206|التحقق الرقمي الجنائي|3 ساعات|متطلب واحد|38777|Digital Forensics|3 hours/English|1|SEC3302~Network Security~3 hours/Two requisites
+6|SEC3103|كتابة التقارير التقنية في الأمن السيبراني|ساعتين||38784|Technical Report Writing in Cybersecurity|Two hours/English|0|
+6|SEC3214|تشفير متقدم|3 ساعات|متطلب واحد|41855|Advanced Cryptography|3 hours/English|1|SEC1202~Applied Cryptography~3 hours/One requisite
+7|SEC4105|التدريب التعاوني|6 ساعات||38790|COOP Trainning|6 hours/English|0|
+8|ICC4202|الأسرة في الإسلام|ساعتين||38525|Family in Islam|Two hours/English|0|
+8|SEC4403|الهاكر الأخلاقي|3 ساعات|متطلبين|38801|Ethical Hacking|3 hours/English|1|SEC3204~Software Security~3 hours/One requisite;SEC3302~Network Security~3 hours/Two requisites
+8|SEC4108|مشروع تخرج 2|3 ساعات|متطلبين|38804|Graduation Project 2|3 hours/English|1|SEC3103~Technical Report Writing in Cybersecurity~3 hours/No requisites;SEC3107~Graduation Project 1~3 hours/Two requisites

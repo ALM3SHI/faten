@@ -186,6 +186,7 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/advisor/validate-schedule") return send(res, 200, ADVISOR.validate);
   if (p === "/api/advisor/compare-majors") return send(res, 200, ADVISOR.compare);
   if (p.startsWith("/api/advisor/instructors/")) return send(res, 200, ADVISOR.instructors);
+  if (p === "/api/advisor/instructor-map") return send(res, 200, ADVISOR.instructor_map);
   if (p === "/api/advisor/ask") return send(res, 200, ADVISOR.ask);
   if (p === "/api/notifications/prefs") {
     // Echo the saved prefs without keeping them, so parallel tests stay independent.

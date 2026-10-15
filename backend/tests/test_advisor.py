@@ -36,7 +36,7 @@ def run(rec, **prefs):
 # ── catalog ───────────────────────────────────────────────────────
 
 def test_catalog_matches_raw_snapshots_and_has_no_errors():
-    assert set(CAT.programs) == {"uqu-478", "uqu-1490", "uqu-1510", "uqu-1492"}
+    assert set(CAT.programs) == {"uqu-478", "uqu-1490", "uqu-1510", "uqu-1492", "uqu-1508", "uqu-1981", "uqu-1738"}
     for cur in CAT.curricula.values():
         raw = (CATALOG_ROOT / "uqu" / cur.provenance.raw_file).read_bytes()
         assert hashlib.sha256(raw).hexdigest() == cur.provenance.raw_sha256
@@ -63,7 +63,10 @@ def test_known_official_facts():
     assert CS.course("CS3901").kind == "coop" and CS.course("CS3901").credits == 6
     # Same course, different prerequisites per program — stored per curriculum.
     assert CS.course("DS2201").prerequisites == []
-    assert CAT.curriculum_for("uqu-1490").course("DS2201").prerequisites == ["CS1012"]
+    ai_db = CAT.curriculum_for("uqu-1490").course("DS2201")
+    # The team's college list was adopted over the plan page; the page value is kept beside it.
+    assert ai_db.prerequisites == ["CS1011"] and ai_db.prereq_source == "college_list"
+    assert ai_db.plan_page_prerequisites == ["CS1012"]
 
 
 def test_curriculum_versions_are_kept_apart(tmp_path):

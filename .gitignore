@@ -94,3 +94,6 @@ backend/serviceAccountKey.json
 # Stray env copies — never commit secrets
 _env
 *.env
+
+# Raw instructor reviews and draft lists the team compiles — only derived data goes in the repo
+college of Computing/

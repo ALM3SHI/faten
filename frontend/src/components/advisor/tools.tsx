@@ -5,7 +5,7 @@
  * evidence and follow-up questions. Each one calls its own endpoint.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, MessageCircleQuestion, Scale, Search, Send, UserRound, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,10 +18,12 @@ import {
   parseCodes,
   type AskResult,
   type InstructorEvidence,
+  type InstructorMap,
   type MajorsComparison,
   type ScheduleCheck,
 } from "@/lib/advisor";
 import { toast } from "@/lib/toast";
+import { ProfileCard, ProgramInstructorMap } from "@/components/advisor/instructor-profiles";
 
 const errorText = (e: unknown) => (e instanceof ApiError ? e.message : "تعذّر إكمال الطلب. حاول مرة أخرى.");
 const PRIMARY = "rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-2";
@@ -159,10 +161,22 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
   );
 }
 
-export function InstructorsPanel({ suggested }: { suggested: string[] }) {
+export function InstructorsPanel({ suggested, programId }: { suggested: string[]; programId?: string }) {
   const [code, setCode] = useState(suggested[0] ?? "");
   const [busy, setBusy] = useState(false);
   const [data, setData] = useState<InstructorEvidence | null>(null);
+  const [map, setMap] = useState<InstructorMap | null>(null);
+  useEffect(() => {
+    if (!programId) return;
+    let alive = true;
+    advisorApi
+      .instructorMap(programId)
+      .then((m) => alive && setMap(m))
+      .catch(() => undefined); // the map is a shortcut; the panel works without it
+    return () => {
+      alive = false;
+    };
+  }, [programId]);
   const [form, setForm] = useState({ instructor: "", clarity: 0, organization: 0, fairness: 0, workload: 0, recommend: true });
   const normalized = parseCodes(code)[0] ?? "";
 
@@ -199,6 +213,15 @@ export function InstructorsPanel({ suggested }: { suggested: string[] }) {
       <p className="text-sm text-muted-foreground leading-7">
         نعرض أدلة تقييم المحاضرين فقط حين تكفي: تقييمات موثقة من طلاب درسوا المقرر، مع مراعاة قلة العدد وقِدَم التقييم وتباين الآراء. لا نرشّح أحداً بلا أدلة كافية.
       </p>
+      {map && (
+        <ProgramInstructorMap
+          map={map}
+          onPick={(c) => {
+            setCode(c);
+            load(c);
+          }}
+        />
+      )}
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-2">
           <Label htmlFor="inst-code">رمز المقرر</Label>
@@ -209,6 +232,22 @@ export function InstructorsPanel({ suggested }: { suggested: string[] }) {
           اعرض الأدلة
         </Button>
       </div>
+      {data?.imported && data.imported.profiles.length > 0 && (
+        <section aria-labelledby="profiles-title" className="space-y-3">
+          <h3 id="profiles-title" className="font-black">
+            تحليل المحاضرين في <bdi dir="ltr">{data.imported.course_code}</bdi>
+          </h3>
+          <p className="text-xs text-muted-foreground leading-6">{data.imported.source.description}</p>
+          {data.imported.profiles.map((p) => (
+            <ProfileCard key={p.id} p={p} />
+          ))}
+          <ul className="text-xs text-muted-foreground list-disc ps-5 leading-6">
+            {data.imported.caveats.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       {data && (
         <div className="space-y-3 text-sm">
           <p className="font-bold" role="status">{data.message}</p>

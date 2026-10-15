@@ -1,0 +1,42 @@
+#degree|1981|تفاعل الإنسان مع الحاسب|بكالوريوس|الحاسبات|هندسة البرمجيات|125|2026-10-15T08:27:40.129Z|https://uqu.edu.sa/App/Degrees/1981
+1|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|CS1302|هياكل متقطعة 1|3 ساعات||39337|Discrete Structures 1|3 hours/English|0|
+1|HCI1201|أساسيات تفاعل الإنسان مع الحاسب|4 ساعات||41699|Fundementals of Human-Computer Interaction|4 hours/English|0|
+1|CS1018|مقدمة في نظم الحاسب|ساعتين||42580|Introduction to Computer Systems|Two hours/English|0|
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|MTH1141|التفاضل والتكامل 1|3 ساعات||38534|Calculus 1|3 hours/English|0|
+2|CS1011|برمجة الحاسب بلغة بايثون|3 ساعات|متطلب واحد|38540|Computer Programming in Python|3 hours/English|1|CS1302~Discrete Structures 1~3 hours/No requisites
+2|SE1201|اسس هندسة البرمجيات|3 ساعات||39061|Foundations of Software Engineering|3 hours/English|0|
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات|متطلب واحد|39086|English Language (2)|4 hours/English|1|ELIE1201~English Language (1)~4 hours/No requisites
+2|HCI1202|التصميم للإنسان|4 ساعات||41700|Human Factors in Design|4 hours/English|0|
+3|QR2102|حفظ القرآن الكريم 1|ساعتين||38521|Memorizing the Holy Quran 1|Two hours/English|0|
+3|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+3|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+3|SE1101|تطوير التطبيقات كائنية التوجه|3 ساعات|متطلب واحد|39037|Object-oriented Application Development|3 hours/English|1|CS1011~Computer Programming in Python~3 hours/One requisite
+3|DS2201|مقدمة في قواعد البيانات|3 ساعات||39315|Introduction to Database|3 hours/English|0|
+3|HCI2203|أبحاث المستخدم|3 ساعات|متطلب واحد|41701|User Research|3 hours/English|1|HCI1201~Fundementals of Human-Computer Interaction~3 hours/No requisites
+3|HCI2101|تصميم واجهات المستخدم 1|3 ساعات|متطلب واحد|41702|User Interface Design 1|3 hours/English|1|HCI1201~Fundementals of Human-Computer Interaction~3 hours/No requisites
+4|QR2103|حفظ القرآن الكريم 2|ساعتين|متطلب واحد|38522|Memorizing the Holy Quran 2|Two hours/English|1|QR2102~Memorizing the Holy Quran 1~Two hours/No requisites
+4|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات|متطلب واحد|38602|Statistics and Probabilities in Computing|3 hours/English|1|MTH1141~Calculus 1~3 hours/No requisites
+4|SEC2011|أساسيات في شبكات الحاسب والأمن السيبراني|ساعتين||38849|Foundations of Computer Networks and Cybersecurity|Two hours/English|0|
+4|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+4|SE2204|إدارة مشاريع تقنية المعلومات|ساعتين|متطلب واحد|39104|IT Project Management|Two hours/English|1|SE1201~Foundations of Software Engineering~Two hours/No requisites
+4|HCI2102|تصميم واجهات المستخدم 2|3 ساعات|متطلب واحد|41703|User Interface Design 2|3 hours/English|1|HCI2101~User Interface Design 1~3 hours/One requisite
+4|HCI2204|أخلاقيات في تفاعل الإنسان مع الحاسب|ساعتين||41704|Ethics in Human-Computer Interaction|Two hours/English|0|
+5|QR3104|ختم القرآن الكريم|ساعتين|متطلب واحد|38523|Seal of the Holy Quran|Two hours/English|1|QR2103~Memorizing the Holy Quran 2~Two hours/One requisite
+5|HCI3401|تصميم تصوير البيانات|4 ساعات|متطلبين|41705|Data Visulisation Design|4 hours/English|1|DS2201~Introduction to Database~4 hours/No requisites;HCI2203~User Research~4 hours/One requisite
+5|HCI3103|التصميم المتمركز حول الإنسان|ساعتين|متطلب واحد|41706|User Centred Design|Two hours/English|1|HCI2203~User Research~Two hours/One requisite
+5|HCI3301|طرق النمذجة|3 ساعات|متطلب واحد|41707|Prototyping Methods|3 hours/English|1|HCI2101~User Interface Design 1~3 hours/One requisite
+6|ICC4202|الأسرة في الإسلام|ساعتين|متطلب واحد|38525|Family in Islam|Two hours/English|1|ICC1201~Values and Ethics~Two hours/No requisites
+6|HCI3104|التصميم الشامل|3 ساعات|متطلب واحد|41708|Inclusive Design|3 hours/English|1|HCI2101~User Interface Design 1~3 hours/One requisite
+6|HCI3105|معمارية المعلومات|3 ساعات|متطلب واحد|41709|Information Architecture|3 hours/English|1|HCI2102~User Interface Design 2~3 hours/One requisite
+6|HCI3205|تقييم قابلية الاستخدام|3 ساعات|متطلب واحد|41710|Usability Evaluation|3 hours/English|1|HCI3301~Prototyping Methods~3 hours/One requisite
+6|HCI3502|مشروع تخرج 1|3 ساعات|متطلبين|41711|Graduation Project 1|3 hours/English|1|SE2204~IT Project Management~3 hours/One requisite;HCI3103~User Centred Design~3 hours/One requisite
+6|HCI3302|تطوير تطبيقات الجوال|3 ساعات|متطلب واحد|41712|Mobile Application Development|3 hours/English|1|SE1101~Object-oriented Application Development~3 hours/One requisite
+7|HCI4503|التدريب التعاوني|6 ساعات|متطلب واحد|41713|Cooperative Training|6 hours/English|1|HCI2204~Ethics in Human-Computer Interaction~6 hours/No requisites
+8|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+8|HCI4303|تفاعل متعدد الوسائط|3 ساعات||41714|Advanced Interaction|3 hours/English|0|
+8|HCI4106|نظم التصميم|3 ساعات|متطلب واحد|41715|Design Systems|3 hours/English|1|HCI3301~Prototyping Methods~3 hours/One requisite
+8|HCI4504|مشروع تخرج 2|3 ساعات|متطلب واحد|41716|Graduation Project 2|3 hours/English|1|HCI3502~Graduation Project 1~3 hours/Two requisites

@@ -16,7 +16,7 @@ import db.firestore as dbmod
 from auth.dependencies import get_current_user
 from config import get_settings
 from services import community
-from services.advisor import explain, instructors, rules
+from services.advisor import explain, instructor_profiles, instructors, rules
 from services.advisor import service as svc
 from services.advisor.catalog import load_catalog, normalize_code
 from services.advisor.majors import compare_programs
@@ -166,7 +166,18 @@ def instructor_evidence(code: str, user_id: str = Depends(get_current_user)) -> 
     if not c:
         raise HTTPException(status_code=400, detail="رمز المادة غير صالح.")
     providers = [instructors.VerifiedStudentProvider(dbmod.get_db()), instructors.QaymProvider()]
-    return instructors.evidence_for_course(c, providers)
+    out = instructors.evidence_for_course(c, providers)
+    # Separate source, never merged into the verified-student numbers above.
+    out["imported"] = instructor_profiles.for_course(c)
+    return out
+
+
+@router.get("/instructor-map")
+def instructor_map(program_id: str, user_id: str = Depends(get_current_user)) -> dict:
+    out = instructor_profiles.for_program(load_catalog(), program_id)
+    if out is None:
+        raise HTTPException(status_code=404, detail="التخصص غير موجود.")
+    return out
 
 
 @router.put("/instructors/{code}/review")

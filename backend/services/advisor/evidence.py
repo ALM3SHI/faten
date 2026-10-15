@@ -84,13 +84,17 @@ def apply_course_spec(cat: Catalog, doc: Document) -> None:
             conflicts.append(f"المستوى: الخطة {pc.level} والتوصيف {f['level']}")
         spec_pre = sorted(normalize_code(p) for p in f.get("prerequisites", []) if normalize_code(p))
         if spec_pre != sorted(pc.prerequisites):
-            conflicts.append(f"المتطلبات: الخطة {sorted(pc.prerequisites)} والتوصيف {spec_pre}")
+            if pc.prereq_source == "college_list":
+                conflicts.append(f"المتطلبات: المعتمدة من قائمة الكلية {sorted(pc.prerequisites)} والتوصيف {spec_pre}"
+                                 + (" (يطابق صفحة الخطة)" if spec_pre == sorted(pc.plan_page_prerequisites or []) else ""))
+            else:
+                conflicts.append(f"المتطلبات: الخطة {sorted(pc.prerequisites)} والتوصيف {spec_pre}")
         if f.get("requirement") == "elective":
             conflicts.append("الخطة تعرضه ضمن مقرراتها والتوصيف يصفه اختيارياً")
         if conflicts:
             pc.verification = "conflicting"
             _note(cur, "warning", "spec_conflict", subject=code,
-                  message=f"{code}: تعارض بين صفحة الخطة و{src} — " + "؛ ".join(conflicts) + ". أُبقيت بيانات الخطة كما هي.")
+                  message=f"{code}: تعارض بين بيانات الخطة المعتمدة و{src} — " + "؛ ".join(conflicts) + ". أُبقيت البيانات المعتمدة كما هي.")
         else:
             pc.evidence.append(doc.id)
             pc.prereq_list_corroborated = True

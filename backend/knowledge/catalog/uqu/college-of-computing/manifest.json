@@ -1,0 +1,59 @@
+{
+ "id": "college-lists-2026-10-15",
+ "title": "قوائم مقررات كلية الحاسبات التي جمعها فريق فطن من موقع الجامعة",
+ "compiled_by": "فريق فطن (عمر المعشي)",
+ "compiled_at": "2026-10-15",
+ "decision": "اعتُمدت المتطلبات السابقة في هذه القوائم بدل متطلبات صفحات الخطط بقرار من فريق فطن (2026-10-15). قيمة صفحة الخطة محفوظة بجانب كل مقرر يختلف ومعروضة كتنبيه.",
+ "files": [
+  {
+   "file": "cs.json",
+   "original_name": "computer_science_curriculum.json",
+   "program_id": "uqu-478",
+   "sha256": "5b5dc241abedd3c3896c96016828d6dc7094e10d01e51c2a1942c560fcfa443a"
+  },
+  {
+   "file": "ai.json",
+   "original_name": "الذكاء الاصطناعي.json",
+   "program_id": "uqu-1490",
+   "sha256": "96b869898f60526f3d6492df69269458d5c962b2568be64af45caad0d9126556"
+  },
+  {
+   "file": "se.json",
+   "original_name": "هندسة برمجيات.json",
+   "program_id": "uqu-1510",
+   "sha256": "23a6e923fd3bdce274e63abfbe512e049260030e67b63ef3faa3cd78386769aa"
+  },
+  {
+   "file": "ce.json",
+   "original_name": "هندسة حاسب.json",
+   "program_id": "uqu-1492",
+   "sha256": "9a4c4c679b78ab0fee4177646917c8ddb5ce9dbc2d0d95ec57c133976579be76"
+  },
+  {
+   "file": "hci.json",
+   "original_name": "تفاعل الانسان مع الالة.json",
+   "program_id": "uqu-1981",
+   "sha256": "d547b3ddef86f54221d498b3adb7a799cf64269d7bae5acabc6b551558f9bcbd"
+  },
+  {
+   "file": "cyber.json",
+   "original_name": "الامن السبراني.json",
+   "program_id": "uqu-1738",
+   "sha256": "92e18db0d7c667900095b51194c553a918c26fbab09162a500b2406d7c60ef82"
+  }
+ ],
+ "rejected": [
+  {
+   "original_name": "علم البيانات.json",
+   "program_id": "uqu-1508",
+   "sha256": "e8e980d6cdb6d3f55fd8d26b85c3d367f2a848846e27d2d6d8fc99114618a881",
+   "reason": "الملف مقطوع عند المستوى الخامس (ينتهي داخل مقرر CEN1014) وليس JSON صالحاً؛ بقيت متطلبات صفحة الخطة."
+  }
+ ],
+ "code_aliases": {
+  "PHY1114": {
+   "code": "PHYS1114",
+   "note": "رمز المقرر في صفحة الخطة وسجلات الطلاب PHYS1114 (فيزياء المهندسين)."
+  }
+ }
+}

@@ -1,0 +1,2786 @@
+{
+ "schema_version": 1,
+ "university": "uqu",
+ "built_at": "2026-10-15",
+ "source": {
+  "kind": "team_compiled_student_reviews",
+  "description": "تقييمات طلاب عامة جمعها فريق فطن (2026-10-15). لا تُعرض نصوصها؛ المعروض أرقام مجمّعة وتحليل كتبه فطن.",
+  "files": 10
+ },
+ "verdict_labels": {
+  "recommended": "يُنصح به",
+  "recommended_if": "يُنصح به بشروط",
+  "mixed": "متباين — حسب المقرر ونوع الطالب",
+  "avoid_if_alternative": "اختر غيره إن أمكن"
+ },
+ "method": {
+  "scale": "متوسط الشرح والتعامل والمساعدة محولاً إلى 1–5",
+  "recent_window_months": 24,
+  "course_links": "اسم المقرر كما كتبه الطالب مطابقاً لعائلة مقرر في الخطط؛ likely = الاسم يدل على المقرر، ambiguous = يحتمل مقررين"
+ },
+ "caveats": [
+  "تقييمات اختيارية يكتبها من أراد؛ لا تمثل كل من درس عند المحاضر.",
+  "الدرجة الواحدة لا تتنبأ بدرجتك، وتجربة المحاضر قد تتغير من فصل لآخر.",
+  "ربط اسم المقرر برمز الخطة استنتاج من صياغة الطالب، وقد يكون المقرر من خطة أقدم."
+ ],
+ "unmatched_course_labels": 58,
+ "instructors": [
+  {
+   "id": "054453d3c917491d",
+   "name": "احمد حسن يحي لال الهندي",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 79,
+    "reviews_analyzed": 39,
+    "complete": false,
+    "file_sha256": "574c31c1741293bd46805339f7682b3368172cde9820c7130bc0c25774c0650d"
+   },
+   "stats": {
+    "reviews": 39,
+    "average": 4.78,
+    "positive_share": 0.95,
+    "recent_reviews": 22,
+    "site_metrics": {
+     "explanation": 4.5,
+     "treatment": 4.95,
+     "helpfulness": 4.9
+    },
+    "site_overall": 4.8,
+    "badges": [
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.95
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.85
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.85
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.74
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.72
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.05
+     },
+     {
+      "label": "يعطيك حقك",
+      "share": 0.05
+     },
+     {
+      "label": "ما يرد على الايميل",
+      "share": 0.03
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 38,
+      "average": 4.77,
+      "positive_share": 0.95,
+      "recent_reviews": 21
+     },
+     "both": {
+      "reviews": 1,
+      "average": 5.0,
+      "positive_share": 1.0,
+      "recent_reviews": 1
+     }
+    },
+    "unmatched_reviews": 4,
+    "unspecified_course_reviews": 13
+   },
+   "courses": [
+    {
+     "family": "هياكل متقطعة 1",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1302",
+       "name": "هياكل متقطعة 1",
+       "programs": [
+        "uqu-1490",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "DS1901",
+       "name": "هياكل متقطعة",
+       "programs": [
+        "uqu-1508"
+       ]
+      },
+      {
+       "code": "SEC1201",
+       "name": "هياكل متقطعة للأمن السيبراني",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 14,
+     "average": 4.7,
+     "positive_share": 0.86,
+     "recent_reviews": 10
+    },
+    {
+     "family": "البرمجة الشيئية",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1704",
+       "name": "البرمجة الشيئية بلغة جافا",
+       "programs": [
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1012",
+       "name": "البرمجة الشيئية بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS1013",
+       "name": "البرمجة الشيئية بلغة C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "SE1101",
+       "name": "تطوير التطبيقات كائنية التوجه",
+       "programs": [
+        "uqu-1510",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 4.92,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "مبادئ وتقنيات الذكاء الاصطناعي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI3101",
+       "name": "مبادىء وتقنيات الذكاء الاصطناعي",
+       "programs": [
+        "uqu-1490"
+       ]
+      }
+     ],
+     "reviews": 3,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 2
+    },
+    {
+     "family": "تعلم الآلة 2",
+     "confidence": "no_plan_course",
+     "links": [],
+     "reviews": 1,
+     "average": 4.67,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended",
+    "headline": "من أعلى المحاضرين تقييماً: أسلوب ممتع وتعاون كبير واختبارات من شرحه.",
+    "fits": [
+     "أغلب الطلاب، خصوصاً في سنتهم الأولى",
+     "من يحب التعلم التفاعلي والمذاكرة الذاتية المنظمة"
+    ],
+    "not_for": [
+     "من لا يشاهد المواد المسجلة قبل المحاضرة"
+    ],
+    "strengths": [
+     "متعاون ومتفهم ومحاضرته ممتعة في الغالبية الساحقة من التقييمات.",
+     "اختباراته توصف بالسهلة ومن شرحه، مع أسئلة أو درجات بونص في الميد والفاينل.",
+     "أسلوب تفاعلي: يرفع مقاطع وسلايدات أسبوعياً، والمحاضرة للنقاش والمراجعة وأوراق العمل وربط المادة بسوق العمل.",
+     "كويزات دورية تعرّفك على نمط أسئلة الفاينل."
+    ],
+    "weaknesses": [
+     "يختصر كثيراً؛ التفاصيل عليك أن تراجعها بنفسك.",
+     "ذُكر أن تعامله ودرجاته تتأثر بانطباعه عن الشعبة كلها."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "أغلب التقييمات عن الهياكل المتقطعة ومبادئ الذكاء الاصطناعي؛ نفس الصورة الإيجابية في الاثنين."
+     }
+    ],
+    "survival": [
+     "شاهد المقاطع المرفوعة قبل المحاضرة؛ المحاضرة مبنية عليها.",
+     "حل الكويزات الدورية بجدية حتى لو بلا درجات؛ تشبه أسئلة الفاينل.",
+     "راجع التفاصيل التي يختصرها من الكتاب أو السلايدات.",
+     "شارك في النقاش؛ انطباعه عن الشعبة ينعكس على الدرجات."
+    ],
+    "recommendation": "سجّل عنده بثقة؛ شاهد المقاطع قبل المحاضرة وحل الكويزات ليكون الفاينل سهلاً.",
+    "caveats": [
+     "الملف المرسل مقطوع؛ حُللت 39 من 79 تقييماً."
+    ]
+   }
+  },
+  {
+   "id": "6cc70a2720273ef0",
+   "name": "ثامر محمد تاج الدين قدح",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 40,
+    "reviews_analyzed": 40,
+    "complete": true,
+    "file_sha256": "b3007092492ae3607b59f2c3603a7269d3ad3fc491093d5f92d0eabc5b2dcf4f"
+   },
+   "stats": {
+    "reviews": 40,
+    "average": 2.35,
+    "positive_share": 0.15,
+    "recent_reviews": 20,
+    "site_metrics": {
+     "explanation": 1.6,
+     "treatment": 3.05,
+     "helpfulness": 2.45
+    },
+    "site_overall": 2.35,
+    "badges": [
+     {
+      "label": "محاضرة مملة",
+      "share": 0.8
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.55
+     },
+     {
+      "label": "يعطيك حقك",
+      "share": 0.38
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.33
+     },
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.33
+     },
+     {
+      "label": "شديد في التصحيح",
+      "share": 0.28
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.25
+     },
+     {
+      "label": "ما يرد على الايميل",
+      "share": 0.2
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 34,
+      "average": 2.29,
+      "positive_share": 0.15,
+      "recent_reviews": 15
+     },
+     "theory": {
+      "reviews": 3,
+      "average": 2.67,
+      "positive_share": 0.33,
+      "recent_reviews": 2
+     },
+     "practical": {
+      "reviews": 2,
+      "average": 2.42,
+      "positive_share": 0.0,
+      "recent_reviews": 2
+     },
+     "both": {
+      "reviews": 1,
+      "average": 3.0,
+      "positive_share": 0.0,
+      "recent_reviews": 1
+     }
+    },
+    "unmatched_reviews": 0,
+    "unspecified_course_reviews": 7
+   },
+   "courses": [
+    {
+     "family": "المنطق الرقمي وتنظيم الحاسوب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN1012",
+       "name": "تنظيم الحاسوب والمنطق الرقمي",
+       "programs": [
+        "uqu-1510"
+       ]
+      },
+      {
+       "code": "CEN1011",
+       "name": "المنطق الرقمي وتنظيم الحاسوب",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 12,
+     "average": 2.31,
+     "positive_share": 0.08,
+     "recent_reviews": 12
+    },
+    {
+     "family": "برمجة الحاسب 1",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 8,
+     "average": 2.29,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "البرمجة الشيئية",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1704",
+       "name": "البرمجة الشيئية بلغة جافا",
+       "programs": [
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1012",
+       "name": "البرمجة الشيئية بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS1013",
+       "name": "البرمجة الشيئية بلغة C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "SE1101",
+       "name": "تطوير التطبيقات كائنية التوجه",
+       "programs": [
+        "uqu-1510",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 5,
+     "average": 2.43,
+     "positive_share": 0.2,
+     "recent_reviews": 1
+    },
+    {
+     "family": "مقدمة في قواعد البيانات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "DS2201",
+       "name": "مقدمة في قواعد البيانات",
+       "programs": [
+        "uqu-1490",
+        "uqu-1508",
+        "uqu-1510",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 3,
+     "average": 3.56,
+     "positive_share": 0.67,
+     "recent_reviews": 0
+    },
+    {
+     "family": "البرمجة الشيئية C++",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1013",
+       "name": "البرمجة الشيئية بلغة C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 2.42,
+     "positive_share": 0.0,
+     "recent_reviews": 2
+    },
+    {
+     "family": "تركيب المترجمات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS4714",
+       "name": "تركيب المترجمات",
+       "programs": [
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 2.5,
+     "positive_share": 0.5,
+     "recent_reviews": 0
+    },
+    {
+     "family": "عمارة الحاسب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN2012",
+       "name": "تنظيم وعمارة الحاسب الآلي",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CEN2202",
+       "name": "عمارة الحاسب الآلي",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 1.5,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "avoid_if_alternative",
+    "headline": "تعامله طيب أحياناً ويساعد بالبونص، لكن الشرح ضعيف والاختبارات صعبة في أغلب التقييمات.",
+    "fits": [
+     "من يذاكر مسبقاً من مصادر خارجية ولغته الإنجليزية قوية"
+    ],
+    "not_for": [
+     "من يعتمد على شرح المحاضرة",
+     "المبتدئون في البرمجة"
+    ],
+    "strengths": [
+     "يعطي بونص في عدد من الفصول، وبعض الطلاب ذكروا أنه ساعدهم في الدرجات نهاية الفصل.",
+     "بعض الطلاب وصفوا تعامله بالطيب، وأنه يتعاون في المشاريع."
+    ],
+    "weaknesses": [
+     "الشرح الأضعف تقييماً بين المحاضرين في هذه البيانات، والمحاضرة توصف بالمملة في أغلب التقييمات.",
+     "الاختبارات صعبة وخياراتها طويلة بمصطلحات إنجليزية متقدمة.",
+     "متطلبات عملية إضافية: تسجيل فيديو تشرح فيه كل لاب، واستخدام برامج محددة.",
+     "لا يرد على البريد الإلكتروني عند عدد من الطلاب.",
+     "تكرر أن شروط البونص المعلنة تغيّرت قبل النهائي."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "الشكوى الأساسية: الشرح غير واضح والاختبار أصعب من الشرح."
+     },
+     {
+      "context": "عملي",
+      "pattern": "طلبات كثيرة (فيديو لكل لاب، برامج محددة) مع شرح قليل داخل اللاب."
+     }
+    ],
+    "survival": [
+     "ذاكر الدرس من مصدر خارجي قبل المحاضرة وبعدها.",
+     "اجمع قائمة بالمصطلحات الإنجليزية للمادة؛ الأسئلة تعتمد على صياغات دقيقة.",
+     "سلّم اللابات والفيديوهات أولاً بأول، ولا تؤجل.",
+     "احتفظ بشروط البونص وتوزيع الدرجات مكتوبة من أول الفصل.",
+     "تحقق إن كان الاختبار النهائي موحداً في مقررك."
+    ],
+    "recommendation": "إن وجدت شعبة أخرى فاخترها؛ وإن اضطررت فذاكر مسبقاً من مصادر خارجية وركّز على المصطلحات.",
+    "caveats": [
+     "تقييمات مقرر تركيب المترجمات قليلة وقديمة، وأحدها يذكر أنه تغيّر للأفضل في تلك المادة."
+    ]
+   }
+  },
+  {
+   "id": "7fffac76ad0851eb",
+   "name": "حاتم سعد براك السواط",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 90,
+    "reviews_analyzed": 90,
+    "complete": true,
+    "file_sha256": "7196ef00bbca750d6d2e24a9c4dd53506b337e3b8cee7c583500d2b97a389179"
+   },
+   "stats": {
+    "reviews": 90,
+    "average": 4.7,
+    "positive_share": 0.91,
+    "recent_reviews": 58,
+    "site_metrics": {
+     "explanation": 4.65,
+     "treatment": 4.75,
+     "helpfulness": 4.8
+    },
+    "site_overall": 4.7,
+    "badges": [
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.88
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.81
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.8
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.74
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.59
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.16
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.11
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.09
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 87,
+      "average": 4.72,
+      "positive_share": 0.92,
+      "recent_reviews": 56
+     },
+     "theory": {
+      "reviews": 2,
+      "average": 3.83,
+      "positive_share": 0.5,
+      "recent_reviews": 1
+     },
+     "both": {
+      "reviews": 1,
+      "average": 5.0,
+      "positive_share": 1.0,
+      "recent_reviews": 1
+     }
+    },
+    "unmatched_reviews": 2,
+    "unspecified_course_reviews": 11
+   },
+   "courses": [
+    {
+     "family": "التشفير التطبيقي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "SEC1202",
+       "name": "التشفير التطبيقي",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 37,
+     "average": 4.95,
+     "positive_share": 0.97,
+     "recent_reviews": 37
+    },
+    {
+     "family": "تصميم وتحليل الخوارزميات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS2107",
+       "name": "تصميم وتحليل الخوارزميات",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS3019",
+       "name": "تصميم وتحليل الخوازميات",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 15,
+     "average": 4.34,
+     "positive_share": 0.8,
+     "recent_reviews": 0
+    },
+    {
+     "family": "إدارة وأمن قواعد البيانات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "SEC2203",
+       "name": "إدارة وأمن قواعد البيانات",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 9,
+     "average": 4.04,
+     "positive_share": 0.67,
+     "recent_reviews": 9
+    },
+    {
+     "family": "هياكل متقطعة 1",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1302",
+       "name": "هياكل متقطعة 1",
+       "programs": [
+        "uqu-1490",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "DS1901",
+       "name": "هياكل متقطعة",
+       "programs": [
+        "uqu-1508"
+       ]
+      },
+      {
+       "code": "SEC1201",
+       "name": "هياكل متقطعة للأمن السيبراني",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 8,
+     "average": 4.81,
+     "positive_share": 0.88,
+     "recent_reviews": 1
+    },
+    {
+     "family": "هياكل البيانات",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS2105",
+       "name": "هياكل البيانات والخوازميات جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS2015",
+       "name": "هياكل البيانات والخوارزميات بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS2014",
+       "name": "هياكل البيانات والخوارزميات باستخدام C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "DS2206",
+       "name": "هياكل البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 6,
+     "average": 4.61,
+     "positive_share": 1.0,
+     "recent_reviews": 6
+    },
+    {
+     "family": "هياكل متقطعة 2",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1303",
+       "name": "هياكل متقطعة 2",
+       "programs": [
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 4.83,
+     "positive_share": 1.0,
+     "recent_reviews": 0
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended",
+    "headline": "من أعلى المحاضرين تقييماً: شرح واضح، محاضرات مسجلة، ومراعاة كبيرة للطلاب.",
+    "fits": [
+     "أغلب الطلاب",
+     "طلاب الأمن السيبراني في التشفير وقواعد البيانات"
+    ],
+    "not_for": [
+     "من يذاكر للفاينل بنفس طريقة الميد"
+    ],
+    "strengths": [
+     "يسجل المحاضرات ويرفعها، وذكر كثيرون أنها أغنتهم عن الدروس الخصوصية.",
+     "شرحه مركز على المهم، ويوضح ما الذي تركز عليه.",
+     "مراعٍ للظروف: يلغي أو يسجل المحاضرات وقت ضغط الاختبارات، ويمدد تسليم المشاريع.",
+     "بونص سخي ودعم في الدرجات لمن يجتهد."
+    ],
+    "weaknesses": [
+     "الميد غالباً مقالي أو عملي وأصعب، والفاينل اختيارات وصح وخطأ يركز على النظري؛ كثيرون فوجئوا بالفاينل.",
+     "صوته منخفض (ذُكر عدة مرات).",
+     "في التقييمات الأقدم (خوارزميات): تصحيح شديد في الميد ويطلب الحل بطريقته."
+    ],
+    "modes": [
+     {
+      "context": "الميد",
+      "pattern": "مقالي أو عملي ومسائل؛ يطلب طريقة الحل التي شرحها."
+     },
+     {
+      "context": "الفاينل",
+      "pattern": "اختيارات وصح وخطأ وتعاريف؛ ركّز على الجزء النظري."
+     }
+    ],
+    "survival": [
+     "شاهد التسجيلات قبل المحاضرة؛ ذُكر أنه ينزعج إن لم يشاهدها الطلاب.",
+     "للميد: تدرّب على المسائل بطريقة حله نفسها.",
+     "للفاينل: ذاكر التعاريف والجزء النظري جيداً، ولا تكتفِ بطريقة مذاكرة الميد.",
+     "اجلس قريباً في المحاضرة الحضورية.",
+     "أظهر اجتهادك؛ دعمه في الدرجات مرتبط بجدّيتك."
+    ],
+    "recommendation": "سجّل عنده بثقة، واستعد للفاينل بالتركيز على النظري لأنه يختلف عن الميد.",
+    "caveats": []
+   }
+  },
+  {
+   "id": "e9b0b8d659a73e24",
+   "name": "حسن رويزق رديد الهذلي",
+   "department": "علم المعلومات",
+   "data": {
+    "reviews_stated": 109,
+    "reviews_analyzed": 109,
+    "complete": true,
+    "file_sha256": "f2ef6858f3c9d5a4ea8cf60d7c544eaff9bac6fc75779b056e187203dd8909bc"
+   },
+   "stats": {
+    "reviews": 109,
+    "average": 2.88,
+    "positive_share": 0.42,
+    "recent_reviews": 54,
+    "site_metrics": {
+     "explanation": 3.2,
+     "treatment": 2.8,
+     "helpfulness": 2.75
+    },
+    "site_overall": 2.9,
+    "badges": [
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.53
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.46
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.46
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.38
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.38
+     },
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.35
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.33
+     },
+     {
+      "label": "شديد في التصحيح",
+      "share": 0.23
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 107,
+      "average": 2.84,
+      "positive_share": 0.41,
+      "recent_reviews": 52
+     },
+     "theory": {
+      "reviews": 2,
+      "average": 4.83,
+      "positive_share": 1.0,
+      "recent_reviews": 2
+     }
+    },
+    "unmatched_reviews": 25,
+    "unspecified_course_reviews": 36
+   },
+   "courses": [
+    {
+     "family": "نظم التشغيل",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS3608",
+       "name": "نظم التشغيل",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS2016",
+       "name": "نظم التشغيل",
+       "programs": [
+        "uqu-1492",
+        "uqu-1510",
+        "uqu-1738"
+       ]
+      },
+      {
+       "code": "CEN1014",
+       "name": "نظم التشغيل و الشبكات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 16,
+     "average": 4.12,
+     "positive_share": 0.62,
+     "recent_reviews": 15
+    },
+    {
+     "family": "تطوير الويب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS3810",
+       "name": "تطوير الويب",
+       "programs": [
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "SEC3205",
+       "name": "تطوير وأمن الويب",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 12,
+     "average": 4.9,
+     "positive_share": 0.92,
+     "recent_reviews": 12
+    },
+    {
+     "family": "جمع ومعالجة البيانات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "DS2301",
+       "name": "جمع ومعالجة البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 10,
+     "average": 4.7,
+     "positive_share": 1.0,
+     "recent_reviews": 0
+    },
+    {
+     "family": "برمجة متقدمة للمهندسين",
+     "confidence": "no_plan_course",
+     "links": [],
+     "reviews": 5,
+     "average": 2.9,
+     "positive_share": 0.0,
+     "recent_reviews": 5
+    },
+    {
+     "family": "برمجة الحاسب بلغة بايثون",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 3.62,
+     "positive_share": 0.75,
+     "recent_reviews": 4
+    },
+    {
+     "family": "مقدمة في الذكاء الاصطناعي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI2001",
+       "name": "مقدمة في الذكاء الاصطناعي",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 2.33,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "mixed",
+    "headline": "تقييمه يعتمد على المقرر والفترة: ممتاز في تطوير الويب وجمع البيانات، واختباراته صعبة جداً في نظم التشغيل.",
+    "fits": [
+     "من يذاكر بفهم لا بحفظ",
+     "طلاب تطوير الويب وجمع وتهيئة البيانات"
+    ],
+    "not_for": [
+     "من يريد اختبارات مباشرة وسهلة",
+     "من يعتمد على حلول جاهزة في الواجبات"
+    ],
+    "strengths": [
+     "شرحه واضح ويوصل المعلومة عند كثيرين، ويركز على الفهم لا الحفظ.",
+     "في تطوير الويب وجمع وتهيئة البيانات: تقييمات إيجابية شبه كاملة، وتعاون في اللابات والمشاريع.",
+     "يعطي درجة العرض أو المشروع كاملة غالباً، وأحياناً بونص يرفع التقدير."
+    ],
+    "weaknesses": [
+     "الاختبارات أكثر ما يُشتكى منه: صعبة، وصياغتها غير مباشرة، وتغيير كلمة يغيّر معنى السؤال.",
+     "تكرر أنه يشدد على الشعبة أو الدفعة كاملة إذا حصل تسريب أو غش من بعض الطلاب.",
+     "في البرمجة يناقشك في واجبك، ومن نسخ الحل ولم يستطع شرحه يخسر درجته.",
+     "لا يرد على البريد عند عدد من الطلاب.",
+     "التقييمات الأقدم (3 سنوات فأكثر، مقرر موضوعات في الحوسبة) سلبية جداً بدرجات منخفضة."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "شرح جيد واختبارات صعبة غير مباشرة، خصوصاً في نظم التشغيل."
+     },
+     {
+      "context": "عملي / مشاريع",
+      "pattern": "متساهل في المشروع والعرض، ويشدد على أن تحل اللابات بنفسك."
+     }
+    ],
+    "survival": [
+     "ذاكر بفهم، واقرأ كل سؤال بتمعّن؛ كلمة واحدة قد تغيّر المطلوب.",
+     "حل الواجبات واللابات بنفسك، واستعد لشرحها.",
+     "اجمع التلميحات التي يذكرها في المحاضرة؛ ذُكر أنها تساعد في الاختبار.",
+     "شارك وأجب عن أسئلة بداية المحاضرة؛ ذُكر أنها تُحسب لك.",
+     "ابتعد تماماً عن أي تسريب أو مشاركة لأسئلة؛ أثره يقع على الشعبة كلها."
+    ],
+    "recommendation": "مناسب جداً في تطوير الويب وجمع البيانات؛ في نظم التشغيل استعد لاختبارات صعبة غير مباشرة أو اختر شعبة أخرى إن وُجدت.",
+    "caveats": [
+     "التقييمات تغيّرت كثيراً عبر السنوات؛ القديمة سلبية جداً والأحدث أفضل لكنها متباينة."
+    ]
+   }
+  },
+  {
+   "id": "f8486a20de1c6f76",
+   "name": "خالد محمد جميل خياط",
+   "department": "هندسة الحاسب الآلي",
+   "data": {
+    "reviews_stated": 142,
+    "reviews_analyzed": 142,
+    "complete": true,
+    "file_sha256": "a254c87953add95fea56301f6b935387d37a7fb4876fe7665da548794ba66f5b"
+   },
+   "stats": {
+    "reviews": 142,
+    "average": 2.87,
+    "positive_share": 0.4,
+    "recent_reviews": 130,
+    "site_metrics": {
+     "explanation": 2.8,
+     "treatment": 2.8,
+     "helpfulness": 3.05
+    },
+    "site_overall": 2.9,
+    "badges": [
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.7
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.53
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.51
+     },
+     {
+      "label": "شديد في التصحيح",
+      "share": 0.39
+     },
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.37
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.37
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.29
+     },
+     {
+      "label": "يعطيك حقك",
+      "share": 0.25
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 118,
+      "average": 2.57,
+      "positive_share": 0.33,
+      "recent_reviews": 108
+     },
+     "practical": {
+      "reviews": 6,
+      "average": 4.53,
+      "positive_share": 0.83,
+      "recent_reviews": 5
+     },
+     "both": {
+      "reviews": 3,
+      "average": 4.0,
+      "positive_share": 0.33,
+      "recent_reviews": 3
+     },
+     "summer_training": {
+      "reviews": 11,
+      "average": 4.82,
+      "positive_share": 1.0,
+      "recent_reviews": 11
+     },
+     "theory": {
+      "reviews": 4,
+      "average": 2.88,
+      "positive_share": 0.25,
+      "recent_reviews": 3
+     }
+    },
+    "unmatched_reviews": 3,
+    "unspecified_course_reviews": 17
+   },
+   "courses": [
+    {
+     "family": "شبكات الحاسب",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CEN3011",
+       "name": "شبكات الحاسب الآلي",
+       "programs": [
+        "uqu-1490",
+        "uqu-1510",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CEN1013",
+       "name": "شبكات الحاسب الآلي",
+       "programs": [
+        "uqu-1738"
+       ]
+      },
+      {
+       "code": "CEN1501",
+       "name": "أساسيات الشبكات و تطبيقاتها",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 64,
+     "average": 2.34,
+     "positive_share": 0.25,
+     "recent_reviews": 56
+    },
+    {
+     "family": "أساسيات الشبكات وتطبيقاتها",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN1501",
+       "name": "أساسيات الشبكات و تطبيقاتها",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 27,
+     "average": 3.13,
+     "positive_share": 0.48,
+     "recent_reviews": 26
+    },
+    {
+     "family": "التدريب الصيفي",
+     "confidence": "no_plan_course",
+     "links": [],
+     "reviews": 11,
+     "average": 4.82,
+     "positive_share": 1.0,
+     "recent_reviews": 11
+    },
+    {
+     "family": "هندسة الشبكات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN3504",
+       "name": "هندسة الشبكات",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 8,
+     "average": 3.6,
+     "positive_share": 0.5,
+     "recent_reviews": 8
+    },
+    {
+     "family": "التصميم الرقمي المنطقي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN2011",
+       "name": "التصميم الرقمي المنطقي",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CEN0301",
+       "name": "التصميم الرقمي المنطقي",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 6,
+     "average": 3.28,
+     "positive_share": 0.67,
+     "recent_reviews": 4
+    },
+    {
+     "family": "برمجة الحاسب بلغة بايثون",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 4.58,
+     "positive_share": 0.75,
+     "recent_reviews": 4
+    },
+    {
+     "family": "شبكات الحاسب (الأمن السيبراني)",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN1013",
+       "name": "شبكات الحاسب الآلي",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 0.83,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "برمجة الحاسب 1",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 3.17,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended_if",
+    "headline": "حريص جداً على فهم الطالب لكن الضغط كبير: كويزات أسبوعية وواجبات كثيرة واختبارات صعبة، مع تعويض في نهاية الفصل.",
+    "fits": [
+     "المجتهد المنتظم الذي جدوله خفيف",
+     "من يريد فهم الشبكات بعمق",
+     "طلاب التدريب الصيفي"
+    ],
+    "not_for": [
+     "من جدوله مزدحم بمواد ثقيلة",
+     "من يذاكر قبل الاختبار فقط"
+    ],
+    "strengths": [
+     "يعيد فتح الواجبات واللابات والكويزات لمن فاتته، وأعاد ميداً في بعض الفصول، وقلّما يرسب طالب عنده.",
+     "الكويزات والواجبات الكثيرة تجعل المذاكرة تراكمية، وكثيرون قالوا إنها سهّلت الميد والفاينل.",
+     "في التدريب الصيفي: تقييمات إيجابية بالإجماع؛ إرشاد مفصل لكتابة التقرير وفرص غير محدودة للتعديل.",
+     "عدة طلاب لاحظوا أنه تحسّن كثيراً بين فصل وآخر (اختبارات أسهل وبونص)."
+    ],
+    "weaknesses": [
+     "أعلى عبء عمل في هذه البيانات: كويز كل أسبوع تقريباً، وواجب لكل فصل وكويز على كل واجب، وميدان.",
+     "الكويزات والاختبارات تُجرى غالباً في وقت الاستراحة (بريك الظهر)، والمحاضرة تبدأ متأخرة وتمتد بعد وقتها.",
+     "المنهج يتوسع خارج المقرر (سلايدات طويلة ومعادلات إضافية)، والاختبارات صعبة وبنماذج متعددة.",
+     "توزيع الدرجات والبونص بالنقاط غير واضح لكثير من الطلاب.",
+     "ذكر بعض الطلاب أنه تحدث عن تقييمات الموقع معهم؛ لذلك قد تكون بعض التقييمات (إيجاباً أو سلباً) متأثرة."
+    ],
+    "modes": [
+     {
+      "context": "نظري (الشبكات)",
+      "pattern": "شرح يراه البعض جيداً وآخرون مملاً وطويلاً؛ الاختبارات صعبة والنهائي أحياناً موحد."
+     },
+     {
+      "context": "عملي",
+      "pattern": "تقارير وتجارب كثيرة، لكن الدرجة غالباً ميسرة لمن يسلّم كل شيء، وتطبيق فعلي على أجهزة الشبكات."
+     },
+     {
+      "context": "تدريب صيفي",
+      "pattern": "أفضل تجارب الطلاب معه: متطلبات كثيرة لكن واضحة وتعاون كبير."
+     },
+     {
+      "context": "برمجة بايثون (عملي)",
+      "pattern": "تقييمات إيجابية: يشرح اللابات ويعطي فرصاً متعددة للتسليم."
+     }
+    ],
+    "survival": [
+     "خفّف جدولك في الفصل الذي تسجل عنده مادة الشبكات.",
+     "ذاكر أولاً بأول، وحل أسئلة موقع الكتاب؛ ذُكر أن أسئلته قريبة منها.",
+     "توقع كويزات في وقت الاستراحة؛ رتّب يومك على ذلك.",
+     "سلّم كل واجب ولاب حتى لو متأخراً؛ كثيراً ما يعيد فتحها.",
+     "احتفظ بجدول لدرجاتك ونقاط البونص بنفسك.",
+     "في التقارير اتبع النموذج والتعليمات حرفياً."
+    ],
+    "recommendation": "سجّل عنده إذا كنت مستعداً لعمل أسبوعي منتظم وجدولك خفيف؛ ستخرج فاهماً للمادة لكن بجهد كبير.",
+    "caveats": [
+     "التقييمات منقسمة بحدة، وعدد منها يذكر تحسناً واضحاً في الفصول الأحدث."
+    ]
+   }
+  },
+  {
+   "id": "4f8af2dfb8ea29ab",
+   "name": "رياض مطيران سعيد الرحيلي",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 118,
+    "reviews_analyzed": 118,
+    "complete": true,
+    "file_sha256": "1dfcae40dc3aa7871f0814993fa330f888ab46b7a0ce0d0d4122a1d7e5fea8fb"
+   },
+   "stats": {
+    "reviews": 118,
+    "average": 3.28,
+    "positive_share": 0.46,
+    "recent_reviews": 93,
+    "site_metrics": {
+     "explanation": 2.6,
+     "treatment": 3.8,
+     "helpfulness": 3.55
+    },
+    "site_overall": 3.3,
+    "badges": [
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.48
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.47
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.44
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.29
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.19
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.19
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.19
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.18
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 83,
+      "average": 3.22,
+      "positive_share": 0.43,
+      "recent_reviews": 67
+     },
+     "practical": {
+      "reviews": 33,
+      "average": 3.47,
+      "positive_share": 0.52,
+      "recent_reviews": 24
+     },
+     "theory": {
+      "reviews": 2,
+      "average": 2.67,
+      "positive_share": 0.5,
+      "recent_reviews": 2
+     }
+    },
+    "unmatched_reviews": 8,
+    "unspecified_course_reviews": 27
+   },
+   "courses": [
+    {
+     "family": "البرمجة الشيئية",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1704",
+       "name": "البرمجة الشيئية بلغة جافا",
+       "programs": [
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1012",
+       "name": "البرمجة الشيئية بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS1013",
+       "name": "البرمجة الشيئية بلغة C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "SE1101",
+       "name": "تطوير التطبيقات كائنية التوجه",
+       "programs": [
+        "uqu-1510",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 19,
+     "average": 4.29,
+     "positive_share": 0.79,
+     "recent_reviews": 18
+    },
+    {
+     "family": "هياكل البيانات",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS2105",
+       "name": "هياكل البيانات والخوازميات جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS2015",
+       "name": "هياكل البيانات والخوارزميات بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS2014",
+       "name": "هياكل البيانات والخوارزميات باستخدام C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "DS2206",
+       "name": "هياكل البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 18,
+     "average": 3.69,
+     "positive_share": 0.56,
+     "recent_reviews": 18
+    },
+    {
+     "family": "مقدمة في قواعد البيانات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "DS2201",
+       "name": "مقدمة في قواعد البيانات",
+       "programs": [
+        "uqu-1490",
+        "uqu-1508",
+        "uqu-1510",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 15,
+     "average": 3.06,
+     "positive_share": 0.53,
+     "recent_reviews": 12
+    },
+    {
+     "family": "برمجة الحاسب 1",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 13,
+     "average": 2.67,
+     "positive_share": 0.15,
+     "recent_reviews": 4
+    },
+    {
+     "family": "نظم التشغيل",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS3608",
+       "name": "نظم التشغيل",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS2016",
+       "name": "نظم التشغيل",
+       "programs": [
+        "uqu-1492",
+        "uqu-1510",
+        "uqu-1738"
+       ]
+      },
+      {
+       "code": "CEN1014",
+       "name": "نظم التشغيل و الشبكات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 11,
+     "average": 3.55,
+     "positive_share": 0.55,
+     "recent_reviews": 11
+    },
+    {
+     "family": "هياكل البيانات (جافا)",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS2105",
+       "name": "هياكل البيانات والخوازميات جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 3,
+     "average": 2.45,
+     "positive_share": 0.33,
+     "recent_reviews": 3
+    },
+    {
+     "family": "برمجة الحاسب بلغة بايثون",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 3.08,
+     "positive_share": 0.5,
+     "recent_reviews": 2
+    },
+    {
+     "family": "برمجة الحاسب بلغة جافا",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 2.17,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "قواعد البيانات المتقدمة",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS4411",
+       "name": "قواعد البيانات المتقدمة",
+       "programs": [
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 0.83,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "mixed",
+    "headline": "طيب ومتعاون وسخي في الدرجات، لكن الشرح ضعيف والتعليمات والمواعيد تتغير كثيراً.",
+    "fits": [
+     "من يتعلم ذاتياً ويهمه التقدير",
+     "العملي (لابات ودرجات ميسرة)"
+    ],
+    "not_for": [
+     "من يحتاج شرحاً منظماً",
+     "من يتوتر من تغيّر المواعيد والتعليمات"
+    ],
+    "strengths": [
+     "متعاون ومتفهم وسخي بالبونص في أغلب التقييمات.",
+     "في العملي: يمدد تسليم اللابات ويتساهل في المشروع، وأغلب الطلاب ينالون درجة العملي كاملة.",
+     "تعامله محترم وهادئ."
+    ],
+    "weaknesses": [
+     "الشرح أضعف جوانبه، وذُكر أنه يعيد نفس الشرح لأسابيع.",
+     "يغيّر كلامه في المواعيد والواجبات وتوزيع الدرجات (أكثر شكوى متكررة).",
+     "كويزات وواجبات كثيرة، وتأخر في إعلان الدرجات أحياناً.",
+     "لا يشارك سلايداته، والرد على البريد بطيء.",
+     "في عملي قواعد البيانات قبل نحو سنتين: خصم درجات على ساعات الغياب."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "كويزات كثيرة واختبارات متوسطة، مع بونص في النهاية."
+     },
+     {
+      "context": "عملي",
+      "pattern": "شرح قليل داخل المعمل، لكن الدرجات ميسرة وتسليم مرن؛ قد يسألك عن كودك."
+     }
+    ],
+    "survival": [
+     "اعتمد على الكتاب أو مصادر خارجية للفهم من أول الأسبوع.",
+     "وثّق أي تعليمات أو مواعيد يعلنها (رسالة أو صورة إعلان)، وتابع البلاك بورد يومياً.",
+     "احضر ولا تتغيب بلا عذر؛ ذُكر خصم على الغياب في العملي.",
+     "اكتب كودك بنفسك وكن مستعداً لشرحه.",
+     "تابع درجاتك وصحّحها مبكراً."
+    ],
+    "recommendation": "مناسب إذا كنت تتعلم بنفسك وتريد درجة جيدة، وغير مناسب إذا كنت تحتاج شرحاً واضحاً وتنظيماً ثابتاً.",
+    "caveats": [
+     "الآراء متباينة جداً حتى في نفس الفصل."
+    ]
+   }
+  },
+  {
+   "id": "d77f6bf9b5075610",
+   "name": "غسان فاروق جودة باتي",
+   "department": "هندسة الحاسب الآلي",
+   "data": {
+    "reviews_stated": 157,
+    "reviews_analyzed": 88,
+    "complete": false,
+    "file_sha256": "a89074b7a682d06ab6df0b87caaf9b3bcbaaaf51affeea3797643949e0261cab"
+   },
+   "stats": {
+    "reviews": 88,
+    "average": 4.68,
+    "positive_share": 0.91,
+    "recent_reviews": 88,
+    "site_metrics": {
+     "explanation": 4.8,
+     "treatment": 4.75,
+     "helpfulness": 4.85
+    },
+    "site_overall": 4.8,
+    "badges": [
+     {
+      "label": "يعطي بونس",
+      "share": 0.82
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.75
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.75
+     },
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.73
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.51
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.18
+     },
+     {
+      "label": "يعطيك حقك",
+      "share": 0.1
+     },
+     {
+      "label": "شديد في التصحيح",
+      "share": 0.07
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 81,
+      "average": 4.65,
+      "positive_share": 0.9,
+      "recent_reviews": 81
+     },
+     "both": {
+      "reviews": 2,
+      "average": 5.0,
+      "positive_share": 1.0,
+      "recent_reviews": 2
+     },
+     "practical": {
+      "reviews": 5,
+      "average": 5.0,
+      "positive_share": 1.0,
+      "recent_reviews": 5
+     }
+    },
+    "unmatched_reviews": 0,
+    "unspecified_course_reviews": 20
+   },
+   "courses": [
+    {
+     "family": "تنظيم وعمارة الحاسب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN2012",
+       "name": "تنظيم وعمارة الحاسب الآلي",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 26,
+     "average": 4.83,
+     "positive_share": 1.0,
+     "recent_reviews": 26
+    },
+    {
+     "family": "عمارة الحاسب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN2012",
+       "name": "تنظيم وعمارة الحاسب الآلي",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CEN2202",
+       "name": "عمارة الحاسب الآلي",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 16,
+     "average": 4.57,
+     "positive_share": 0.88,
+     "recent_reviews": 16
+    },
+    {
+     "family": "واجهة العتاد والبرمجيات",
+     "confidence": "no_plan_course",
+     "links": [],
+     "reviews": 13,
+     "average": 4.86,
+     "positive_share": 1.0,
+     "recent_reviews": 13
+    },
+    {
+     "family": "تنسيق وتصميم الحاسب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN1201",
+       "name": "تنسيق و تصميم الحاسب الآلي",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 7,
+     "average": 4.95,
+     "positive_share": 1.0,
+     "recent_reviews": 7
+    },
+    {
+     "family": "التصميم الرقمي المنطقي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN2011",
+       "name": "التصميم الرقمي المنطقي",
+       "programs": [
+        "uqu-1490",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CEN0301",
+       "name": "التصميم الرقمي المنطقي",
+       "programs": [
+        "uqu-1492"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 4
+    },
+    {
+     "family": "المنطق الرقمي وتنظيم الحاسوب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CEN1012",
+       "name": "تنظيم الحاسوب والمنطق الرقمي",
+       "programs": [
+        "uqu-1510"
+       ]
+      },
+      {
+       "code": "CEN1011",
+       "name": "المنطق الرقمي وتنظيم الحاسوب",
+       "programs": [
+        "uqu-1738"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "تعلم الآلة",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI4202",
+       "name": "مبادئ تعلم الآلة",
+       "programs": [
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "AI3201",
+       "name": "تعلم الآلة",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "DS2401",
+       "name": "تعلم الآلة لعلوم البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended",
+    "headline": "من أعلى المحاضرين تقييماً: شرح ممتاز وقناة يوتيوب للمنهج وبونص سخي، مع عملي صارم ضد النسخ.",
+    "fits": [
+     "أغلب الطلاب",
+     "من يريد الفهم والدرجة معاً"
+    ],
+    "not_for": [
+     "من ينوي نسخ اللابات أو المشروع"
+    ],
+    "strengths": [
+     "يوصل المعلومة ومحاضرته ممتعة، وشروحه على يوتيوب تغطي المنهج.",
+     "بونص سخي وهامش خطأ في الميد والفاينل والعملي، وأسئلة مقسمة بدرجات صغيرة فلا يضيع عليك الكثير.",
+     "واجب قبل الميد يشبه أسئلة الاختبار.",
+     "ينصح الطلاب ويهتم بهم خارج المادة أيضاً."
+    ],
+    "weaknesses": [
+     "يأخذ وقت المحاضرة كاملاً، وكثير القصص والمزاح (يزعج البعض).",
+     "واجبات ومشاريع كثيرة.",
+     "صارم جداً في العملي: صفر لمن ينسخ من غيره أو من أدوات الذكاء الاصطناعي.",
+     "الفاينل طويل وصعب عند البعض، لكن البونص يعوّض.",
+     "ذُكر أن طريقة الاختبار قد تختلف بين الشعب."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "شرح قوي ومدعوم بيوتيوب؛ الميد قريب من الواجب، والفاينل أصعب وأطول."
+     },
+     {
+      "context": "عملي",
+      "pattern": "لابات واضحة غالباً ومشروع جماعي صعب، والحضور لازم لتسليم اللاب، والتصحيح دقيق."
+     }
+    ],
+    "survival": [
+     "شاهد شروحه على يوتيوب للمراجعة؛ ذُكر أنها تغني عن الدروس الخصوصية.",
+     "حل واجب ما قبل الميد بنفسك؛ أغلب الأسئلة قريبة منه.",
+     "لا تنسخ أي لاب أو مشروع؛ العقوبة صفر.",
+     "ابدأ اللابات مبكراً، لا في يوم التسليم.",
+     "ذاكر للفاينل من السلايدات والواجبات معاً، بما فيها الرسومات."
+    ],
+    "recommendation": "سجّل عنده بثقة؛ اعتمد على شروحه في يوتيوب واكتب لاباتك بنفسك.",
+    "caveats": [
+     "الملف المرسل مقطوع؛ حُللت 88 من 157 تقييماً."
+    ]
+   }
+  },
+  {
+   "id": "788e61abcaab883c",
+   "name": "محمد خضر محمد نور",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 44,
+    "reviews_analyzed": 44,
+    "complete": true,
+    "file_sha256": "9160e8d391507213b42b139247f5c9389f6d162370efc7715a9e07268acd877f"
+   },
+   "stats": {
+    "reviews": 44,
+    "average": 4.05,
+    "positive_share": 0.59,
+    "recent_reviews": 25,
+    "site_metrics": {
+     "explanation": 3.8,
+     "treatment": 4.45,
+     "helpfulness": 3.95
+    },
+    "site_overall": 4.05,
+    "badges": [
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.61
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.5
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.5
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.45
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.39
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.34
+     },
+     {
+      "label": "واجبات كثيرة",
+      "share": 0.34
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.3
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 35,
+      "average": 4.06,
+      "positive_share": 0.57,
+      "recent_reviews": 17
+     },
+     "practical": {
+      "reviews": 7,
+      "average": 4.05,
+      "positive_share": 0.71,
+      "recent_reviews": 7
+     },
+     "both": {
+      "reviews": 1,
+      "average": 3.5,
+      "positive_share": 0.0,
+      "recent_reviews": 1
+     },
+     "theory": {
+      "reviews": 1,
+      "average": 4.0,
+      "positive_share": 1.0,
+      "recent_reviews": 0
+     }
+    },
+    "unmatched_reviews": 9,
+    "unspecified_course_reviews": 12
+   },
+   "courses": [
+    {
+     "family": "هياكل البيانات",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS2105",
+       "name": "هياكل البيانات والخوازميات جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS2015",
+       "name": "هياكل البيانات والخوارزميات بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS2014",
+       "name": "هياكل البيانات والخوارزميات باستخدام C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "DS2206",
+       "name": "هياكل البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 15,
+     "average": 4.28,
+     "positive_share": 0.67,
+     "recent_reviews": 1
+    },
+    {
+     "family": "برمجة الحاسب 1",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 3,
+     "average": 3.56,
+     "positive_share": 0.33,
+     "recent_reviews": 3
+    },
+    {
+     "family": "الهياكل الحسابية 2",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "SE3402",
+       "name": "الهياكل الحسابية (2)",
+       "programs": [
+        "uqu-1510"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 4.58,
+     "positive_share": 1.0,
+     "recent_reviews": 2
+    },
+    {
+     "family": "طرق النمذجة",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "HCI3301",
+       "name": "طرق النمذجة",
+       "programs": [
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 3.83,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "برمجة الحاسب بلغة بايثون",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 4.67,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "نظم بناء البرمجيات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS3809",
+       "name": "نظم بناء البرمجيات",
+       "programs": [
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "SE3302",
+       "name": "بناء البرمجيات",
+       "programs": [
+        "uqu-1510"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 3.5,
+     "positive_share": 0.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended",
+    "headline": "متعاون ومرن، شرحه النظري جيد عند الأغلبية، والعملي يحتاج التزاماً كاملاً باللابات.",
+    "fits": [
+     "من يلتزم بحل اللابات والمشاركة",
+     "من أساسه في البرمجة جيد"
+    ],
+    "not_for": [
+     "من يريد مادة بلا واجبات"
+    ],
+    "strengths": [
+     "متعاون ومتفهم ومرن مع الظروف (تعويض الحضور في شعبة أخرى ذُكر أكثر من مرة).",
+     "يوصل المعلومة ويعطي بونص في أغلب التقييمات.",
+     "يقدّر من يشارك معه ويتذكر الطلاب المشاركين."
+    ],
+    "weaknesses": [
+     "واجبات ومشاريع كثيرة.",
+     "اختبارات هياكل البيانات توصف بالصعبة وفيها كتابة أكواد باليد.",
+     "السلايدات قديمة أو غير مرتبة عند بعض الطلاب.",
+     "يمنع استخدام الجوال في المحاضرة منعاً تاماً.",
+     "عدد قليل من التقييمات سلبي جداً عن وضوح الشرح وصعوبة الأسئلة."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "الشرح جيد عند الأغلبية، والاختبارات متوسطة إلى صعبة."
+     },
+     {
+      "context": "عملي",
+      "pattern": "اللاب قد يستغرق الوقت كاملاً، ويطلب منك شرح حلّك؛ من لا يحل اللابات يخسر في العملي."
+     }
+    ],
+    "survival": [
+     "حلّ كل اللابات بنفسك واستعد لشرحها في نهاية الفصل.",
+     "تدرّب على كتابة الكود على الورق قبل الاختبارات.",
+     "راجع الاختبارات السابقة؛ ذُكر أن أسئلته قريبة منها.",
+     "أبعد الجوال تماماً وشارك في المحاضرة.",
+     "قوِّ أساسك في الجافا قبل هياكل البيانات."
+    ],
+    "recommendation": "خيار جيد لمن يلتزم باللابات والمشاركة؛ تأكد أولاً أنه ما زال يدرّس، فتقييمات حديثة تذكر أنه غادر الجامعة.",
+    "caveats": [
+     "أحدث تقييمين يذكران أنه غادر أو سيغادر الجامعة؛ تحقق من جدول الشعب قبل الاعتماد على هذا التقييم."
+    ]
+   }
+  },
+  {
+   "id": "576487f3a72be749",
+   "name": "محمد عارف سيد حامد",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 26,
+    "reviews_analyzed": 26,
+    "complete": true,
+    "file_sha256": "d90c3b3b3d912f7f2425d17004a210bd5f1e1c00d2795c0f433d87057b3c0b17"
+   },
+   "stats": {
+    "reviews": 26,
+    "average": 3.99,
+    "positive_share": 0.65,
+    "recent_reviews": 17,
+    "site_metrics": {
+     "explanation": 4.0,
+     "treatment": 3.4,
+     "helpfulness": 4.6
+    },
+    "site_overall": 4.0,
+    "badges": [
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.69
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.65
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.58
+     },
+     {
+      "label": "يعطي بونس",
+      "share": 0.54
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.31
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.27
+     },
+     {
+      "label": "يعطيك حقك",
+      "share": 0.27
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.19
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 20,
+      "average": 4.02,
+      "positive_share": 0.65,
+      "recent_reviews": 13
+     },
+     "practical": {
+      "reviews": 1,
+      "average": 5.0,
+      "positive_share": 1.0,
+      "recent_reviews": 1
+     },
+     "theory": {
+      "reviews": 5,
+      "average": 3.67,
+      "positive_share": 0.6,
+      "recent_reviews": 3
+     }
+    },
+    "unmatched_reviews": 4,
+    "unspecified_course_reviews": 7
+   },
+   "courses": [
+    {
+     "family": "الرسومات بالحاسب",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS2206",
+       "name": "الرسومات بالحاسب",
+       "programs": [
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 6,
+     "average": 4.64,
+     "positive_share": 0.83,
+     "recent_reviews": 6
+    },
+    {
+     "family": "أخلاقيات الذكاء الاصطناعي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI3103",
+       "name": "أخلاقيات الذكاء الاصطناعي",
+       "programs": [
+        "uqu-1490"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 4.58,
+     "positive_share": 1.0,
+     "recent_reviews": 4
+    },
+    {
+     "family": "الذكاء الاصطناعي",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "AI3101",
+       "name": "مبادىء وتقنيات الذكاء الاصطناعي",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "AI4101",
+       "name": "مبادئ الذكاء الإصطناعي",
+       "programs": [
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 2.92,
+     "positive_share": 0.0,
+     "recent_reviews": 0
+    },
+    {
+     "family": "الهياكل الحسابية 1",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "MTH1402",
+       "name": "الهياكل الحسابية (1)",
+       "programs": [
+        "uqu-1510"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "مبادئ وتقنيات الذكاء الاصطناعي",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI3101",
+       "name": "مبادىء وتقنيات الذكاء الاصطناعي",
+       "programs": [
+        "uqu-1490"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    },
+    {
+     "family": "تحسين البرمجة المقيدة",
+     "confidence": "no_plan_course",
+     "links": [],
+     "reviews": 1,
+     "average": 3.83,
+     "positive_share": 0.0,
+     "recent_reviews": 0
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended_if",
+    "headline": "متعاون ومتساهل في الدرجات غالباً، لكن يشرح بالإنجليزي فقط ونقاشه العملي دقيق.",
+    "fits": [
+     "من إنجليزيته جيدة",
+     "من يقدر يذاكر بنفسه من السلايدات والمصادر"
+    ],
+    "not_for": [
+     "من يعتمد كلياً على شرح المحاضرة بالعربي"
+    ],
+    "strengths": [
+     "متعاون ومتفهم مع الطلاب (أكثر شارة تكراراً).",
+     "تقييمات السنتين الأخيرتين أعلى بوضوح من القديمة؛ عدة طلاب ذكروا أن اختباراته صارت أسهل (اختيارات).",
+     "يرفع الطالب درجة أو درجتين إذا كان قريباً من التقدير التالي."
+    ],
+    "weaknesses": [
+     "يشرح بالإنجليزية فقط تقريباً؛ تكرر أن من لغته ضعيفة يصعب عليه الفهم.",
+     "محاضراته توصف بالمملة في أغلب التقييمات.",
+     "العرض أو الاختبار العملي النهائي: يناقشك في مكتبه في كل سطر من كودك، وهو أكثر ما يخسر فيه الطلاب.",
+     "التقييمات الأقدم (3 سنوات فأكثر) تذكر اختبارات مقالية صعبة وتصحيحاً شديداً."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "الاختبارات النظرية في التقييمات الحديثة سهلة نسبياً ومباشرة."
+     },
+     {
+      "context": "عملي / مشروع",
+      "pattern": "المناقشة الفردية للكود أو العرض أصعب جزء في المادة."
+     }
+    ],
+    "survival": [
+     "جهّز نفسك لغوياً: راجع مصطلحات المادة بالإنجليزي قبل كل محاضرة.",
+     "افهم كل سطر في مشروعك واكتب تعليقاً يشرحه؛ ستُسأل عنه في المناقشة.",
+     "لا تعتمد على البونص؛ يعطيه عادة لمن يقترب من التقدير التالي فقط.",
+     "احضر بانتظام؛ ذُكر أنه أضاف درجات حضور خلال فصل سابق."
+    ],
+    "recommendation": "سجّل عنده إذا كانت إنجليزيتك جيدة وتذاكر بنفسك، وجهّز جيداً لمناقشة الكود أو العرض.",
+    "caveats": [
+     "كثير من التقييمات الأقدم سلبية؛ الاتجاه الحديث أفضل."
+    ]
+   }
+  },
+  {
+   "id": "a62f4c58e2f2637b",
+   "name": "محمد علي عيد الغامدي",
+   "department": "علوم الحاسب الآلي",
+   "data": {
+    "reviews_stated": 48,
+    "reviews_analyzed": 48,
+    "complete": true,
+    "file_sha256": "eeae507c57bbd69a45465281bd05b662c633a047b7c196f4dfc2705af9954e8c"
+   },
+   "stats": {
+    "reviews": 48,
+    "average": 4.18,
+    "positive_share": 0.77,
+    "recent_reviews": 41,
+    "site_metrics": {
+     "explanation": 4.2,
+     "treatment": 4.15,
+     "helpfulness": 4.25
+    },
+    "site_overall": 4.2,
+    "badges": [
+     {
+      "label": "يعطي بونس",
+      "share": 0.77
+     },
+     {
+      "label": "متعاون و متفهم",
+      "share": 0.71
+     },
+     {
+      "label": "يوصل المعلومة",
+      "share": 0.65
+     },
+     {
+      "label": "محاضرة ممتعة",
+      "share": 0.62
+     },
+     {
+      "label": "يختصر لك المعلومة",
+      "share": 0.54
+     },
+     {
+      "label": "اختبارات صعبة",
+      "share": 0.27
+     },
+     {
+      "label": "محاضرة مملة",
+      "share": 0.23
+     },
+     {
+      "label": "شديد في التصحيح",
+      "share": 0.08
+     }
+    ],
+    "modes": {
+     "unspecified": {
+      "reviews": 44,
+      "average": 4.13,
+      "positive_share": 0.75,
+      "recent_reviews": 37
+     },
+     "theory": {
+      "reviews": 4,
+      "average": 4.67,
+      "positive_share": 1.0,
+      "recent_reviews": 4
+     }
+    },
+    "unmatched_reviews": 3,
+    "unspecified_course_reviews": 11
+   },
+   "courses": [
+    {
+     "family": "برمجة الحاسب 1",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1011",
+       "name": "برمجة الحاسب بلغة بايثون",
+       "programs": [
+        "uqu-1490",
+        "uqu-1492",
+        "uqu-1508",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 17,
+     "average": 4.07,
+     "positive_share": 0.71,
+     "recent_reviews": 14
+    },
+    {
+     "family": "البرمجة الشيئية",
+     "confidence": "ambiguous",
+     "links": [
+      {
+       "code": "CS1704",
+       "name": "البرمجة الشيئية بلغة جافا",
+       "programs": [
+        "uqu-1738",
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "CS1012",
+       "name": "البرمجة الشيئية بلغة بايثون",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "CS1013",
+       "name": "البرمجة الشيئية بلغة C++",
+       "programs": [
+        "uqu-1492"
+       ]
+      },
+      {
+       "code": "SE1101",
+       "name": "تطوير التطبيقات كائنية التوجه",
+       "programs": [
+        "uqu-1510",
+        "uqu-1981"
+       ]
+      }
+     ],
+     "reviews": 8,
+     "average": 4.4,
+     "positive_share": 0.88,
+     "recent_reviews": 8
+    },
+    {
+     "family": "الهياكل الحسابية 1",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "MTH1402",
+       "name": "الهياكل الحسابية (1)",
+       "programs": [
+        "uqu-1510"
+       ]
+      }
+     ],
+     "reviews": 4,
+     "average": 4.92,
+     "positive_share": 1.0,
+     "recent_reviews": 4
+    },
+    {
+     "family": "تعلم الآلة",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "AI4202",
+       "name": "مبادئ تعلم الآلة",
+       "programs": [
+        "uqu-478"
+       ]
+      },
+      {
+       "code": "AI3201",
+       "name": "تعلم الآلة",
+       "programs": [
+        "uqu-1490"
+       ]
+      },
+      {
+       "code": "DS2401",
+       "name": "تعلم الآلة لعلوم البيانات",
+       "programs": [
+        "uqu-1508"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 4.83,
+     "positive_share": 1.0,
+     "recent_reviews": 2
+    },
+    {
+     "family": "برمجة الحاسب بلغة جافا",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "CS1701",
+       "name": "برمجة الحاسب بلغة جافا",
+       "programs": [
+        "uqu-1510",
+        "uqu-1738",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 2,
+     "average": 2.75,
+     "positive_share": 0.5,
+     "recent_reviews": 2
+    },
+    {
+     "family": "مقدمة في قواعد البيانات",
+     "confidence": "likely",
+     "links": [
+      {
+       "code": "DS2201",
+       "name": "مقدمة في قواعد البيانات",
+       "programs": [
+        "uqu-1490",
+        "uqu-1508",
+        "uqu-1510",
+        "uqu-1981",
+        "uqu-478"
+       ]
+      }
+     ],
+     "reviews": 1,
+     "average": 5.0,
+     "positive_share": 1.0,
+     "recent_reviews": 1
+    }
+   ],
+   "analysis": {
+    "verdict": "recommended",
+    "headline": "من أعلى المحاضرين تقييماً: شرح مبسط، بونص سخي، واهتمام بالفهم وسوق العمل.",
+    "fits": [
+     "أغلب الطلاب، خصوصاً المبتدئين في البرمجة"
+    ],
+    "not_for": [
+     "من لا يلتزم بقواعد الحضور الصارمة"
+    ],
+    "strengths": [
+     "البونص السخي أكثر ما يتكرر في التقييمات.",
+     "يبسط المادة ويهتم بأن تخرج فاهماً، ويتحدث عن سوق العمل والمستقبل المهني.",
+     "يقدم محاضرات اختيارية إضافية للأسئلة (ذُكر أكثر من مرة)."
+    ],
+    "weaknesses": [
+     "اختباراته توصف بالصعبة أو ضيقة الوقت، خصوصاً في البداية (برمجة 1).",
+     "قواعد صارمة داخل القاعة: يمنع الجوال، وذُكر التشديد على اللباس الرسمي.",
+     "عدد من الطلاب اشتكوا أن توزيع الدرجات بدا لهم غير متسق بين الطلاب."
+    ],
+    "modes": [
+     {
+      "context": "نظري",
+      "pattern": "أغلب التقييمات عن مقررات نظرية (برمجة 1 و2، الهياكل الحسابية)؛ لا تكفي لمقارنة النظري بالعملي."
+     }
+    ],
+    "survival": [
+     "لا تحبط من أول كويز أو ميد صعب؛ الطلاب يذكرون أن النهائي والبونص يعوضان.",
+     "التزم بقواعد القاعة (الجوال واللباس) من أول محاضرة.",
+     "احضر المحاضرات الاختيارية واسأل؛ يقدّر الطالب المهتم.",
+     "في الأسئلة المكتوبة لا تترك فراغاً؛ اكتب ما تعرفه.",
+     "تدرّب على البرمجة يومياً؛ هذا ما يصنع الفرق في اختباراته."
+    ],
+    "recommendation": "سجّل عنده بثقة: شرح مبسط وتعاون كبير، لكن التزم بقواعده واستعد لاختبارات أول الفصل.",
+    "caveats": []
+   }
+  }
+ ]
+}

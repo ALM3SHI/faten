@@ -1,0 +1,361 @@
+{
+  "major": {
+    "code": "AI",
+    "name_ar": "الذكاء الاصطناعي",
+    "name_en": "Artificial Intelligence",
+    "levels": [
+      {
+        "level": 1,
+        "courses": [
+          {
+            "code": "IND1101",
+            "name_ar": "التفكير التصميمي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1141",
+            "name_ar": "التفاضل والتكامل 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1011",
+            "name_ar": "برمجة الحاسب بلغة بايثون",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1602",
+            "name_ar": "الإحصاء والاحتمالات في الحاسبات",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1201",
+            "name_ar": "اللغة الإنجليزية (1)",
+            "credits": 4,
+            "prerequisites": []
+          },
+          {
+            "code": "MTH1441",
+            "name_ar": "الجبر الخطي",
+            "credits": 3,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "courses": [
+          {
+            "code": "QR1101",
+            "name_ar": "تجويد القرآن الكريم",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CUR1101",
+            "name_ar": "مهارات جامعية",
+            "credits": 0,
+            "prerequisites": []
+          },
+          {
+            "code": "ELIE1202",
+            "name_ar": "اللغة الإنجليزية (2)",
+            "credits": 4,
+            "prerequisites": [
+              "ELIE1201"
+            ]
+          },
+          {
+            "code": "CS1302",
+            "name_ar": "هياكل متقطعة 1",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN2011",
+            "name_ar": "التصميم الرقمي المنطقي",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "CS1012",
+            "name_ar": "البرمجة الشيئية بلغة بايثون",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          },
+          {
+            "code": "MTH2144",
+            "name_ar": "تفاضل وتكامل عديد المتغيرات",
+            "credits": 3,
+            "prerequisites": [
+              "MTH1141"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "courses": [
+          {
+            "code": "QR2102",
+            "name_ar": "حفظ القرآن الكريم 1",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "ICC1201",
+            "name_ar": "القيم والأخلاق",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "AI2001",
+            "name_ar": "مقدمة في الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "BUS1099",
+            "name_ar": "مهارات التطوير المهني",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "PHYS1113",
+            "name_ar": "الفيزياء العامة",
+            "credits": 3,
+            "prerequisites": []
+          },
+          {
+            "code": "DS2201",
+            "name_ar": "مقدمة في قواعد البيانات",
+            "credits": 3,
+            "prerequisites": [
+              "CS1011"
+            ]
+          },
+          {
+            "code": "CEN2012",
+            "name_ar": "تنظيم وعمارة الحاسب الآلي",
+            "credits": 3,
+            "prerequisites": [
+              "CEN2011"
+            ]
+          },
+          {
+            "code": "CS2015",
+            "name_ar": "هياكل البيانات والخوارزميات بلغة بايثون",
+            "credits": 3,
+            "prerequisites": [
+              "CS1012"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 4,
+        "courses": [
+          {
+            "code": "QR2103",
+            "name_ar": "حفظ القرآن الكريم 2",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "CEN3011",
+            "name_ar": "شبكات الحاسب الآلي",
+            "credits": 3,
+            "prerequisites": [
+              "CEN2012"
+            ]
+          },
+          {
+            "code": "SE1201",
+            "name_ar": "اسس هندسة البرمجيات",
+            "credits": 3,
+            "prerequisites": [
+              "CS1012"
+            ]
+          },
+          {
+            "code": "CS2107",
+            "name_ar": "تصميم وتحليل الخوارزميات",
+            "credits": 3,
+            "prerequisites": [
+              "CS2015"
+            ]
+          },
+          {
+            "code": "CS3608",
+            "name_ar": "نظم التشغيل",
+            "credits": 4,
+            "prerequisites": [
+              "CS2015"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 5,
+        "courses": [
+          {
+            "code": "QR3104",
+            "name_ar": "ختم القرآن الكريم",
+            "credits": 2,
+            "prerequisites": [
+              "QR2103"
+            ]
+          },
+          {
+            "code": "SEC1101",
+            "name_ar": "مقدمة في الأمن السيبراني",
+            "credits": 3,
+            "prerequisites": [
+              "CEN3011"
+            ]
+          },
+          {
+            "code": "HCI2011",
+            "name_ar": "تصميم واجهة المستخدم",
+            "credits": 3,
+            "prerequisites": [
+              "SE1201"
+            ]
+          },
+          {
+            "code": "AI3101",
+            "name_ar": "مبادىء وتقنيات الذكاء الاصطناعي",
+            "credits": 4,
+            "prerequisites": [
+              "AI2001"
+            ]
+          },
+          {
+            "code": "AI3301",
+            "name_ar": "تحليل وتصوير البيانات",
+            "credits": 2,
+            "prerequisites": [
+              "MTH1602"
+            ]
+          },
+          {
+            "code": "AI3201",
+            "name_ar": "تعلم الآلة",
+            "credits": 4,
+            "prerequisites": [
+              "AI2001",
+              "MTH1441"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "courses": [
+          {
+            "code": "AI3202",
+            "name_ar": "مقدمة في التعلم العميق",
+            "credits": 3,
+            "prerequisites": [
+              "AI3201"
+            ]
+          },
+          {
+            "code": "AI3103",
+            "name_ar": "أخلاقيات الذكاء الاصطناعي",
+            "credits": 2,
+            "prerequisites": [
+              "AI2001"
+            ]
+          },
+          {
+            "code": "AI3104",
+            "name_ar": "تصميم نظم الذكاء الاصطناعي",
+            "credits": 3,
+            "prerequisites": [
+              "AI3101",
+              "SE1201"
+            ]
+          },
+          {
+            "code": "AI3501",
+            "name_ar": "مشروع تخرج 1",
+            "credits": 3,
+            "prerequisites": [
+              "AI3101",
+              "AI3201"
+            ]
+          },
+          {
+            "code": "AI3302",
+            "name_ar": "الرؤية بالحاسب",
+            "credits": 3,
+            "prerequisites": [
+              "AI3201",
+              "MTH2144"
+            ]
+          },
+          {
+            "code": "AI3102",
+            "name_ar": "تقنيات الذكاء الاصطناعي المتقدمة",
+            "credits": 4,
+            "prerequisites": [
+              "AI3101"
+            ]
+          }
+        ]
+      },
+      {
+        "level": 7,
+        "courses": [
+          {
+            "code": "AI4401",
+            "name_ar": "التدريب التعاوني",
+            "credits": 6,
+            "prerequisites": []
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "courses": [
+          {
+            "code": "ICC4202",
+            "name_ar": "الأسرة في الإسلام",
+            "credits": 2,
+            "prerequisites": []
+          },
+          {
+            "code": "AI4502",
+            "name_ar": "مشروع تخرج 2",
+            "credits": 3,
+            "prerequisites": [
+              "AI3501"
+            ]
+          },
+          {
+            "code": "AI4203",
+            "name_ar": "التعلم العميق المتقدم",
+            "credits": 3,
+            "prerequisites": [
+              "AI3202"
+            ]
+          },
+          {
+            "code": "AI4303",
+            "name_ar": "معالجة اللغات الطبيعية",
+            "credits": 3,
+            "prerequisites": [
+              "AI3201"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

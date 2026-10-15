@@ -212,7 +212,12 @@ export default function AdvisorPage() {
                 {
                   value: "instructors",
                   label: "المحاضرون",
-                  content: <InstructorsPanel suggested={run.next_term.courses.filter((c) => !c.code.startsWith("ELECTIVE")).map((c) => c.code)} />,
+                  content: (
+                    <InstructorsPanel
+                      programId={run.program.id}
+                      suggested={run.next_term.courses.filter((c) => !c.code.startsWith("ELECTIVE")).map((c) => c.code)}
+                    />
+                  ),
                 },
                 { value: "ask", label: "اسأل المرشد", content: <AskAdvisor runId={run.run_id} /> },
               ]}

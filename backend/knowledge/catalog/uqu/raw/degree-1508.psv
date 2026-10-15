@@ -1,0 +1,43 @@
+#degree|1508|علم البيانات|بكالوريوس|الحاسبات|علم البيانات|126|2026-10-15T08:29:10.241Z|https://uqu.edu.sa/App/Degrees/1508
+1|QR1101|تجويد القرآن الكريم|ساعتين||38520|Tajweed of The Holy Quran|Two hours/English|0|
+1|AI2001|مقدمة في الذكاء الاصطناعي|ساعتين||38526|Introduction to Artificial Intelligence|Two hours/English|0|
+1|IND1101|التفكير التصميمي|ساعتين||38528|Design Thinking|Two hours/English|0|
+1|MTH1141|التفاضل والتكامل 1|3 ساعات||38534|Calculus 1|3 hours/English|0|
+1|CS1011|برمجة الحاسب بلغة بايثون|3 ساعات||38540|Computer Programming in Python|3 hours/English|0|
+1|ELIE1201|اللغة الإنجليزية (1)|4 ساعات||39071|English Language (1)|4 hours/English|0|
+1|DS1102|مقدمة في علوم البيانات|3 ساعات||39725|Introduction to Data Science|3 hours/English|0|
+2|QR2102|حفظ القرآن الكريم 1|ساعتين||38521|Memorizing the Holy Quran 1|Two hours/English|0|
+2|ICC1201|القيم والأخلاق|ساعتين||38524|Values and Ethics|Two hours/English|0|
+2|CUR1101|مهارات جامعية|لا توجد ساعات||38530|University Skills|No hours/English|0|
+2|MTH1602|الإحصاء والاحتمالات في الحاسبات|3 ساعات||38602|Statistics and Probabilities in Computing|3 hours/English|0|
+2|ELIE1202|اللغة الإنجليزية (2)|4 ساعات|متطلب واحد|39086|English Language (2)|4 hours/English|1|ELIE1201~English Language (1)~4 hours/No requisites
+2|DS1901|هياكل متقطعة|4 ساعات||39729|Discrete Structures|4 hours/English|0|
+2|DS1103|البرمجة المتقدمة لعلوم البيانات|3 ساعات|متطلب واحد|39731|Advanced Programming for Data Science|3 hours/English|1|CS1011~Computer Programming in Python~3 hours/No requisites
+3|QR2103|حفظ القرآن الكريم 2|ساعتين||38522|Memorizing the Holy Quran 2|Two hours/English|0|
+3|MTH1441|الجبر الخطي|3 ساعات||39084|Linear Algebra|3 hours/English|0|
+3|DS2201|مقدمة في قواعد البيانات|3 ساعات||39315|Introduction to Database|3 hours/English|0|
+3|MTH2902|الإحصاء التطبيقي في علوم البيانات|3 ساعات|متطلب واحد|39733|Applied Statistics for Data Science|3 hours/English|1|MTH1602~Statistics and Probabilities in Computing~3 hours/No requisites
+3|DS2301|جمع ومعالجة البيانات|3 ساعات|متطلبين|39734|Data Collection and Preprocessing|3 hours/English|1|DS1103~Advanced Programming for Data Science~3 hours/One requisite;DS1102~Introduction to Data Science~3 hours/No requisites
+3|DS2206|هياكل البيانات|3 ساعات|متطلبين|41100|Data Structures|3 hours/English|1|DS1103~Advanced Programming for Data Science~3 hours/One requisite;DS1901~Discrete Structures~3 hours/No requisites
+4|PHYS1113|الفيزياء العامة|3 ساعات||39020|General Physics|3 hours/English|0|
+4|DS2303|تحليل بيانات الويب|3 ساعات|متطلبين|39736|Web Data Analysis|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites;DS1103~Advanced Programming for Data Science~3 hours/One requisite
+4|DS2202|تكامل و مخازن البيانات|3 ساعات|متطلب واحد|39738|Data Integration and Warehousing|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites
+4|DS2203|تمثيل المعرفة و الاستنتاج|3 ساعات|متطلب واحد|39740|Knowledge Representation and Inference|3 hours/English|1|DS2201~Introduction to Database~3 hours/No requisites
+4|DS2401|تعلم الآلة لعلوم البيانات|3 ساعات|متطلبين|41101|Machine Learning for Data Science|3 hours/English|1|MTH2902~Applied Statistics for Data Science~3 hours/One requisite;DS1103~Advanced Programming for Data Science~3 hours/One requisite
+5|SEC3011|أمن وخصوصية البيانات|3 ساعات|متطلب واحد|38854|Data Security and Privacy|3 hours/English|1|DS1102~Introduction to Data Science~3 hours/No requisites
+5|SE1201|اسس هندسة البرمجيات|3 ساعات||39061|Foundations of Software Engineering|3 hours/English|0|
+5|DS3402|نمذجة البيانات|4 ساعات|متطلبين|39744|Data Modelling|4 hours/English|1|MTH1141~Calculus 1~4 hours/No requisites;DS2401~Machine Learning for Data Science~4 hours/Two requisites
+5|DS3302|تصوير البيانات|3 ساعات|متطلب واحد|39745|Data Visualization|3 hours/English|1|DS1103~Advanced Programming for Data Science~3 hours/One requisite
+5|CEN1014|نظم التشغيل و الشبكات|3 ساعات|متطلب واحد|42414|Operating Systems and Networks|3 hours/English|1|DS1103~Advanced Programming for Data Science~3 hours/One requisite
+5|DS3205|إدارة البيانات|ساعتين||42585|Data Management|Two hours/English|0|
+6|DS3803|التدريب التعاوني|6 ساعات||42415|COOP|6 hours/English|0|
+7|ICC4202|الأسرة في الإسلام|ساعتين||38525|Family in Islam|Two hours/English|0|
+7|DS4801|مشروع تخرج 1|3 ساعات||39754|Graduation Project 1|3 hours/English|0|
+7|DS4503|تطبيقات معالجة اللغات الطبيعية|3 ساعات|متطلب واحد|39755|Applied Natural Language Processing|3 hours/English|1|DS3402~Data Modelling~3 hours/Two requisites
+7|DS4701|أخلاقيات و حوكمة البيانات|ساعتين||39757|Data Ethics and Governance|Two hours/English|0|
+7|DS4104|مواضيع خاصة في علوم البيانات|ساعتين|متطلب واحد|39761|Special Topics in Data Science|Two hours/English|1|DS3402~Data Modelling~Two hours/Two requisites
+8|QR3104|ختم القرآن الكريم|ساعتين|متطلب واحد|38523|Seal of the Holy Quran|Two hours/English|1|QR1101~Tajweed of The Holy Quran~Two hours/No requisites
+8|BUS1099|مهارات التطوير المهني|ساعتين||38590|Professional skills|Two hours/English|0|
+8|DS4802|مشروع تخرج 2|3 ساعات||39763|Graduation Project 2|3 hours/English|0|
+8|DS4502|تحسين تحليل البيانات|3 ساعات|متطلب واحد|39771|Optimization for Data Analysis|3 hours/English|1|DS3402~Data Modelling~3 hours/Two requisites
+8|DS4511|التنقيب في البيانات الضخمة|3 ساعات|متطلبين|39773|Big Data Mining|3 hours/English|1|DS2401~Machine Learning for Data Science~3 hours/Two requisites;DS3302~Data Visualization~3 hours/One requisite
