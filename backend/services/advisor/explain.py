@@ -26,6 +26,13 @@ STRATEGY_AR = {"fastest": "الأسرع تخرجاً", "balanced": "المتوا
 
 
 def summarize_run(run: dict) -> dict:
+    rs = run.get("record_status") or {}
+    if rs.get("status") in ("graduated", "likely_graduated"):
+        return {"what": run.get("withheld_reason") or "", "why": list(rs.get("reasons") or []), "alternatives": [], "effect": [],
+                "uncertain": (["الحكم بالتخرج استنتاج من السجل (مشروع التخرج والتدريب والساعات)، وليس إفادة تخرج رسمية."]
+                              if rs.get("status") == "likely_graduated" else []),
+                "next_steps": ["تأكد من حالة تخرجك في نظام التسجيل أو مع القسم."],
+                "confidence": (run.get("confidence") or {}).get("level")}
     if run.get("plan_applicable") is False:
         reason = run.get("withheld_reason") or ""
         return {"what": reason, "why": [], "alternatives": [], "effect": [],

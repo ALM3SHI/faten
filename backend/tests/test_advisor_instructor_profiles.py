@@ -106,3 +106,18 @@ def test_language_specific_courses_are_marked_ambiguous():
     assert build.family_of("برمجة بلغة جافا عملي")["confidence"] == "likely"
     cards = ip.for_course("CS1701")["profiles"]
     assert cards and any(c["course"]["confidence"] == "ambiguous" for c in cards)
+
+
+def test_an_instructor_appears_once_per_plan_course():
+    """Several wordings of one course («برمجة 1», «بايثون») link the same code;
+    they are merged, never listed twice."""
+    from services.advisor import instructor_profiles as ip
+    from services.advisor.catalog import load_catalog
+    for pid in ("uqu-478", "uqu-1490"):
+        m = ip.for_program(load_catalog(), pid)
+        for c in m["courses"]:
+            ids = [i["id"] for i in c["instructors"]]
+            assert len(ids) == len(set(ids)), (pid, c["code"])
+            assert all(i["short_name"] for i in c["instructors"])
+    cards = ip.for_course("CS1011")["profiles"]
+    assert len({c["id"] for c in cards}) == len(cards)

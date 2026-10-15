@@ -8,7 +8,8 @@ import { graduationProgress, resolvePlanHours, type GraduationProgress } from "@
 export function usePlanHours(): number | null {
   const profilePlan = useProfileStore((s) => s.basic.totalPlanHours);
   const transcriptPlan = useTranscriptStore((s) => s.planHours);
-  return resolvePlanHours(profilePlan, transcriptPlan);
+  const earned = useTranscriptStore((s) => s.earnedHours);
+  return resolvePlanHours(profilePlan, transcriptPlan, earned);
 }
 
 /** The student's progress toward graduation, from the shared stores. */

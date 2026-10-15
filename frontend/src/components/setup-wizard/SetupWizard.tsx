@@ -80,7 +80,7 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
         name: string;
         major: string;
         studentId: string;
-        totalPlanHours: number;
+        totalPlanHours: number | "";
       }> = {};
       const displayName: string | null =
         transcriptRaw.name || transcriptRaw.nameEn || null;
@@ -89,6 +89,10 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
       if (transcriptRaw.studentId) basicPatch.studentId = transcriptRaw.studentId;
       if (typeof transcriptRaw.planHours === "number" && transcriptRaw.planHours > 0) {
         basicPatch.totalPlanHours = transcriptRaw.planHours;
+      } else {
+        // Drop a plan total that an older upload copied from the attempted-hours footer.
+        const previous = useTranscriptStore.getState().planHours;
+        if (previous && profile.basic.totalPlanHours === previous) basicPatch.totalPlanHours = "";
       }
       if (Object.keys(basicPatch).length > 0) profile.setBasic(basicPatch);
 

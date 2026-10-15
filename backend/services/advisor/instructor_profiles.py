@@ -28,11 +28,33 @@ def load_profiles(university: str = "uqu") -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _merge_links(p: dict, code: str) -> dict | None:
+    """All course families of one instructor that link to `code`, merged into one entry.
+
+    Students write the same course several ways («برمجة 1», «بايثون عملي»); counting
+    each family separately listed the same instructor twice for one plan course."""
+    fams = [c for c in p["courses"] if any(link["code"] == code for link in c["links"])]
+    if not fams:
+        return None
+    n = sum(f["reviews"] for f in fams)
+    avg = [f["average"] * f["reviews"] for f in fams if f["average"] is not None]
+    pos = [f["positive_share"] * f["reviews"] for f in fams if f["positive_share"] is not None]
+    return {
+        "family": "، ".join(dict.fromkeys(f["family"] for f in fams)),
+        "confidence": "likely" if any(f["confidence"] == "likely" for f in fams) else fams[0]["confidence"],
+        "reviews": n,
+        "average": round(sum(avg) / n, 2) if avg and n else None,
+        "positive_share": round(sum(pos) / n, 2) if pos and n else None,
+        "recent_reviews": sum(f["recent_reviews"] for f in fams),
+    }
+
+
 def _card(p: dict, labels: dict, course: dict | None) -> dict:
     a = p["analysis"]
     out = {
         "id": p["id"],
         "name": p["name"],
+        "short_name": p.get("short_name") or p["name"],
         "department": p.get("department"),
         "verdict": a["verdict"],
         "verdict_label": labels.get(a["verdict"], a["verdict"]),
@@ -67,7 +89,7 @@ def for_course(code: str, university: str = "uqu") -> dict:
     labels = data.get("verdict_labels", {})
     cards = []
     for p in data["instructors"]:
-        match = next((c for c in p["courses"] if any(link["code"] == code for link in c["links"])), None)
+        match = _merge_links(p, code)
         if match:
             cards.append(_card(p, labels, match))
     cards.sort(key=lambda c: (-c["course"]["reviews"], c["name"]))
@@ -86,17 +108,19 @@ def for_program(catalog: Catalog, program_id: str, university: str = "uqu") -> d
     data = load_profiles(university)
     labels = data.get("verdict_labels", {})
     by_code: dict[str, list[dict]] = {}
-    for p in data["instructors"]:
-        for c in p["courses"]:
-            for link in c["links"]:
-                if cur.course(link["code"]):
-                    by_code.setdefault(link["code"], []).append({
-                        "id": p["id"], "name": p["name"], "verdict": p["analysis"]["verdict"],
-                        "verdict_label": labels.get(p["analysis"]["verdict"], p["analysis"]["verdict"]),
-                        "recommendation": p["analysis"]["recommendation"],
-                        "reviews": c["reviews"], "average": c["average"], "recent_reviews": c["recent_reviews"],
-                        "thin": c["reviews"] < THIN_EVIDENCE, "confidence": c["confidence"],
-                    })
+    codes = {link["code"] for p in data["instructors"] for c in p["courses"] for link in c["links"] if cur.course(link["code"])}
+    for code in codes:
+        for p in data["instructors"]:
+            m = _merge_links(p, code)
+            if m:
+                by_code.setdefault(code, []).append({
+                    "id": p["id"], "name": p["name"], "short_name": p.get("short_name") or p["name"],
+                    "verdict": p["analysis"]["verdict"],
+                    "verdict_label": labels.get(p["analysis"]["verdict"], p["analysis"]["verdict"]),
+                    "recommendation": p["analysis"]["recommendation"],
+                    "reviews": m["reviews"], "average": m["average"], "recent_reviews": m["recent_reviews"],
+                    "thin": m["reviews"] < THIN_EVIDENCE, "confidence": m["confidence"],
+                })
     courses = []
     for pc in sorted(cur.courses, key=lambda x: (x.level, x.code)):
         if pc.code in by_code:

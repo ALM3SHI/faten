@@ -30,6 +30,8 @@ import {
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { FAILING_GRADES, STRONG_GRADES, WEAK_GRADES } from "@/lib/grade-scale";
 import { assessRecord } from "@/lib/record-status";
+import { resolvePlanHours } from "@/lib/graduation";
+import { useProfileStore } from "@/store/profileStore";
 import { RecordStatusNote } from "@/components/record-status-note";
 
 interface Step1Props {
@@ -267,6 +269,9 @@ function SummaryView({
 }) {
   // ── Derived insights ─────────────────────────────────────────────
   const enrollmentYear = useMemo(() => deriveEnrollmentYear(completedCourses), [completedCourses]);
+  // The stored transcript value may be the legacy attempted-hours footer; only a plan the student entered counts.
+  const profilePlan = useProfileStore((s) => s.basic.totalPlanHours);
+  const resolvedPlan = resolvePlanHours(profilePlan, planHours, earnedHours);
   const strengths = useMemo(() => deriveStrengths(completedCourses), [completedCourses]);
   const weaknesses = useMemo(() => deriveWeaknesses(completedCourses), [completedCourses]);
   const recommendations = useMemo(
@@ -344,7 +349,7 @@ function SummaryView({
           />
           <StatTile
             label="ساعات الخطة"
-            value={planHours != null ? `${planHours}` : "—"}
+            value={resolvedPlan != null ? `${resolvedPlan}` : "—"}
             accent="cyan"
           />
           <StatTile label="مواد منجزة" value={String(completedCourses.length)} accent="violet" />
@@ -402,7 +407,7 @@ function SummaryView({
         />
         {currentCourses.length === 0 ? (
           <RecordStatusNote
-            assessment={assessRecord({ completedCourses, registeredCourses: currentCourses, earnedHours, planHours })}
+            assessment={assessRecord({ completedCourses, registeredCourses: currentCourses, earnedHours, planHours: resolvedPlan })}
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

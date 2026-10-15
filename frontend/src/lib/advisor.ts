@@ -225,6 +225,8 @@ export interface AdvisorRun {
   /** false when the record matches another curriculum edition: no course or date advice is given. */
   plan_applicable?: boolean;
   withheld_reason?: string | null;
+  /** Saved settings name a different major than the uploaded record. */
+  program_conflict?: { record_program_id: string; record_program_name: string; message: string };
   record_status?: {
     status: "enrolled" | "between_terms" | "graduated" | "likely_graduated";
     final_project: "passed" | "part1_only" | "missing";
@@ -312,6 +314,8 @@ export interface ProfileSource {
 export interface InstructorProfile {
   id: string;
   name: string;
+  /** How students know them (e.g. «محمد عارف»); older data may omit it. */
+  short_name?: string;
   department: string | null;
   verdict: ProfileVerdict;
   verdict_label: string;
@@ -354,7 +358,7 @@ export interface InstructorMap {
     code: string;
     name: string;
     level: number;
-    instructors: { id: string; name: string; verdict: ProfileVerdict; verdict_label: string; reviews: number; thin: boolean }[];
+    instructors: { id: string; name: string; short_name?: string; verdict: ProfileVerdict; verdict_label: string; reviews: number; thin: boolean }[];
   }[];
   caveats: string[];
 }

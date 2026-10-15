@@ -191,3 +191,21 @@ def test_analysis_after_saving_settings(api):
     r2 = client.post("/api/advisor/analyze", json={"overrides": {"program_id": "uqu-478", "max_load": 18}})
     assert r2.status_code == 200, r2.text
     assert client.get("/api/advisor/latest").json()["run"]["run_id"]
+
+
+def test_saved_major_that_differs_from_the_record_is_flagged(api):
+    """Real case: the record says Computer Science but settings were saved as AI.
+    The analysis follows the settings (the student's choice) and says so plainly."""
+    client, db = api
+    rec = fx.failed_prerequisites()
+    seed_record(db, UID, rec)
+    detected = client.post("/api/advisor/analyze", json={}).json()
+    rec_pid = detected["program"]["id"]
+    assert detected["program"]["source"] == "record" and "program_conflict" not in detected
+    other = "uqu-1490" if rec_pid != "uqu-1490" else "uqu-478"
+    body = client.post("/api/advisor/analyze", json={"overrides": {"program_id": other}}).json()
+    assert body["program"]["id"] == other
+    assert body["program_conflict"]["record_program_id"] == rec_pid
+    assert "بياناتك وأهدافك" in body["program_conflict"]["message"]
+    same = client.post("/api/advisor/analyze", json={"overrides": {"program_id": rec_pid}}).json()
+    assert "program_conflict" not in same

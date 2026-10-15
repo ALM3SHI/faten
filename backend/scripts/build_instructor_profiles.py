@@ -246,6 +246,7 @@ def build(src: Path) -> dict:
         out.append({
             "id": instructor_key(name),
             "name": name,
+            "short_name": path.stem,  # how students know them (the team's file name), e.g. «محمد عارف»
             "department": prof.get("department"),
             "data": {
                 "reviews_stated": prof.get("total_reviews"), "reviews_analyzed": n, "complete": complete,

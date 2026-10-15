@@ -94,6 +94,7 @@ export default function AdvisorPage() {
   const detected = run?.program.source === "record" ? run.program.id : null;
   const planOk = run?.plan_applicable !== false;
   const graduated = run?.record_status?.status === "graduated" || run?.record_status?.status === "likely_graduated";
+  const otherEdition = run?.curriculum_fit?.verdict === "other_edition" || run?.curriculum_fit?.verdict === "mismatch";
 
   return (
     <div className="min-h-screen bg-background pb-28" dir="rtl">
@@ -147,6 +148,14 @@ export default function AdvisorPage() {
 
         {status === "ready" && run && (
           <>
+            {run.program_conflict && (
+              <p role="alert" className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm leading-7 flex flex-wrap items-center gap-2">
+                <span className="font-bold">{run.program_conflict.message}</span>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setEditing(true)}>
+                  بياناتك وأهدافك
+                </Button>
+              </p>
+            )}
             <Card className="glass rounded-[24px] border-foreground/10 p-5 md:p-6 space-y-4">
               <div className="grid gap-4 sm:grid-cols-4 text-center">
                 <Stat label="التخصص" value={run.program.name} hint={`خطة ${VERIFICATION_LABEL[run.curriculum.verification]}`} />
@@ -155,11 +164,19 @@ export default function AdvisorPage() {
                   value={run.profile.gpa !== null ? run.profile.gpa.toFixed(2) : "—"}
                   hint={run.profile.gpa_source === "record_field" ? "من بيانات سجلك المحفوظة" : "محسوب من مقررات سجلك"}
                 />
-                <Stat
-                  label="مقررات الخطة المنجزة"
-                  value={`${run.audit.percent_required_done}%`}
-                  hint={`${run.audit.done_hours} من ${run.audit.required_hours} ساعة`}
-                />
+                {otherEdition || graduated ? (
+                  <Stat
+                    label="مقررات الخطة المنجزة"
+                    value="—"
+                    hint={otherEdition ? "سجلك على إصدار خطة آخر؛ النسبة لا تنطبق" : "لا تنطبق على سجل خريج"}
+                  />
+                ) : (
+                  <Stat
+                    label="مقررات الخطة المنجزة"
+                    value={`${run.audit.percent_required_done}%`}
+                    hint={`${run.audit.done_hours} من ${run.audit.required_hours} ساعة`}
+                  />
+                )}
                 <Stat label="درجة الثقة" value={CONFIDENCE_LABEL[run.confidence.level]} hint="حسب اكتمال البيانات" />
               </div>
               {planOk ? (

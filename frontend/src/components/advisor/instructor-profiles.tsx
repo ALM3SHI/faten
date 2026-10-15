@@ -146,7 +146,7 @@ export function ProgramInstructorMap({ map, onPick }: { map: InstructorMap; onPi
             <span className="text-muted-foreground">المستوى {c.level}:</span>
             {c.instructors.map((i) => (
               <span key={i.id} className="inline-flex items-center gap-1">
-                {shortName(i.name)}
+                {i.short_name ?? shortName(i.name)}
                 <VerdictBadge verdict={i.verdict} label={i.verdict_label} />
               </span>
             ))}

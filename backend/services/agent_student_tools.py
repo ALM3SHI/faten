@@ -152,7 +152,12 @@ def get_graduation_progress(args: dict, user_id: str, db) -> dict:
     rec = (rec_snap.to_dict() or {}) if rec_snap.exists else {}
     basic = udata.get("basic") or {}
     profile = udata.get("profile") or {}
-    plan = basic.get("totalPlanHours") or profile.get("totalPlanHours") or rec.get("planHours")
+    # UQU transcripts never print the plan total; a stored record `planHours` is the
+    # attempted-hours footer (older uploads also copied it into the profile).
+    legacy = rec.get("planHours")
+    plan = basic.get("totalPlanHours") or profile.get("totalPlanHours")
+    if plan and legacy and float(plan) == float(legacy):
+        plan = None
     earned = rec.get("earnedHours") if rec.get("earnedHours") is not None else profile.get("earnedHours")
     current = sum(
         float(c.get("creditHours") or c.get("credit_hours") or 0) for c in (rec.get("currentCourses") or [])

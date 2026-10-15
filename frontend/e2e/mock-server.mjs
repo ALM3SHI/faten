@@ -38,7 +38,7 @@ export const WORKSPACE = {
   },
   transcript: {
     name: "عمر", nameEn: "Omar", studentId: "441000000", university: "جامعة أم القرى", major: "علوم الحاسب",
-    faculty: "الحاسبات", degree: "بكالوريوس", gpa: 3.56, earnedHours: 15, planHours: 132,
+    faculty: "الحاسبات", degree: "بكالوريوس", gpa: 3.56, earnedHours: 15, attemptedHours: 15,
     completedCourses: COMPLETED, currentCourses: CURRENT, confidence: 95, lastUpdated: "2026-10-01T08:00:00.000Z",
   },
   schedule: {

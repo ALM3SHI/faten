@@ -215,8 +215,8 @@ export default function TranscriptParserPage() {
                     <div className="text-3xl font-black text-uqu-cyan">{parsedData.earnedHours ?? "0"}</div>
                   </div>
                   <div className="glass p-6 rounded-3xl border-foreground/10">
-                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">ساعات الخطة</div>
-                    <div className="text-3xl font-black text-foreground">{parsedData.planHours ?? "---"}</div>
+                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">الساعات المعتمدة (المسجلة)</div>
+                    <div className="text-3xl font-black text-foreground">{parsedData.attemptedHours ?? "---"}</div>
                   </div>
                   <div className="glass p-6 rounded-3xl border-foreground/10">
                     <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">عدد المواد</div>

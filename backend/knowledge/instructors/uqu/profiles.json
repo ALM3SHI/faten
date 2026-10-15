@@ -28,6 +28,7 @@
   {
    "id": "054453d3c917491d",
    "name": "احمد حسن يحي لال الهندي",
+   "short_name": "احمد هندي",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 79,
@@ -278,6 +279,7 @@
   {
    "id": "6cc70a2720273ef0",
    "name": "ثامر محمد تاج الدين قدح",
+   "short_name": "ثامر قدح",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 40,
@@ -581,6 +583,7 @@
   {
    "id": "7fffac76ad0851eb",
    "name": "حاتم سعد براك السواط",
+   "short_name": "حاتم السواط",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 90,
@@ -852,6 +855,7 @@
   {
    "id": "e9b0b8d659a73e24",
    "name": "حسن رويزق رديد الهذلي",
+   "short_name": "حسن الهذلي",
    "department": "علم المعلومات",
    "data": {
     "reviews_stated": 109,
@@ -1099,6 +1103,7 @@
   {
    "id": "f8486a20de1c6f76",
    "name": "خالد محمد جميل خياط",
+   "short_name": "خالد خياط",
    "department": "هندسة الحاسب الآلي",
    "data": {
     "reviews_stated": 142,
@@ -1415,6 +1420,7 @@
   {
    "id": "4f8af2dfb8ea29ab",
    "name": "رياض مطيران سعيد الرحيلي",
+   "short_name": "رياض الرحيلي",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 118,
@@ -1780,6 +1786,7 @@
   {
    "id": "d77f6bf9b5075610",
    "name": "غسان فاروق جودة باتي",
+   "short_name": "غسان باتي",
    "department": "هندسة الحاسب الآلي",
    "data": {
     "reviews_stated": 157,
@@ -2066,6 +2073,7 @@
   {
    "id": "788e61abcaab883c",
    "name": "محمد خضر محمد نور",
+   "short_name": "محمد نور",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 44,
@@ -2344,6 +2352,7 @@
   {
    "id": "576487f3a72be749",
    "name": "محمد عارف سيد حامد",
+   "short_name": "محمد عارف",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 26,
@@ -2568,6 +2577,7 @@
   {
    "id": "a62f4c58e2f2637b",
    "name": "محمد علي عيد الغامدي",
+   "short_name": "محمد الغامدي",
    "department": "علوم الحاسب الآلي",
    "data": {
     "reviews_stated": 48,

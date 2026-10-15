@@ -523,7 +523,7 @@ def analyze(
         "engine": ENGINE_VERSION, "record_plan_hours": record_plan_hours,
     }, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
 
-    return {
+    out = {
         "engine_version": ENGINE_VERSION,
         "inputs_fingerprint": inputs_fingerprint,
         "program": {"id": cur.program_id, "name": catalog.programs[cur.program_id].name_ar, "source": program_source},
@@ -571,6 +571,13 @@ def analyze(
                                            "warning_below_grad_gpa", "dismissal_three_warnings", "max_regular_load",
                                            "default_max_regular_load", "program_grad_gpa", "prereq_and_or", "offerings")],
     }
+    if rec_status["status"] in ("graduated", "likely_graduated"):
+        # Nothing is planned for a graduate: planning caveats and the between-terms gap don't apply.
+        out["data_gaps"] = [g for g in out["data_gaps"] if g["field"] != "current_courses"]
+        out["uncertainties"] = []
+        out["confidence"] = {**out["confidence"], "reasons": [r for r in out["confidence"].get("reasons", [])
+                                                              if "نقص في البيانات" not in r and "طرح المقررات" not in r]}
+    return out
 
 
 def _prep_info(profile: StudentProfile, cur: Curriculum) -> dict | None:

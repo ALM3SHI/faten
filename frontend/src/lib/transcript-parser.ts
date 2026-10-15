@@ -80,6 +80,7 @@ export interface StudentInfo {
   gpa?: number;
   earnedHours?: number;
   planHours?: number;
+  attemptedHours?: number;
   totalPoints?: number;
 }
 
@@ -95,7 +96,10 @@ export interface ParsedTranscript {
   studyType: string | null;
   gpa: number | null;
   earnedHours: number | null;
+  /** Plan total — UQU transcripts don't print it, so this stays null unless a record states it. */
   planHours: number | null;
+  /** «Crd Hrs»: all hours attempted (passed + failed), from the transcript footer. */
+  attemptedHours: number | null;
   totalPoints: number | null;
   semesters: Semester[];
   completedCourses: EnrichedCourse[];
@@ -687,8 +691,11 @@ function extractStudentInfo(pages: PageData[]): StudentInfo {
   const lastPage = pages[pages.length - 1];
   const lastText = lastPage.items.map((i) => i.s).join(" ");
   let m;
+  // «Crd Hrs» / «الساعات المعتمدة» is the total of hours ATTEMPTED, not the
+  // plan's total — UQU transcripts never print the plan total. Reading it as
+  // plan hours made every record look 100% complete.
   m = lastText.match(/Crd\s*Hrs?\s*:\s*(\d+)/i);
-  if (m) info.planHours = parseInt(m[1]);
+  if (m) info.attemptedHours = parseInt(m[1]);
   m = lastText.match(/Passed\s*Hrs?\s*:\s*(\d+)/i);
   if (m) info.earnedHours = parseInt(m[1]);
   m = lastText.match(/Accum\s*GPA\s*:\s*(\d+\.\d+)/i);
@@ -696,7 +703,7 @@ function extractStudentInfo(pages: PageData[]): StudentInfo {
   m = lastText.match(/Points\s*:\s*(\d+\.?\d*)/i);
   if (m) info.totalPoints = parseFloat(m[1]);
   m = lastText.match(/الساعات المعتمدة\s*:\s*([\d٠-٩]+)/);
-  if (m && !info.planHours) info.planHours = parseInt(arNum(m[1]));
+  if (m && !info.attemptedHours) info.attemptedHours = parseInt(arNum(m[1]));
   m = lastText.match(/الساعات المكتسبة\s*:\s*([\d٠-٩]+)/);
   if (m && !info.earnedHours) info.earnedHours = parseInt(arNum(m[1]));
   return info;
@@ -781,6 +788,7 @@ export async function parseTranscriptPDF(file: File): Promise<ParsedTranscript> 
     gpa: canonicalGpa,
     earnedHours: info.earnedHours ?? cumulativeHours,
     planHours: info.planHours ?? null,
+    attemptedHours: info.attemptedHours ?? null,
     totalPoints: cumulativeHours > 0 ? cumulativePoints : info.totalPoints ?? null,
     semesters,
     completedCourses,
@@ -795,7 +803,7 @@ export async function parseTranscriptPDF(file: File): Promise<ParsedTranscript> 
   if (result.studentId) conf += 10;
   if (result.gpa) conf += 20;
   if (result.earnedHours) conf += 10;
-  if (result.planHours) conf += 5;
+  if (result.attemptedHours) conf += 5;
   if (result.major || result.majorEn) conf += 10;
   if (semesters.length > 0) conf += 15;
   if (completedCourses.length > 0) conf += 15;

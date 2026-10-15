@@ -941,9 +941,15 @@ def save_transcript_sync(user_id: str, db, payload: dict) -> dict:
 
     main_snap = main_ref.get()
     main_doc = main_snap.to_dict() if main_snap.exists else {}
+    # Every upload also checks its courses against the catalog and records new
+    # or conflicting ones for review (never blocks the save).
+    from services.course_observations import observe_record
+
+    course_check = observe_record(db, user_id, payload)
     return {
         "success": True,
         "transcript": normalize_transcript(main_doc, legacy_transcript=None),
+        "course_check": {k: course_check[k] for k in ("checked", "match", "missing", "conflict")},
     }
 
 

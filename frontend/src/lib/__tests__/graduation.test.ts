@@ -32,9 +32,11 @@ describe("graduationProgress", () => {
 });
 
 describe("resolvePlanHours", () => {
-  it("prefers the profile, then the transcript", () => {
+  it("uses the profile only; never the transcript's attempted-hours footer", () => {
     expect(resolvePlanHours(140, 132)).toBe(140);
-    expect(resolvePlanHours("", 132)).toBe(132);
+    expect(resolvePlanHours("", 132)).toBeNull();
+    // An older upload copied «Crd Hrs» (178) into both stores: not a plan total.
+    expect(resolvePlanHours(178, 178, 178)).toBeNull();
     expect(resolvePlanHours(0, null)).toBeNull();
     expect(resolvePlanHours(undefined, undefined)).toBeNull();
   });

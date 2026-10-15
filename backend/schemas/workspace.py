@@ -100,6 +100,9 @@ class TranscriptSaveRequest(BaseModel):
 class TranscriptSaveResponse(BaseModel):
     success: bool = True
     transcript: WorkspaceTranscript
+    # Courses on the upload checked against the catalog: matched / new to the
+    # catalog (recorded for review) / conflicting with it (flagged).
+    course_check: dict[str, int] | None = None
 
 
 class WorkspaceSchedule(BaseModel):

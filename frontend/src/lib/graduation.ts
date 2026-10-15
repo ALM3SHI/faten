@@ -63,11 +63,18 @@ export function termsLeftLabel(p: GraduationProgress): string {
 export function resolvePlanHours(
   profilePlan: number | "" | null | undefined,
   transcriptPlan: number | null | undefined,
+  earnedHours?: number | null,
 ): number | null {
+  // UQU transcripts never print the plan total. Older uploads stored the
+  // attempted-hours footer («Crd Hrs») as `planHours`, and the setup wizard
+  // copied it to the profile — so the transcript value is never used, and a
+  // profile value equal to it is that same copy, not a plan the student entered.
+  void earnedHours;
+  const legacy = Number(transcriptPlan);
   const fromProfile = Number(profilePlan);
-  if (Number.isFinite(fromProfile) && fromProfile > 0) return fromProfile;
-  const fromTranscript = Number(transcriptPlan);
-  return Number.isFinite(fromTranscript) && fromTranscript > 0 ? fromTranscript : null;
+  if (!Number.isFinite(fromProfile) || fromProfile <= 0) return null;
+  if (Number.isFinite(legacy) && legacy > 0 && fromProfile === legacy) return null;
+  return fromProfile;
 }
 
 /**
