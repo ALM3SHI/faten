@@ -75,6 +75,56 @@ export function FitAlert({ run }: { run: AdvisorRun }) {
   );
 }
 
+export function EquivalenceList({ run }: { run: AdvisorRun }) {
+  const eq = run.equivalences;
+  if (!eq || (eq.counts.total === 0 && eq.no_equivalent.length === 0)) return null;
+  if (eq.counts.total === 0 && run.curriculum_fit?.verdict !== "transferred") return null;
+  return (
+    <details className="rounded-2xl border border-foreground/10 p-4">
+      <summary className="cursor-pointer font-bold text-sm">
+        معادلة مقرراتك من خطتك السابقة ({eq.counts.total} مقرر
+        {eq.counts.likely > 0 && `، ${eq.counts.likely} مرجّحة`})
+      </summary>
+      <p className="mt-2 text-xs text-muted-foreground leading-6">
+        نحتسب مقرراتك القديمة لمتطلبات الخطة الحالية فقط؛ معدلك وساعاتك المكتسبة تبقى كما في سجلك. «مرجّحة» تعني أن المقرر
+        نفسه بالاسم والمحتوى لكن القسم لم يؤكد المعادلة بعد.
+      </p>
+      <ul className="mt-3 space-y-2 text-sm">
+        {eq.applied.map((m) => (
+          <li key={m.to} className="rounded-xl border border-foreground/10 p-3 leading-7">
+            <p className="flex flex-wrap items-baseline gap-2">
+              {m.from.map((f) => (
+                <span key={f.code}>
+                  <bdi dir="ltr">{f.code}</bdi> {f.name} <span className="text-xs text-muted-foreground">({f.credits} س)</span>
+                </span>
+              ))}
+              <span aria-hidden>←</span>
+              <span className="font-bold">
+                <bdi dir="ltr">{m.to}</bdi> {m.to_name}
+              </span>
+              <span className="text-xs text-muted-foreground">({m.to_credits} س)</span>
+              <span
+                className={`text-xs rounded-full px-2 ${
+                  m.confidence === "confirmed" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300" : "bg-amber-500/15 text-amber-800 dark:text-amber-300"
+                }`}
+              >
+                {m.confidence_label}
+              </span>
+            </p>
+            {m.note && <p className="text-xs text-muted-foreground">{m.note}</p>}
+          </li>
+        ))}
+      </ul>
+      {eq.no_equivalent.length > 0 && (
+        <p className="mt-3 text-xs text-muted-foreground leading-6">
+          بلا مقابل في الخطة الحالية ({eq.no_equivalent.length}):{" "}
+          {eq.no_equivalent.map((c) => c.name || c.code).join("، ")}. قد يحتسب القسم بعضها اختيارياً.
+        </p>
+      )}
+    </details>
+  );
+}
+
 export function ElectiveOptionsList({ run }: { run: AdvisorRun }) {
   const eo = run.elective_options;
   if (!eo || eo.options.length === 0) return null;

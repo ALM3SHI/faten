@@ -179,9 +179,16 @@ def _plan44_record():
     return fx.record(rows + [fx.course("QR2102", 2, "A", fx.T2)])
 
 
+def _ai_plan44_record():
+    """AI Plan 44 codes; the AI program has no equivalence table, so nothing maps."""
+    rows = [fx.course(c, 3, "B", fx.T1) for c in ("AI2123", "AI2224", "AI2360", "AI3110", "AI3135", "AI3170")]
+    return fx.record(rows, major="الذكاء الاصطناعي")
+
+
 def test_older_curriculum_record_gets_no_course_or_date_advice():
-    p = build_profile(_plan44_record())
-    r = analyze(p, CAT, CS, AdvisorPreferences(program_id="uqu-478"), "student", today=TODAY)
+    """Without an equivalence table for the program, an old-edition record still gets no plan."""
+    p = build_profile(_ai_plan44_record())
+    r = analyze(p, CAT, CAT.curriculum_for("uqu-1490"), AdvisorPreferences(program_id="uqu-1490"), "student", today=TODAY)
     assert r["curriculum_fit"]["verdict"] == "other_edition"
     assert r["plan_applicable"] is False and "لا يستطيع التخطيط عليها" in r["withheld_reason"]
     assert r["next_term"]["courses"] == [] and r["next_term"]["alternatives"] == [] and r["next_term"]["credits"] == 0
@@ -216,6 +223,21 @@ def test_floor_warning_is_certain_only_mathematically_and_respects_summer():
 def test_chat_tool_refuses_to_advise_on_an_older_curriculum(fake_db):
     from agent.tools_executor import execute_tool
 
-    fake_db.store[("users", "u-old", "academic_record", "main")] = {**_plan44_record(), "major": "علوم الحاسب الآلي"}
+    fake_db.store[("users", "u-old", "academic_record", "main")] = _ai_plan44_record()
     out = asyncio.run(execute_tool("get_academic_plan", {}, "u-old", fake_db))
     assert out["success"] is False and out["plan_applicable"] is False
+
+
+def test_transferred_cohort_record_is_planned_through_equivalences(fake_db):
+    """CS Plan 44 students were all moved to the current plan: plan on it, old courses mapped."""
+    from agent.tools_executor import execute_tool
+
+    p = build_profile(_plan44_record())
+    r = analyze(p, CAT, CS, AdvisorPreferences(program_id="uqu-478"), "student", today=TODAY)
+    assert r["curriculum_fit"]["verdict"] == "transferred" and r["plan_applicable"] is True
+    done = {c["code"] for c in r["audit"]["courses"] if c["state"] == "done"}
+    assert {"CS2105", "MTH1141", "ELIE1201", "CS1303"} <= done
+    assert "CS1701" not in done  # CS1211 → CS1701 is only «suggested»
+    fake_db.store[("users", "u-old", "academic_record", "main")] = _plan44_record()
+    out = asyncio.run(execute_tool("get_academic_plan", {}, "u-old", fake_db))
+    assert out["success"] is True

@@ -22,7 +22,7 @@ import { NextTermPanel } from "@/components/advisor/next-term";
 import { ScenariosPanel } from "@/components/advisor/scenarios";
 import { RisksPanel } from "@/components/advisor/risks";
 import { AskAdvisor, InstructorsPanel, MajorsCompare, ScheduleChecker } from "@/components/advisor/tools";
-import { FitAlert, StandingCard } from "@/components/advisor/evidence";
+import { EquivalenceList, FitAlert, StandingCard } from "@/components/advisor/evidence";
 import { ApiError } from "@/lib/api";
 import {
   CONFIDENCE_LABEL,
@@ -174,7 +174,11 @@ export default function AdvisorPage() {
                   <Stat
                     label="مقررات الخطة المنجزة"
                     value={`${run.audit.percent_required_done}%`}
-                    hint={`${run.audit.done_hours} من ${run.audit.required_hours} ساعة`}
+                    hint={
+                      run.equivalences?.counts.total
+                        ? `${run.audit.done_hours} من ${run.audit.required_hours} ساعة، منها ${run.equivalences.counts.total} مقرر بالمعادلة`
+                        : `${run.audit.done_hours} من ${run.audit.required_hours} ساعة`
+                    }
                   />
                 )}
                 <Stat label="درجة الثقة" value={CONFIDENCE_LABEL[run.confidence.level]} hint="حسب اكتمال البيانات" />
@@ -212,6 +216,7 @@ export default function AdvisorPage() {
                 </p>
               )}
               <FitAlert run={run} />
+              <EquivalenceList run={run} />
               <StandingCard run={run} />
               {run.summary && (
                 <details className="text-sm">

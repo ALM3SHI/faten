@@ -44,11 +44,32 @@ export interface Standing {
 }
 
 export interface CurriculumFit {
-  verdict: "consistent" | "other_edition" | "mismatch" | "insufficient_data";
+  verdict: "consistent" | "other_edition" | "mismatch" | "insufficient_data" | "transferred";
   message: string;
   passed: number;
   in_plan: number;
   editions: { label: string; total_hours: number | null; url?: string; matched_codes: string[] }[];
+}
+
+export interface EquivalenceMatch {
+  to: string;
+  to_name: string;
+  to_credits: number;
+  from: { code: string; name: string; credits: number; grade: string | null }[];
+  confidence: "confirmed" | "likely";
+  confidence_label: string;
+  source: "file" | "same_name";
+  note: string | null;
+}
+
+/** Old-plan courses counted toward the current plan (never changes GPA or earned hours). */
+export interface EquivalenceReport {
+  applied: EquivalenceMatch[];
+  counts: { confirmed: number; likely: number; total: number };
+  hours: number;
+  no_equivalent: { code: string; name: string; credits: number }[];
+  suggestions: { from: string[]; to: string[]; note: string | null }[];
+  file: { from_edition: string | null; status: string | null; source: string | null; cohort_transferred: boolean } | null;
 }
 
 export interface ElectiveOptions {
@@ -218,6 +239,7 @@ export interface AdvisorRun {
   confidence: { level: "high" | "medium" | "low"; reasons: string[] };
   standing?: Standing;
   curriculum_fit?: CurriculumFit;
+  equivalences?: EquivalenceReport;
   elective_options?: ElectiveOptions;
   uncertainties?: { topic: string; message: string; effect: string }[];
   documents?: OfficialDocument[];

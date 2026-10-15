@@ -16,7 +16,7 @@ import datetime as dt
 import re
 from collections import Counter
 
-from services.advisor import rules
+from services.advisor import equivalence, rules
 from services.advisor.catalog import Catalog
 from services.advisor.planner import PlanSettings, plan
 from services.advisor.profile import StudentProfile, effective_gpa
@@ -47,12 +47,14 @@ def compare_programs(
 ) -> dict:
     ids = program_ids or sorted(catalog.programs)
     interests = [w.strip().lower() for w in (interests or []) if w and w.strip()]
-    passed = set(profile.passed)
     rows = []
     for pid in ids:
         cur = catalog.curriculum_for(pid)
         if cur is None:
             continue
+        # Old-plan courses count toward each plan through its equivalences (file or same name).
+        mapped, eq = equivalence.apply(profile, catalog, cur)
+        passed = set(mapped.passed)
         codes = {c.code for c in cur.courses}
         overlap = sorted(codes & passed)
         overlap_h = sum(cur.course(c).credits for c in overlap)
@@ -75,10 +77,12 @@ def compare_programs(
                 text = f"{course.name_ar} {course.name_en}".lower() if course else ""
                 if any(w in text for w in interests):
                     interest_hits.append(c.code)
-        fast = plan(profile, catalog, cur, PlanSettings(max_regular_load=max_load, start_term=start_term), "fastest", max_load, today)
+        fast = plan(mapped, catalog, cur, PlanSettings(max_regular_load=max_load, start_term=start_term), "fastest", max_load, today)
         evidence, missing = [], []
         if overlap:
-            evidence.append(f"اجتزت {len(overlap)} من مقرراته ({overlap_h} ساعة).")
+            by_eq = eq["counts"]["total"]
+            evidence.append(f"اجتزت {len(overlap)} من مقرراته ({overlap_h} ساعة)"
+                            + (f"، منها {by_eq} بالمعادلة من خطة سابقة (تقديرية حتى يؤكدها القسم)." if by_eq else "."))
         if related is not None:
             evidence.append(f"متوسط نقاطك في مجالاته الرئيسية {related:.2f} من 4 ({'، '.join(used)}).")
         else:
@@ -96,6 +100,7 @@ def compare_programs(
             "fastest_terms": fast.terms_needed if fast.complete else None,
             "fastest_graduation": fast.graduation_label, "evidence": evidence, "missing": missing,
             "curriculum_verification": cur.verification, "source_url": cur.provenance.source_url,
+            "equivalence_count": eq["counts"]["total"],
         })
     rows.sort(key=lambda r: (-(r["related_performance"] or 0), -r["overlap_hours"], r["program_id"]))
     gpa = effective_gpa(profile)

@@ -213,13 +213,19 @@ def test_prep_year_courses_skip_prerequisite_checks_only_inside_the_prep_year():
 
 
 def test_record_from_an_older_plan_is_detected_and_lowers_confidence():
-    old = fx.record([fx.course(c, 3, "B", fx.T1) for c in ("CS1211", "CS1312", "CS2214", "MTH1105", "ELCE1201", "QR1101")])
-    p, r = run(old)
+    old = fx.record([fx.course(c, 3, "B", fx.T1) for c in ("AI2123", "AI2224", "AI2360", "AI3110", "AI3135", "AI3170")],
+                    major="الذكاء الاصطناعي")
+    p, r = run(old, program="uqu-1490")
     fit = r["curriculum_fit"]
     assert fit["verdict"] == "other_edition" and fit["editions"][0]["label"] == "الخطة 44"
-    assert {"CS1211", "CS2214"} <= set(fit["editions"][0]["matched_codes"])
+    assert {"AI2123", "AI2360"} <= set(fit["editions"][0]["matched_codes"])
     assert r["confidence"]["level"] == "low"
     assert any(u["topic"] == "curriculum_version" and "إصدار" in u["message"] for u in r["uncertainties"])
+    # CS has an equivalence table for its transferred Plan 44 cohort: mapped, not withheld
+    cs_old = fx.record([fx.course(c, 3, "B", fx.T1) for c in ("CS1211", "CS1312", "CS2214", "MTH1105", "ELCE1201", "QR1101")])
+    _, r2 = run(cs_old)
+    assert r2["curriculum_fit"]["verdict"] == "transferred"
+    assert any(u["topic"] == "equivalence" for u in r2["uncertainties"])
     assert curriculum_fit(build_profile(fx.high_performer()), CS)["verdict"] == "consistent"
 
 

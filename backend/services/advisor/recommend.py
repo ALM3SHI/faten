@@ -16,7 +16,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from common.grade_scale import GRADE_POINTS
-from services.advisor import record_status, rules
+from services.advisor import equivalence, record_status, rules
 from services.advisor.audit import DegreeAudit, audit
 from services.advisor.catalog import Catalog, Curriculum
 from services.advisor.planner import PREP_NOTICE, PlanResult, PlanSettings, Strategy, plan, prep_status
@@ -258,7 +258,7 @@ def academic_standing(profile: StudentProfile, prefs: AdvisorPreferences) -> dic
     return {"graduation": graduation, "warning": warning}
 
 
-def curriculum_fit(profile: StudentProfile, cur: Curriculum) -> dict:
+def curriculum_fit(profile: StudentProfile, cur: Curriculum, equivalences: dict | None = None) -> dict:
     """Does the student's record look like THIS curriculum or a documented older edition?
 
     Measured, not guessed: share of passed courses found in the plan, and course codes
@@ -274,6 +274,21 @@ def curriculum_fit(profile: StudentProfile, cur: Curriculum) -> dict:
             editions.append({"label": ed["label"], "total_hours": ed.get("total_hours"), "document": ed["document"],
                              "url": ed.get("url"), "matched_codes": hits})
     ratio = len(in_plan) / len(passed) if passed else None
+    eq = equivalences or {}
+    eq_file = eq.get("file") or {}
+    if passed and eq.get("counts", {}).get("total") and eq_file.get("cohort_transferred") and editions:
+        # The college moved this edition's students to the current plan: assess against
+        # the current plan, old courses counted through the equivalence table.
+        c = eq["counts"]
+        verdict = "transferred"
+        message = (f"سجلك من {eq_file.get('from_edition') or 'خطة سابقة'} وحُوّلت دفعتك إلى الخطة الحالية؛ "
+                   f"احتسبنا {c['total']} مقرراً من مقرراتك القديمة بالمعادلة"
+                   + ((" (كلها مرجّحة لم يؤكدها القسم بعد)" if c["likely"] == c["total"] else
+                       f" ({c['likely']} منها مرجّحة لم يؤكدها القسم بعد)") if c.get("likely") else "")
+                   + (f"، و{len(eq['no_equivalent'])} مقرراً بلا مقابل في الخطة الحالية" if eq.get("no_equivalent") else "")
+                   + ". النتائج تقديرية حتى يؤكد القسم المعادلة.")
+        return {"verdict": verdict, "message": message, "passed": len(passed), "in_plan": len(in_plan),
+                "ratio": round(ratio, 2) if ratio is not None else None, "editions": editions}
     if not passed:
         verdict, message = "insufficient_data", "لا توجد مقررات مجتازة لمقارنتها بالخطة."
     elif any(len(e["matched_codes"]) >= 2 for e in editions):
@@ -338,6 +353,9 @@ def uncertainties(cur: Curriculum, prefs: AdvisorPreferences, standing: dict, fi
     if fit["verdict"] in ("other_edition", "mismatch"):
         out.append({"topic": "curriculum_version", "message": fit["message"],
                     "effect": "قد تكون المقررات المتبقية وساعات التخرج مختلفة لديك؛ النتائج تقديرية حتى تؤكد خطتك."})
+    elif fit["verdict"] == "transferred":
+        out.append({"topic": "equivalence", "message": fit["message"],
+                    "effect": "إن رفض القسم معادلة مقرر فسيعود مطلوباً منك وقد يتأخر موعد تخرجك؛ راجع قائمة المعادلات."})
     else:
         out.append({"topic": "curriculum_version", "message": "إصدار خطتك غير معروف؛ نقارنك بالخطة المنشورة حالياً.",
                     "effect": "إن التحقت بإصدار أقدم فقد تختلف بعض المقررات."})
@@ -368,6 +386,8 @@ def confidence(profile: StudentProfile, cur: Curriculum, prefs: AdvisorPreferenc
         lower("medium", "المعدل المحسوب يختلف عن معدل السجل.")
     if profile.student_entered:
         lower("medium", "بعض المقررات أُدخلت يدوياً ولم تُوثَّق.")
+    if fit and fit["verdict"] == "transferred":
+        lower("medium", "بعض مقرراتك احتُسبت بمعادلة من خطتك السابقة لم يؤكدها القسم بعد.")
     if fit and fit["verdict"] in ("other_edition", "mismatch"):
         lower("low", "سجلك لا يطابق الخطة المنشورة (انظر «مطابقة الخطة»).")
     reasons.append("طرح المقررات في كل فصل غير منشور؛ الخطة ممكنة رياضياً لا مؤكدة للتسجيل.")
@@ -401,6 +421,8 @@ def analyze(
 ) -> dict:
     """Full advisory run. Pure function of its inputs (reproducible)."""
     review_stats = review_stats or {}
+    record_profile = profile  # as printed: earned hours, GPA and record status come from here
+    profile, eq_report = equivalence.apply(profile, catalog, cur)
     aud = audit(profile, catalog, cur)
     load_info = recommended_load(profile, prefs)
     heavy = sorted(code for code, s in review_stats.items() if review_heavy(s))
@@ -493,7 +515,7 @@ def analyze(
     risks = detect_risks(profile, cur, aud, prefs, next_credits, heavy_next, load_info)
     target_gpa = None
     what_if = gpa_what_if(profile, next_credits, target_gpa)
-    fit = curriculum_fit(profile, cur)
+    fit = curriculum_fit(profile, cur, eq_report)
     standing = academic_standing(profile, prefs)
     plan_applicable = fit["verdict"] not in ("other_edition", "mismatch")
     withheld_reason = None
@@ -506,7 +528,7 @@ def analyze(
         what_if = {"available": False, "reason": "withheld_other_curriculum"}
         # Keep only risks that come from the record itself, not from the current plan's structure.
         risks = [r for r in risks if r.kind in ("academic_warning", "declining_trend", "repeated_course")]
-    rec_status = record_status.assess(profile, catalog, cur, aud, record_plan_hours)
+    rec_status = record_status.assess(record_profile, catalog, cur, aud, record_plan_hours)
     if rec_status["status"] in ("graduated", "likely_graduated"):
         # Nothing left to plan: suggesting courses or a graduation date to a graduate is wrong advice.
         plan_applicable = False
@@ -521,6 +543,7 @@ def analyze(
         "curriculum": cur.id, "raw": cur.provenance.raw_sha256, "reviews": review_stats,
         "start": scenarios["balanced"].terms[0].term if scenarios["balanced"].terms else None,
         "engine": ENGINE_VERSION, "record_plan_hours": record_plan_hours,
+        "equivalences": [(m["to"], m["confidence"], [f["code"] for f in m["from"]]) for m in eq_report["applied"]],
     }, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
 
     out = {
@@ -558,6 +581,7 @@ def analyze(
         "standing": standing,
         "prep_year": _prep_info(profile, cur),
         "curriculum_fit": fit,
+        "equivalences": eq_report,
         "elective_options": elective_options_for(profile, catalog, cur),
         "uncertainties": uncertainties(cur, prefs, standing, fit, prefs.max_load is None),
         "documents": [
