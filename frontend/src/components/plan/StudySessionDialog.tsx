@@ -47,6 +47,8 @@ export interface StudySessionDialogProps {
   initialTask?: PlanTask;
   courses: EnrichedCourse[];
   onSubmit: (task: PlanTask) => void;
+  /** ADD mode only: fields chosen for the student (a course, a day). */
+  prefill?: { courseCode?: string; suggestedDay?: string };
 }
 
 interface SessionFormState {
@@ -99,6 +101,7 @@ export function StudySessionDialog({
   initialTask,
   courses,
   onSubmit,
+  prefill,
 }: StudySessionDialogProps) {
   const [form, setForm] = useState<SessionFormState>(emptyFormState);
   const [fieldError, setFieldError] = useState<string | null>(null);
@@ -123,10 +126,15 @@ export function StudySessionDialog({
         taskType: initialTask.taskType ?? "",
       });
     } else {
-      // ADD mode opens fully neutral — no course/day/time/duration prefilled.
-      setForm(emptyFormState());
+      // ADD mode opens neutral, except what the entry point already knows
+      // («أضف جلسة» on a course or a day).
+      setForm({
+        ...emptyFormState(),
+        ...(prefill?.courseCode ? { courseSelect: courseSelectValue(prefill.courseCode, courses), customCode: prefill.courseCode } : {}),
+        ...(prefill?.suggestedDay ? { suggestedDay: prefill.suggestedDay } : {}),
+      });
     }
-  }, [open, mode, initialTask, courses]);
+  }, [open, mode, initialTask, courses, prefill]);
 
   const selectedCourse = useMemo(
     () => courses.find((c) => c.code === form.courseSelect),

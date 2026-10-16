@@ -174,6 +174,27 @@ const server = http.createServer(async (req, res) => {
   if (p.startsWith("/api/workspace/")) return send(res, 200, { success: true });
   if (p === "/api/analytics/dashboard") return send(res, 200, ANALYTICS);
   if (p === "/api/news") return send(res, 200, { items: [{ title: "بدء التسجيل في المقررات الصيفية", url: "https://uqu.edu.sa/", date: "2026-10-10" }] });
+  if (p === "/api/plan/generate-ai" && req.method === "POST") {
+    // Two sessions per course on fixed days, so the plan page has a predictable week.
+    const slots = [["الأحد", "16:00"], ["الأربعاء", "18:00"], ["الإثنين", "17:00"], ["الخميس", "19:00"], ["الثلاثاء", "20:00"], ["السبت", "11:00"]];
+    const tasks = (body?.courses ?? []).slice(0, 3).flatMap((c, i) =>
+      [0, 1].map((j) => ({
+        title: j === 0 ? `مراجعة ${c.name}` : `حل تمارين ${c.name}`,
+        courseCode: c.code,
+        courseName: c.name,
+        durationMinutes: j === 0 ? 50 : 45,
+        suggestedDay: slots[(i * 2 + j) % slots.length][0],
+        suggestedTime: slots[(i * 2 + j) % slots.length][1],
+        priority: i === 0 ? "high" : "medium",
+        reason: `بعد محاضرة ${c.name} بيوم، والمادة بثلاث ساعات.`,
+      })),
+    );
+    return send(res, 200, {
+      plan: { overview: "وزّعت جلستين لكل مادة بعيداً عن محاضراتك، والأثقل في وقت نشاطك.", tasks, dailySummary: [{ day: "الأحد", summary: "بداية الأسبوع: مراجعة خفيفة بعد المحاضرة.", totalMinutes: 50 }] },
+      model: "mock",
+      generatedAt: new Date().toISOString(),
+    });
+  }
   if (p === "/api/pomodoro/stats") return send(res, 200, { todaySessions: 2, totalSessions: 40, totalFocusMinutes: 1000, currentStreak: 4, longestStreak: 9 });
   if (p === "/api/pomodoro/log") return send(res, 200, { success: true });
   if (p === "/api/memory") return send(res, 200, { items: [] });
