@@ -514,9 +514,9 @@ function ReviewView({
       <RecordStatusNote assessment={assessment} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {editedCourses.map((c) => (
+        {editedCourses.map((c, i) => (
           <EditableCourseChip
-            key={c.code}
+            key={`${c.code}-${i}`}
             course={c}
             onHoursChange={(hours) => setCourseHours(c.code, hours)}
           />

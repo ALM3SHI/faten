@@ -327,8 +327,10 @@ export default function TranscriptParserPage() {
                   </div>
                   <div className="p-8">
                     <div className="space-y-3">
-                      {parsedData.completedCourses.slice(0, 10).map((c) => (
-                        <div key={c.code} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/5 border border-foreground/10">
+                      {/* A retaken course appears once per attempt (same code, other term):
+                          the key needs the position, not only the code. */}
+                      {parsedData.completedCourses.slice(0, 10).map((c, i) => (
+                        <div key={`${c.code}-${c.semester ?? ""}-${i}`} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/5 border border-foreground/10">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center font-bold text-xs">
                               {c.code}
