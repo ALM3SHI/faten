@@ -51,9 +51,15 @@ const NEW_CHAT_WELCOME =
 // them as clickable CTA buttons under the bot bubble. The user
 // navigates only when *they* click.
 const NAV_PATH_META: Record<string, { label: string; icon: string }> = {
+  "/dashboard":  { label: "فتح «اليوم»",                icon: "🏠" },
+  "/time":       { label: "فتح «وقتي»",                 icon: "🗓️" },
+  "/record":     { label: "فتح «معدّلي»",               icon: "🎓" },
+  "/study":      { label: "ذاكر محاضرة",                icon: "📚" },
+  "/exams":      { label: "فتح جدول الاختبارات",        icon: "📝" },
+  "/attendance": { label: "فتح الغياب",                 icon: "🛡️" },
+  "/advisor":    { label: "فتح المرشد الأكاديمي",       icon: "🧭" },
   "/plan":       { label: "عرض الخطة الدراسية",       icon: "📅" },
   "/gpa":        { label: "فتح حاسبة المعدل",          icon: "📊" },
-  "/dashboard":  { label: "فتح لوحة البيانات",          icon: "🏠" },
   "/locations":  { label: "فتح خريطة القاعات",          icon: "🗺️" },
   "/pomodoro":   { label: "فتح مؤقت البومودورو",        icon: "⏱️" },
   "/profile":    { label: "فتح الملف الشخصي",              icon: "👤" },

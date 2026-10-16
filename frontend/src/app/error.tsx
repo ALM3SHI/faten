@@ -16,7 +16,7 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
         <LogoMark className="w-14 h-14 mx-auto" iconClassName="w-7 h-7" />
         <h1 className="text-3xl font-black">صار خطأ غير متوقع</h1>
         <p className="text-muted-foreground leading-relaxed">
-          ما قدرنا نعرض هذه الصفحة. بياناتك محفوظة — جرّب مرة ثانية، وإذا تكرر الخطأ ارجع للوحتك.
+          ما قدرنا نعرض هذه الصفحة. بياناتك محفوظة — جرّب مرة ثانية، وإذا تكرر الخطأ ارجع لصفحة «اليوم».
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <button
@@ -27,7 +27,7 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
             حاول مرة ثانية
           </button>
           <Link href="/dashboard" className="px-5 h-11 inline-flex items-center rounded-xl border border-border font-bold hover:bg-foreground/5">
-            افتح لوحتك
+            افتح «اليوم»
           </Link>
         </div>
       </div>

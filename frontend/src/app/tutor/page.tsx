@@ -212,7 +212,7 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
           quiz: [],
           lectureId: lec.id,
         });
-        toast.success(`أضفت ${terms.length} بطاقة مراجعة — تجدها في «دراستي ← المذاكرة».`);
+        toast.success(`أضفت ${terms.length} بطاقة مراجعة — تجدها في «ذاكر محاضرة ← ملفاتك».`);
       }
     },
     [session, packs, addPack, addTermsToPack],

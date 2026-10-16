@@ -82,7 +82,7 @@ export default function LandingPage() {
                 size="lg"
                 className="h-12 px-7 rounded-xl text-base font-bold bg-uqu-accent hover:bg-uqu-accent/90 text-white"
               >
-                {user ? "افتح لوحتك" : "ابدأ مجانًا"}
+                {user ? "افتح فطن" : "ابدأ مجانًا"}
               </Button>
               <Button
                 render={<Link href="#features" />}
@@ -209,7 +209,7 @@ export default function LandingPage() {
             size="lg"
             className="h-12 px-8 rounded-xl text-base font-bold bg-white text-uqu-accent hover:bg-white/90"
           >
-            {user ? "افتح لوحتك" : "أنشئ حسابك"}
+            {user ? "افتح فطن" : "أنشئ حسابك"}
           </Button>
         </div>
       </section>

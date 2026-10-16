@@ -163,7 +163,7 @@ export default function LoginPage() {
                 {isLogin ? "مرحباً بعودتك" : "ابدأ رحلتك"}
               </h2>
               <p className="text-sm text-muted-foreground dark:text-white/50">
-                {isLogin ? "سجّل دخولك للمتابعة إلى لوحتك" : "أنشئ حساباً جديداً في ثوانٍ"}
+                {isLogin ? "سجّل دخولك وكمّل من حيث وقفت" : "أنشئ حساباً جديداً في ثوانٍ"}
               </p>
             </div>
 

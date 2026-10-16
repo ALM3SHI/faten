@@ -180,7 +180,12 @@ def classify_intent_heuristic(messages: list) -> dict:
     ]
     has_nav_verb = any(v in msg_cleaned for v in nav_verbs)
     if has_nav_verb:
+        # The four spaces first, so «افتح معدّلي» doesn't fall through to a
+        # generic keyword of a detail page.
         nav_targets = {
+            "/time": ["وقتي", "أجندتي", "اجندتي"],
+            "/record": ["معدّلي", "معدلي", "وضعي الأكاديمي"],
+            "/study": ["ذاكر محاضرة", "المذاكرة الذكية", "ملفات المذاكرة"],
             "/plan": ["الخطة", "خطة", "جدول المذاكرة", "جلسات المراجعة", "plan"],
             "/gpa": ["المعدل", "حساب المعدل", "gpa"],
             "/chat": ["الدردشة", "الشات", "المحادثة", "فطن", "chat"],

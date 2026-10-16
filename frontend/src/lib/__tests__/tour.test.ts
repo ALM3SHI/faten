@@ -4,7 +4,7 @@ import { tourSteps } from "@/lib/tour";
 describe("tourSteps", () => {
   it("asks for the record first when nothing is uploaded", () => {
     const steps = tourSteps({ hasRecord: false });
-    expect(steps.map((s) => s.id)).toEqual(["welcome", "profile", "chat", "exams", "study", "notifications"]);
+    expect(steps.map((s) => s.id)).toEqual(["welcome", "profile", "chat", "time", "study", "notifications"]);
     expect(steps[1].title).toBe("ابدأ بسجلك الأكاديمي");
     expect(steps[1].link?.href).toBe("/profile");
   });
@@ -14,7 +14,7 @@ describe("tourSteps", () => {
   });
 
   it("every link points at a real page", () => {
-    const pages = new Set(["/profile", "/chat", "/exams", "/study"]);
+    const pages = new Set(["/profile", "/chat", "/time", "/study"]);
     for (const s of tourSteps({ hasRecord: false })) if (s.link) expect(pages.has(s.link.href.split("#")[0])).toBe(true);
   });
 });
