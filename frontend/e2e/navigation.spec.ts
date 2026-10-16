@@ -20,12 +20,18 @@ test("four spaces; a detail page links back to its hub", async ({ page }, info) 
   await expect(page).toHaveURL(/\/dashboard\/?$/);
 });
 
-test("فطن has two modes: ask and study", async ({ page }) => {
+test("فطن has three modes: ask, the advisor and study", async ({ page }, info) => {
   await signIn(page);
   await page.goto("/study/");
   const modes = page.getByRole("navigation", { name: "وضع فطن" });
+  await expect(modes.getByRole("link")).toHaveText(["اسأل", "المرشد", "ذاكر محاضرة"]);
   await expect(modes.getByRole("link", { name: "ذاكر محاضرة" })).toHaveAttribute("aria-current", "page");
-  await modes.getByRole("link", { name: "اسأل" }).click();
+  await modes.getByRole("link", { name: "المرشد" }).click();
+  await expect(page).toHaveURL(/\/advisor\/?$/);
+  // the advisor is part of «فطن» now
+  const nav = page.getByRole("navigation", { name: info.project.name === "mobile" ? "التنقل الرئيسي" : "الأقسام" });
+  await expect(nav.getByRole("link", { name: "فطن" })).toHaveAttribute("aria-current", "page");
+  await page.getByRole("navigation", { name: "وضع فطن" }).getByRole("link", { name: "اسأل" }).click();
   await expect(page).toHaveURL(/\/chat\/?$/);
 });
 

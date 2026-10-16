@@ -4,8 +4,8 @@
  *
  *   اليوم   — what do I have right now?        /dashboard
  *   وقتي    — what's coming up?                 /time   (+ schedule, plan, exams, attendance, pomodoro)
- *   فطن     — I want to ask or to study         /chat   (+ study, tutor)
- *   معدّلي  — how am I doing academically?      /record (+ gpa, advisor, transcript)
+ *   فطن     — ask, plan, or study with Faten    /chat   (+ advisor, study, tutor)
+ *   معدّلي  — how am I doing academically?      /record (+ gpa, transcript)
  *
  * The first page of a space is its hub. The other pages are detail pages
  * reached from the hub, with a back link to it (components/section-tabs.tsx)
@@ -40,6 +40,7 @@ export const SECTIONS: NavSection[] = [
     pages: [
       { href: "/time", label: "وقتي" },
       { href: "/schedule", label: "الجدول" },
+      // forwards to /time, which now holds the study plan
       { href: "/plan", label: "خطة المذاكرة" },
       { href: "/exams", label: "الاختبارات" },
       { href: "/attendance", label: "الغياب" },
@@ -51,6 +52,7 @@ export const SECTIONS: NavSection[] = [
     label: "فطن",
     pages: [
       { href: "/chat", label: "اسأل" },
+      { href: "/advisor", label: "المرشد" },
       { href: "/study", label: "ذاكر محاضرة" },
       { href: "/tutor", label: "المذاكرة الذكية" },
     ],
@@ -61,7 +63,6 @@ export const SECTIONS: NavSection[] = [
     pages: [
       { href: "/record", label: "معدّلي" },
       { href: "/gpa", label: "محاكي المعدل" },
-      { href: "/advisor", label: "المرشد الأكاديمي" },
       { href: "/transcript", label: "السجل الأكاديمي" },
     ],
   },

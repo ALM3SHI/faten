@@ -31,6 +31,7 @@ import { useWorkspaceStore, ChatMessage as Message } from "@/store/workspaceStor
 import { useChatHistoryStore } from "@/store/chatHistoryStore";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { toast } from "@/lib/toast";
+import { handoffFor } from "@/lib/faten-handoff";
 
 export default function ChatPage() {
   return (
@@ -128,6 +129,17 @@ function extractSuggestedActions(response: ChatResponse): SuggestedNavigation[] 
     }
   }
   return out;
+}
+
+/**
+ * Add the button to the mode built for this question («المرشد» or «ذاكر»)
+ * when the agent did not already suggest it (lib/faten-handoff.ts).
+ */
+function withHandoff(actions: SuggestedNavigation[], question: string): SuggestedNavigation[] {
+  const path = handoffFor(question);
+  if (!path || actions.some((a) => a.path.split(/[?#]/)[0] === path)) return actions;
+  const meta = labelForPath(path);
+  return [...actions, { path, label: meta.label, icon: meta.icon }];
 }
 
 /** Sleek inline CTA row. Uses Next.js <Link> for client-side SPA
@@ -303,7 +315,7 @@ function ChatPageContent() {
         actions: response.actions,
         // Surface any NAVIGATE / navigate_to_page / open_page hints as
         // clickable CTA buttons — never as an auto-redirect.
-        suggestedActions: extractSuggestedActions(response),
+        suggestedActions: withHandoff(extractSuggestedActions(response), userMessage.content),
         // When the backend classified the reply as an error
         // (api_limit / api_auth / …), tag the message so the render
         // layer styles it as a warning bubble.

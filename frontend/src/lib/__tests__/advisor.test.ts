@@ -23,9 +23,9 @@ describe("advisor helpers", () => {
     expect(delayLabel(1)).toBe("تأجيله يؤخر التخرج فصلاً");
   });
 
-  it("is a protected page in the record space", () => {
+  it("is a protected page in the فطن space", () => {
     expect(isProtectedPath("/advisor/")).toBe(true);
-    expect(sectionFor("/advisor")?.id).toBe("record");
+    expect(sectionFor("/advisor")?.id).toBe("faten");
   });
 
   it("shortens instructor names to first and last name", () => {

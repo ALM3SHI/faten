@@ -39,3 +39,15 @@ test("a date answer cites the academic calendar", async ({ page }) => {
   await source.click();
   await expect(page.getByRole("dialog").getByText("الاختبارات النهائية: 27 Dec 2026 - 07 Jan 2027 (18/07 - 29/07/1448هـ)")).toBeVisible();
 });
+
+test("a planning question gets a way into «المرشد»", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/chat/");
+  const input = page.getByRole("textbox").last();
+  await input.fill("وش أسجّل الفصل الجاي؟");
+  await input.press("Enter");
+  const handoff = page.getByRole("link", { name: /فتح المرشد الأكاديمي/ });
+  await expect(handoff).toBeVisible();
+  await handoff.click();
+  await expect(page).toHaveURL(/\/advisor\/?$/);
+});

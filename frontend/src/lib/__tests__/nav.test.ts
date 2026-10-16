@@ -21,6 +21,7 @@ describe("spaces", () => {
     expect(sectionFor("/exams/")?.id).toBe("time");
     expect(sectionFor("/transcript")?.id).toBe("record");
     expect(sectionFor("/tutor/")?.id).toBe("faten");
+    expect(sectionFor("/advisor/")?.id).toBe("faten");
     expect(pageFor("/attendance/")?.label).toBe("الغياب");
     expect(sectionFor("/profile")).toBeNull();
     expect(sectionFor("/community")).toBeNull();

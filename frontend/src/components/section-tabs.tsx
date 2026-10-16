@@ -25,7 +25,7 @@ export function SectionTabs({ className }: { className?: string }) {
 
   if (section.id === "faten") {
     const p = normalizePath(pathname);
-    const active = p.startsWith("/chat") ? "chat" : p.startsWith("/tutor") ? "tutor" : "study";
+    const active = p.startsWith("/chat") ? "chat" : p.startsWith("/advisor") ? "advisor" : p.startsWith("/tutor") ? "tutor" : "study";
     return <ChatModeSwitch active={active} className={className} />;
   }
   if (isHub(pathname)) return null;
