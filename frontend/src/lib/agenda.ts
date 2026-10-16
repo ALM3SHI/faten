@@ -103,3 +103,47 @@ export function roomHref(room: string | undefined | null): string {
   const n = String(room ?? "").match(/^\D*(\d{1,3})\D*$/);
   return n ? `/locations?target=Room_${Number(n[1])}` : "/locations";
 }
+
+export interface NextUp {
+  item: Exclude<AgendaItem, { kind: "prayer" }>;
+  /** 0 = today, 1 = tomorrow, … */
+  dayOffset: number;
+  date: Date;
+  /** Already started (today only). */
+  now: boolean;
+}
+
+/**
+ * «التالي» — the thing in progress or the next one: a lecture, a study
+ * session not yet done, an exam or an appointment, looking up to a week
+ * ahead. Done sessions and prayer dividers are skipped.
+ */
+export function nextUp(now: Date, input: AgendaInput): NextUp | null {
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  for (let offset = 0; offset < 7; offset++) {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+    const items = buildAgenda(date, { ...input, prayers: undefined });
+    for (const it of items) {
+      if (it.kind === "prayer") continue;
+      if (it.kind === "task" && it.done) continue;
+      const end = Math.max(it.end, it.start + 1);
+      if (offset === 0 && end <= nowMin) continue;
+      return { item: it, dayOffset: offset, date, now: offset === 0 && it.start <= nowMin };
+    }
+  }
+  return null;
+}
+
+/** "الآن" · "بعد 25 د" · "بعد ساعة" · "2:00 م" · "بكرة 8:00 ص" · "الأحد 8:00 ص". */
+export function nextUpWhen(n: NextUp, now: Date): string {
+  const time = formatMinutes(n.item.start);
+  if (n.dayOffset === 0) {
+    if (n.now) return "الآن";
+    const diff = n.item.start - (now.getHours() * 60 + now.getMinutes());
+    if (diff < 60) return `بعد ${diff} د`;
+    if (diff < 120) return "بعد ساعة";
+    return time;
+  }
+  if (n.dayOffset === 1) return `بكرة ${time}`;
+  return `${AR_WEEKDAYS[n.date.getDay()]} ${time}`;
+}

@@ -9,9 +9,9 @@ test.beforeEach(async ({ page }) => {
   await signIn(page);
 });
 
-test("today keeps the day, and one strip of numbers that opens «معدّلي»", async ({ page }) => {
+test("one strip of numbers on the home page opens «معدّلي»", async ({ page }) => {
   await page.goto("/dashboard/");
-  await expect(page.getByText("أهلاً بك مجدداً، عمر!")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "أهلاً عمر" })).toBeVisible();
   const strip = page.getByRole("link", { name: "افتح معدّلي" });
   await expect(strip.getByText("3.56")).toBeVisible();
   // the analysis moved out of the home page
@@ -47,16 +47,30 @@ test("target dialog uses next-term hours from the analysis", async ({ page }) =>
   await expect(dialog.getByText("الحد الأقصى الممكن:")).toBeVisible();
 });
 
-test("today shows the next lecture and the ask box opens the chat", async ({ page }) => {
+test("today: what's next, the week at a glance, and the ask box", async ({ page }) => {
   await page.goto("/dashboard/");
-  const today = page.getByRole("region", { name: "اليوم" });
-  await expect(today.getByRole("link", { name: /الذكاء الاصطناعي|قواعد البيانات/ }).first()).toBeVisible();
-  await expect(today.getByRole("link", { name: /أضف مواعيد اختباراتك/ })).toBeVisible();
-  await expect(today.getByRole("link", { name: /غيابك بأمان|باقي لك/ })).toBeVisible();
+  // the mock timetable always has a lecture within the coming week
+  const next = page.getByRole("region", { name: /^التالي/ });
+  await expect(next.getByText(/الذكاء الاصطناعي|قواعد البيانات/)).toBeVisible();
+  await expect(next.getByRole("link", { name: "وين القاعة؟" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "اليوم", exact: true })).toBeVisible();
 
+  // a day of the small week strip opens «وقتي» on that day
+  await page.getByRole("group", { name: "أيام الأسبوع" }).getByRole("button", { name: /^الثلاثاء/ }).click();
+  await expect(page).toHaveURL(/\/time\/?\?day=2$/);
+  await expect(page.getByRole("tablist", { name: "أيام الأسبوع" }).getByRole("tab", { name: /^الثلاثاء/ })).toHaveAttribute("aria-selected", "true");
+
+  await page.goto("/dashboard/");
   await page.getByRole("searchbox").or(page.getByLabel("اسأل فطن")).first().fill("كم أغيب قبل الحرمان؟");
   await page.getByRole("button", { name: "اسأل", exact: true }).click();
   await expect(page).toHaveURL(/\/chat\/?\?query=/);
+});
+
+test("the university calendar and news open from the home page", async ({ page }) => {
+  await page.goto("/dashboard/");
+  await page.getByRole("button", { name: "التقويم والأخبار" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("tab", { name: "أخبار الجامعة" })).toBeVisible();
 });
 
 test("«معدّلي» shows the advisor's latest advice without re-running it", async ({ page }) => {

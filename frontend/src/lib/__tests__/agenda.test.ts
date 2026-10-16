@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildAgenda, formatClock, roomHref, weekDates } from "@/lib/agenda";
+import { buildAgenda, formatClock, nextUp, nextUpWhen, roomHref, weekDates } from "@/lib/agenda";
 import type { Exam } from "@/lib/exams";
 import type { PlanTask } from "@/store/planStore";
 import type { ScheduleSlot } from "@/store/scheduleStore";
@@ -66,5 +66,38 @@ describe("agenda", () => {
     expect(roomHref("قاعة 12")).toBe("/locations?target=Room_12");
     expect(roomHref("3B-112")).toBe("/locations");
     expect(roomHref(undefined)).toBe("/locations");
+  });
+});
+
+describe("next up", () => {
+  const at = (h: number, m = 0) => new Date(2026, 9, 15, h, m);
+  const input = {
+    schedule: [lecture("الخميس", "10:00", "11:40"), lecture("الأحد", "08:00", "09:40")],
+    tasks: [task({ suggestedTime: "14:00" })],
+    completed: [] as string[],
+    exams: [] as Exam[],
+  };
+
+  it("picks what is in progress, then what comes next today", () => {
+    const a = nextUp(at(10, 30), input)!;
+    expect(a.item.kind).toBe("lecture");
+    expect(a.now).toBe(true);
+    expect(nextUpWhen(a, at(10, 30))).toBe("الآن");
+    const b = nextUp(at(13, 35), input)!;
+    expect(b.item.kind).toBe("task");
+    expect(nextUpWhen(b, at(13, 35))).toBe("بعد 25 د");
+  });
+
+  it("skips done sessions and looks into the coming days", () => {
+    const done = { ...input, completed: ["الخميس|14:00|CS2301"] };
+    const n = nextUp(at(12), done)!;
+    // Thursday → Sunday is three days ahead
+    expect(n.dayOffset).toBe(3);
+    expect(n.item.kind).toBe("lecture");
+    expect(nextUpWhen(n, at(12))).toBe("الأحد 8:00 ص");
+  });
+
+  it("is empty with nothing planned", () => {
+    expect(nextUp(at(9), { schedule: [], tasks: [], completed: [], exams: [] })).toBeNull();
   });
 });

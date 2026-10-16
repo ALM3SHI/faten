@@ -1,18 +1,16 @@
 "use client";
 
-import { Navbar } from "@/components/navbar";
-import { SectionTabs } from "@/components/section-tabs";
-import { PlanView } from "@/components/plan/plan-view";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-/** «خطة المذاكرة» — see components/plan/plan-view.tsx. */
+/**
+ * The study plan now lives in «وقتي» (/time). This address stays for saved
+ * links and the agent's NAVIGATE {path: "/plan"}, and forwards there.
+ */
 export default function PlanPage() {
-  return (
-    <div className="min-h-screen bg-background pb-28">
-      <Navbar />
-      <main className="container mx-auto pt-24 px-4 md:px-8 max-w-6xl" dir="rtl">
-        <SectionTabs className="mb-5" />
-        <PlanView />
-      </main>
-    </div>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/time");
+  }, [router]);
+  return <div className="min-h-screen bg-background" aria-busy="true" />;
 }

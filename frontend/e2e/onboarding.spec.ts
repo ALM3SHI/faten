@@ -22,7 +22,7 @@ test("a new student gets the welcome tour once, saved to the account", async ({ 
 
   await expect.poll(async () => (await readFirestore(page))[DOC]?.version).toBe(1);
   await page.reload();
-  await expect(page.getByText("أهلاً بك مجدداً، عمر!")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "أهلاً عمر" })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
@@ -37,7 +37,7 @@ test("skipping counts as done, and another device does not show it again", async
   await seedFirestore(other, { [DOC]: { version: 1, doneAt: "2026-10-13T10:00:00.000Z" } });
   await signIn(other, STUDENT, { tour: true });
   await other.goto("/dashboard/");
-  await expect(other.getByText("أهلاً بك مجدداً، عمر!")).toBeVisible();
+  await expect(other.getByRole("heading", { name: "أهلاً عمر" })).toBeVisible();
   await other.waitForTimeout(500);
   await expect(other.getByRole("dialog")).toHaveCount(0);
 });

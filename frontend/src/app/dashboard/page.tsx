@@ -1,18 +1,20 @@
 "use client";
 
 /**
- * «اليوم» — what the student has right now, and nothing else.
+ * «اليوم» — what the student has now, today, and this week, in that order.
  *
  *   • Header        — greeting, date and week of term, focus streak
  *   • One nudge     — the agent's intervention, or missed plan sessions
+ *   • التالي        — the one thing in progress or next, with its action
+ *   • أقرب اختبار   — countdown to the next exam, whatever comes before it
+ *   • اليوم         — today's timeline, every row actionable in place
+ *   • أسبوعك        — the «وقتي» week strip, small; a day opens «وقتي» on it
+ *   • Status line   — GPA · hours · absences, one tap into «معدّلي»
  *   • Ask Faten     — a question box that opens the chat
- *   • اليوم         — next lecture, next exam, absences, today's plan tasks
- *   • Status strip  — GPA · hours · absences, one tap into «معدّلي»
- *   • University    — calendar | news
+ *   • From the UQU  — the next calendar date; calendar and news in a dialog
  *
- * The GPA analysis (trend, high-ROI courses, adherence, simulators) moved
- * to «معدّلي» (components/record/record-view.tsx); the full agenda lives in
- * «وقتي» (components/time/time-view.tsx).
+ * Everything reads the same agenda as «وقتي» (lib/agenda.ts); the GPA
+ * analysis lives in «معدّلي».
  */
 
 import { useMemo, useState } from "react";
@@ -21,13 +23,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Flame, History } from "lucide-react";
 import { Navbar } from "@/components/navbar";
-import { UniversityNewsCard } from "@/components/dashboard/university-news-card";
-import { TodayCard } from "@/components/dashboard/today-card";
 import { AskFaten } from "@/components/dashboard/ask-faten";
 import { StatusStrip } from "@/components/dashboard/status-strip";
+import { NextUpCard, TodayTimeline, WeekGlance } from "@/components/dashboard/today-view";
+import { NextExam } from "@/components/time/parts";
+import { dayKey } from "@/lib/exams";
+import { UniversityNewsCard } from "@/components/dashboard/university-news-card";
+import { AcademicCalendarCard } from "@/components/dashboard/academic-calendar";
 import { PanelTabs } from "@/components/ui/panel-tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { EmailVerificationReminder } from "@/components/email-verification-reminder";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { usePlanStore, taskKey } from "@/store/planStore";
@@ -40,7 +45,6 @@ import { AgenticInterventionBanner, InterventionDialogContent } from "@/componen
 import { usePlanAdherence } from "@/components/dashboard/adherence";
 import { useAttendanceRows } from "@/components/dashboard/use-attendance-rows";
 import { TaskRolloverDialog } from "@/components/dashboard/task-rollover-dialog";
-import { AcademicCalendarCard, AcademicCalendarDialogContent } from "@/components/dashboard/academic-calendar";
 import { useWelcomeTour } from "@/components/onboarding/use-welcome-tour";
 
 // Only first-time visitors (or a replay from the profile page) load the tour.
@@ -48,10 +52,7 @@ const WelcomeTour = dynamic(() => import("@/components/onboarding/welcome-tour")
   ssr: false,
 });
 
-/**
- * Element that turns a whole card into a dialog trigger. A plain element
- * (not a component) because base-ui clones it with its own props.
- */
+/** A plain element (not a component) because base-ui clones it with its own props. */
 const CARD_TRIGGER = (
   <div role="button" tabIndex={0} className="block w-full text-right cursor-pointer focus:outline-none h-full" />
 );
@@ -93,14 +94,12 @@ export default function DashboardPage() {
   const [rolloverOpen, setRolloverOpen] = useState(false);
   const tour = useWelcomeTour();
 
-  const studentFirstName =
-    (basic.name || transcriptStudentName || "").split(" ").filter(Boolean)[0] || null;
-  const greeting = studentFirstName
-    ? `أهلاً بك مجدداً، ${studentFirstName}!`
-    : "أهلاً بك مجدداً، يا بطل!";
+  const studentFirstName = (basic.name || transcriptStudentName || "").split(" ").filter(Boolean)[0] || null;
+  const greeting = studentFirstName ? `أهلاً ${studentFirstName}` : "أهلاً بك";
 
   const mounted = useHydrated();
-  const now = mounted ? new Date() : null;
+  // One "now" per visit, so every block on the page agrees on the time.
+  const now = useMemo(() => (mounted ? new Date() : null), [mounted]);
   const week = now ? termWeek(now) : null;
   const dateLine = now
     ? [
@@ -108,22 +107,18 @@ export default function DashboardPage() {
         week ? `الأسبوع ${week.week} من ${week.term}` : null,
       ]
         .filter(Boolean)
-        .join(" · ")
+        .join("، ")
     : " ";
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="aurora">
-        <div className="aurora-blob blob-1 opacity-10" />
-        <div className="aurora-blob blob-2 opacity-10" />
-      </div>
 
-      <main className="container mx-auto pt-24 pb-20 px-4 md:px-8 max-w-6xl space-y-5">
-        <div className="flex items-start justify-between gap-4">
+      <main className="container mx-auto pt-24 pb-24 px-4 md:px-8 max-w-6xl space-y-6">
+        <header className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-2xl md:text-3xl font-black">{greeting}</h1>
-            <p className="text-sm text-muted-foreground mt-1">{dateLine}</p>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight">{greeting}</h1>
+            <p className="text-muted-foreground mt-1">{dateLine}</p>
           </div>
           <Link
             href="/pomodoro"
@@ -135,7 +130,7 @@ export default function DashboardPage() {
             <span className="font-black text-orange-600 dark:text-orange-400 text-sm">{streak}</span>
             <span className="text-muted-foreground text-xs font-bold">يوم</span>
           </Link>
-        </div>
+        </header>
 
         <EmailVerificationReminder />
 
@@ -168,51 +163,39 @@ export default function DashboardPage() {
           )
         )}
 
-        <AskFaten />
-
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
-          <section aria-labelledby="today-title" className="space-y-2">
-            <div className="flex items-baseline justify-between px-1">
-              <h2 id="today-title" className="text-sm font-black text-muted-foreground">اليوم</h2>
-              <Link href="/time" prefetch={false} className="text-xs font-bold text-uqu-accent">
-                الأسبوع كامل
-              </Link>
+        {!now ? (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" aria-busy="true">
+            <div className="space-y-6">
+              <div className="h-48 rounded-3xl bg-foreground/5 animate-pulse" />
+              <div className="h-64 rounded-3xl bg-foreground/5 animate-pulse" />
             </div>
-            <TodayCard />
-          </section>
-
-          <div className="space-y-5 min-w-0">
-            <section aria-labelledby="status-title" className="space-y-2">
-              <h2 id="status-title" className="text-sm font-black text-muted-foreground px-1">وضعي الأكاديمي</h2>
-              <StatusStrip
-                hydrated={hydrated}
-                gpa={currentGpa}
-                earned={graduation?.earned ?? earnedHours}
-                planHours={graduation?.planHours ?? null}
-                absence={mounted ? attendance[0]?.st.level ?? null : null}
-              />
-            </section>
-
-            <PanelTabs
-              label="من الجامعة"
-              tabs={[
-                {
-                  value: "calendar",
-                  label: "التقويم",
-                  content: (
-                    <Dialog>
-                      <DialogTrigger nativeButton={false} render={CARD_TRIGGER}>
-                        <AcademicCalendarCard bare limit={2} />
-                      </DialogTrigger>
-                      <AcademicCalendarDialogContent />
-                    </Dialog>
-                  ),
-                },
-                { value: "news", label: "أخبار الجامعة", content: <UniversityNewsCard bare limit={3} /> },
-              ]}
-            />
+            <div className="h-40 rounded-3xl bg-foreground/5 animate-pulse" />
           </div>
-        </div>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
+            <div className="space-y-6 min-w-0">
+              <NextUpCard now={now} />
+              <NextExam today={dayKey(now)} />
+              <TodayTimeline now={now} />
+            </div>
+
+            <div className="space-y-6 min-w-0">
+              <WeekGlance now={now} />
+              <section aria-labelledby="status-title" className="space-y-2">
+                <h2 id="status-title" className="font-black px-1">وضعي الأكاديمي</h2>
+                <StatusStrip
+                  hydrated={hydrated}
+                  gpa={currentGpa}
+                  earned={graduation?.earned ?? earnedHours}
+                  planHours={graduation?.planHours ?? null}
+                  absence={attendance[0]?.st.level ?? null}
+                />
+              </section>
+              <AskFaten />
+              <FromUniversity />
+            </div>
+          </div>
+        )}
 
         <TaskRolloverDialog
           open={rolloverOpen}
@@ -224,11 +207,38 @@ export default function DashboardPage() {
           }}
           onGoToPlan={() => {
             setRolloverOpen(false);
-            router.push("/plan");
+            router.push("/time");
           }}
         />
       </main>
       {tour.open && <WelcomeTour open onClose={tour.close} />}
     </div>
+  );
+}
+
+/** The next UQU calendar date; the full calendar and the news open in a dialog. */
+function FromUniversity() {
+  return (
+    <section aria-labelledby="uqu-title" className="space-y-2">
+      <div className="flex items-baseline justify-between px-1">
+        <h2 id="uqu-title" className="font-black">من الجامعة</h2>
+        <Dialog>
+          <DialogTrigger className="text-sm font-bold text-uqu-accent">التقويم والأخبار</DialogTrigger>
+          <DialogContent className="sm:max-w-[min(640px,calc(100%-2rem))] max-h-[85vh] overflow-y-auto rounded-[28px]">
+            <DialogHeader>
+              <DialogTitle>من الجامعة</DialogTitle>
+            </DialogHeader>
+            <PanelTabs
+              label="من الجامعة"
+              tabs={[
+                { value: "calendar", label: "التقويم", content: <AcademicCalendarCard bare limit={8} /> },
+                { value: "news", label: "أخبار الجامعة", content: <UniversityNewsCard bare limit={6} /> },
+              ]}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+      <AcademicCalendarCard bare limit={1} />
+    </section>
   );
 }

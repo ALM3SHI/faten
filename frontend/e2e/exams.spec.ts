@@ -71,7 +71,7 @@ test("dashboard shows the next exam", async ({ page }) => {
   });
   await signIn(page);
   await page.goto("/dashboard/");
-  const row = page.getByRole("link", { name: /اختبار الذكاء الاصطناعي/ });
+  const row = page.getByRole("link", { name: /أقرب اختبار.*الذكاء الاصطناعي/ });
   await expect(row).toContainText("غداً");
   await expect(row).toHaveAttribute("href", /\/exams\/?$/);
 });

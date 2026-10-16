@@ -13,7 +13,7 @@ test("«وقتي» shows the week and records an absence from the lecture", asyn
 
   // Sunday has the AI lecture in the mock timetable (and is never in the future)
   await days.getByRole("tab", { name: /^الأحد/ }).click();
-  const lecture = page.getByText("الذكاء الاصطناعي");
+  const lecture = page.getByText(/^محاضرة\s*الذكاء الاصطناعي/);
   await expect(lecture).toBeVisible();
   await page.getByRole("button", { name: "غبت" }).click();
   await expect(page.getByRole("button", { name: "سُجّل غياب ✓" })).toBeVisible();
@@ -28,6 +28,12 @@ test("«وقتي» shows the week and records an absence from the lecture", asyn
 test("every tool of «وقتي» is one tap away", async ({ page }) => {
   await page.goto("/time/");
   const tools = page.getByRole("region", { name: "كل أدوات وقتي" });
-  await tools.getByRole("link", { name: /خطة المذاكرة/ }).click();
-  await expect(page).toHaveURL(/\/plan\/?$/);
+  await tools.getByRole("link", { name: /الاختبارات/ }).click();
+  await expect(page).toHaveURL(/\/exams\/?$/);
+});
+
+test("a day can be opened from a link", async ({ page }) => {
+  await page.goto("/time/?day=2");
+  await expect(page.getByRole("tablist", { name: "أيام الأسبوع" }).getByRole("tab", { name: /^الثلاثاء/ })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText(/^محاضرة\s*قواعد البيانات/)).toBeVisible();
 });

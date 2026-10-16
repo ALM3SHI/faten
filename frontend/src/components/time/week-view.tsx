@@ -1,7 +1,9 @@
 "use client";
 
 /**
- * «خطة المذاكرة» — the student's week, told as a story.
+ * «وقتي» — the student's week, told as a story: the study plan, the
+ * timetable, exams and absences on one page (it used to be two: «وقتي»
+ * and «خطة المذاكرة»; /plan now opens this page).
  *
  *   • The week strip: one column per day; its height is the day's load —
  *     lectures in grey, then each study session in its course colour,
@@ -14,14 +16,26 @@
  *     out), the registered appointments, and how the plan was built
  *     (the AI's overview + the preferences it used, editable here).
  *
+ * Lectures carry the «غبت» toggle and the room link; the next exam sits
+ * above the week; the detail pages (timetable, exams, absences, focus)
+ * are listed at the end.
+ *
  * Generation, editing and conflict checks are the same as before
  * (store/planStore.ts, lib/plan-task-conflicts.ts); only the page changed.
  */
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AlertCircle, CalendarPlus, Check, ChevronDown, Pencil, Play, Plus, RefreshCw, SlidersHorizontal, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LectureAbsence, NextExam, RoomLink, TimeTools } from "@/components/time/parts";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { StudySessionDialog } from "@/components/plan/StudySessionDialog";
 import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
@@ -52,7 +66,7 @@ const BUILD_STEPS = ["أقرأ جدولك ومواد الفصل…", "أبحث �
 /** Stripes mark study still ahead, so "done" never depends on colour alone. */
 const AHEAD = "repeating-linear-gradient(135deg, rgba(255,255,255,0.55) 0 3px, transparent 3px 7px)";
 
-export function PlanView() {
+export function WeekView() {
   const mounted = useHydrated();
   if (!mounted) {
     return (
@@ -63,14 +77,26 @@ export function PlanView() {
       </div>
     );
   }
-  return <PlanReady />;
+  return <WithDay />;
 }
 
-function PlanReady() {
+/**
+ * «?day=0..6» opens a given day (the home page's week strip links here).
+ * Read through useSearchParams so an in-app navigation updates it too; the
+ * key remounts the view on a new day so the selection starts from it.
+ */
+function WithDay() {
+  const raw = useSearchParams().get("day");
+  const d = raw === null ? NaN : Number(raw);
+  const initialDay = Number.isInteger(d) && d >= 0 && d <= 6 ? d : null;
+  return <PlanReady key={initialDay ?? "today"} initialDay={initialDay} />;
+}
+
+function PlanReady({ initialDay }: { initialDay: number | null }) {
   const router = useRouter();
   const now = useMemo(() => new Date(), []);
   const days = useMemo(() => weekDates(now), [now]);
-  const [selected, setSelected] = useState(now.getDay());
+  const [selected, setSelected] = useState(initialDay ?? now.getDay());
 
   // ── stores ──────────────────────────────────────────────────────────
   const currentCourses = useTranscriptStore((s) => s.currentCourses);
@@ -197,26 +223,6 @@ function PlanReady() {
   const edit = (task: PlanTask) => setDialog({ mode: "edit", task, key: taskKey(task) });
   const askDelete = (task: PlanTask) => setDeleteTarget({ key: taskKey(task), title: task.title });
 
-  // ── no courses: nothing to plan yet ─────────────────────────────────
-  if (currentCourses.length === 0) {
-    return (
-      <div className="space-y-6">
-        <PageTitle />
-        <section className="rounded-3xl border border-foreground/10 p-6 md:p-8 max-w-2xl space-y-3">
-          <h2 className="text-xl font-black">{hasGradedRecord ? "ما فيه مواد مسجّلة في سجلك الحين" : "نحتاج مواد فصلك أول"}</h2>
-          <p className="text-muted-foreground leading-7">
-            {hasGradedRecord
-              ? "سجلك المرفوع مرصود بالكامل (بين فصلين أو بعد التخرج). بعد ما تسجّل مواد الفصل الجديد ارفع السجل مرة ثانية ونبني لك الخطة."
-              : "ارفع سجلك الأكاديمي من الملف الشخصي. منه نعرف مواد الفصل ونوزّع عليها جلسات المراجعة."}
-          </p>
-          <Link href="/profile" prefetch={false} className="inline-flex items-center h-11 px-5 rounded-xl bg-uqu-accent text-white font-bold hover:bg-uqu-accent/90">
-            ارفع السجل
-          </Link>
-        </section>
-      </div>
-    );
-  }
-
   const dayOffIdx = DAY_OFF_INDEX[preferences.dayOff] ?? -1;
 
   return (
@@ -239,16 +245,13 @@ function PlanReady() {
             </p>
           )}
         </div>
-        {plan && (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setDialog({ mode: "add", prefill: { suggestedDay: AR_WEEKDAYS[selected] } })}
-              className="h-11 px-4 rounded-xl bg-foreground text-background font-bold inline-flex items-center gap-1.5"
-            >
-              <Plus className="w-4 h-4" aria-hidden />
-              إضافة جلسة
-            </button>
+        <div className="flex items-center gap-2">
+          <AddMenu
+            onSession={() => setDialog({ mode: "add", prefill: { suggestedDay: AR_WEEKDAYS[selected] } })}
+            onAppointment={() => setDialog({ mode: "add" })}
+            onGo={(href) => router.push(href)}
+          />
+          {plan && (
             <button
               type="button"
               onClick={() => setConfirmRebuild(true)}
@@ -258,8 +261,8 @@ function PlanReady() {
               <RefreshCw className={cn("w-4 h-4", isGenerating && "motion-safe:animate-spin")} aria-hidden />
               أعد بناء الأسبوع
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </header>
 
       {error && (
@@ -272,11 +275,14 @@ function PlanReady() {
         </div>
       )}
 
+      <NextExam today={dayKey(now)} />
+
       {isGenerating ? (
         <Building />
       ) : (
         !plan && (
           <BuildPanel
+            hasGradedRecord={hasGradedRecord}
             courseCount={currentCourses.length}
             hasSchedule={schedule.length > 0}
             peak={PEAK_LABEL[preferences.energyPeak] ?? preferences.energyPeak}
@@ -302,6 +308,7 @@ function PlanReady() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
         <DayView
           date={date}
+          today={dayKey(now)}
           isToday={dayKey(date) === dayKey(now)}
           isDayOff={selected === dayOffIdx}
           summary={plan?.dailySummary?.find((d) => d.day?.includes(AR_WEEKDAYS[selected]))?.summary}
@@ -343,6 +350,8 @@ function PlanReady() {
           )}
         </div>
       </div>
+
+      <TimeTools />
 
       <StudySessionDialog
         open={dialog !== null}
@@ -386,14 +395,36 @@ function PlanReady() {
 }
 
 function PageTitle() {
-  return <h1 className="text-3xl md:text-4xl font-black tracking-tight">خطة المذاكرة</h1>;
+  return <h1 className="text-3xl md:text-4xl font-black tracking-tight">وقتي</h1>;
+}
+
+function AddMenu({ onSession, onAppointment, onGo }: { onSession: () => void; onAppointment: () => void; onGo: (href: string) => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label="إضافة"
+        className="h-11 px-4 rounded-xl bg-foreground text-background font-bold inline-flex items-center gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-uqu-accent/50"
+      >
+        <Plus className="w-4 h-4" strokeWidth={2.6} aria-hidden />
+        إضافة
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[240px] p-1.5">
+        <DropdownMenuItem onClick={onSession} className="px-2.5 py-2 text-sm font-semibold">جلسة مذاكرة</DropdownMenuItem>
+        <DropdownMenuItem onClick={onAppointment} className="px-2.5 py-2 text-sm font-semibold">موعد بتاريخه (تسليم، كويز…)</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onGo("/exams")} className="px-2.5 py-2 text-sm font-semibold">اختبار في جدول الاختبارات</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onGo("/schedule")} className="px-2.5 py-2 text-sm font-semibold">رفع الجدول الدراسي</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onGo("/pomodoro")} className="px-2.5 py-2 text-sm font-semibold">جلسة تركيز حرّة</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════════════
 //  The week strip
 // ═══════════════════════════════════════════════════════════════════════
 
-function WeekStrip({
+export function WeekStrip({
   days,
   week,
   colors,
@@ -401,6 +432,8 @@ function WeekStrip({
   today,
   dayOff,
   onSelect,
+  compact = false,
+  title,
 }: {
   days: Date[];
   week: ReturnType<typeof weekPlan>;
@@ -409,20 +442,23 @@ function WeekStrip({
   today: number;
   dayOff: number;
   onSelect: (i: number) => void;
+  /** Small version for «اليوم»: shorter columns, no legend, days open «وقتي». */
+  compact?: boolean;
+  title?: string;
 }) {
   // One scale for the whole week, so the columns compare honestly.
   const scale = Math.max(180, ...week.map((d) => d.load.lectureMin + d.load.studyMin));
   const monthLabel = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { month: "long" }).format(days[6]);
 
   return (
-    <section aria-labelledby="week-strip-title" className="rounded-3xl border border-foreground/10 p-4 md:p-6">
-      <div className="flex items-baseline justify-between gap-3 mb-4">
+    <section aria-labelledby="week-strip-title" className={cn("rounded-3xl border border-foreground/10", compact ? "p-3 md:p-4" : "p-4 md:p-6")}>
+      <div className={cn("flex items-baseline justify-between gap-3", compact ? "mb-2 px-1" : "mb-4")}>
         <h2 id="week-strip-title" className="font-black">
-          أسبوعك {days[0].getDate()}–{days[6].getDate()} {monthLabel}
+          {title ?? `أسبوعك ${days[0].getDate()}–${days[6].getDate()} ${monthLabel}`}
         </h2>
-        <Legend />
+        {!compact && <Legend />}
       </div>
-      <div role="tablist" aria-label="أيام الأسبوع" className="grid grid-cols-7 gap-1.5 md:gap-3">
+      <div role={compact ? "group" : "tablist"} aria-label="أيام الأسبوع" className={cn("grid grid-cols-7", compact ? "gap-1" : "gap-1.5 md:gap-3")}>
         {days.map((d, i) => {
           const { lectureMin, sessions, studyMin, doneMin } = week[i].load;
           const on = i === selected;
@@ -440,8 +476,8 @@ function WeekStrip({
             <button
               key={i}
               type="button"
-              role="tab"
-              aria-selected={on}
+              role={compact ? undefined : "tab"}
+              aria-selected={compact ? undefined : on}
               aria-label={label}
               onClick={() => onSelect(i)}
               className={cn(
@@ -452,7 +488,10 @@ function WeekStrip({
               <span className={cn("text-[11px] md:text-xs font-bold text-center h-4", studyMin ? "text-foreground" : "text-muted-foreground")}>
                 {studyMin ? minutesShort(studyMin) : i === dayOff ? "راحة" : ""}
               </span>
-              <span className="relative h-28 md:h-36 flex flex-col-reverse rounded-xl bg-foreground/[0.04] overflow-hidden" aria-hidden>
+              <span
+                className={cn("relative flex flex-col-reverse rounded-xl bg-foreground/[0.04] overflow-hidden", compact ? "h-14 md:h-16" : "h-28 md:h-36")}
+                aria-hidden
+              >
                 {lectureMin > 0 && <span className="block bg-foreground/20" style={{ height: `${(lectureMin / scale) * 100}%` }} />}
                 {sessions.map((s) => (
                   <span
@@ -502,6 +541,7 @@ function Legend() {
 
 function DayView({
   date,
+  today,
   isToday,
   isDayOff,
   summary,
@@ -515,6 +555,7 @@ function DayView({
   onAdd,
 }: {
   date: Date;
+  today: string;
   isToday: boolean;
   isDayOff: boolean;
   summary?: string;
@@ -546,7 +587,7 @@ function DayView({
         <ol className="space-y-2.5">
           {items.map((it, i) => (
             <li key={`${it.kind}-${it.start}-${i}`}>
-              <DayItem item={it} colors={colors} onToggle={onToggle} onStart={onStart} onEdit={onEdit} onDelete={onDelete} />
+              <DayItem item={it} date={dayKey(date)} today={today} colors={colors} onToggle={onToggle} onStart={onStart} onEdit={onEdit} onDelete={onDelete} />
             </li>
           ))}
         </ol>
@@ -586,6 +627,8 @@ function Clock({ start }: { start: number }) {
 
 function DayItem({
   item,
+  date,
+  today,
   colors,
   onToggle,
   onStart,
@@ -593,6 +636,8 @@ function DayItem({
   onDelete,
 }: {
   item: AgendaItem;
+  date: string;
+  today: string;
   colors: Record<string, string>;
   onToggle: (key: string) => void;
   onStart: (task: PlanTask, key: string) => void;
@@ -610,12 +655,18 @@ function DayItem({
   }
   if (item.kind === "lecture") {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex gap-2 text-sm">
         <Clock start={item.start} />
-        <span className="flex-1 min-w-0 truncate rounded-xl bg-foreground/[0.04] px-3 py-2">
-          محاضرة <span className="text-foreground font-semibold">{item.slot.course_name || item.slot.course_code}</span> حتى {formatMinutes(item.end)}
-          {item.slot.room ? `، قاعة ${item.slot.room}` : ""}
-        </span>
+        <div className="flex-1 min-w-0 rounded-2xl bg-foreground/[0.04] px-3.5 py-3 space-y-2">
+          <div className="flex items-start justify-between gap-3">
+            <p className="min-w-0 text-muted-foreground leading-6">
+              محاضرة <span className="text-foreground font-bold">{item.slot.course_name || item.slot.course_code}</span> حتى {formatMinutes(item.end)}
+              {item.slot.room ? `، قاعة ${item.slot.room}` : ""}
+            </p>
+            <RoomLink room={item.slot.room} className="w-8 h-8 bg-background/70" />
+          </div>
+          <LectureAbsence code={item.slot.course_code} date={date} today={today} />
+        </div>
       </div>
     );
   }
@@ -907,6 +958,7 @@ function AboutPlan({
 // ═══════════════════════════════════════════════════════════════════════
 
 function BuildPanel({
+  hasGradedRecord,
   courseCount,
   hasSchedule,
   peak,
@@ -915,6 +967,7 @@ function BuildPanel({
   onEditPrefs,
   onBuild,
 }: {
+  hasGradedRecord: boolean;
   courseCount: number;
   hasSchedule: boolean;
   peak: string;
@@ -923,6 +976,21 @@ function BuildPanel({
   onEditPrefs: () => void;
   onBuild: () => void;
 }) {
+  if (courseCount === 0) {
+    return (
+      <section aria-labelledby="build-title" className="rounded-3xl bg-foreground text-background p-6 md:p-8 space-y-3">
+        <h2 id="build-title" className="text-2xl font-black">{hasGradedRecord ? "ما فيه مواد مسجّلة في سجلك الحين" : "نحتاج مواد فصلك عشان نبني خطتك"}</h2>
+        <p className="opacity-80 leading-7 max-w-xl">
+          {hasGradedRecord
+            ? "سجلك المرفوع مرصود بالكامل (بين فصلين أو بعد التخرج). بعد ما تسجّل مواد الفصل الجديد ارفع السجل مرة ثانية."
+            : "ارفع سجلك الأكاديمي من الملف الشخصي. منه نعرف مواد الفصل ونوزّع عليها جلسات المراجعة."}
+        </p>
+        <Link href="/profile" prefetch={false} className="inline-flex items-center h-11 px-5 rounded-xl bg-background text-foreground font-bold">
+          ارفع السجل
+        </Link>
+      </section>
+    );
+  }
   return (
     <section aria-labelledby="build-title" className="rounded-3xl bg-foreground text-background p-6 md:p-8 space-y-5">
       <div className="space-y-1.5 max-w-xl">

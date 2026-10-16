@@ -22,7 +22,7 @@ test("protected pages send signed-out visitors to /login and back", async ({ pag
   await expect(page).toHaveURL(/\/dashboard\/$/);
   // first sign-in on this account → the welcome tour opens over the dashboard
   await page.getByRole("dialog").getByRole("button", { name: "تخطي الجولة" }).click();
-  await expect(page.getByRole("heading", { name: /أهلاً بك مجدداً/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^أهلاً/ })).toBeVisible();
 });
 
 test("wrong credentials show an Arabic error and stay on /login", async ({ page }) => {

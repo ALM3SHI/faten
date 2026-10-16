@@ -6,8 +6,10 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("build the week, then tick a session done and see it on the strip", async ({ page }) => {
+  // the plan's old address opens «وقتي», which now holds it
   await page.goto("/plan/");
-  await expect(page.getByRole("heading", { name: "خطة المذاكرة" })).toBeVisible();
+  await expect(page).toHaveURL(/\/time\/?$/);
+  await expect(page.getByRole("heading", { name: "وقتي", exact: true })).toBeVisible();
   const build = page.getByRole("region", { name: "ابنِ أسبوعك" });
   await expect(build.getByText(/مواد? من سجلك هذا الفصل/)).toBeVisible();
   await build.getByRole("button", { name: "ابنِ خطة الأسبوع" }).click();
@@ -32,7 +34,7 @@ test("build the week, then tick a session done and see it on the strip", async (
 });
 
 test("a session starts a focus timer, and a dated appointment shows on its day", async ({ page }) => {
-  await page.goto("/plan/");
+  await page.goto("/time/");
   await page.getByRole("button", { name: "ابنِ خطة الأسبوع" }).click();
   await page.getByRole("tablist", { name: "أيام الأسبوع" }).getByRole("tab", { name: /^الأحد/ }).click();
   await page.getByRole("button", { name: "ابدأ" }).first().click();
@@ -41,7 +43,7 @@ test("a session starts a focus timer, and a dated appointment shows on its day",
 });
 
 test("rebuilding asks first, and keeps the week", async ({ page }) => {
-  await page.goto("/plan/");
+  await page.goto("/time/");
   await page.getByRole("button", { name: "ابنِ خطة الأسبوع" }).click();
   await expect(page.getByText(/من 4 جلسات/)).toBeVisible();
   await page.getByRole("button", { name: "أعد بناء الأسبوع" }).click();
