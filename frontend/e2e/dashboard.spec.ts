@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { signIn } from "./helpers";
+import { readFileSync } from "node:fs";
+
+// Playwright runs from the frontend folder (playwright.config.ts).
+const FIXTURE = JSON.parse(readFileSync("e2e/advisor-fixture.json", "utf8"));
 
 test.beforeEach(async ({ page }) => {
   await signIn(page);
@@ -53,4 +57,21 @@ test("today shows the next lecture and the ask box opens the chat", async ({ pag
   await page.getByRole("searchbox").or(page.getByLabel("اسأل فطن")).first().fill("كم أغيب قبل الحرمان؟");
   await page.getByRole("button", { name: "اسأل", exact: true }).click();
   await expect(page).toHaveURL(/\/chat\/?\?query=/);
+});
+
+test("«معدّلي» shows the advisor's latest advice without re-running it", async ({ page }) => {
+  await page.route("**/api/advisor/latest", (route) => route.fulfill({ json: { run: FIXTURE.run } }));
+  await page.goto("/record/");
+  const advice = page.getByRole("region", { name: "المرشد يقترح" });
+  await expect(advice.getByText("الفصل الثاني 1448")).toBeVisible();
+  await expect(advice.getByText("5 مقررات · 12 ساعة")).toBeVisible();
+  await expect(advice.getByText("برمجة الحاسب بلغة جافا")).toBeVisible();
+  await expect(advice.getByText(/رسبت في CS1701 مرتين/)).toBeVisible();
+  await advice.getByRole("link", { name: /لماذا؟/ }).click();
+  await expect(page).toHaveURL(/\/advisor\/?$/);
+});
+
+test("«معدّلي» invites a first analysis when there is none", async ({ page }) => {
+  await page.goto("/record/");
+  await expect(page.getByRole("link", { name: /وش أسجّل الفصل القادم؟/ })).toBeVisible();
 });

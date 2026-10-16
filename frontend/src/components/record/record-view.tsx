@@ -4,7 +4,7 @@
  * «معدّلي» — how am I doing academically, on one screen.
  *
  *   • Numbers     — GPA · hours (with graduation) · target, each opens its dialog
- *   • Next step   — try a grade scenario (/gpa) · the advisor's plan (/advisor)
+ *   • Next step   — try a grade scenario (/gpa) · the advisor's latest advice
  *   • Analysis    — GPA trend | high-ROI courses | plan adherence
  *   • More        — detailed transcript, simulator, advisor
  *
@@ -33,6 +33,7 @@ import { HighRoiCard } from "@/components/dashboard/high-roi-card";
 import { MigrationBoundary } from "@/components/dashboard/migration-boundary";
 import { CumulativeGpaCard, GpaTrendInsight } from "@/components/dashboard/cumulative-gpa-card";
 import { TaskRolloverDialog } from "@/components/dashboard/task-rollover-dialog";
+import { AdvisorTeaser } from "@/components/record/advisor-teaser";
 
 const AdherenceDialogContent = dynamic(
   () => import("@/components/dashboard/adherence-dialog").then((m) => m.AdherenceDialogContent),
@@ -187,24 +188,16 @@ export function RecordView() {
             />
           </div>
 
-          <div className="grid gap-2.5 sm:grid-cols-2">
-            <Link
-              href="/gpa"
-              prefetch={false}
-              className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-uqu-accent text-white font-bold hover:bg-uqu-accent/90 transition-colors"
-            >
-              <Calculator className="w-4 h-4" aria-hidden />
-              جرّب سيناريو لدرجات هذا الفصل
-            </Link>
-            <Link
-              href="/advisor"
-              prefetch={false}
-              className="flex items-center justify-center gap-2 h-12 rounded-2xl border border-foreground/15 font-bold hover:bg-foreground/5 transition-colors"
-            >
-              <Compass className="w-4 h-4" aria-hidden />
-              وش أسجّل الفصل القادم؟
-            </Link>
-          </div>
+          <Link
+            href="/gpa"
+            prefetch={false}
+            className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-uqu-accent text-white font-bold hover:bg-uqu-accent/90 transition-colors"
+          >
+            <Calculator className="w-4 h-4" aria-hidden />
+            جرّب سيناريو لدرجات هذا الفصل
+          </Link>
+
+          <AdvisorTeaser />
 
           {analyticsError?.kind === "migration" ? (
             <MigrationBoundary detail={analyticsError.detail} />
