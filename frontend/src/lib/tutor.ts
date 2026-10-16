@@ -157,6 +157,13 @@ export interface LectureSummary {
 
 export const MAX_PDF_MB = 10;
 
+/**
+ * The session an upload just returned, handed to the tutor page so it
+ * opens without a refetch. Set by «ذاكر محاضرة» (/study) right before it
+ * navigates to /tutor?lecture=…; the session view takes it once.
+ */
+export const tutorHandoff: { session: Session | null } = { session: null };
+
 export async function uploadLecture(file: File): Promise<Session> {
   const form = new FormData();
   form.append("file", file);

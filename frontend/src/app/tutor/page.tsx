@@ -15,55 +15,42 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   BookOpenCheck,
-  Brain,
-  FileUp,
-  GraduationCap,
   ListTree,
   Loader2,
   PauseCircle,
   PlayCircle,
-  RefreshCw,
   RotateCcw,
   Send,
   Sparkles,
-  Trash2,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
-import { ChatModeSwitch } from "@/components/tutor/mode-switch";
 import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
 import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
 import { SlideViewer } from "@/components/tutor/slide-viewer";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { useHydrated } from "@/lib/use-hydrated";
 import { ApiError } from "@/lib/api";
-import { saveLectureFile } from "@/lib/lecture-files";
 import { logPomodoroSession, todayYmd } from "@/lib/pomodoro";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import {
   DEFAULT_FOCUS,
-  MAX_PDF_MB,
   STATUS_LABEL,
   clockSkew,
-  deleteLecture,
   isConflict,
   lectureTerms,
-  listLectures,
   loadSession,
   masteredCount,
   mergeTerms,
   nowWithSkew,
-  pct,
   resetLecture,
   resumeFocus,
   saveFocus,
   sendStep,
-  uploadLecture,
+  tutorHandoff,
   type Action,
   type Confidence,
   type FocusState,
-  type LectureSummary,
   type ReportReason,
   type Session,
   type TutorMessage,
@@ -79,220 +66,19 @@ export default function TutorPage() {
   );
 }
 
-/** The session returned by an upload, handed to the session view without a refetch. */
-let handoff: Session | null = null;
-
 function TutorContent() {
   const params = useSearchParams();
   const router = useRouter();
   const id = params.get("lecture");
+  // The tutor has no home of its own any more: uploading and the list of
+  // lectures live in «ذاكر محاضرة» (/study), next to the quick review.
+  useEffect(() => {
+    if (!id) router.replace("/study");
+  }, [id, router]);
   return id ? (
-    <StudySession key={id} id={id} startReview={params.get("review") === "1"} onExit={() => router.push("/tutor")} />
+    <StudySession key={id} id={id} startReview={params.get("review") === "1"} onExit={() => router.push("/study")} />
   ) : (
-    <TutorHome
-      onOpen={(s) => {
-        handoff = s;
-        router.push(`/tutor?lecture=${encodeURIComponent(s.lecture.id)}`);
-      }}
-      onResume={(lid) => router.push(`/tutor?lecture=${encodeURIComponent(lid)}`)}
-      onReview={(lid) => router.push(`/tutor?lecture=${encodeURIComponent(lid)}&review=1`)}
-    />
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════
-//  Home: upload a lecture or continue one
-// ══════════════════════════════════════════════════════════════════
-
-const UPLOAD_STEPS = ["أرفع الملف…", "أقرأ الصفحات والجداول والصور…", "أرتّب المحاضرة في موضوعات…", "أجهّز خطة الدراسة…"];
-
-function TutorHome({ onOpen, onResume, onReview }: { onOpen: (s: Session) => void; onResume: (id: string) => void; onReview: (id: string) => void }) {
-  const mounted = useHydrated();
-  const [lectures, setLectures] = useState<LectureSummary[] | null>(null);
-  const [listError, setListError] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [stepIdx, setStepIdx] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [drag, setDrag] = useState(false);
-  const [toDelete, setToDelete] = useState<LectureSummary | null>(null);
-  const dueToday = (lectures ?? []).filter((l) => l.reviewDue > 0);
-
-  const refresh = useCallback(() => {
-    setListError(null);
-    listLectures()
-      .then(setLectures)
-      .catch((e) => setListError(e instanceof Error ? e.message : "تعذّر تحميل محاضراتك."));
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    let alive = true;
-    listLectures()
-      .then((l) => alive && setLectures(l))
-      .catch((e) => alive && setListError(e instanceof Error ? e.message : "تعذّر تحميل محاضراتك."));
-    return () => {
-      alive = false;
-    };
-  }, [mounted]);
-
-  useEffect(() => {
-    if (!uploading) return;
-    const t = window.setInterval(() => setStepIdx((i) => Math.min(UPLOAD_STEPS.length - 1, i + 1)), 6000);
-    return () => window.clearInterval(t);
-  }, [uploading]);
-
-  const upload = async (f: File | undefined) => {
-    setError(null);
-    if (!f) return;
-    if (!f.name.toLowerCase().endsWith(".pdf") && f.type !== "application/pdf") return setError("اختر ملف PDF.");
-    if (f.size > MAX_PDF_MB * 1024 * 1024) return setError(`حجم الملف أكبر من ${MAX_PDF_MB} ميجابايت.`);
-    setUploading(true);
-    setStepIdx(0);
-    try {
-      const session = await uploadLecture(f);
-      await saveLectureFile(session.lecture.fileHash, f, f.name);
-      if (session.reused === "mine") toast.info("هذه المحاضرة عندك من قبل — نكمل من حيث توقفت.");
-      onOpen(session);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "تعذّر تجهيز المحاضرة. حاول مرة أخرى.");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const remove = async (l: LectureSummary) => {
-    try {
-      await deleteLecture(l.id);
-      setLectures((xs) => (xs ?? []).filter((x) => x.id !== l.id));
-      toast.success("حُذفت المحاضرة وتقدّمها.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذّر الحذف.");
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-background pb-28" dir="rtl">
-      <Navbar />
-      <main className="container mx-auto pt-24 px-4 max-w-3xl space-y-6">
-        <ChatModeSwitch active="tutor" />
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black flex items-center gap-3">
-            <GraduationCap className="w-8 h-8 text-uqu-accent" aria-hidden />
-            المذاكرة الذكية
-          </h1>
-          <p className="text-muted-foreground text-[14.5px] leading-7 mt-2">
-            ارفع ملف المحاضرة وأنا أدرّسك إياها موضوعاً موضوعاً: أشرح من الشرائح نفسها، أتأكد من فهمك بأسئلة، أعالج أخطاءك،
-            وما ننتقل للموضوع التالي إلا إذا أتقنت الحالي. وفي النهاية اختبار شامل وخطة مراجعة.
-          </p>
-        </div>
-
-        {dueToday.length > 0 && (
-          <section className="rounded-3xl border border-sky-500/30 bg-sky-500/[0.06] p-5 space-y-3" aria-label="مراجعة اليوم">
-            <div className="flex items-center gap-2 font-black">
-              <Brain className="w-5 h-5 text-sky-600" aria-hidden /> مراجعة اليوم
-            </div>
-            <p className="text-[13.5px] text-muted-foreground leading-7">
-              موضوعات أتقنتها وحان موعد مراجعتها. سؤال واحد من كل موضوع — الاسترجاع في وقته هو ما يمنع النسيان.
-            </p>
-            <ul className="space-y-2">
-              {dueToday.map((l) => (
-                <li key={l.id} className="flex items-center gap-3">
-                  <span className="flex-1 min-w-0">
-                    <span className="block font-bold text-[14px] truncate" dir="auto">{l.title}</span>
-                    <span className="block text-[12px] text-muted-foreground truncate" dir="auto">{(l.dueTopics ?? []).map((t) => t.title).join("، ")}</span>
-                  </span>
-                  <button type="button" onClick={() => onReview(l.id)} className="h-9 px-4 rounded-xl bg-sky-600 text-white text-[13px] font-bold shrink-0">
-                    راجع ({l.reviewDue})
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        <label
-          htmlFor="tutor-file"
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDrag(true);
-          }}
-          onDragLeave={() => setDrag(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDrag(false);
-            if (!uploading) void upload(e.dataTransfer.files?.[0]);
-          }}
-          className={cn(
-            "flex flex-col items-center justify-center gap-3 p-8 rounded-3xl border-2 border-dashed text-center transition-colors",
-            uploading ? "border-uqu-accent/40 bg-uqu-accent/5 cursor-wait" : drag ? "border-uqu-accent bg-uqu-accent/10 cursor-copy" : "border-foreground/15 hover:border-uqu-accent/40 cursor-pointer",
-          )}
-          aria-busy={uploading}
-        >
-          {uploading ? <Loader2 className="w-10 h-10 text-uqu-accent animate-spin" aria-hidden /> : <FileUp className="w-10 h-10 text-uqu-accent" aria-hidden />}
-          <div className="font-bold" aria-live="polite">{uploading ? UPLOAD_STEPS[stepIdx] : "ارفع ملف المحاضرة (PDF) أو اسحبه هنا"}</div>
-          <div className="text-xs text-muted-foreground leading-6">
-            {uploading
-              ? "المحاضرات الطويلة أو المصوّرة قد تأخذ حتى دقيقتين. لا تغلق الصفحة."
-              : `حتى ${MAX_PDF_MB} ميجابايت و120 صفحة · يقرأ العربي والإنجليزي والجداول والأكواد والشرائح المصوّرة · يستهلك 5 من رصيدك اليومي مرة واحدة`}
-          </div>
-          <input id="tutor-file" type="file" accept=".pdf,application/pdf" className="hidden" disabled={uploading} onChange={(e) => void upload(e.target.files?.[0])} />
-        </label>
-        {error && <p className="text-sm text-rose-500 font-medium" role="alert">{error}</p>}
-
-        <section className="space-y-3" aria-label="محاضراتك">
-          <div className="flex items-center justify-between">
-            <h2 className="font-bold">محاضراتك</h2>
-            {listError && (
-              <button type="button" onClick={refresh} className="text-[13px] text-uqu-accent font-bold inline-flex items-center gap-1">
-                <RefreshCw className="w-3.5 h-3.5" aria-hidden /> إعادة المحاولة
-              </button>
-            )}
-          </div>
-          {listError && <p className="text-sm text-rose-500">{listError}</p>}
-          {lectures === null && !listError && (
-            <div className="flex justify-center py-8 text-muted-foreground" role="status">
-              <Loader2 className="w-5 h-5 animate-spin" aria-hidden />
-              <span className="sr-only">جاري التحميل…</span>
-            </div>
-          )}
-          {lectures?.length === 0 && <p className="text-sm text-muted-foreground">لم ترفع محاضرة بعد. ابدأ بأقرب محاضرة عندك اختبار فيها.</p>}
-          {lectures?.map((l) => {
-            const mastered = (l.counts.mastered ?? 0) + (l.counts.review_due ?? 0);
-            const share = l.topics ? mastered / l.topics : 0;
-            return (
-              <div key={l.id} className="flex items-center gap-3 p-4 rounded-2xl border border-foreground/10 bg-card">
-                <button type="button" onClick={() => onResume(l.id)} className="flex-1 min-w-0 text-right">
-                  <div className="font-bold truncate" dir="auto">{l.title}</div>
-                  <div className="text-xs text-muted-foreground truncate mt-0.5">
-                    {l.fileName} · {l.topics} موضوعات · {l.pageCount} صفحة
-                    {l.finalScore !== null && l.finalScore !== undefined ? ` · الاختبار الشامل ${pct(l.finalScore)}` : ""}
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="flex-1 h-1.5 rounded-full bg-foreground/10 overflow-hidden" aria-hidden>
-                      <div className="h-full bg-emerald-500" style={{ width: `${Math.round(share * 100)}%` }} />
-                    </div>
-                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">{mastered}/{l.topics} متقن</span>
-                  </div>
-                  {l.reviewDue > 0 && <div className="text-[11.5px] font-bold text-sky-600 mt-1">{l.reviewDue} موضوع للمراجعة اليوم</div>}
-                </button>
-                <button type="button" onClick={() => setToDelete(l)} className="p-2 rounded-lg text-muted-foreground hover:text-rose-500" aria-label={`حذف ${l.title}`}>
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            );
-          })}
-        </section>
-      </main>
-      <ConfirmDialog
-        open={toDelete !== null}
-        onOpenChange={(o) => !o && setToDelete(null)}
-        title="حذف المحاضرة"
-        description="سيُحذف تقدّمك وسجل المذاكرة لهذه المحاضرة. لا يمكن التراجع."
-        confirmLabel="حذف"
-        destructive
-        onConfirm={() => toDelete && void remove(toDelete)}
-      />
-    </div>
+    <div className="min-h-screen bg-background" aria-busy="true" />
   );
 }
 
@@ -316,7 +102,7 @@ const BUSY_LABEL: Record<string, string> = {
 const WHILE_PENDING = new Set(["hint", "reexplain", "reveal", "save_cards"]);
 
 function StudySession({ id, startReview, onExit }: { id: string; startReview?: boolean; onExit: () => void }) {
-  const [session, setSession] = useState<Session | null>(() => (handoff && handoff.lecture.id === id ? handoff : null));
+  const [session, setSession] = useState<Session | null>(() => (tutorHandoff.session && tutorHandoff.session.lecture.id === id ? tutorHandoff.session : null));
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState<{ message: string; retry: { action: string; payload: Record<string, unknown> } | null } | null>(null);
@@ -325,7 +111,7 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   const [slide, setSlide] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [skew, setSkew] = useState(() => (handoff && handoff.lecture.id === id ? clockSkew(handoff.focus?.serverNow) : 0));
+  const [skew, setSkew] = useState(() => (tutorHandoff.session && tutorHandoff.session.lecture.id === id ? clockSkew(tutorHandoff.session.focus?.serverNow) : 0));
   const prefs = useProfileStore((s) => s.preferences);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -341,8 +127,8 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   }, [id]);
 
   useEffect(() => {
-    if (handoff && handoff.lecture.id === id) {
-      handoff = null;
+    if (tutorHandoff.session && tutorHandoff.session.lecture.id === id) {
+      tutorHandoff.session = null;
       return;
     }
     let alive = true;

@@ -9,9 +9,12 @@ async function asNewStudent(page: Page, name: string) {
 
 test("study mode: upload → lecture map → goal → lesson → check with retry → topic mastered, then restored", async ({ page }) => {
   await asNewStudent(page, "journey");
+  // the tutor's old address now opens «ذاكر محاضرة», where the file is picked once
   await page.goto("/tutor/");
-  await expect(page.getByRole("heading", { name: "المذاكرة الذكية" })).toBeVisible();
-  await page.locator("#tutor-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await expect(page).toHaveURL(/\/study\/$/);
+  await expect(page.getByRole("heading", { name: "ذاكر محاضرة" })).toBeVisible();
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
 
   await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toBeVisible();
   await expect(page.getByText("قرأتُ 1 صفحة مصوّرة")).toBeVisible();
@@ -60,6 +63,14 @@ test("study mode: upload → lecture map → goal → lesson → check with retr
   await page.reload();
   await expect(page.getByText("أتقنت: المكدس (Stack)")).toBeVisible();
   await expect(page.getByRole("button", { name: "الموضوع التالي" })).toBeVisible();
+
+  // back in «ذاكر محاضرة», the lesson sits in the one list of files
+  await page.goto("/study/");
+  const files = page.getByRole("region", { name: "ملفاتك" });
+  const lesson = files.getByRole("listitem").filter({ has: page.getByText("درس", { exact: true }) });
+  await expect(lesson.getByText("هياكل البيانات: المكدس والطابور")).toBeVisible();
+  // the cards saved during the lesson sit next to it, labelled as cards
+  await expect(files.getByRole("listitem").filter({ has: page.getByText("بطاقات", { exact: true }) })).toHaveCount(1);
 });
 
 test("asking and studying are the two separate modes of فطن", async ({ page }) => {
@@ -69,8 +80,6 @@ test("asking and studying are the two separate modes of فطن", async ({ page }
   await expect(modes.getByRole("link", { name: "اسأل" })).toHaveAttribute("aria-current", "page");
   await modes.getByRole("link", { name: "ذاكر محاضرة" }).click();
   await expect(page).toHaveURL(/\/study\/$/);
-  await page.getByRole("link", { name: /جرّب المذاكرة الذكية/ }).click();
-  await expect(page).toHaveURL(/\/tutor\/$/);
   await expect(page.getByRole("navigation", { name: "وضع فطن" }).getByRole("link", { name: "ذاكر محاضرة" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByText("لم ترفع محاضرة بعد")).toBeVisible();
   // the study mode never writes into the chat history
@@ -80,8 +89,9 @@ test("asking and studying are the two separate modes of فطن", async ({ page }
 
 test("a student can report a wrong question and it is skipped", async ({ page }) => {
   await asNewStudent(page, "report");
-  await page.goto("/tutor/");
-  await page.locator("#tutor-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
   await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
   await page.getByRole("button", { name: "ابدأ الشرح" }).click();
   // the answer buttons need a choice first
