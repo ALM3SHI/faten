@@ -1,0 +1,642 @@
+{
+  "DELETE /api/account": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "confirm"
+    ],
+    "response": []
+  },
+  "GET /api/admin/me": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/admin/overview": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/admin/reviews/{code}/{rid}/{action}": {
+    "params": [
+      "header:authorization",
+      "path:action",
+      "path:code",
+      "path:rid"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/admin/tutor-insights": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/advisor/analyze": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "overrides"
+    ],
+    "response": []
+  },
+  "POST /api/advisor/ask": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "history",
+      "question",
+      "run_id"
+    ],
+    "response": []
+  },
+  "GET /api/advisor/catalog": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/advisor/catalog/{program_id}": {
+    "params": [
+      "header:authorization",
+      "path:program_id"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/advisor/compare-majors": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "interests",
+      "program_ids"
+    ],
+    "response": []
+  },
+  "GET /api/advisor/instructor-map": {
+    "params": [
+      "header:authorization",
+      "query:program_id"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/advisor/instructors/{code}": {
+    "params": [
+      "header:authorization",
+      "path:code"
+    ],
+    "body": [],
+    "response": []
+  },
+  "PUT /api/advisor/instructors/{code}/review": {
+    "params": [
+      "header:authorization",
+      "path:code"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/advisor/latest": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/advisor/settings": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "PUT /api/advisor/settings": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/advisor/validate-schedule": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "codes",
+      "summer"
+    ],
+    "response": []
+  },
+  "POST /api/analytics/dashboard": {
+    "params": [],
+    "body": [
+      "completed_courses",
+      "current_courses",
+      "current_gpa",
+      "earned_hours",
+      "target_gpa"
+    ],
+    "response": [
+      "advisor_recommendation",
+      "agentic_action",
+      "chart_data",
+      "gpa_trend_analysis",
+      "high_roi_courses",
+      "strengths_radar",
+      "target_analysis"
+    ]
+  },
+  "POST /api/chat": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "client_context",
+      "conversationId",
+      "messages"
+    ],
+    "response": [
+      "actions",
+      "client_actions",
+      "conversationId",
+      "error_type",
+      "message",
+      "success"
+    ]
+  },
+  "POST /api/chat/stream": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "client_context",
+      "conversationId",
+      "messages"
+    ],
+    "response": []
+  },
+  "GET /api/community/courses": {
+    "params": [
+      "header:authorization",
+      "query:q"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/community/courses/{code}": {
+    "params": [
+      "header:authorization",
+      "path:code"
+    ],
+    "body": [],
+    "response": []
+  },
+  "DELETE /api/community/courses/{code}/review": {
+    "params": [
+      "header:authorization",
+      "path:code"
+    ],
+    "body": [],
+    "response": []
+  },
+  "PUT /api/community/courses/{code}/review": {
+    "params": [
+      "header:authorization",
+      "path:code"
+    ],
+    "body": [
+      "difficulty",
+      "recommend",
+      "semester",
+      "tip",
+      "usefulness",
+      "workload"
+    ],
+    "response": []
+  },
+  "POST /api/community/courses/{code}/reviews/{rid}/report": {
+    "params": [
+      "header:authorization",
+      "path:code",
+      "path:rid"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/cron/daily-notifications": {
+    "params": [
+      "header:x-cron-secret"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/cron/lecture-reminders": {
+    "params": [
+      "header:x-cron-secret"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/feedback": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "answer",
+      "comment",
+      "conversationId",
+      "question",
+      "rating",
+      "tools"
+    ],
+    "response": []
+  },
+  "DELETE /api/memory": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/memory": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "DELETE /api/memory/{item_id}": {
+    "params": [
+      "header:authorization",
+      "path:item_id"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/news": {
+    "params": [
+      "query:limit"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/notifications/devices": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "platform",
+      "token"
+    ],
+    "response": []
+  },
+  "DELETE /api/notifications/devices/{device_id}": {
+    "params": [
+      "header:authorization",
+      "path:device_id"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/notifications/prefs": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "PUT /api/notifications/prefs": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "attendance",
+      "exams",
+      "lectures",
+      "reviews"
+    ],
+    "response": []
+  },
+  "POST /api/notifications/test": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/plan/generate-ai": {
+    "params": [],
+    "body": [
+      "backlog",
+      "courses",
+      "currentGpa",
+      "preferences",
+      "schedule",
+      "studentName",
+      "targetGpa"
+    ],
+    "response": [
+      "generatedAt",
+      "model",
+      "plan"
+    ]
+  },
+  "POST /api/pomodoro/log": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "completedAt",
+      "courseCode",
+      "courseName",
+      "date",
+      "duration",
+      "type"
+    ],
+    "response": [
+      "id",
+      "success"
+    ]
+  },
+  "GET /api/pomodoro/stats": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": [
+      "bestDayCount",
+      "bestStreak",
+      "courseBreakdown",
+      "currentStreak",
+      "recentSessions",
+      "todayMinutes",
+      "todaySessions",
+      "totalHours",
+      "totalMinutes",
+      "totalSessions",
+      "weeklyChart"
+    ]
+  },
+  "POST /api/schedule/analyze-vision": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "file"
+    ],
+    "response": []
+  },
+  "POST /api/stt/transcribe": {
+    "params": [],
+    "body": [
+      "audio",
+      "language"
+    ],
+    "response": []
+  },
+  "POST /api/study/pdf": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "file",
+      "language",
+      "questions"
+    ],
+    "response": []
+  },
+  "POST /api/transcript/analyze": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "completedCourses",
+      "confidence",
+      "degree",
+      "earnedHours",
+      "faculty",
+      "gpa",
+      "major",
+      "majorEn",
+      "name",
+      "nameEn",
+      "planHours",
+      "registeredCourses",
+      "semesters",
+      "studentId",
+      "totalPoints",
+      "university"
+    ],
+    "response": []
+  },
+  "GET /api/tutor/lectures": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/tutor/lectures": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "file"
+    ],
+    "response": []
+  },
+  "DELETE /api/tutor/lectures/{lid}": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [],
+    "response": []
+  },
+  "GET /api/tutor/lectures/{lid}": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [],
+    "response": []
+  },
+  "PUT /api/tutor/lectures/{lid}/focus": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [
+      "breakMin",
+      "completedFocus",
+      "durationSec",
+      "focusMin",
+      "mode",
+      "pausedAt",
+      "pausedTotalSec",
+      "startedAt"
+    ],
+    "response": []
+  },
+  "POST /api/tutor/lectures/{lid}/reset": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [],
+    "response": []
+  },
+  "POST /api/tutor/lectures/{lid}/step": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [
+      "action",
+      "payload",
+      "version"
+    ],
+    "response": []
+  },
+  "GET /api/workspace": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": [
+      "achievements",
+      "chats",
+      "notifications",
+      "plan",
+      "profile",
+      "schedule",
+      "success",
+      "transcript"
+    ]
+  },
+  "POST /api/workspace/chats/suppress-legacy-fallback": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [],
+    "response": [
+      "success"
+    ]
+  },
+  "DELETE /api/workspace/chats/{thread_id}": {
+    "params": [
+      "header:authorization",
+      "path:thread_id"
+    ],
+    "body": [],
+    "response": [
+      "success",
+      "threadId"
+    ]
+  },
+  "PATCH /api/workspace/chats/{thread_id}": {
+    "params": [
+      "header:authorization",
+      "path:thread_id"
+    ],
+    "body": [
+      "conversationId",
+      "createdAt",
+      "id",
+      "messages",
+      "preview",
+      "title",
+      "updatedAt"
+    ],
+    "response": [
+      "success",
+      "thread"
+    ]
+  },
+  "PATCH /api/workspace/plan": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "completed",
+      "generatedAt",
+      "model",
+      "plan"
+    ],
+    "response": [
+      "plan",
+      "success"
+    ]
+  },
+  "PATCH /api/workspace/profile": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "basic",
+      "goals",
+      "lastUpdated",
+      "preferences"
+    ],
+    "response": [
+      "profile",
+      "success"
+    ]
+  },
+  "PATCH /api/workspace/schedule": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "lastUpdated",
+      "schedule"
+    ],
+    "response": [
+      "schedule",
+      "success"
+    ]
+  },
+  "PATCH /api/workspace/transcript": {
+    "params": [
+      "header:authorization"
+    ],
+    "body": [
+      "completedCourses",
+      "confidence",
+      "currentCourses",
+      "degree",
+      "earnedHours",
+      "faculty",
+      "gpa",
+      "lastUpdated",
+      "major",
+      "name",
+      "nameEn",
+      "planHours",
+      "studentId",
+      "university"
+    ],
+    "response": [
+      "course_check",
+      "success",
+      "transcript"
+    ]
+  },
+  "GET /health": {
+    "params": [],
+    "body": [],
+    "response": []
+  }
+}
