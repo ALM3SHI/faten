@@ -68,7 +68,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   chatMessages: [
     {
       role: "bot",
-      content: "أهلاً بك! أنا المساعد الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني مساعدةك اليوم؟",
+      content: "أهلاً بك! أنا المساعد الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني مساعدتك اليوم؟",
       timestamp: new Date(),
     }
   ],

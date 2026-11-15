@@ -104,6 +104,9 @@ const SOURCED_REPLIES = [
   ],
 ];
 
+// An answer that also changes the app: the agent sets the student's target GPA.
+SOURCED_REPLIES.push(["هدفي", "تم. جعلت معدلك المستهدف 3.90.", [], [{ type: "UPDATE_TARGET_GPA", payload: { target: 3.9 } }]]);
+
 const ADMIN_OVERVIEW = {
   users: { total: 128, new_7d: 9, new_30d: 31 },
   usage: { active_today: 17, active_7d: 54, requests_today: 96 },
@@ -120,7 +123,39 @@ function chatReply(body) {
   const msgs = Array.isArray(body?.messages) ? body.messages : [];
   const q = String(body?.message ?? msgs.filter((m) => m?.role === "user").at(-1)?.content ?? "");
   const hit = SOURCED_REPLIES.find(([m]) => q.includes(m));
-  return hit ? { message: hit[1], actions: hit[2] } : { message: CHAT_REPLY, actions: [] };
+  return hit ? { message: hit[1], actions: hit[2], client_actions: hit[3] ?? [] } : { message: CHAT_REPLY, actions: [], client_actions: [] };
+}
+
+// ── Course reviews (in memory; /__reset clears them) ──
+const AVG = { difficulty: 3, workload: 4, usefulness: 5 };
+const communityCourses = () => [
+  { code: "CS1101", name: "مقدمة في البرمجة", count: 2 + (myReview ? 1 : 0), averages: AVG, recommend_pct: 100 },
+  { code: "MATH1101", name: "تفاضل وتكامل", count: 1, averages: { difficulty: 5, workload: 4, usefulness: 3 }, recommend_pct: 0 },
+];
+let myReview = null;
+function courseDetail(code) {
+  const base = communityCourses().find((c) => c.code === code) ?? { code, name: null, count: 0, averages: { difficulty: null, workload: null, usefulness: null }, recommend_pct: null };
+  const others = code === "CS1101"
+    ? [{ id: "r1", ratings: AVG, recommend: true, tip: "ركّز على حل التمارين كل أسبوع.", semester: "الأول 1447", status: "completed", updatedAt: "2026-10-01", mine: false }]
+    : [];
+  const mine = code === "CS1101" && myReview ? [myReview] : [];
+  return { ...base, reviews: [...mine, ...others], my_review: mine[0] ?? null, can_review: code === "CS1101", my_course_name: code === "CS1101" ? "مقدمة في البرمجة" : null };
+}
+function handleCommunity(req, res, p, body) {
+  if (p === "/api/community/courses") return send(res, 200, { courses: communityCourses() });
+  const m = p.match(/^\/api\/community\/courses\/([^/]+)(\/review|\/reviews\/[^/]+\/report)?$/);
+  if (!m) return send(res, 404, { detail: "غير موجود في الخادم الوهمي." });
+  const code = decodeURIComponent(m[1]);
+  if (m[2] === "/review" && req.method === "PUT") {
+    myReview = { id: "mine", ratings: { difficulty: body.difficulty, workload: body.workload, usefulness: body.usefulness }, recommend: body.recommend, tip: body.tip ?? "", semester: body.semester ?? "", status: "completed", updatedAt: "2026-11-15", mine: true };
+    return send(res, 200, courseDetail(code));
+  }
+  if (m[2] === "/review" && req.method === "DELETE") {
+    myReview = null;
+    return send(res, 200, courseDetail(code));
+  }
+  if (m[2]) return send(res, 200, { success: true });
+  return send(res, 200, courseDetail(code));
 }
 
 function send(res, status, body, headers = {}) {
@@ -164,6 +199,7 @@ const server = http.createServer(async (req, res) => {
   if (p === "/__requests") return send(res, 200, requests);
   if (p === "/__reset") {
     requests.length = 0;
+    myReview = null;
     return send(res, 200, { ok: true });
   }
   if (p === "/health") return send(res, 200, { status: "ok" });
@@ -198,6 +234,7 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/pomodoro/stats") return send(res, 200, { todaySessions: 2, totalSessions: 40, totalFocusMinutes: 1000, currentStreak: 4, longestStreak: 9 });
   if (p === "/api/pomodoro/log") return send(res, 200, { success: true });
   if (p === "/api/memory") return send(res, 200, { items: [] });
+  if (p === "/api/feedback") return send(res, 200, { success: true });
   if (p === "/api/study/pdf") return send(res, 200, STUDY_PACK);
   if (handleTutor(req, p, body, send, res)) return;
   if (p === "/api/advisor/catalog") return send(res, 200, ADVISOR.catalog);
@@ -221,15 +258,16 @@ const server = http.createServer(async (req, res) => {
     if (p === "/api/admin/overview") return send(res, 200, ADMIN_OVERVIEW);
     return send(res, 200, { success: true });
   }
+  if (p.startsWith("/api/community/")) return handleCommunity(req, res, p, body);
   if (p === "/api/chat/stream") {
     res.writeHead(200, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache" });
     const reply = chatReply(body);
     res.write(`data: ${JSON.stringify({ type: "status", tool: reply.actions[0]?.tool ?? "get_upcoming_exams" })}\n\n`);
     for (const word of reply.message.split(" ")) res.write(`data: ${JSON.stringify({ type: "token", text: word + " " })}\n\n`);
-    res.write(`data: ${JSON.stringify({ type: "done", response: { success: true, message: reply.message, conversationId: "conv-e2e", actions: reply.actions, client_actions: [] } })}\n\n`);
+    res.write(`data: ${JSON.stringify({ type: "done", response: { success: true, message: reply.message, conversationId: "conv-e2e", actions: reply.actions, client_actions: reply.client_actions } })}\n\n`);
     return res.end();
   }
-  if (p === "/api/chat") return send(res, 200, { success: true, ...chatReply(body), conversationId: "conv-e2e", client_actions: [] });
+  if (p === "/api/chat") return send(res, 200, { success: true, ...chatReply(body), conversationId: "conv-e2e" });
   return send(res, 404, { detail: "غير موجود في الخادم الوهمي." });
 });
 

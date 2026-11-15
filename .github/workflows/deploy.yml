@@ -1,0 +1,114 @@
+# Publishes the frontend to Firebase Hosting, so what is live always matches
+# the repository:
+#
+#   • after CI passes on main  → the live site (https://fatenai.web.app)
+#   • on a pull request        → a temporary preview URL, posted in the job summary
+#
+# One-time setup (repository → Settings → Secrets and variables → Actions).
+# Until it is done, both jobs skip themselves and nothing is deployed:
+#
+#   Secret    FIREBASE_SERVICE_ACCOUNT        JSON key of a service account with the
+#                                             "Firebase Hosting Admin" role
+#   Variable  NEXT_PUBLIC_AGENT_BASE_URL      the backend URL (same line as in
+#                                             frontend/.env.production.local)
+#   Variable  NEXT_PUBLIC_FIREBASE_VAPID_KEY  optional — web push key
+#
+# Firestore rules and indexes are NOT deployed from here; they still go out
+# with DEPLOY_FRONTEND.bat, on purpose, so a rules change is always deliberate.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || 'live' }}
+  cancel-in-progress: true
+
+jobs:
+  live:
+    name: Live site
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check that deploy is configured
+        id: cfg
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          API: ${{ vars.NEXT_PUBLIC_AGENT_BASE_URL }}
+        run: |
+          if [ -n "$SA" ] && [ -n "$API" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Deploy skipped: FIREBASE_SERVICE_ACCOUNT or NEXT_PUBLIC_AGENT_BASE_URL is not set."; fi
+      - uses: actions/checkout@v6
+        if: steps.cfg.outputs.ready == 'true'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v6
+        if: steps.cfg.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build
+        if: steps.cfg.outputs.ready == 'true'
+        working-directory: frontend
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_PUBLIC_AGENT_BASE_URL: ${{ vars.NEXT_PUBLIC_AGENT_BASE_URL }}
+          NEXT_PUBLIC_FIREBASE_VAPID_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_VAPID_KEY }}
+        run: npm ci && npm run build
+      - name: Deploy to Firebase Hosting
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
+            npx --yes firebase-tools deploy --only hosting --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json"
+
+  preview:
+    name: Preview
+    # Secrets are not available to pull requests from forks.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check that deploy is configured
+        id: cfg
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          API: ${{ vars.NEXT_PUBLIC_AGENT_BASE_URL }}
+        run: |
+          if [ -n "$SA" ] && [ -n "$API" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Preview skipped: FIREBASE_SERVICE_ACCOUNT or NEXT_PUBLIC_AGENT_BASE_URL is not set."; fi
+      - uses: actions/checkout@v6
+        if: steps.cfg.outputs.ready == 'true'
+      - uses: actions/setup-node@v6
+        if: steps.cfg.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build
+        if: steps.cfg.outputs.ready == 'true'
+        working-directory: frontend
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_PUBLIC_AGENT_BASE_URL: ${{ vars.NEXT_PUBLIC_AGENT_BASE_URL }}
+          NEXT_PUBLIC_FIREBASE_VAPID_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_VAPID_KEY }}
+        run: npm ci && npm run build
+      - name: Deploy preview channel
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          CHANNEL: pr-${{ github.event.pull_request.number }}
+        run: |
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" \
+            npx --yes firebase-tools hosting:channel:deploy "$CHANNEL" --expires 7d --non-interactive \
+            | tee "$RUNNER_TEMP/deploy.log"
+          rm -f "$RUNNER_TEMP/sa.json"
+          { echo "### Preview"; grep -Eo 'https://[^ ]+\.web\.app' "$RUNNER_TEMP/deploy.log" | tail -1; } >> "$GITHUB_STEP_SUMMARY"
