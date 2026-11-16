@@ -1,6 +1,18 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import fs from "node:fs";
+import { RAW_BUTTON_MESSAGE, RULES } from "./design-rules.mjs";
+
+// Design system v2 guard. Files listed in design-debt.json have not been
+// migrated yet and are exempt; every other file must stay on the system.
+// The list only shrinks (scripts/design-debt.mjs).
+const designDebt = JSON.parse(fs.readFileSync(new URL("./design-debt.json", import.meta.url), "utf8")).files;
+const classRules = RULES.flatMap((rule) => [
+  { selector: `Literal[value=/${rule.pattern}/]`, message: rule.message },
+  { selector: `TemplateElement[value.raw=/${rule.pattern}/]`, message: rule.message },
+]);
+const rawButton = { selector: "JSXOpeningElement[name.name='button']", message: RAW_BUTTON_MESSAGE };
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -18,6 +30,17 @@ const eslintConfig = defineConfig([
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
       ],
     },
+  },
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: [...designDebt, "src/**/__tests__/**"],
+    rules: { "no-restricted-syntax": ["error", ...classRules, rawButton] },
+  },
+  {
+    // The primitives themselves are where <button> is allowed.
+    files: ["src/components/ds/**", "src/components/ui/**"],
+    ignores: designDebt,
+    rules: { "no-restricted-syntax": ["error", ...classRules] },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([

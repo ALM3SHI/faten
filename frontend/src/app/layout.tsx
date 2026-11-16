@@ -68,12 +68,13 @@ export default function RootLayout({
   // Inline pre-hydration script: read the saved theme from localStorage and
   // apply the `dark` class on <html> BEFORE React boots. This avoids the
   // flash-of-wrong-theme on first paint and prevents hydration mismatch.
-  // Defaults to dark so existing users keep the look they expect.
+  // With no saved choice the site follows the device's light/dark setting;
+  // a choice made with the toggle always wins.
   const themeBootScript = `
     (function() {
       try {
         var saved = localStorage.getItem('uqu-theme');
-        var isDark = saved ? saved === 'dark' : true;
+        var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (isDark) document.documentElement.classList.add('dark');
         else document.documentElement.classList.remove('dark');
       } catch (e) {

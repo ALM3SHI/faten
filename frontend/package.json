@@ -14,6 +14,7 @@
     "capture:landing": "node scripts/capture-landing.mjs",
     "a11y:baseline": "node scripts/a11y-baseline.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
+    "design:debt": "node scripts/design-debt.mjs",
     "visual:baseline": "node scripts/visual.mjs --update",
     "visual:check": "node scripts/visual.mjs"
   },

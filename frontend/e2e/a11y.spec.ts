@@ -26,7 +26,7 @@ const SIGNED_IN = [
   "/dashboard/", "/time/", "/schedule/", "/exams/", "/attendance/", "/pomodoro/",
   "/chat/", "/advisor/", "/study/", "/tutor/",
   "/record/", "/gpa/", "/transcript/",
-  "/profile/", "/community/", "/admin/",
+  "/profile/", "/community/", "/admin/", "/admin/design/",
 ];
 
 type Counts = Record<string, number>;
