@@ -457,7 +457,7 @@ export default function ProfilePage() {
 
         {/* Unsaved edits (basic info, goals, preferences) — one save bar for all tabs. */}
         {dirty && (
-          <div className="fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] lg:bottom-6 z-40 px-4 animate-in fade-in slide-in-from-bottom-2">
+          <div className="app-fixed-x fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] lg:bottom-6 z-40 px-4 animate-in fade-in slide-in-from-bottom-2">
             <div className="mx-auto max-w-4xl flex items-center justify-between gap-3 rounded-2xl border border-uqu-accent/30 bg-background/95 backdrop-blur-xl shadow-2xl px-4 py-3">
               <span className="text-sm font-bold">عندك تغييرات غير محفوظة</span>
               <Button onClick={handleSave} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">

@@ -60,6 +60,8 @@ import { ToastProvider } from "@/components/toast-provider";
 import { RouteGuard } from "@/components/route-guard";
 import { BackendWarmup } from "@/components/backend-warmup";
 import { BottomNav } from "@/components/bottom-nav";
+import { AppSidebarHost } from "@/components/app-sidebar-host";
+import { CommandPaletteHost } from "@/components/command-palette-host";
 
 export default function RootLayout({
   children,
@@ -93,11 +95,17 @@ export default function RootLayout({
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
       </head>
       <body className={`${cairo.variable} ${plexArabic.variable} font-sans antialiased`} suppressHydrationWarning>
+        {/* First stop for keyboard and screen-reader users on every page. */}
+        <a href="#content" className="skip-link">تخطَّ إلى المحتوى</a>
         <AuthProvider>
           <ToastProvider>
             <BackendWarmup />
-            <RouteGuard>{children}</RouteGuard>
+            <AppSidebarHost />
+            <div id="content" tabIndex={-1} className="outline-none">
+              <RouteGuard>{children}</RouteGuard>
+            </div>
             <BottomNav />
+            <CommandPaletteHost />
           </ToastProvider>
         </AuthProvider>
       </body>

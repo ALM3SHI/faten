@@ -19,6 +19,10 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     const isDark = document.documentElement.classList.contains("dark");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- read the theme the inline script already applied
     setTheme(isDark ? "dark" : "light");
+    // The command palette can switch the theme too.
+    const sync = () => setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
+    window.addEventListener("uqu-theme-change", sync);
+    return () => window.removeEventListener("uqu-theme-change", sync);
   }, []);
 
   const toggleTheme = () => {
