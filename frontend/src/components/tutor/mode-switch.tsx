@@ -20,7 +20,7 @@ export function ChatModeSwitch({ active, className }: { active: FatenMode; class
     { id: "study", href: "/study", label: "ذاكر محاضرة", Icon: BookOpenCheck },
   ] as const;
   return (
-    <nav aria-label="وضع فطن" className={cn("inline-flex p-1 rounded-xl bg-foreground/5 border border-foreground/10", className)}>
+    <nav aria-label="وضع فطن" className={cn("inline-flex rounded-control border border-line bg-surface-sunken p-1", className)}>
       {items.map(({ id, href, label, Icon }) => (
         <Link
           key={id}
@@ -28,11 +28,11 @@ export function ChatModeSwitch({ active, className }: { active: FatenMode; class
           prefetch={false}
           aria-current={current === id ? "page" : undefined}
           className={cn(
-            "inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[13px] font-bold transition-colors whitespace-nowrap",
-            current === id ? "bg-uqu-accent text-white" : "text-muted-foreground hover:text-foreground",
+            "inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-control px-3 text-small font-semibold motion-fast transition-colors focus-ring",
+            current === id ? "bg-surface text-ink shadow-card" : "text-ink-muted hover:text-ink",
           )}
         >
-          <Icon className="w-3.5 h-3.5" aria-hidden />
+          <Icon className={cn("size-4", current === id && "text-brand")} aria-hidden />
           {label}
         </Link>
       ))}
