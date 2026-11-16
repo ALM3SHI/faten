@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SITE } from "@/lib/site";
+import { plexArabic } from "@/app/fonts/plex";
 
 // Cairo variable font, self-hosted (SIL OFL — see fonts/OFL-Cairo.txt).
 // Bundling it removes the build-time fetch from Google Fonts, so builds work
@@ -91,7 +92,7 @@ export default function RootLayout({
         <link rel="preconnect" href={API_ORIGIN} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${cairo.variable} ${plexArabic.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
             <BackendWarmup />

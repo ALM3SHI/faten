@@ -76,7 +76,7 @@ export function Stat({
         {label}
         {hint && <span className="block text-caption font-normal">{hint}</span>}
       </dt>
-      <dd className={cn("nums order-1 text-display font-extrabold tracking-tight", ink)} dir="ltr">
+      <dd className={cn("nums order-1 font-heading text-display font-extrabold tracking-tight", ink)} dir="ltr">
         {value}
         {unit && <span className="ms-1 text-subheading font-semibold text-ink-muted">{unit}</span>}
       </dd>

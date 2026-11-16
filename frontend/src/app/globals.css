@@ -111,7 +111,10 @@
   --shadow-menu: var(--ds-shadow-menu);
   --shadow-dialog: var(--ds-shadow-dialog);
 
-  /* Long-form reading font (IBM Plex Sans Arabic), where a page opts in */
+  /* Two fonts, two jobs. Cairo is the voice of the brand: headings and the
+     big numbers. IBM Plex Sans Arabic is for reading: body text, labels,
+     form fields. A page gets both by putting `ds-page` on its root. */
+  --font-heading: var(--font-cairo);
   --font-body: var(--font-plex-arabic), var(--font-cairo);
 
   --radius-uqu-sm: var(--r-sm);
@@ -421,6 +424,17 @@ select option {
   .focus-ring { @apply outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-canvas; }
   /* Numbers that line up in columns (GPA, hours, counts). */
   .nums { font-variant-numeric: tabular-nums lining-nums; }
+}
+
+/* A page that has moved to design system v2. Body text reads in Plex;
+   headings keep Cairo. Pages without this class look exactly as before. */
+/* (`@theme inline` tokens are substituted into utilities and are not real
+   custom properties, so the font variables are spelled out here.) */
+.ds-page {
+  font-family: var(--font-plex-arabic), var(--font-cairo), sans-serif;
+}
+.ds-page :is(h1, h2, h3) {
+  font-family: var(--font-cairo), sans-serif;
 }
 
 @keyframes ds-skeleton {

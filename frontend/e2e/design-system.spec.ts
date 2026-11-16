@@ -45,11 +45,20 @@ test.describe("design system reference", () => {
     expect(smallest).toBeGreaterThanOrEqual(12);
   });
 
-  test("the reading-font sample really renders in IBM Plex Sans Arabic", async ({ page }) => {
+  test("body text reads in IBM Plex Sans Arabic and headings stay in Cairo", async ({ page }) => {
     await page.evaluate(() => document.fonts.ready);
     const family = (id: string) => page.getByTestId(id).evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(await family("sample-plex")).not.toBe(await family("sample-cairo"));
-    expect(await page.evaluate(() => [...document.fonts].some((f) => f.status === "loaded" && /plex/i.test(f.family)))).toBe(true);
+    const loaded = (name: RegExp) => page.evaluate((src) => [...document.fonts].some((f) => f.status === "loaded" && new RegExp(src, "i").test(f.family)), name.source);
+    expect(await family("sample-body")).not.toBe(await family("sample-heading"));
+    expect(await family("sample-heading")).toBe(await page.locator("h1").evaluate((el) => getComputedStyle(el).fontFamily));
+    expect(await loaded(/plex/)).toBe(true);
+    expect(await loaded(/cairo/)).toBe(true);
+  });
+
+  test("pages that have not moved to the design system do not download Plex", async ({ page }) => {
+    await page.goto("/privacy/");
+    await page.evaluate(() => document.fonts.ready);
+    expect(await page.evaluate(() => [...document.fonts].some((f) => f.status === "loaded" && /plex/i.test(f.family)))).toBe(false);
   });
 });
 

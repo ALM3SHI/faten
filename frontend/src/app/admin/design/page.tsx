@@ -11,7 +11,6 @@
 import { useState } from "react";
 import { BookOpenCheck, CalendarX2, Check, MapPin, Plus, Search, Trash2 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
-import { plexArabic } from "@/app/fonts/plex";
 import {
   Button,
   Card,
@@ -71,7 +70,7 @@ export default function DesignSystemPage() {
   const [busy, setBusy] = useState(false);
 
   return (
-    <div className={cn("min-h-screen bg-canvas pb-28 text-ink", plexArabic.variable)}>
+    <div className="ds-page min-h-screen bg-canvas pb-28 text-ink">
       <Navbar />
       <main id="main" className="container mx-auto max-w-5xl space-y-12 px-4 pt-24">
         <PageHeader
@@ -108,24 +107,19 @@ export default function DesignSystemPage() {
           <Card className="divide-y divide-line p-0 sm:p-0">
             {TYPE.map(([cls, sample, note]) => (
               <div key={cls} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 px-4 py-3 sm:px-5">
-                <span className={cn(cls, cls === "text-display" ? "nums font-extrabold" : cls === "text-body" || cls === "text-small" || cls === "text-caption" ? "" : "font-bold")}>{sample}</span>
+                <span className={cn(cls, cls === "text-display" ? "nums font-heading font-extrabold" : cls === "text-body" || cls === "text-small" || cls === "text-caption" ? "" : "font-heading font-bold")}>{sample}</span>
                 <span className="text-caption text-ink-muted">{note}</span>
               </div>
             ))}
           </Card>
         </Section>
 
-        <Section title="خط النص: مقارنة" text="نفس الفقرة بالخطين وبنفس الحجم. الهدف اختيار خط القراءة الطويلة للمحادثة والخصوصية.">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card as="article" className="space-y-2">
-              <h3 className="text-subheading font-semibold">Cairo (الحالي)</h3>
-              <p className="text-body" data-testid="sample-cairo">{SAMPLE}</p>
-            </Card>
-            <Card as="article" className="space-y-2">
-              <h3 className="text-subheading font-semibold">IBM Plex Sans Arabic (المقترح)</h3>
-              <p className="font-body text-body" data-testid="sample-plex">{SAMPLE}</p>
-            </Card>
-          </div>
+        <Section title="الخطان" text="Cairo للعناوين والأرقام البارزة، و IBM Plex Sans Arabic لكل ما يُقرأ: النص والتسميات والحقول.">
+          <Card as="article" className="space-y-3">
+            <h3 className="text-heading font-bold" data-testid="sample-heading">متى يُحرم الطالب من الاختبار النهائي؟</h3>
+            <p className="text-body" data-testid="sample-body">{SAMPLE}</p>
+            <p className="text-small text-ink-muted">المصدر: المادة 14 — لائحة الدراسة والاختبارات للمرحلة الجامعية.</p>
+          </Card>
         </Section>
 
         <Section title="الأزرار" text="فعل أساسي واحد في كل شاشة. الحجم الافتراضي 44 بكسلًا ليناسب اللمس.">
