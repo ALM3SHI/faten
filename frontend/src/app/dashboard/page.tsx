@@ -23,6 +23,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Flame, History } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { Button } from "@/components/ds/button";
+import { Skeleton } from "@/components/ds/states";
 import { AskFaten } from "@/components/dashboard/ask-faten";
 import { StatusStrip } from "@/components/dashboard/status-strip";
 import { NextUpCard, TodayTimeline, WeekGlance } from "@/components/dashboard/today-view";
@@ -111,24 +113,25 @@ export default function DashboardPage() {
     : " ";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="ds-page min-h-screen bg-canvas text-ink">
       <Navbar />
 
-      <main className="container mx-auto pt-24 pb-24 px-4 md:px-8 max-w-6xl space-y-6">
+      <main className="container mx-auto max-w-6xl space-y-6 px-4 pt-24 pb-24 md:px-8">
         <header className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight">{greeting}</h1>
-            <p className="text-muted-foreground mt-1">{dateLine}</p>
+            <h1 className="text-title font-bold text-balance">{greeting}</h1>
+            <p className="mt-1 text-body text-ink-muted">{dateLine}</p>
           </div>
+          {/* The focus streak. Its name starts with what is shown, then says what it is. */}
           <Link
             href="/pomodoro"
             prefetch={false}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-2xl shrink-0"
-            aria-label={`سلسلة التركيز: ${streak} يوم`}
+            className="flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-warning-line bg-warning-soft px-3.5 text-warning-ink motion-fast transition-colors hover:border-warning-ink focus-ring"
           >
-            <Flame className="w-4 h-4 text-orange-500 fill-orange-500" aria-hidden />
-            <span className="font-black text-orange-600 dark:text-orange-400 text-sm">{streak}</span>
-            <span className="text-muted-foreground text-xs font-bold">يوم</span>
+            <Flame className="size-4 fill-current" aria-hidden />
+            <span className="nums text-body font-bold">{streak}</span>
+            <span className="text-small font-medium">يوم</span>
+            <span className="sr-only">— سلسلة التركيز</span>
           </Link>
         </header>
 
@@ -145,20 +148,16 @@ export default function DashboardPage() {
         ) : (
           mounted &&
           overdueTasks.length > 0 && (
-            <div className="flex items-center gap-3 rounded-3xl border border-uqu-accent/20 bg-uqu-accent/[0.06] px-4 py-3">
-              <History className="w-5 h-5 text-uqu-accent shrink-0" aria-hidden />
-              <p className="flex-1 text-sm leading-6">
+            <div role="status" className="flex items-center gap-3 rounded-card border border-info-line bg-info-soft px-4 py-3 text-info-ink">
+              <History className="size-5 shrink-0" aria-hidden />
+              <p className="flex-1 text-body text-ink">
                 {overdueTasks.length === 1
                   ? `فاتتك جلسة «${overdueTasks[0].title}» من خطة هذا الأسبوع.`
                   : `فاتتك ${overdueTasks.length} جلسات من خطة هذا الأسبوع.`}
               </p>
-              <button
-                type="button"
-                onClick={() => setRolloverOpen(true)}
-                className="h-9 px-4 shrink-0 rounded-xl bg-uqu-accent text-white text-sm font-bold hover:bg-uqu-accent/90"
-              >
+              <Button variant="primary" size="sm" onClick={() => setRolloverOpen(true)} className="shrink-0">
                 رتّبها
-              </button>
+              </Button>
             </div>
           )
         )}
@@ -166,10 +165,10 @@ export default function DashboardPage() {
         {!now ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" aria-busy="true">
             <div className="space-y-6">
-              <div className="h-48 rounded-3xl bg-foreground/5 animate-pulse" />
-              <div className="h-64 rounded-3xl bg-foreground/5 animate-pulse" />
+              <Skeleton className="h-48 rounded-card" />
+              <Skeleton className="h-64 rounded-card" />
             </div>
-            <div className="h-40 rounded-3xl bg-foreground/5 animate-pulse" />
+            <Skeleton className="h-40 rounded-card" />
           </div>
         ) : (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-start">
@@ -182,7 +181,7 @@ export default function DashboardPage() {
             <div className="space-y-6 min-w-0">
               <WeekGlance now={now} />
               <section aria-labelledby="status-title" className="space-y-2">
-                <h2 id="status-title" className="font-black px-1">وضعي الأكاديمي</h2>
+                <h2 id="status-title" className="px-1 text-subheading font-bold">وضعي الأكاديمي</h2>
                 <StatusStrip
                   hydrated={hydrated}
                   gpa={currentGpa}
@@ -221,10 +220,10 @@ function FromUniversity() {
   return (
     <section aria-labelledby="uqu-title" className="space-y-2">
       <div className="flex items-baseline justify-between px-1">
-        <h2 id="uqu-title" className="font-black">من الجامعة</h2>
+        <h2 id="uqu-title" className="text-subheading font-bold">من الجامعة</h2>
         <Dialog>
-          <DialogTrigger className="text-sm font-bold text-uqu-accent">التقويم والأخبار</DialogTrigger>
-          <DialogContent className="sm:max-w-[min(640px,calc(100%-2rem))] max-h-[85vh] overflow-y-auto rounded-[28px]">
+          <DialogTrigger className="rounded-control text-small font-semibold text-info-ink hover:underline focus-ring">التقويم والأخبار</DialogTrigger>
+          <DialogContent className="max-h-[85vh] overflow-y-auto rounded-dialog sm:max-w-[min(640px,calc(100%-2rem))]">
             <DialogHeader>
               <DialogTitle>من الجامعة</DialogTitle>
             </DialogHeader>

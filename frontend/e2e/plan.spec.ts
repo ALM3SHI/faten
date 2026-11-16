@@ -26,7 +26,8 @@ test("build the week, then tick a session done and see it on the strip", async (
 
   await day.getByRole("button", { name: /^تم: مراجعة الذكاء الاصطناعي/ }).click();
   await expect(page.getByText(/أنجزت 1 من 4 جلسات/)).toBeVisible();
-  await expect(strip.getByRole("tab", { name: /^الأحد/ })).toHaveAttribute("aria-label", /أنجزت 50 د/);
+  // the day's name (what a screen reader announces) carries the progress
+  await expect(strip.getByRole("tab", { name: /^الأحد/ })).toHaveAccessibleName(/أنجزت 50 د/);
 
   // every current course appears in the balance
   const balance = page.getByRole("region", { name: "وقتك على المواد" });

@@ -6,6 +6,8 @@ import { buildAcademicCalendarIcs, downloadIcs } from "@/lib/ics";
 import { PanelRoot } from "@/components/dashboard/panel-root";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ds/button";
+import { Pill, type Tone } from "@/components/ds/surface";
 import {
   ACADEMIC_YEAR_LABEL,
   UQU_CALENDAR,
@@ -16,13 +18,13 @@ import {
   type CalendarEvent,
 } from "@/lib/uqu-calendar-data";
 
-// دالة مساعدة لتلوين نوع الحدث
-function getEventTone(type: string) {
+/** The status tone of an event type: exams warn, procedures inform, the rest is neutral. */
+function eventTone(type: string): Tone {
   switch (type) {
-    case "holiday": return "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30";
-    case "exam": return "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30";
-    case "system": return "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30";
-    default: return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30";
+    case "holiday": return "success";
+    case "exam": return "warning";
+    case "system": return "info";
+    default: return "neutral";
   }
 }
 
@@ -59,24 +61,25 @@ export function AcademicCalendarCard({ bare, limit = 3 }: { bare?: boolean; limi
 
   const upcoming = now ? getUpcomingEvents(now).slice(0, limit) : [];
   const todayStr = now
-    ? new Intl.DateTimeFormat("ar-SA", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now)
+    ? new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now)
     : "";
 
   return (
-    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden h-full flex flex-col">
-      <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-5")}>
+    <PanelRoot bare={bare} className="relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface p-5 shadow-card">
+      {/* Inside a page (bare) the page already shows today's date and a heading. */}
+      <div className={cn("mb-4 flex flex-wrap items-center justify-between gap-3", bare && "sr-only")}>
         <div>
-          <h3 className={cn("text-xl font-bold mb-1 flex items-center gap-2", bare && "sr-only")}>
-            <CalendarDays className="w-5 h-5 text-uqu-cyan" />
+          <h3 className="flex items-center gap-2 text-heading font-bold">
+            <CalendarDays className="size-5 text-info-ink" aria-hidden />
             التقويم الجامعي {ACADEMIC_YEAR_LABEL}
           </h3>
-          <p className="text-xs text-muted-foreground font-medium mt-1">{todayStr || "\u00a0"}</p>
+          <p className="mt-1 text-caption font-medium text-ink-muted">{todayStr || "\u00a0"}</p>
         </div>
       </div>
 
-      <div className="space-y-3 flex-1">
+      <div className="flex-1 space-y-3">
         {now && upcoming.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[120px] text-muted-foreground text-sm border-2 border-dashed border-foreground/10 rounded-2xl text-center px-4">
+          <div className="flex h-28 flex-col items-center justify-center rounded-card border border-dashed border-line-strong px-4 text-center text-small text-ink-muted">
             انتهت أحداث التقويم الحالي. سيُحدَّث فور صدور تقويم العام القادم.
           </div>
         ) : (
@@ -86,22 +89,18 @@ export function AcademicCalendarCard({ bare, limit = 3 }: { bare?: boolean; limi
               <div
                 key={ev.title + ev.start}
                 className={cn(
-                  "p-4 rounded-2xl border flex flex-col gap-2",
-                  live ? "bg-uqu-accent/10 border-uqu-accent/30" : "bg-foreground/5 border-foreground/10",
+                  "flex flex-col gap-2 rounded-card border p-4 shadow-card",
+                  live ? "border-info-line bg-info-soft" : "border-line bg-surface",
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className="text-[13.5px] font-black text-foreground leading-tight">{ev.title}</span>
-                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0", getEventTone(ev.type))}>
-                    {eventTypeLabel(ev.type)}
-                  </span>
+                  <span className="text-body font-semibold text-ink">{ev.title}</span>
+                  <Pill tone={eventTone(ev.type)}>{eventTypeLabel(ev.type)}</Pill>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground/90">{formatEventDateAr(ev)}</span>
+                <div className="nums flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-muted">
+                  <span className="font-medium text-ink">{formatEventDateAr(ev)}</span>
                   <span>{ev.hijri} هـ</span>
-                  <span className={cn("font-bold", live ? "text-uqu-accent" : "text-uqu-cyan")}>
-                    {live ? "جارٍ الآن" : daysUntilLabel(ev, now!)}
-                  </span>
+                  <span className="font-semibold text-info-ink">{live ? "جارٍ الآن" : daysUntilLabel(ev, now!)}</span>
                 </div>
               </div>
             );
@@ -109,9 +108,9 @@ export function AcademicCalendarCard({ bare, limit = 3 }: { bare?: boolean; limi
         )}
       </div>
 
-      <div className={cn("text-[11px] font-bold text-center", bare ? "mt-3 text-uqu-accent" : "mt-5 pt-4 border-t border-foreground/10 text-muted-foreground font-medium")}>
-        {bare ? "عرض التقويم الكامل للفصلين ←" : "اضغط لعرض التقويم الكامل للفصلين"}
-      </div>
+      {!bare && (
+        <div className="mt-5 border-t border-line pt-4 text-center text-caption font-medium text-ink-muted">اضغط لعرض التقويم الكامل للفصلين</div>
+      )}
     </PanelRoot>
   );
 }
@@ -119,55 +118,51 @@ export function AcademicCalendarCard({ bare, limit = 3 }: { bare?: boolean; limi
 export function AcademicCalendarDialogContent() {
   return (
     <DialogContent
-      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(700px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="ds-page flex max-h-[88vh] flex-col rounded-dialog border-line !bg-surface-raised p-0 text-ink shadow-dialog sm:max-w-[min(700px,calc(100%-2rem))]"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
-        <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <CalendarClock className="w-6 h-6 text-sky-400" />
+      <DialogHeader className="shrink-0 border-b border-line px-6 pt-6 pb-4 md:px-8">
+        <DialogTitle className="flex items-center gap-3 text-heading font-bold">
+          <CalendarClock className="size-6 text-info-ink" aria-hidden />
           التقويم الجامعي للعام {ACADEMIC_YEAR_LABEL}
         </DialogTitle>
-        <DialogDescription className="text-muted-foreground text-sm">
+        <DialogDescription className="text-small text-ink-muted">
           جميع الأحداث الأكاديمية والأنظمة بناءً على التقويم المعتمد لجامعة أم القرى.
         </DialogDescription>
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="sm"
           onClick={() => downloadIcs(buildAcademicCalendarIcs(), "uqu-academic-calendar-1448.ics")}
-          className="mt-3 self-start inline-flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl bg-uqu-accent text-white hover:bg-uqu-accent/90"
+          className="mt-3 self-start"
         >
-          <CalendarPlus className="w-4 h-4" />
+          <CalendarPlus aria-hidden />
           أضف التقويم لجوالي (مع تذكير قبل المواعيد المهمة)
-        </button>
+        </Button>
       </DialogHeader>
 
-      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="flex-1 space-y-8 overflow-y-auto px-6 py-5 md:px-8">
         {UQU_CALENDAR.map((termData, termIdx) => (
           <div key={termIdx} className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="h-px flex-1 bg-foreground/10" />
-              <h4 className="text-sm font-black text-uqu-cyan">
-                {termData.term}
-              </h4>
-              <span className="h-px flex-1 bg-foreground/10" />
+              <span className="h-px flex-1 bg-line" />
+              <h4 className="text-small font-bold text-info-ink">{termData.term}</h4>
+              <span className="h-px flex-1 bg-line" />
             </div>
 
             <div className="space-y-2">
               {termData.events.map((ev, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-4 p-3 rounded-xl bg-background border border-border hover:border-sky-500/30 transition-colors dark:bg-foreground/5 dark:border-foreground/10"
+                  className="flex items-center gap-4 rounded-control border border-line bg-surface p-3"
                 >
-                  <div className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-bold text-[13px] truncate">{ev.title}</div>
-                    <div className="flex flex-wrap items-center gap-x-3 mt-1 text-[11px] text-muted">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-small font-semibold text-ink">{ev.title}</div>
+                    <div className="nums mt-1 flex flex-wrap items-center gap-x-3 text-caption text-ink-muted">
                       <span>{formatEventDateAr(ev)}</span>
                       <span>{ev.hijri} هـ</span>
                     </div>
                   </div>
-                  <span className={cn("text-[10px] font-black px-2 py-1 rounded-md border shrink-0", getEventTone(ev.type))}>
-                     {eventTypeLabel(ev.type)}
-                  </span>
+                  <Pill tone={eventTone(ev.type)}>{eventTypeLabel(ev.type)}</Pill>
                 </div>
               ))}
             </div>

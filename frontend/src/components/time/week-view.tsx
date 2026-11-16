@@ -478,14 +478,16 @@ export function WeekStrip({
               type="button"
               role={compact ? undefined : "tab"}
               aria-selected={compact ? undefined : on}
-              aria-label={label}
               onClick={() => onSelect(i)}
               className={cn(
                 "group flex flex-col items-stretch gap-2 rounded-2xl p-1.5 md:p-2 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-uqu-accent/60",
                 on ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]",
               )}
             >
-              <span className={cn("text-[11px] md:text-xs font-bold text-center h-4", studyMin ? "text-foreground" : "text-muted-foreground")}>
+              {/* The full description is the button's name; the compact visuals
+                  below are hidden from assistive tech so the two never disagree. */}
+              <span className="sr-only">{label}</span>
+              <span aria-hidden className={cn("text-[11px] md:text-xs font-bold text-center h-4", studyMin ? "text-foreground" : "text-muted-foreground")}>
                 {studyMin ? minutesShort(studyMin) : i === dayOff ? "راحة" : ""}
               </span>
               <span
@@ -506,7 +508,7 @@ export function WeekStrip({
                   />
                 ))}
               </span>
-              <span className="flex flex-col items-center leading-tight">
+              <span aria-hidden className="flex flex-col items-center leading-tight">
                 <span className={cn("text-[11px] md:text-xs", on ? "font-bold" : "text-muted-foreground")}>{SHORT_DAYS[i]}</span>
                 <span className={cn("text-base md:text-lg font-black", isToday && "text-uqu-accent")}>{d.getDate()}</span>
                 <span className={cn("w-1 h-1 rounded-full", isToday ? "bg-uqu-accent" : "bg-transparent")} />

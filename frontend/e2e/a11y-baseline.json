@@ -1,19 +1,9 @@
 {
-  "desktop dark /dashboard/": {
-    "label-content-name-mismatch": 3
-  },
   "desktop dark /login/": {
     "color-contrast": 1
   },
-  "desktop dark /time/": {
-    "label-content-name-mismatch": 2
-  },
   "desktop light /attendance/": {
     "color-contrast": 2
-  },
-  "desktop light /dashboard/": {
-    "color-contrast": 1,
-    "label-content-name-mismatch": 3
   },
   "desktop light /gpa/": {
     "color-contrast": 3
@@ -24,24 +14,14 @@
   "desktop light /schedule/": {
     "color-contrast": 4
   },
-  "desktop light /time/": {
-    "label-content-name-mismatch": 2
-  },
   "mobile dark /": {
     "color-contrast": 1
-  },
-  "mobile dark /dashboard/": {
-    "label-content-name-mismatch": 3
-  },
-  "mobile dark /time/": {
-    "label-content-name-mismatch": 2
   },
   "mobile light /attendance/": {
     "color-contrast": 2
   },
   "mobile light /dashboard/": {
-    "color-contrast": 1,
-    "label-content-name-mismatch": 3
+    "color-contrast": 1
   },
   "mobile light /gpa/": {
     "color-contrast": 5
@@ -51,8 +31,5 @@
   },
   "mobile light /schedule/": {
     "color-contrast": 4
-  },
-  "mobile light /time/": {
-    "label-content-name-mismatch": 2
   }
 }
