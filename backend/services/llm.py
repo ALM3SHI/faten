@@ -22,9 +22,10 @@ from __future__ import annotations
 from types import SimpleNamespace
 from typing import Any
 
-from openai import AsyncOpenAI
+from openai import APIStatusError, AsyncOpenAI
 
 from config import get_settings
+from services import model_health
 
 GEMINI_OPENAI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
@@ -52,8 +53,24 @@ class _TunedCompletions:
         # stream the slot covers opening it (the request Google counts).
         from services.ai_gate import gate
 
-        async with gate.slot():
-            return await self._inner.create(**_tune_kwargs(kwargs))
+        # A model that just answered "busy" is skipped for a while, and a
+        # busy answer gets one more try on the fast model — for every caller
+        # (study plan, transcript reading, advisor, notifications, chat).
+        fast = get_settings().llm_fast_model
+        if kwargs.get("model"):
+            kwargs["model"] = model_health.prefer(kwargs["model"], fast)
+        try:
+            async with gate.slot():
+                return await self._inner.create(**_tune_kwargs(kwargs))
+        except APIStatusError as exc:
+            if exc.status_code not in model_health.BUSY_STATUSES:
+                raise
+            model_health.mark_busy(kwargs.get("model"))
+            if not fast or fast == kwargs.get("model") or model_health.is_busy(fast):
+                raise
+            kwargs["model"] = fast
+            async with gate.slot():
+                return await self._inner.create(**_tune_kwargs(kwargs))
 
 
 class LLMClient:

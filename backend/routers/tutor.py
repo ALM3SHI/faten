@@ -6,6 +6,7 @@ Dynamic study mode — «المذاكرة الذكية الديناميكية».
   GET    /api/tutor/lectures/{id}            full session: lecture, state, messages, timer
   POST   /api/tutor/lectures/{id}/step       one tutor step {action, payload, version}
   GET    /api/tutor/lectures/{id}/visual     one lesson part's picture (photo looked up in the background)
+  GET    /api/tutor/lectures/{id}/job        progress of a lecture being prepared in the background
   PUT    /api/tutor/lectures/{id}/focus      save the study timer
   POST   /api/tutor/lectures/{id}/reset      start the lecture over (keeps the analysis)
   DELETE /api/tutor/lectures/{id}
@@ -18,13 +19,14 @@ from __future__ import annotations
 import datetime as dt
 import logging
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
 
 from auth.dependencies import get_current_user
 import db.firestore as dbmod
 from schemas.tutor import FocusState, StepRequest
 from services.quota import COST_TUTOR_INGEST, CreditLedger
-from services.tutor import analytics, engine, mastery, store
+from services.tutor import analytics, engine, mastery, prepare, store
 from services.tutor.ingest import ESTIMATE_VERSION, IngestError, build_lecture, file_hash, lecture_id_for, refresh_estimates
 
 logger = logging.getLogger(__name__)
@@ -116,7 +118,11 @@ async def _apply(db, uid: str, lecture: dict, progress: dict, action: str, paylo
 
 
 @router.post("/lectures")
-async def upload_lecture(file: UploadFile = File(...), user_id: str = Depends(get_current_user)):
+async def upload_lecture(file: UploadFile = File(...), background: bool = Form(False), user_id: str = Depends(get_current_user)):
+    """Upload a lecture. A file already prepared (by this student or anyone)
+    opens at once. A new one, with `background=true`, answers 202 {job} right
+    away and is prepared in the background (GET /lectures/{id}/job for
+    progress); without it, the request waits for the preparation (older pages)."""
     data = await file.read(MAX_PDF_BYTES + 1)
     if not data.startswith(b"%PDF"):
         raise HTTPException(status_code=400, detail="يجب رفع ملف PDF صالح.")
@@ -137,6 +143,13 @@ async def upload_lecture(file: UploadFile = File(...), user_id: str = Depends(ge
         if cached:
             reused = "shared"
             lecture = {**cached, "id": lid}
+        elif background:
+            job = await prepare.start(db, user_id, lid, data, file.filename or "lecture.pdf")
+            if job["status"] == "failed":
+                raise HTTPException(status_code=400, detail=job.get("error") or prepare.INGEST_MESSAGES["unreadable"])
+            if job["status"] != "ready":
+                return JSONResponse(status_code=202, content={"job": job})
+            lecture = store.get_lecture(db, user_id, lid)  # prepared inline (background work off)
         else:
             ledger = CreditLedger(user_id)
             ledger.charge(COST_TUTOR_INGEST)
@@ -192,7 +205,22 @@ async def my_lectures(user_id: str = Depends(get_current_user)):
             "finalScore": ((prog.get("final") or {}).get("result") or {}).get("score"),
             "updatedAt": lec.get("updatedAt"),
         })
-    return {"lectures": out}
+    preparing = [prepare.public_job(j, user_id) for j in store.list_jobs(db, user_id) if j.get("id")]
+    return {"lectures": out, "preparing": preparing}
+
+
+@router.get("/lectures/{lid}/job")
+async def get_job(lid: str, user_id: str = Depends(get_current_user)):
+    """Progress of a lecture being prepared. `ready` once the lecture exists;
+    `stalled` means the work was lost (server restart): send the file again."""
+    db = dbmod.get_db()
+    lid = _id_ok(lid)
+    job = store.get_job(db, user_id, lid)
+    if job:
+        return {"job": prepare.public_job(job, user_id)}
+    if store.get_lecture(db, user_id, lid):
+        return {"job": {"id": lid, "status": "ready", "stalled": False}}
+    raise HTTPException(status_code=404, detail="ما لقيت محاضرة قيد التجهيز بهذا الرقم.")
 
 
 @router.get("/lectures/{lid}")
@@ -258,6 +286,10 @@ async def reset(lid: str, user_id: str = Depends(get_current_user)):
 @router.delete("/lectures/{lid}")
 async def delete(lid: str, user_id: str = Depends(get_current_user)):
     db = dbmod.get_db()
+    if store.get_job(db, user_id, _id_ok(lid)):  # a preparation the student dismisses
+        store.delete_job(db, user_id, lid)
+        if not store.get_lecture(db, user_id, lid):
+            return {"success": True}
     lecture = _load(db, user_id, lid)
     store.delete_lecture(db, user_id, lecture["id"])
     return {"success": True}

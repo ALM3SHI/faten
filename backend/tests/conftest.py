@@ -34,12 +34,18 @@ os.environ.setdefault("COURSE_BACKGROUND", "false")
 
 
 @pytest.fixture(autouse=True)
-def _fresh_ai_gate():
+def _fresh_ai_gate(monkeypatch):
+    from services import model_health
     from services.ai_gate import gate
+    from services.tutor import ai
 
     gate.reset()
+    # which models are "busy" starts empty, and the tutor's retry waits take no time
+    model_health.reset()
+    monkeypatch.setattr(ai, "RETRY_WAITS", (0.0, 0.0))
     yield
     gate.reset()
+    model_health.reset()
 
 
 # ── In-memory Firestore ──────────────────────────────────────────

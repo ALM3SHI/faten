@@ -453,6 +453,7 @@
       "header:authorization"
     ],
     "body": [
+      "background",
       "file"
     ],
     "response": []
@@ -488,6 +489,14 @@
       "pausedTotalSec",
       "startedAt"
     ],
+    "response": []
+  },
+  "GET /api/tutor/lectures/{lid}/job": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [],
     "response": []
   },
   "POST /api/tutor/lectures/{lid}/reset": {

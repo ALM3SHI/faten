@@ -49,6 +49,7 @@ def estimate_cost(model: str, prompt_tokens: int, completion_tokens: int) -> flo
     return (prompt_tokens * rates["prompt"] / 1_000_000) + (completion_tokens * rates["completion"] / 1_000_000)
 
 from config import get_settings
+from services import model_health
 from agent.tools_schema import TOOLS_SCHEMA
 from agent.tools_executor import execute_tool
 from agent.streaming import collect_stream
@@ -275,7 +276,8 @@ async def run_agent_loop(
         client = get_openai_client()
     all_messages = list(messages)  # shallow copy
     actions_log: list[dict] = []
-    model_name = override_model or settings.llm_model
+    # a model that just answered "busy" is skipped for a while (services/model_health.py)
+    model_name = model_health.prefer(override_model or settings.llm_model, settings.llm_fast_model)
 
     # Extract the system prompt for the Gemini fallback (first message if role=system)
     system_prompt_for_fallback = ""
@@ -308,6 +310,8 @@ async def run_agent_loop(
                 fast_model = settings.llm_fast_model
                 if not (_is_overloaded_error(busy_err) and fast_model and fast_model != model_name):
                     raise
+                if isinstance(busy_err, APIStatusError) and busy_err.status_code in model_health.BUSY_STATUSES:
+                    model_health.mark_busy(model_name)
                 logger.warning(
                     "[AGENT] %s unavailable (%s) — switching to %s for this request",
                     model_name, type(busy_err).__name__, fast_model,
