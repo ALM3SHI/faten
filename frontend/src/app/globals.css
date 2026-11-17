@@ -12,6 +12,10 @@
    runtime — that's what lets `:root` / `.dark` swap palettes live. */
 @theme inline {
   --font-sans: var(--font-cairo);
+  /* Numbers and codes in a monospace face; Arabic words next to them fall
+     back to Plex/Cairo. (Tailwind's default stack ends in Courier New, which
+     has Arabic glyphs and spaced «المحاكاة» out letter by letter.) */
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, var(--font-plex-arabic), var(--font-cairo), monospace;
 
   /* Brand accent (does NOT invert — same hue in both themes; only opacity
      of glow changes via --accent-glow). */

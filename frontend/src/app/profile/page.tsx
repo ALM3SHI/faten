@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,7 @@ const SetupWizard = dynamic(() => import("@/components/setup-wizard/SetupWizard"
 const SmartPreferencesModal = dynamic(() => import("@/components/profile/SmartPreferencesModal").then((m) => m.SmartPreferencesModal), { ssr: false });
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
+import { count, formatDay } from "@/lib/format-date";
 
 type ProfileDraft = {
   basic: ProfileBasic;
@@ -218,14 +219,14 @@ export default function ProfilePage() {
                 isReady={hasTranscript}
                 primaryLine={
                   hasTranscript
-                    ? `${transcriptCourses} مادة منجزة · ${transcriptCurrent} في الترم الحالي`
+                    ? `${count(transcriptCourses, "مادة منجزة", "مواد منجزة")} · ${transcriptCurrent} في الترم الحالي`
                     : "لم يُرفع بعد"
                 }
                 secondaryLine={
                   hasTranscript && transcriptName
                     ? transcriptName
                     : transcriptUpdated
-                      ? new Date(transcriptUpdated).toLocaleDateString("ar-SA")
+                      ? formatDay(transcriptUpdated)
                       : undefined
                 }
               />
@@ -234,12 +235,12 @@ export default function ProfilePage() {
                 isReady={hasSchedule}
                 primaryLine={
                   hasSchedule
-                    ? `${scheduleSlots} محاضرة موزعة على الأسبوع`
+                    ? `${count(scheduleSlots, "محاضرة موزعة", "محاضرات موزعة")} على الأسبوع`
                     : "لم يُرفع بعد"
                 }
                 secondaryLine={
                   scheduleUpdated
-                    ? new Date(scheduleUpdated).toLocaleDateString("ar-SA")
+                    ? formatDay(scheduleUpdated)
                     : undefined
                 }
               />

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Navbar } from "@/components/navbar";
 import { SectionTabs } from "@/components/section-tabs";
@@ -151,7 +151,7 @@ export default function TranscriptParserPage() {
             <h1 className="text-title font-bold flex items-center gap-3">
               محلل السجل الأكاديمي
             </h1>
-            <p className="text-ink-muted text-small">استخرج بياناتك الأكاديمية تلقائياً من ملف الـ PDF.</p>
+            <p className="text-ink-muted text-small">ارفع سجلك من البوابة الأكاديمية (PDF) ونستخرج منه موادك ودرجاتك تلقائياً.</p>
           </div>
         </div>
 
@@ -162,9 +162,9 @@ export default function TranscriptParserPage() {
               <Upload className="w-10 h-10 text-info-ink" />
             </div>
             <div>
-              <h2 className="text-heading font-bold mb-2">ارفع ملف الـ PDF</h2>
+              <h2 className="text-heading font-bold mb-2">ارفع سجلك الأكاديمي (PDF)</h2>
               <p className="text-ink-muted max-w-sm mx-auto">
-                قم بسحب وإفلات ملف السجل الأكاديمي هنا أو انقر للاختيار من جهازك.
+                اسحبه هنا أو اضغط لاختياره من جهازك.
               </p>
             </div>
             <input type="file" id="file-upload" className="hidden" accept=".pdf" onChange={handleFileChange} />

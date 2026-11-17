@@ -244,18 +244,19 @@ function CourseCard({ course, estimated }: { course: TrackedCourse; estimated: n
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-line">
+      {/* date, then the two kinds side by side — no ragged wrap on a phone */}
+      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-line sm:grid-cols-[auto_1fr_1fr]">
         <Input
           type="date"
           value={date}
           max={todayIso()}
           onChange={(e) => setDate(e.target.value)}
-          className="h-9 w-auto rounded-control mt-3"
+          className="col-span-2 h-10 w-full rounded-control sm:col-span-1 sm:w-auto"
           aria-label="تاريخ الغياب"
         />
         <Button
           size="sm"
-          className="h-9 rounded-control mt-3 border border-danger-line bg-danger-soft hover:border-danger-ink text-danger-ink"
+          className="h-10 rounded-control border border-danger-line bg-danger-soft hover:border-danger-ink text-danger-ink"
           onClick={() => date && addAbsence(course.code, date, false)}
         >
           + غياب بدون عذر
@@ -263,7 +264,7 @@ function CourseCard({ course, estimated }: { course: TrackedCourse; estimated: n
         <Button
           size="sm"
           variant="outline"
-          className="h-9 rounded-control mt-3 border-line-strong"
+          className="h-10 rounded-control border-line-strong"
           onClick={() => date && addAbsence(course.code, date, true)}
         >
           + غياب بعذر
@@ -330,8 +331,9 @@ function Meter({ label, value, max, pct, bar }: { label: string; value: number; 
     <div>
       <div className="flex justify-between text-caption mb-1">
         <span className="text-ink-muted font-medium">{label}</span>
-        <span className="font-mono font-bold">
-          {value} / {max}
+        {/* «0 من 2»: a slash between numbers reads backwards in Arabic («2 / 0») */}
+        <span className="nums font-bold">
+          {value} <span className="font-normal text-ink-muted">من</span> {max}
         </span>
       </div>
       <div className="h-2 rounded-full bg-surface-sunken overflow-hidden">

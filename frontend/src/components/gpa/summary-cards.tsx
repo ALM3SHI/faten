@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { Target, AlertCircle } from "lucide-react";
@@ -170,7 +170,7 @@ export function RequiredToGraduateCard({
       </div>
       <div className="text-caption font-semibold opacity-90">
         {remaining > 0
-          ? `للوصول لمعدل ${targetGpa.toFixed(2)} عبر الـ${remaining} ساعة المتبقية`
+          ? `للوصول لمعدل ${targetGpa.toFixed(2)} في ${remaining} ساعة متبقية`
           : "أكملت ساعات الخطة"}
       </div>
       <div className="mt-3 pt-3 border-t border-line text-caption leading-relaxed opacity-90">

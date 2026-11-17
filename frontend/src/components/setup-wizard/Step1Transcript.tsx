@@ -33,6 +33,7 @@ import { assessRecord } from "@/lib/record-status";
 import { resolvePlanHours } from "@/lib/graduation";
 import { useProfileStore } from "@/store/profileStore";
 import { RecordStatusNote } from "@/components/record-status-note";
+import { formatDay } from "@/lib/format-date";
 
 interface Step1Props {
   // Passing `null` for `parsed` signals: "use the transcript already in
@@ -303,7 +304,7 @@ function SummaryView({
             بياناتك محفوظة من رفع سابق
             {lastUpdated && (
               <span className="text-ink-muted mr-1">
-                · آخر تحديث {new Date(lastUpdated).toLocaleDateString("ar-SA")}
+                · آخر تحديث {formatDay(lastUpdated)}
               </span>
             )}
             {confidence > 0 && (

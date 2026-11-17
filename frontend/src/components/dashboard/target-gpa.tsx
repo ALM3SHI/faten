@@ -163,8 +163,8 @@ export function TargetGpaCallout({
     return (
       <div className="p-4 rounded-control bg-danger-soft border border-danger-line text-danger-ink text-small leading-relaxed">
         ⚠️ المطلوب{" "}
-        <strong className="font-bold font-mono">{required.toFixed(2)}</strong> وهو فوق سقف الـ
-        4.00. غيّر الهدف لقيمة قابلة للتحقيق، أو تابع التقدم على فصلين أو أكثر.
+        <strong className="font-bold font-mono">{required.toFixed(2)}</strong> وهو فوق أعلى معدل ممكن
+        (4.00). غيّر الهدف لقيمة قابلة للتحقيق، أو تابع التقدم على فصلين أو أكثر.
       </div>
     );
   }
@@ -179,8 +179,8 @@ export function TargetGpaCallout({
       للوصول لهدفك{" "}
       <strong className="font-bold font-mono">{targetGpa.toFixed(2)}</strong>، تحتاج إلى تحقيق
       معدل{" "}
-      <strong className="font-bold font-mono text-body">{required.toFixed(2)}</strong> في الـ{" "}
-      {nextHours} ساعة القادمة.
+      <strong className="font-bold font-mono text-body">{required.toFixed(2)}</strong> في{" "}
+      {nextHours} ساعة قادمة.
     </div>
   );
 }
