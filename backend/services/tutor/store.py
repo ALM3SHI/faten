@@ -197,6 +197,34 @@ def reset_progress(db, uid: str, lid: str) -> None:
     _delete_children(lecture_ref(db, uid, lid), ("progress", "messages", "extras"))
 
 
+# ── lectures being prepared in the background ─────────────────────
+#   users/{uid}/tutor_jobs/{lectureId}
+#     status   working | failed      (deleted once the lecture is ready)
+#     stage    reading | vision | structure | saving
+#     done, total, fileName, fileHash, charged, error, startedAt, updatedAt
+
+
+def _jobs(db, uid: str):
+    return db.collection("users").document(uid).collection("tutor_jobs")
+
+
+def get_job(db, uid: str, lid: str) -> dict | None:
+    snap = _jobs(db, uid).document(lid).get()
+    return snap.to_dict() if snap.exists else None
+
+
+def save_job(db, uid: str, lid: str, fields: dict, merge: bool = True) -> None:
+    _jobs(db, uid).document(lid).set(fields, merge=merge)
+
+
+def delete_job(db, uid: str, lid: str) -> None:
+    _jobs(db, uid).document(lid).delete()
+
+
+def list_jobs(db, uid: str) -> list[dict]:
+    return [s.to_dict() or {} for s in _jobs(db, uid).stream()]
+
+
 def public_lecture(lecture: dict[str, Any]) -> dict[str, Any]:
     keys = ("id", "title", "fileName", "fileHash", "overview", "pageCount", "topics", "extraction", "estMinutes", "createdAt", "updatedAt")
     return {k: lecture.get(k) for k in keys}

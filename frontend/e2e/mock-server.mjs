@@ -236,7 +236,7 @@ const server = http.createServer(async (req, res) => {
   if (p === "/api/memory") return send(res, 200, { items: [] });
   if (p === "/api/feedback") return send(res, 200, { success: true });
   if (p === "/api/study/pdf") return send(res, 200, STUDY_PACK);
-  if (handleTutor(req, p, body, send, res)) return;
+  if (handleTutor(req, p, body, send, res, raw)) return;
   if (p === "/api/advisor/catalog") return send(res, 200, ADVISOR.catalog);
   if (p === "/api/advisor/settings") return send(res, 200, req.method === "PUT" ? { ...ADVISOR.settings, ...body } : ADVISOR.settings);
   if (p === "/api/advisor/latest") return send(res, 200, { run: null });

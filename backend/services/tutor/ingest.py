@@ -20,7 +20,7 @@ import asyncio
 import hashlib
 import logging
 import re
-from typing import Any
+from typing import Any, Callable
 
 from fastapi import HTTPException
 
@@ -124,10 +124,12 @@ def _batches(pages: list[PageContent]) -> list[list[PageContent]]:
     return [pages[i : i + BATCH_PAGES] for i in range(0, len(pages), BATCH_PAGES)]
 
 
-async def structure(pages: list[PageContent]) -> dict[str, Any]:
+async def structure(pages: list[PageContent], progress: "Progress | None" = None) -> dict[str, Any]:
     batches = _batches(pages)
     title, overview, raw_topics, unclear = "", "", [], []
     for k, batch in enumerate(batches):
+        if progress:
+            progress("structure", k, len(batches))
         note = ""
         if len(batches) > 1:
             earlier = "، ".join(t.get("title", "") for t in raw_topics) or "—"
@@ -316,8 +318,21 @@ def _looks_like_code(text: str) -> bool:
     return len(_CODE_HINT.findall(text or "")) >= 3
 
 
-async def build_lecture(pdf: bytes, file_name: str) -> tuple[dict, list[PageContent]]:
-    """Run the pipeline. Returns (lecture document, pages)."""
+Progress = Callable[[str, int, int], None]
+
+
+def _quiet(_stage: str, _done: int, _total: int) -> None:
+    return None
+
+
+async def build_lecture(pdf: bytes, file_name: str, progress: Progress | None = None) -> tuple[dict, list[PageContent]]:
+    """Run the pipeline. Returns (lecture document, pages).
+
+    `progress(stage, done, total)` is told where it is — stages: "reading",
+    "vision" (pages read by the model), "structure" (parts of the lecture
+    organised) — so a background preparation can show live progress."""
+    progress = progress or _quiet
+    progress("reading", 0, 1)
     try:
         # pdfplumber is CPU-heavy and synchronous. Run it in a worker thread so
         # the event loop keeps answering (/health included): on Render's single
@@ -327,6 +342,9 @@ async def build_lecture(pdf: bytes, file_name: str) -> tuple[dict, list[PageCont
     except ExtractError as exc:
         raise IngestError(str(exc)) from exc
 
+    wanted = sum(1 for p in pages if p.needs_vision)
+    if wanted:
+        progress("vision", 0, min(wanted, VISION_MAX_PAGES))
     vision = await read_visual_pages(pdf, pages)
     for p in pages:
         if p.needs_vision and p.source != "vision" and letter_count(p.text) == 0 and not p.tables:
@@ -334,7 +352,7 @@ async def build_lecture(pdf: bytes, file_name: str) -> tuple[dict, list[PageCont
     if not any(p.readable for p in pages):
         raise IngestError("unreadable")
 
-    raw = await structure(pages)
+    raw = await structure(pages, progress)
     topics = normalize_topics(raw.get("topics") or [], pages)
     if not topics:
         raise IngestError("unreadable")

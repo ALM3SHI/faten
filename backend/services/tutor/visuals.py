@@ -255,6 +255,15 @@ def _spawn(key: str, coro: Awaitable[None]) -> bool:
     return True
 
 
+def spawn(key: str, coro: Awaitable[None]) -> bool:
+    """Run work in the background of this server process (once per key)."""
+    return _spawn(key, coro)
+
+
+def is_running(key: str) -> bool:
+    return key in _inflight
+
+
 def _photo_budget_ok() -> bool:
     limit = get_settings().COURSE_PHOTO_LESSONS_PER_DAY
     today = dt.date.today().isoformat()

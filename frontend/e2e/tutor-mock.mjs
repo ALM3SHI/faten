@@ -73,6 +73,8 @@ const DIAGRAM = {
   },
 };
 
+const jobs = new Map();
+
 function step(s, action, payload) {
   const out = [];
   const st = s.state;
@@ -125,10 +127,36 @@ function publicSession(s) {
 }
 
 /** Returns true when the request was handled. */
-export function handleTutor(req, p, body, send, res) {
+export function handleTutor(req, p, body, send, res, raw) {
   if (!p.startsWith("/api/tutor/")) return false;
   const key = String(req.headers.authorization);
   let s = sessions.get(key);
+  // A file named "new-lecture.pdf" is prepared in the background (202 + job),
+  // like a lecture nobody uploaded before; its job is ready after 2 polls.
+  const isNew = raw && raw.toString("latin1").includes('filename="new-lecture.pdf"');
+  if (p === "/api/tutor/lectures" && req.method === "POST" && isNew && !jobs.get(key)?.done) {
+    const job = jobs.get(key) ?? { polls: 0, done: false };
+    jobs.set(key, job);
+    send(res, 202, { job: { id: LECTURE.id, fileName: "new-lecture.pdf", status: "working", stage: "reading", done: 0, total: 1, error: null, stalled: false } });
+    return true;
+  }
+  if (p.endsWith("/job") && req.method === "GET" && jobs.has(key)) {
+    const job = jobs.get(key);
+    job.polls += 1;
+    if (job.polls >= 3) {
+      job.done = true;
+      if (!sessions.has(key)) {
+        s = newSession();
+        sessions.set(key, s);
+        say(s, "tutor", [{ type: "map", title: LECTURE.title, overview: LECTURE.overview, estMinutes: 30, topics: LECTURE.topics.map(({ id, title, pages, est_minutes, importance }) => ({ id, title, pages, est_minutes, importance })) }], [{ id: "next", label: "ابدأ الموضوع الأول" }]);
+      }
+      send(res, 200, { job: { id: LECTURE.id, status: "ready", stalled: false } });
+    } else {
+      const stage = job.polls === 1 ? "structure" : "saving";
+      send(res, 200, { job: { id: LECTURE.id, fileName: "new-lecture.pdf", status: "working", stage, done: 0, total: 2, error: null, stalled: false } });
+    }
+    return true;
+  }
   if (p === "/api/tutor/lectures" && req.method === "POST") {
     s = s ?? newSession();
     if (!sessions.has(key)) {

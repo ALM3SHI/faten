@@ -20,9 +20,21 @@ import { BookOpenCheck, Brain, FileText, GraduationCap, Loader2, RefreshCw, Tras
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { dueLabel } from "@/components/study/flashcards";
 import { fetchWithAuth } from "@/lib/api";
-import { saveLectureFile } from "@/lib/lecture-files";
+import { saveLectureFile, sha256Hex } from "@/lib/lecture-files";
 import { toast } from "@/lib/toast";
-import { MAX_PDF_MB, deleteLecture, listLectures, pct, tutorHandoff, uploadLecture, type LectureSummary } from "@/lib/tutor";
+import { PreparingCard } from "@/components/study/preparing";
+import {
+  MAX_PDF_MB,
+  deleteLecture,
+  listStudy,
+  loadSession,
+  pct,
+  startLecture,
+  tutorHandoff,
+  type LectureSummary,
+  type PrepJob,
+  type Session,
+} from "@/lib/tutor";
 import { useHydrated } from "@/lib/use-hydrated";
 import { cn } from "@/lib/utils";
 import { useStudyStore } from "@/store/studyStore";
@@ -49,23 +61,81 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
   const [questions, setQuestions] = useState(10);
   const [language, setLanguage] = useState<"ar" | "en">("ar");
 
+  // New lectures being prepared in the background, and the files that can
+  // resume them on this device (keyed by lecture id).
+  const [preps, setPreps] = useState<{ job: PrepJob; attempt: number }[]>([]);
+  const [prepFiles, setPrepFiles] = useState<Record<string, File>>({});
+
+  const showList = useCallback((data: { lectures: LectureSummary[]; preparing: PrepJob[] }) => {
+    setLectures(data.lectures);
+    setPreps((cur) => {
+      const mine = new Map(cur.map((p) => [p.job.id, p]));
+      return data.preparing.map((j) => mine.get(j.id) ?? { job: j, attempt: 0 });
+    });
+  }, []);
+
   const refresh = useCallback(() => {
     setListError(null);
-    listLectures()
-      .then(setLectures)
+    listStudy()
+      .then(showList)
       .catch((e) => setListError(e instanceof Error ? e.message : "تعذّر تحميل محاضراتك."));
-  }, []);
+  }, [showList]);
 
   useEffect(() => {
     if (!mounted) return;
     let alive = true;
-    listLectures()
-      .then((l) => alive && setLectures(l))
+    listStudy()
+      .then((d) => alive && showList(d))
       .catch((e) => alive && setListError(e instanceof Error ? e.message : "تعذّر تحميل محاضراتك."));
     return () => {
       alive = false;
     };
-  }, [mounted]);
+  }, [mounted, showList]);
+
+  const openSession = useCallback(
+    (session: Session) => {
+      tutorHandoff.session = session;
+      router.push(`/tutor?lecture=${encodeURIComponent(session.lecture.id)}`);
+    },
+    [router],
+  );
+
+  const track = (job: PrepJob, f: File) => {
+    setPrepFiles((m) => ({ ...m, [job.id]: f }));
+    setPreps((cur) => {
+      const old = cur.find((p) => p.job.id === job.id);
+      const next = { job, attempt: (old?.attempt ?? 0) + 1 };
+      return old ? cur.map((p) => (p.job.id === job.id ? next : p)) : [next, ...cur];
+    });
+  };
+
+  const resume = useCallback(async (id: string) => {
+    const f = prepFiles[id];
+    if (!f) return;
+    try {
+      const res = await startLecture(f);
+      if ("job" in res) track(res.job, f);
+      else openSession(res);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "تعذّر تجهيز المحاضرة. حاول مرة أخرى.");
+    }
+  }, [prepFiles, openSession]);
+
+  const prepReady = useCallback(
+    async (id: string) => {
+      try {
+        openSession(await loadSession(id));
+      } catch {
+        refresh(); // shows it in the list; one click opens it
+      }
+    },
+    [openSession, refresh],
+  );
+
+  const dismiss = async (id: string) => {
+    setPreps((cur) => cur.filter((p) => p.job.id !== id));
+    await deleteLecture(id).catch(() => undefined);
+  };
 
   useEffect(() => {
     if (busy !== "tutor") return;
@@ -87,11 +157,20 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
     setBusy("tutor");
     setStepIdx(0);
     try {
-      const session = await uploadLecture(file);
-      await saveLectureFile(session.lecture.fileHash, file, file.name);
-      if (session.reused === "mine") toast.info("هذه المحاضرة عندك من قبل — نكمل من حيث توقفت.");
-      tutorHandoff.session = session;
-      router.push(`/tutor?lecture=${encodeURIComponent(session.lecture.id)}`);
+      // kept on this device first, so its slides show in the lessons
+      const hash = await sha256Hex(file);
+      if (hash) await saveLectureFile(hash, file, file.name);
+      const res = await startLecture(file);
+      if ("job" in res) {
+        // a new lecture: prepared in the background, followed below
+        track(res.job, file);
+        setFile(null);
+        setBusy(null);
+        return;
+      }
+      if (res.lecture.fileHash !== hash) await saveLectureFile(res.lecture.fileHash, file, file.name);
+      if (res.reused === "mine") toast.info("هذه المحاضرة عندك من قبل — نكمل من حيث توقفت.");
+      openSession(res);
     } catch (e) {
       setError(e instanceof Error ? e.message : "تعذّر تجهيز المحاضرة. حاول مرة أخرى.");
       setBusy(null);
@@ -160,6 +239,19 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
           </ul>
         </section>
       )}
+
+      {/* lectures being prepared in the background */}
+      {preps.map(({ job, attempt }) => (
+        <PreparingCard
+          key={`${job.id}:${attempt}`}
+          job={job}
+          canResume={!!prepFiles[job.id]}
+          onReady={prepReady}
+          onResume={() => void resume(job.id)}
+          onRetry={() => void resume(job.id)}
+          onDismiss={() => void dismiss(job.id)}
+        />
+      ))}
 
       {/* 1 · the file */}
       <section aria-label="ملف المحاضرة" className="space-y-3">

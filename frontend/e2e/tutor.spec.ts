@@ -120,6 +120,25 @@ test("the lecture reads as a course: units beside the lesson, and a diagram draw
   }
 });
 
+test("a new lecture is prepared in the background with live progress, then opens by itself", async ({ page }) => {
+  await asNewStudent(page, "prepare");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "new-lecture.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+
+  const card = page.getByRole("region", { name: "نجهّز محاضرتك" });
+  await expect(card).toBeVisible();
+  await expect(card.getByText("new-lecture")).toBeVisible();
+  await expect(card.getByRole("progressbar", { name: "تقدّم التجهيز" })).toBeVisible();
+  await expect(card.getByText("تقدر تطلع من الصفحة")).toBeVisible();
+  // the stages move on as the server reports them
+  await expect(card.getByText("نرتّب المحاضرة في وحدات (الجزء 1 من 2)")).toBeVisible({ timeout: 8000 });
+
+  // ready → the course opens without another click
+  await expect(page).toHaveURL(/\/tutor\/\?lecture=/, { timeout: 15000 });
+  await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toBeVisible();
+});
+
 test("asking and studying are the two separate modes of فطن", async ({ page }) => {
   await asNewStudent(page, "modes");
   await page.goto("/chat/");

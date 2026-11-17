@@ -203,15 +203,48 @@ export const MAX_PDF_MB = 10;
  */
 export const tutorHandoff: { session: Session | null } = { session: null };
 
+/** A new lecture being prepared in the background (backend: services/tutor/prepare.py). */
+export interface PrepJob {
+  id: string;
+  fileName?: string;
+  status: "working" | "ready" | "failed";
+  stage?: "reading" | "vision" | "structure" | "saving";
+  done?: number;
+  total?: number;
+  error?: string | null;
+  /** the work was lost (server restart): send the file again to resume, free */
+  stalled: boolean;
+}
+
 export async function uploadLecture(file: File): Promise<Session> {
   const form = new FormData();
   form.append("file", file);
   return (await fetchWithAuth("/api/tutor/lectures", { method: "POST", body: form })) as Session;
 }
 
+/**
+ * Upload without waiting for a new lecture to be prepared: a file prepared
+ * before opens at once (a session); a new one comes back as a job to follow.
+ */
+export async function startLecture(file: File): Promise<Session | { job: PrepJob }> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("background", "true");
+  return (await fetchWithAuth("/api/tutor/lectures", { method: "POST", body: form })) as Session | { job: PrepJob };
+}
+
+export async function loadJob(id: string): Promise<PrepJob> {
+  const data = (await fetchWithAuth(`/api/tutor/lectures/${encodeURIComponent(id)}/job`, { method: "GET" })) as { job: PrepJob };
+  return data.job;
+}
+
+export async function listStudy(): Promise<{ lectures: LectureSummary[]; preparing: PrepJob[] }> {
+  const data = (await fetchWithAuth("/api/tutor/lectures", { method: "GET" })) as { lectures: LectureSummary[]; preparing?: PrepJob[] };
+  return { lectures: data.lectures ?? [], preparing: data.preparing ?? [] };
+}
+
 export async function listLectures(): Promise<LectureSummary[]> {
-  const data = (await fetchWithAuth("/api/tutor/lectures", { method: "GET" })) as { lectures: LectureSummary[] };
-  return data.lectures ?? [];
+  return (await listStudy()).lectures;
 }
 
 export async function loadSession(id: string): Promise<Session> {
