@@ -32,6 +32,7 @@ function hoursHint(g: GraduationProgress | null): string {
 import { StatTile, KvRow, KvTile } from "@/components/dashboard/stat-tiles";
 import { RecentCourseRow } from "@/components/dashboard/recent-course-row";
 import { GraduationSummary } from "@/components/dashboard/graduation-card";
+import { CountUp } from "@/components/sketch/count-up";
 import { TargetGpaEditDialog, TargetGpaCallout } from "@/components/dashboard/target-gpa";
 import type { TargetCalloutStatus } from "@/components/dashboard/analytics";
 
@@ -58,7 +59,7 @@ export function CurrentGpaKpi({
       <DialogTrigger nativeButton={false} render={TRIGGER}>
         <StatTile
           title="المعدل"
-          value={hydrated ? currentGpa.toFixed(2) : "—"}
+          value={hydrated ? <CountUp value={currentGpa} decimals={2} /> : "—"}
           hint="من 4.00"
           icon={<TrendingUp className="w-4 h-4 text-success-ink" />}
           color="emerald"

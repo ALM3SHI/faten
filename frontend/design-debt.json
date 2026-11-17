@@ -1,14 +1,7 @@
 {
   "files": [
-    "src/app/error.tsx",
     "src/app/global-error.tsx",
-    "src/app/login/page.tsx",
-    "src/app/privacy/page.tsx",
-    "src/components/email-verification-reminder.tsx",
-    "src/components/landing/landing-page.tsx",
     "src/components/landing/shots.tsx",
-    "src/components/onboarding/welcome-tour.tsx",
-    "src/components/toast-list.tsx",
     "src/components/ui/button.tsx"
   ]
 }

@@ -18,6 +18,7 @@
  */
 
 import { useMemo, useState } from "react";
+import { useBumpOnIncrease } from "@/lib/use-bump";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -70,6 +71,7 @@ export default function DashboardPage() {
   const transcriptStudentName = useTranscriptStore((s) => s.name || s.nameEn);
   const planMarkTasksDone = usePlanStore((s) => s.markTasksDone);
   const streak = usePomodoroStore((s) => s.currentStreak);
+  const streakBump = useBumpOnIncrease<SVGSVGElement>(streak);
   const graduation = useGraduationProgress();
   const attendance = useAttendanceRows();
 
@@ -128,7 +130,7 @@ export default function DashboardPage() {
             prefetch={false}
             className="flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-warning-line bg-warning-soft px-3.5 text-warning-ink motion-fast transition-colors hover:border-warning-ink focus-ring"
           >
-            <Flame className="size-4 fill-current" aria-hidden />
+            <Flame ref={streakBump} className="size-4 fill-current" aria-hidden />
             <span className="nums text-body font-bold">{streak}</span>
             <span className="text-small font-medium">يوم</span>
             <span className="sr-only">— سلسلة التركيز</span>

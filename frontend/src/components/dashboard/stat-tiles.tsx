@@ -52,7 +52,7 @@ export function StatTile({
   color,
 }: {
   title: string;
-  value: string;
+  value: React.ReactNode;
   hint?: string;
   icon: React.ReactNode;
   color: "emerald" | "uqu" | "cyan" | "rose";

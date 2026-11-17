@@ -46,7 +46,7 @@ export function EmptyState({
 }) {
   return (
     <div className={cn("flex flex-col items-center gap-3 rounded-card border border-dashed border-line-strong px-6 py-10 text-center", className)}>
-      {art && <div className="text-ink-muted [&_svg]:size-10" aria-hidden>{art}</div>}
+      {art && <div className="text-ink-muted [&_svg:not(.illustration)]:size-10" aria-hidden>{art}</div>}
       <p className="text-subheading font-semibold text-ink">{title}</p>
       {text && <p className="max-w-sm text-small text-ink-muted">{text}</p>}
       {action && <div className="mt-2">{action}</div>}

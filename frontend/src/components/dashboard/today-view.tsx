@@ -25,6 +25,7 @@ import { prayerTimesFor } from "@/lib/prayer-times";
 import { cn } from "@/lib/utils";
 import { Button, IconButton, buttonClass } from "@/components/ds/button";
 import { EmptyState } from "@/components/ds/states";
+import { RestDayArt } from "@/components/sketch/notebook-art";
 import { useExamsStore } from "@/store/examsStore";
 import { usePlanStore, type PlanTask } from "@/store/planStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
@@ -175,7 +176,7 @@ export function TodayTimeline({ now }: { now: Date }) {
         </Link>
       </div>
       {items.length === 0 ? (
-        <EmptyState title={isDayOff ? "يوم راحتك — ما فيه شي مجدول. ارتاح." : "ما عندك محاضرات ولا جلسات اليوم."} className="py-8" />
+        <EmptyState art={<RestDayArt />} title={isDayOff ? "يوم راحتك — ما فيه شي مجدول. ارتاح." : "ما عندك محاضرات ولا جلسات اليوم."} className="py-8" />
       ) : (
         <ol className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
           {items.map((it, i) => (
