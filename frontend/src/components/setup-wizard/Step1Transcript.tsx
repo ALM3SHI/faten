@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -319,7 +319,7 @@ function SummaryView({
           className="rounded-control border border-line bg-surface shadow-card gap-2"
         >
           <RefreshCw className="w-4 h-4" />
-          إعادة رفع السجل 🔄
+          إعادة رفع السجل
         </Button>
       </header>
 

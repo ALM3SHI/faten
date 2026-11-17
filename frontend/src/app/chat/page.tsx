@@ -21,7 +21,7 @@ import { toolStatusLabel } from "@/lib/sse";
 import { useBackendStatus } from "@/lib/backend-status";
 import { api, ApiError, NETWORK_ERROR_MESSAGE } from "@/lib/api";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button, IconButton, buttonClass } from "@/components/ds/button";
 import { AIService, Message as AIMessage } from "@/lib/ai";
@@ -282,7 +282,8 @@ function ChatPageContent() {
     }
   }, [streamText]);
 
-  const handleSend = async (overrideInput?: string) => {
+  // `base`: the conversation to continue from (a retry drops the failed turn first)
+  const handleSend = async (overrideInput?: string, base: Message[] = messages) => {
     const textToSend = typeof overrideInput === "string" ? overrideInput : input;
     if (!textToSend.trim() || isLoading) return;
 
@@ -299,7 +300,7 @@ function ChatPageContent() {
     setIsLoading(true);
 
     try {
-      const history: AIMessage[] = messages.map(m => ({
+      const history: AIMessage[] = base.map(m => ({
         role: m.role === "bot" ? "assistant" : "user",
         content: m.content
       }));
@@ -335,7 +336,7 @@ function ChatPageContent() {
         // layer styles it as a warning bubble.
         errorType: response.error_type ?? null,
       };
-      const finalMessages = [...messages, userMessage, botMessage];
+      const finalMessages = [...base, userMessage, botMessage];
       setMessages(finalMessages);
       // Persist this exchange to the history sidebar.
       saveActiveThread(finalMessages, response.conversationId ?? null);
@@ -353,9 +354,14 @@ function ChatPageContent() {
       const isNetwork =
         (error instanceof ApiError && error.status === 0) ||
         /failed to fetch|networkerror|typeerror/i.test(detail);
+      // A busy or waking server is not the student's problem to decode:
+      // no error codes, just what happened and the retry button below.
+      const busy = error instanceof ApiError && (error.status === 429 || error.status >= 500);
       const friendly = isNetwork
         ? NETWORK_ERROR_MESSAGE
-        : `حدث خطأ أثناء الاتصال بالمساعد:\n${detail}`;
+        : busy
+          ? "فطن مشغول شوي الحين وما قدر يجاوب. جرّب مرة ثانية بعد لحظات."
+          : `ما قدرت أجاوب هالمرة: ${detail}`;
       setMessages((prev) => [...prev, {
         role: "bot",
         content: friendly,
@@ -491,6 +497,21 @@ function ChatPageContent() {
                           <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                         )}
                       </div>
+                      {isError && idx === messages.length - 1 && messages[idx - 1]?.role === "user" && !isLoading && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            const question = messages[idx - 1].content;
+                            // the failed question and its error go; the question is asked again
+                            const base = messages.slice(0, idx - 1);
+                            setMessages(base);
+                            void handleSend(question, base);
+                          }}
+                        >
+                          <RotateCcw aria-hidden /> أعد السؤال
+                        </Button>
+                      )}
                       {isBot && !isError && <SourceCards content={msg.content} actions={msg.actions} />}
                       {isBot && !isError && idx > 0 && messages[idx - 1]?.role === "user" && (
                         <ReplyFeedback
