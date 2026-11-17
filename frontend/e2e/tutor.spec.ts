@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+﻿import { expect, test, type Page } from "@playwright/test";
 import { STUDENT, TINY_PDF, signIn } from "./helpers";
 
 // Each test is its own student so the scripted tutor sessions never collide.
@@ -46,18 +46,26 @@ test("study mode: upload → lecture map → goal → lesson → check with retr
 
   await page.getByRole("button", { name: "التالي", exact: true }).click();
   await expect(page.getByText("أتقنت: المكدس (Stack)")).toBeVisible();
-  await expect(page.getByRole("button", { name: "الموضوعات والإتقان" })).toContainText("1/2 متقن");
+  // one progress line for the course, in the course bar
+  await expect(page.getByRole("progressbar", { name: "تقدّم الدورة: أتقنت 1 من 2" })).toHaveAttribute("aria-valuenow", "50");
 
   // key terms go to the existing flashcards (studyStore)
   await page.getByRole("button", { name: "أضف مصطلحاته لبطاقات المراجعة" }).click();
   await expect.poll(async () => page.evaluate(() => JSON.parse(localStorage.getItem("uqu_study_v1") || "{}")?.state?.packs?.[0]?.key_terms?.length ?? 0)).toBe(2);
 
-  // topics panel explains the status
-  await page.getByRole("button", { name: "الموضوعات والإتقان" }).click();
-  const panel = page.getByRole("dialog", { name: "موضوعات المحاضرة" });
-  await expect(panel.getByText("متقن", { exact: true })).toBeVisible();
-  await expect(panel.getByText("لم يبدأ")).toBeVisible();
-  await panel.getByRole("button", { name: "إغلاق" }).first().click();
+  // the course menu explains each unit's status: beside the lesson on wide
+  // screens, as a drawer on phones
+  if (test.info().project.name.includes("mobile")) {
+    await page.getByRole("button", { name: "محتوى الدورة والإتقان" }).click();
+    const panel = page.getByRole("dialog", { name: "موضوعات المحاضرة" });
+    await expect(panel.getByText("متقن", { exact: true })).toBeVisible();
+    await expect(panel.getByText("لم يبدأ")).toBeVisible();
+    await panel.getByRole("button", { name: "إغلاق" }).first().click();
+  } else {
+    const outline = page.getByRole("complementary", { name: "محتوى الدورة" });
+    await expect(outline.getByText(/متقن · ~/)).toBeVisible();
+    await expect(outline.getByText(/لم يبدأ · ~/)).toBeVisible();
+  }
 
   // leaving and coming back restores the session
   await page.reload();
@@ -80,13 +88,27 @@ test("the lecture reads as a course: units beside the lesson, and a diagram draw
   await page.getByRole("button", { name: "ابدأ الدرس" }).click();
   await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toBeVisible();
 
+  // focus mode: the app's own navigation steps aside — one bar, never a nav inside a nav
+  await expect(page.getByRole("navigation", { name: "الأقسام" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "رجوع إلى محاضراتي" })).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: /تقدّم الدورة/ })).toHaveCount(1);
+
   const outline = page.getByRole("complementary", { name: "محتوى الدورة" });
   if (test.info().project.name.includes("mobile")) {
     // phones keep the topics drawer instead of a side column
     await expect(outline).toBeHidden();
   } else {
     await expect(outline.getByText("دورة من محاضرتك")).toBeVisible();
-    await expect(outline.getByRole("navigation", { name: "وحدات الدورة" }).getByRole("button")).toHaveCount(2);
+    // two units, then the final exam
+    await expect(outline.getByRole("navigation", { name: "وحدات الدورة" }).getByRole("button")).toHaveCount(3);
+    await expect(outline.getByText("وحدتان · 30 دقيقة · 6 صفحات")).toBeVisible();
+    // the course menu folds away for a wider lesson, and stays folded
+    await page.getByRole("button", { name: "إخفاء محتوى الدورة" }).click();
+    await expect(outline).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByRole("button", { name: "إظهار محتوى الدورة" })).toHaveAttribute("aria-pressed", "false");
+    await page.getByRole("button", { name: "إظهار محتوى الدورة" }).click();
+    await expect(outline).toBeVisible();
   }
 
   await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();

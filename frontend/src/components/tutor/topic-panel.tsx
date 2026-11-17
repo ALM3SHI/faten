@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { Button } from "@/components/ds/button";
@@ -11,7 +11,7 @@ const ICON: Record<TopicStatus, typeof Circle> = {
   not_started: Circle,
   in_progress: CircleDot,
   needs_review: RotateCcw,
-  review_due: RotateCcw,
+  review_due: CheckCircle2,
   mastered: CheckCircle2,
 };
 
@@ -27,6 +27,7 @@ export function TopicPanel({
   busy,
   onGoto,
   onReview,
+  tools,
 }: {
   open: boolean;
   onClose: () => void;
@@ -35,6 +36,8 @@ export function TopicPanel({
   busy: boolean;
   onGoto: (topicId: string) => void;
   onReview: () => void;
+  /** session tools (timer, chalkboard, pause) — the course bar has no room for them on phones */
+  tools?: React.ReactNode;
 }) {
   useEffect(() => {
     if (!open) return;
@@ -57,6 +60,7 @@ export function TopicPanel({
             <X className="w-5 h-5" />
           </Button>
         </div>
+        {tools && <div className="px-4 pt-4">{tools}</div>}
         {state.reviewDue.length > 0 && (
           <div className="mx-4 mt-4 rounded-control border border-info-line bg-info-soft p-3 text-small flex items-center justify-between gap-3">
             <span>{state.reviewDue.length} موضوع حان وقت مراجعته حتى لا يُنسى.</span>
@@ -74,12 +78,12 @@ export function TopicPanel({
             return (
               <li key={t.id} className={cn("rounded-card border p-3", current ? "border-info-line bg-info-soft" : "border-line")}>
                 <div className="flex items-start gap-2.5">
-                  <Icon className={cn("w-5 h-5 mt-0.5 shrink-0", status === "mastered" ? "text-success-ink" : status === "in_progress" ? "text-info-ink" : status === "not_started" ? "text-ink-muted" : "text-warning-ink")} aria-hidden />
+                  <Icon className={cn("w-5 h-5 mt-0.5 shrink-0", status === "mastered" || status === "review_due" ? "text-success-ink" : status === "in_progress" ? "text-info-ink" : status === "not_started" ? "text-ink-muted" : "text-warning-ink")} aria-hidden />
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-body leading-6" dir="auto">{i + 1}. {t.title}</div>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
                       <span className={cn("text-caption font-bold px-2 py-0.5 rounded-full border", STATUS_TONE[status])}>{STATUS_LABEL[status]}</span>
-                      {p && p.attempts > 0 && <span className="text-caption text-ink-muted">إتقان {pct(p.score)} · ثقة {pct(p.confidence)} · {p.correct}/{p.attempts}</span>}
+                      {p && p.attempts > 0 && <span className="text-caption text-ink-muted">إتقان {pct(p.score)} · ثقة {pct(p.confidence)} · {p.correct} من {p.attempts} صحيحة</span>}
                     </div>
                     {p?.reviewDue && (status === "mastered" || status === "review_due") && (
                       <div className="text-caption text-ink-muted mt-1">المراجعة: {formatDay(p.reviewDue)}</div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { normalizePath } from "@/lib/routes";
-import { NO_APP_NAV, sectionFor } from "@/lib/nav";
+import { NO_APP_NAV, isFocusPath, sectionFor } from "@/lib/nav";
 import { useSectionLinks } from "@/components/nav-sections";
 
 /**
@@ -16,7 +16,8 @@ import { useSectionLinks } from "@/components/nav-sections";
 export function BottomNav() {
   const pathname = usePathname();
   const sections = useSectionLinks();
-  if (NO_APP_NAV.has(normalizePath(pathname))) return null;
+  const path = normalizePath(pathname);
+  if (NO_APP_NAV.has(path) || isFocusPath(path)) return null;
   const active = sectionFor(pathname)?.id;
 
   return (

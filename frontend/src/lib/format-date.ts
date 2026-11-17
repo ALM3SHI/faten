@@ -39,7 +39,8 @@ export function formatTime(d: Date | string | number): string {
  * count(1, …) → «مادة واحدة» is left to the caller; 1-2 and 11+ use the singular
  * («1 مادة»، «12 مادة»), 3-10 the plural («4 مواد»).
  */
-export function count(n: number, singular: string, plural: string): string {
+export function count(n: number, singular: string, plural: string, dual?: string): string {
+  if (n === 2 && dual) return dual; // «وحدتان», not «2 وحدة»
   const mod = Math.abs(n) % 100;
   return `${n} ${mod >= 3 && mod <= 10 ? plural : singular}`;
 }

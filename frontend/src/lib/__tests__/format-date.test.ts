@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { count, formatDay, formatDayTime } from "@/lib/format-date";
 
 describe("dates and counts as فطن writes them", () => {
@@ -19,5 +19,6 @@ describe("dates and counts as فطن writes them", () => {
     expect(count(10, "محاضرة", "محاضرات")).toBe("10 محاضرات");
     expect(count(11, "مادة", "مواد")).toBe("11 مادة");
     expect(count(103, "مادة", "مواد")).toBe("103 مواد");
+    expect(count(2, "وحدة", "وحدات", "وحدتان")).toBe("وحدتان");
   });
 });

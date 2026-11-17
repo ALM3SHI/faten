@@ -420,6 +420,10 @@ select option {
     --bottom-nav-h: calc(4rem + env(safe-area-inset-bottom));
   }
 }
+/* Focus pages (lib/nav.ts FOCUS_PATHS) hide the tab bar: nothing to reserve. */
+html[data-focus] {
+  --bottom-nav-h: 0px;
+}
 
 /* Accent TEXT on dark surfaces uses the lighter --accent-text tint so small
    labels pass WCAG AA (4.5:1). Unlayered so it wins over the generated
