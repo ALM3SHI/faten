@@ -17,20 +17,20 @@ export function DialogStat({
 }) {
   const tone = {
     emerald:
-      "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
-    sky: "bg-sky-500/10 border-sky-500/30 text-sky-800 dark:text-sky-300 dark:border-sky-400/20",
+      "bg-success-soft border-success-line text-success-ink",
+    sky: "bg-info-soft border-info-line text-info-ink",
     amber:
-      "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300 dark:border-amber-400/20",
-    rose: "bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-300 dark:border-rose-400/20",
-    uqu: "bg-uqu-accent/10 border-uqu-accent/25 text-uqu-accent",
-    muted: "bg-background border-border text-foreground dark:bg-foreground/5 dark:border-foreground/10",
+      "bg-warning-soft border-warning-line text-warning-ink",
+    rose: "bg-danger-soft border-danger-line text-danger-ink",
+    uqu: "bg-info-soft border-info-line text-info-ink",
+    muted: "bg-surface border-line text-ink",
   }[accent];
   return (
-    <div className={cn("p-3 rounded-xl border text-center", tone)}>
-      <div className="text-[10px] font-bold uppercase tracking-wider opacity-80 mb-1">
+    <div className={cn("p-3 rounded-control border text-center", tone)}>
+      <div className="text-caption font-bold uppercase tracking-wider opacity-80 mb-1">
         {label}
       </div>
-      <div className={cn("text-xl font-black", mono && "font-mono")}>{value}</div>
+      <div className={cn("text-heading font-bold", mono && "font-mono")}>{value}</div>
     </div>
   );
 }
@@ -58,22 +58,22 @@ export function StatTile({
   color: "emerald" | "uqu" | "cyan" | "rose";
 }) {
   const textColors = {
-    emerald: "text-emerald-800 dark:text-emerald-300",
-    uqu: "text-uqu-accent",
-    cyan: "text-cyan-800 dark:text-cyan-300",
-    rose: "text-rose-800 dark:text-rose-300",
+    emerald: "text-success-ink ",
+    uqu: "text-info-ink",
+    cyan: "text-info-ink ",
+    rose: "text-danger-ink ",
   } as const;
 
   return (
-    <Card className="glass p-3.5 md:p-4 gap-1 rounded-2xl border-foreground/10 hover:border-uqu-accent/30 transition-colors h-full">
+    <Card className="border border-line bg-surface shadow-card p-3.5 md:p-4 gap-1 rounded-card border-line hover:border-info-line transition-colors h-full">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-xs font-bold text-muted-foreground leading-snug">{title}</h3>
+        <h3 className="text-caption font-bold text-ink-muted leading-snug">{title}</h3>
         <span className="hidden sm:inline-flex" aria-hidden>
           {icon}
         </span>
       </div>
-      <div className={cn("text-2xl md:text-3xl font-black tracking-tight tabular-nums", textColors[color])}>{value}</div>
-      {hint && <div className="text-[11px] leading-snug text-muted-foreground line-clamp-2">{hint}</div>}
+      <div className={cn("text-heading md:text-title font-bold tracking-tight tabular-nums", textColors[color])}>{value}</div>
+      {hint && <div className="text-caption leading-snug text-ink-muted line-clamp-2">{hint}</div>}
     </Card>
   );
 }
@@ -81,8 +81,8 @@ export function StatTile({
 
 export function KvRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="p-3 rounded-xl bg-background border border-border flex justify-between items-center dark:bg-foreground/5 dark:border-foreground/10">
-      <span className="text-muted-foreground text-sm font-bold">{label}:</span>
+    <div className="p-3 rounded-control bg-surface border border-line flex justify-between items-center">
+      <span className="text-ink-muted text-small font-bold">{label}:</span>
       <span className={cn("font-bold", mono && "font-mono")}>{value}</span>
     </div>
   );
@@ -100,12 +100,12 @@ export function KvTile({
 }) {
   const tone =
     accent === "uqu"
-      ? "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent"
-      : "bg-background border-border text-foreground dark:bg-foreground/5 dark:border-foreground/10";
+      ? "bg-info-soft border-info-line text-info-ink"
+      : "bg-surface border-line text-ink";
   return (
-    <div className={cn("p-3 rounded-xl border", tone)}>
-      <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">{label}</div>
-      <div className="text-2xl font-black font-mono">{value}</div>
+    <div className={cn("p-3 rounded-control border", tone)}>
+      <div className="text-caption font-bold uppercase tracking-wider opacity-70 mb-1">{label}</div>
+      <div className="text-heading font-bold font-mono">{value}</div>
     </div>
   );
 }

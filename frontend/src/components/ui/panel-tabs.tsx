@@ -25,14 +25,14 @@ export function PanelTabs({
 }) {
   const [value, setValue] = useState(defaultValue ?? tabs[0]?.value ?? "");
   return (
-    <Card className={cn("glass rounded-[24px] border-foreground/10 p-4 md:p-5 gap-0", className)}>
+    <Card className={cn("border border-line bg-surface shadow-card rounded-card border-line p-4 md:p-5 gap-0", className)}>
       <Tabs
         tabs={tabs}
         value={value}
         onChange={setValue}
         label={label}
         className="gap-4"
-        listClassName="flex gap-1 p-1 rounded-xl bg-foreground/5 border border-foreground/10 overflow-x-auto no-scrollbar"
+        listClassName="flex gap-1 p-1 rounded-control bg-surface-sunken border border-line overflow-x-auto no-scrollbar"
         tabClassName={TAB_CLASS}
       />
     </Card>

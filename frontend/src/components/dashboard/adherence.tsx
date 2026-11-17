@@ -36,22 +36,22 @@ export function AdherenceCard({
 
   const toneClasses = {
     emerald: {
-      ring: "stroke-emerald-400",
+      ring: "stroke-success-ink",
       glow: "drop-shadow(0 0 8px hsla(160,80%,50%,0.5))",
-      pill: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
-      icon: "text-emerald-700 dark:text-emerald-400",
+      pill: "bg-success-soft text-success-ink border-success-line",
+      icon: "text-success-ink ",
     },
     uqu: {
-      ring: "stroke-uqu-accent",
+      ring: "stroke-brand",
       glow: "drop-shadow(0 0 8px hsla(245,78%,62%,0.5))",
-      pill: "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/30",
-      icon: "text-uqu-accent",
+      pill: "bg-info-soft text-info-ink border-info-line",
+      icon: "text-info-ink",
     },
     rose: {
-      ring: "stroke-rose-400",
+      ring: "stroke-danger-ink",
       glow: "drop-shadow(0 0 8px hsla(0,80%,60%,0.4))",
-      pill: "bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/30",
-      icon: "text-rose-700 dark:text-rose-400",
+      pill: "bg-danger-soft text-danger-ink border-danger-line",
+      icon: "text-danger-ink ",
     },
   } as const;
 
@@ -73,17 +73,17 @@ export function AdherenceCard({
   // No plan yet: one line and the button, not an empty ring of zeros.
   if (!hasPlan) {
     return (
-      <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
-        <h3 className={cn("text-xl font-bold mb-1 flex items-center gap-2", bare && "sr-only")}>
-          <ListChecks className="w-5 h-5 text-uqu-accent" />
+      <PanelRoot bare={bare} className="border border-line bg-surface shadow-card p-8 rounded-card border-line relative overflow-hidden">
+        <h3 className={cn("text-heading font-bold mb-1 flex items-center gap-2", bare && "sr-only")}>
+          <ListChecks className="w-5 h-5 text-info-ink" />
           مؤشر الانضباط
         </h3>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between py-2">
-          <p className="text-sm text-muted-foreground leading-7">
+          <p className="text-small text-ink-muted leading-7">
             ولّد خطة مذاكرة لهذا الأسبوع، وهنا تشوف كم أنجزت من مهامها.
           </p>
           <Link href="/plan" prefetch={false} onClick={(e) => e.stopPropagation()} className="shrink-0">
-            <Button className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">ولّد خطتك الذكية</Button>
+            <Button className="rounded-control bg-brand hover:bg-brand-hover gap-2">ولّد خطتك الذكية</Button>
           </Link>
         </div>
       </PanelRoot>
@@ -91,20 +91,20 @@ export function AdherenceCard({
   }
 
   return (
-    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
+    <PanelRoot bare={bare} className="border border-line bg-surface shadow-card p-8 rounded-card border-line relative overflow-hidden">
       <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-5")}>
         <div className={cn(bare && "sr-only")}>
-          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
+          <h3 className="text-heading font-bold mb-1 flex items-center gap-2">
             <ListChecks className={cn("w-5 h-5", t.icon)} />
             مؤشر الانضباط
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-small text-ink-muted">
             نسبة إنجازك من مهام خطتك الذكية لهذا الأسبوع.
           </p>
         </div>
         <Badge
           variant="outline"
-          className={cn("text-[10px] font-bold", t.pill)}
+          className={cn("text-caption font-bold", t.pill)}
         >
           {headline}
         </Badge>
@@ -139,8 +139,8 @@ export function AdherenceCard({
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="text-3xl font-black font-mono">{pct}%</div>
-            <div className="text-[10px] text-muted font-bold uppercase tracking-wider mt-0.5">
+            <div className="text-title font-bold font-mono">{pct}%</div>
+            <div className="text-caption text-ink-muted font-bold uppercase tracking-wider mt-0.5">
               إنجاز
             </div>
           </div>
@@ -149,16 +149,16 @@ export function AdherenceCard({
         {/* Numbers */}
         <div className="space-y-3">
           <div className="flex items-baseline justify-between">
-            <span className="text-[12px] font-bold text-muted">المهام المكتملة</span>
-            <span className="font-mono font-black text-lg">{completed}</span>
+            <span className="text-small font-bold text-ink-muted">المهام المكتملة</span>
+            <span className="font-mono font-bold text-subheading">{completed}</span>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-[12px] font-bold text-muted">إجمالي مهام الخطة</span>
-            <span className="font-mono font-black text-lg">{total}</span>
+            <span className="text-small font-bold text-ink-muted">إجمالي مهام الخطة</span>
+            <span className="font-mono font-bold text-subheading">{total}</span>
           </div>
-          <div className="flex items-baseline justify-between pt-3 border-t border-foreground/10">
-            <span className="text-[12px] font-bold text-muted">المتبقي</span>
-            <span className="font-mono font-black text-lg text-foreground">
+          <div className="flex items-baseline justify-between pt-3 border-t border-line">
+            <span className="text-small font-bold text-ink-muted">المتبقي</span>
+            <span className="font-mono font-bold text-subheading text-ink">
               {Math.max(0, total - completed)}
             </span>
           </div>
@@ -168,7 +168,7 @@ export function AdherenceCard({
             <Link href="/plan" prefetch={false} onClick={(e) => e.stopPropagation()}>
               <Button
                 variant="outline"
-                className="w-full rounded-xl glass border-foreground/10 gap-2 mt-2"
+                className="w-full rounded-control border border-line bg-surface shadow-card border-line gap-2 mt-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 إدارة المهام
@@ -176,7 +176,7 @@ export function AdherenceCard({
             </Link>
           ) : (
             <Link href="/plan" prefetch={false} onClick={(e) => e.stopPropagation()}>
-              <Button className="w-full rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 mt-2">
+              <Button className="w-full rounded-control bg-brand hover:bg-brand-hover gap-2 mt-2">
                 ولّد خطتك الذكية
               </Button>
             </Link>
