@@ -25,6 +25,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ds/button";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertCircle, CalendarPlus, Check, ChevronDown, Pencil, Play, Plus, RefreshCw, SlidersHorizontal, Trash2 } from "lucide-react";
@@ -71,9 +72,9 @@ export function WeekView() {
   if (!mounted) {
     return (
       <div className="space-y-5" aria-busy="true">
-        <div className="h-10 w-48 rounded-xl bg-foreground/5 animate-pulse" />
-        <div className="h-52 rounded-3xl bg-foreground/5 animate-pulse" />
-        <div className="h-72 rounded-3xl bg-foreground/5 animate-pulse" />
+        <div className="h-10 w-48 rounded-control bg-surface-sunken animate-pulse" />
+        <div className="h-52 rounded-card bg-surface-sunken animate-pulse" />
+        <div className="h-72 rounded-card bg-surface-sunken animate-pulse" />
       </div>
     );
   }
@@ -233,14 +234,14 @@ function PlanReady({ initialDay }: { initialDay: number | null }) {
           <PageTitle />
           {/* Before the first plan the build panel explains the page; no need to say it twice. */}
           {plan && (
-            <p className="text-muted-foreground mt-1 leading-7">
+            <p className="text-ink-muted mt-1 leading-7">
               {totals.sessions > 0 ? (
                 <>
-                  أنجزت <b className="text-foreground">{totals.done}</b> من <b className="text-foreground">{totals.sessions}</b> جلسات هذا الأسبوع،{" "}
+                  أنجزت <b className="text-ink">{totals.done}</b> من <b className="text-ink">{totals.sessions}</b> جلسات هذا الأسبوع،{" "}
                   {minutesShort(totals.doneMin)} من {minutesShort(totals.min)} مذاكرة.
                 </>
               ) : (
-                "ما فيه جلسات هذا الأسبوع. أضف جلسة أو أعد بناء الأسبوع."
+ "ما فيه جلسات هذا الأسبوع. أضف جلسة أو أعد بناء الأسبوع."
               )}
             </p>
           )}
@@ -252,26 +253,26 @@ function PlanReady({ initialDay }: { initialDay: number | null }) {
             onGo={(href) => router.push(href)}
           />
           {plan && (
-            <button
+            <Button variant="bare"
               type="button"
               onClick={() => setConfirmRebuild(true)}
               disabled={isGenerating}
-              className="h-11 px-4 rounded-xl border border-foreground/15 font-bold inline-flex items-center gap-1.5 hover:bg-foreground/5 disabled:opacity-60"
+              className="h-11 px-4 rounded-control border border-line-strong font-bold inline-flex items-center gap-1.5 hover:bg-surface-sunken disabled:opacity-60"
             >
               <RefreshCw className={cn("w-4 h-4", isGenerating && "motion-safe:animate-spin")} aria-hidden />
               أعد بناء الأسبوع
-            </button>
+            </Button>
           )}
         </div>
       </header>
 
       {error && (
-        <div role="alert" className="flex items-start gap-3 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-700 dark:text-rose-300">
+        <div role="alert" className="flex items-start gap-3 rounded-card border border-danger-line bg-danger-soft p-4 text-small text-danger-ink">
           <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" aria-hidden />
           <p className="flex-1 leading-6">{error}</p>
-          <button type="button" onClick={clearError} className="text-xs font-bold shrink-0 hover:underline">
+          <Button variant="bare" type="button" onClick={clearError} className="text-caption font-bold shrink-0 hover:underline">
             إخفاء
-          </button>
+          </Button>
         </div>
       )}
 
@@ -395,7 +396,7 @@ function PlanReady({ initialDay }: { initialDay: number | null }) {
 }
 
 function PageTitle() {
-  return <h1 className="text-3xl md:text-4xl font-black tracking-tight">وقتي</h1>;
+  return <h1 className="text-title md:text-4xl font-bold tracking-tight">وقتي</h1>;
 }
 
 function AddMenu({ onSession, onAppointment, onGo }: { onSession: () => void; onAppointment: () => void; onGo: (href: string) => void }) {
@@ -403,18 +404,18 @@ function AddMenu({ onSession, onAppointment, onGo }: { onSession: () => void; on
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label="إضافة"
-        className="h-11 px-4 rounded-xl bg-foreground text-background font-bold inline-flex items-center gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-uqu-accent/50"
+        className="inline-flex h-11 items-center gap-1.5 rounded-control bg-brand px-4 font-semibold text-on-brand hover:bg-brand-hover focus-ring"
       >
         <Plus className="w-4 h-4" strokeWidth={2.6} aria-hidden />
         إضافة
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[240px] p-1.5">
-        <DropdownMenuItem onClick={onSession} className="px-2.5 py-2 text-sm font-semibold">جلسة مذاكرة</DropdownMenuItem>
-        <DropdownMenuItem onClick={onAppointment} className="px-2.5 py-2 text-sm font-semibold">موعد بتاريخه (تسليم، كويز…)</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onGo("/exams")} className="px-2.5 py-2 text-sm font-semibold">اختبار في جدول الاختبارات</DropdownMenuItem>
+        <DropdownMenuItem onClick={onSession} className="px-2.5 py-2 text-small font-semibold">جلسة مذاكرة</DropdownMenuItem>
+        <DropdownMenuItem onClick={onAppointment} className="px-2.5 py-2 text-small font-semibold">موعد بتاريخه (تسليم، كويز…)</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onGo("/exams")} className="px-2.5 py-2 text-small font-semibold">اختبار في جدول الاختبارات</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => onGo("/schedule")} className="px-2.5 py-2 text-sm font-semibold">رفع الجدول الدراسي</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onGo("/pomodoro")} className="px-2.5 py-2 text-sm font-semibold">جلسة تركيز حرّة</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onGo("/schedule")} className="px-2.5 py-2 text-small font-semibold">رفع الجدول الدراسي</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onGo("/pomodoro")} className="px-2.5 py-2 text-small font-semibold">جلسة تركيز حرّة</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -451,9 +452,9 @@ export function WeekStrip({
   const monthLabel = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { month: "long" }).format(days[6]);
 
   return (
-    <section aria-labelledby="week-strip-title" className={cn("rounded-3xl border border-foreground/10", compact ? "p-3 md:p-4" : "p-4 md:p-6")}>
+    <section aria-labelledby="week-strip-title" className={cn("rounded-card border border-line", compact ? "p-3 md:p-4" : "p-4 md:p-6")}>
       <div className={cn("flex items-baseline justify-between gap-3", compact ? "mb-2 px-1" : "mb-4")}>
-        <h2 id="week-strip-title" className="font-black">
+        <h2 id="week-strip-title" className="font-bold">
           {title ?? `أسبوعك ${days[0].getDate()}–${days[6].getDate()} ${monthLabel}`}
         </h2>
         {!compact && <Legend />}
@@ -473,32 +474,32 @@ export function WeekStrip({
             .filter(Boolean)
             .join("، ");
           return (
-            <button
+            <Button variant="bare"
               key={i}
               type="button"
               role={compact ? undefined : "tab"}
               aria-selected={compact ? undefined : on}
               onClick={() => onSelect(i)}
               className={cn(
-                "group flex flex-col items-stretch gap-2 rounded-2xl p-1.5 md:p-2 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-uqu-accent/60",
-                on ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.03]",
+ "group flex flex-col items-stretch gap-2 rounded-card p-1.5 md:p-2 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand",
+                on ? "bg-surface-sunken" : "hover:bg-surface-sunken",
               )}
             >
               {/* The full description is the button's name; the compact visuals
                   below are hidden from assistive tech so the two never disagree. */}
               <span className="sr-only">{label}</span>
-              <span aria-hidden className={cn("text-[11px] md:text-xs font-bold text-center h-4", studyMin ? "text-foreground" : "text-muted-foreground")}>
+              <span aria-hidden className={cn("text-caption font-bold text-center h-4", studyMin ? "text-ink" : "text-ink-muted")}>
                 {studyMin ? minutesShort(studyMin) : i === dayOff ? "راحة" : ""}
               </span>
               <span
-                className={cn("relative flex flex-col-reverse rounded-xl bg-foreground/[0.04] overflow-hidden", compact ? "h-14 md:h-16" : "h-28 md:h-36")}
+                className={cn("relative flex flex-col-reverse rounded-control bg-surface-sunken overflow-hidden", compact ? "h-14 md:h-16" : "h-28 md:h-36")}
                 aria-hidden
               >
-                {lectureMin > 0 && <span className="block bg-foreground/20" style={{ height: `${(lectureMin / scale) * 100}%` }} />}
+                {lectureMin > 0 && <span className="block bg-line-strong" style={{ height: `${(lectureMin / scale) * 100}%` }} />}
                 {sessions.map((s) => (
                   <span
                     key={s.key}
-                    className="block border-t border-background/60 motion-safe:transition-[height] motion-safe:duration-500"
+                    className="block border-t border-surface motion-safe:transition-[height] motion-safe:duration-500"
                     style={{
                       height: `${(s.min / scale) * 100}%`,
                       backgroundColor: colors[s.code] ?? "#6d5ae6",
@@ -509,11 +510,11 @@ export function WeekStrip({
                 ))}
               </span>
               <span aria-hidden className="flex flex-col items-center leading-tight">
-                <span className={cn("text-[11px] md:text-xs", on ? "font-bold" : "text-muted-foreground")}>{SHORT_DAYS[i]}</span>
-                <span className={cn("text-base md:text-lg font-black", isToday && "text-uqu-accent")}>{d.getDate()}</span>
-                <span className={cn("w-1 h-1 rounded-full", isToday ? "bg-uqu-accent" : "bg-transparent")} />
+                <span className={cn("text-caption", on ? "font-bold" : "text-ink-muted")}>{SHORT_DAYS[i]}</span>
+                <span className={cn("text-subheading font-bold", isToday && "text-info-ink")}>{d.getDate()}</span>
+                <span className={cn("w-1 h-1 rounded-full", isToday ? "bg-brand" : "bg-transparent")} />
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -523,15 +524,15 @@ export function WeekStrip({
 
 function Legend() {
   return (
-    <ul className="hidden sm:flex items-center gap-4 text-xs text-muted-foreground">
+    <ul className="hidden sm:flex items-center gap-4 text-caption text-ink-muted">
       <li className="flex items-center gap-1.5">
-        <span className="w-3 h-3 rounded-sm bg-foreground/20" aria-hidden /> محاضرات
+        <span className="size-3 rounded-sm bg-line-strong" aria-hidden /> محاضرات
       </li>
       <li className="flex items-center gap-1.5">
-        <span className="w-3 h-3 rounded-sm bg-uqu-accent" aria-hidden /> مذاكرة أنجزتها
+        <span className="w-3 h-3 rounded-sm bg-brand" aria-hidden /> مذاكرة أنجزتها
       </li>
       <li className="flex items-center gap-1.5">
-        <span className="w-3 h-3 rounded-sm bg-uqu-accent opacity-55" style={{ backgroundImage: AHEAD }} aria-hidden /> باقية
+        <span className="w-3 h-3 rounded-sm bg-brand opacity-55" style={{ backgroundImage: AHEAD }} aria-hidden /> باقية
       </li>
     </ul>
   );
@@ -576,11 +577,11 @@ function DayView({
   return (
     <section aria-labelledby="day-title" className="space-y-4 min-w-0">
       <div>
-        <h2 id="day-title" className="text-xl font-black">
+        <h2 id="day-title" className="text-heading font-bold">
           {title}
-          {isToday && <span className="ms-2 align-middle text-xs font-bold px-2 py-0.5 rounded-full bg-uqu-accent/15 text-uqu-accent">اليوم</span>}
+          {isToday && <span className="ms-2 align-middle text-caption font-bold px-2 py-0.5 rounded-full bg-info-soft text-info-ink">اليوم</span>}
         </h2>
-        {summary && <p className="text-sm text-muted-foreground leading-7 mt-1">{summary}</p>}
+        {summary && <p className="text-small text-ink-muted leading-7 mt-1">{summary}</p>}
       </div>
 
       {items.length === 0 ? (
@@ -596,9 +597,9 @@ function DayView({
       )}
 
       {items.length > 0 && studyCount === 0 && hasPlan && !isDayOff && (
-        <button type="button" onClick={onAdd} className="text-sm font-bold text-uqu-accent inline-flex items-center gap-1">
+        <Button variant="bare" type="button" onClick={onAdd} className="text-small font-bold text-info-ink inline-flex items-center gap-1">
           <Plus className="w-4 h-4" aria-hidden /> أضف جلسة لهذا اليوم
-        </button>
+        </Button>
       )}
     </section>
   );
@@ -606,12 +607,12 @@ function DayView({
 
 function EmptyDay({ isDayOff, hasPlan, onAdd }: { isDayOff: boolean; hasPlan: boolean; onAdd: () => void }) {
   return (
-    <div className="rounded-3xl border border-dashed border-foreground/15 px-6 py-10 text-center space-y-3">
+    <div className="rounded-card border border-dashed border-line-strong px-6 py-10 text-center space-y-3">
       <p className="font-bold">{isDayOff ? "يوم راحتك — ما فيه شي مجدول." : "يوم فاضي من المحاضرات والمذاكرة."}</p>
       {hasPlan && (
-        <button type="button" onClick={onAdd} className="text-sm font-bold text-uqu-accent inline-flex items-center gap-1">
+        <Button variant="bare" type="button" onClick={onAdd} className="text-small font-bold text-info-ink inline-flex items-center gap-1">
           <Plus className="w-4 h-4" aria-hidden /> أضف جلسة
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -621,8 +622,8 @@ function Clock({ start }: { start: number }) {
   const [clock, half] = formatMinutes(start).split(" ");
   return (
     <span className="w-12 shrink-0 text-center leading-tight pt-0.5">
-      <span className="block text-sm font-black">{clock}</span>
-      <span className="block text-[11px] text-muted-foreground">{half}</span>
+      <span className="block text-small font-bold">{clock}</span>
+      <span className="block text-caption text-ink-muted">{half}</span>
     </span>
   );
 }
@@ -648,24 +649,24 @@ function DayItem({
 }) {
   if (item.kind === "prayer") {
     return (
-      <div role="separator" aria-label={`${item.name} ${formatClock(item.time)}`} className="flex items-center gap-3 ps-14 text-xs text-muted-foreground">
-        <span className="flex-1 h-px bg-foreground/10" />
+      <div role="separator" aria-label={`${item.name} ${formatClock(item.time)}`} className="flex items-center gap-3 ps-14 text-caption text-ink-muted">
+        <span className="h-px flex-1 bg-line" />
         {item.name} {formatClock(item.time)}
-        <span className="flex-1 h-px bg-foreground/10" />
+        <span className="h-px flex-1 bg-line" />
       </div>
     );
   }
   if (item.kind === "lecture") {
     return (
-      <div className="flex gap-2 text-sm">
+      <div className="flex gap-2 text-small">
         <Clock start={item.start} />
-        <div className="flex-1 min-w-0 rounded-2xl bg-foreground/[0.04] px-3.5 py-3 space-y-2">
+        <div className="flex-1 min-w-0 rounded-card bg-surface-sunken px-3.5 py-3 space-y-2">
           <div className="flex items-start justify-between gap-3">
-            <p className="min-w-0 text-muted-foreground leading-6">
-              محاضرة <span className="text-foreground font-bold">{item.slot.course_name || item.slot.course_code}</span> حتى {formatMinutes(item.end)}
+            <p className="min-w-0 text-ink-muted leading-6">
+              محاضرة <span className="text-ink font-bold">{item.slot.course_name || item.slot.course_code}</span> حتى {formatMinutes(item.end)}
               {item.slot.room ? `، قاعة ${item.slot.room}` : ""}
             </p>
-            <RoomLink room={item.slot.room} className="w-8 h-8 bg-background/70" />
+            <RoomLink room={item.slot.room} className="size-8 bg-surface" />
           </div>
           <LectureAbsence code={item.slot.course_code} date={date} today={today} />
         </div>
@@ -674,9 +675,9 @@ function DayItem({
   }
   if (item.kind === "exam") {
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-small">
         <Clock start={item.start} />
-        <span className="flex-1 min-w-0 truncate rounded-xl bg-amber-500/10 text-amber-900 dark:text-amber-200 px-3 py-2 font-semibold">
+        <span className="flex-1 min-w-0 truncate rounded-control bg-warning-soft text-warning-ink px-3 py-2 font-semibold">
           {EXAM_TYPE_LABELS[item.exam.exam_type] ?? "اختبار"} {item.exam.subject}
         </span>
       </div>
@@ -684,10 +685,10 @@ function DayItem({
   }
   if (item.task.targetDate) {
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-2 text-small">
         <Clock start={item.start} />
-        <span className="flex-1 min-w-0 flex items-center gap-2 rounded-xl border border-foreground/10 px-3 py-2">
-          <span className="text-xs font-bold text-muted-foreground shrink-0">{TYPE_LABEL[item.task.taskType ?? "other"] ?? "موعد"}</span>
+        <span className="flex-1 min-w-0 flex items-center gap-2 rounded-control border border-line px-3 py-2">
+          <span className="text-caption font-bold text-ink-muted shrink-0">{TYPE_LABEL[item.task.taskType ?? "other"] ?? "موعد"}</span>
           <span className="font-semibold truncate">{item.task.title}</span>
         </span>
       </div>
@@ -724,9 +725,9 @@ function SessionCard({
   return (
     <div className="flex gap-2">
       <Clock start={start} />
-      <article className={cn("flex-1 min-w-0 rounded-2xl border p-4 space-y-3 transition-colors", done ? "border-foreground/10 bg-foreground/[0.02]" : "border-foreground/15 bg-card")}>
+      <article className={cn("flex-1 min-w-0 rounded-card border p-4 space-y-3 transition-colors", done ? "border-line bg-surface-sunken" : "border-line-strong bg-surface")}>
         <div className="flex items-start gap-3">
-          <button
+          <Button variant="bare"
             type="button"
             onClick={() => onToggle(key)}
             aria-pressed={done}
@@ -735,10 +736,10 @@ function SessionCard({
             style={{ borderColor: color, backgroundColor: done ? color : "transparent" }}
           >
             {done && <Check className="w-4 h-4 text-white" strokeWidth={3} aria-hidden />}
-          </button>
+          </Button>
           <div className="flex-1 min-w-0">
-            <h3 className={cn("font-bold leading-6", done && "line-through text-muted-foreground")}>{task.title}</h3>
-            <p className="text-sm text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-2">
+            <h3 className={cn("font-bold leading-6", done && "line-through text-ink-muted")}>{task.title}</h3>
+            <p className="text-small text-ink-muted mt-0.5 flex flex-wrap items-center gap-x-2">
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} aria-hidden />
                 {task.courseName || task.courseCode}
@@ -746,40 +747,40 @@ function SessionCard({
               <span>
                 {task.durationMinutes} دقيقة، حتى {formatMinutes(end)}
               </span>
-              {priority && <span className={task.priority === "high" ? "font-bold text-rose-700 dark:text-rose-300" : ""}>{priority}</span>}
+              {priority && <span className={task.priority === "high" ? "font-bold text-danger-ink" : ""}>{priority}</span>}
             </p>
           </div>
           {!done && (
-            <button
+            <Button variant="bare"
               type="button"
               onClick={() => onStart(task, key)}
-              className="h-9 px-3 shrink-0 rounded-xl text-white text-sm font-bold inline-flex items-center gap-1.5"
+              className="h-9 px-3 shrink-0 rounded-control text-white text-small font-bold inline-flex items-center gap-1.5"
               style={{ backgroundColor: color }}
             >
               <Play className="w-3.5 h-3.5 fill-current" aria-hidden />
               ابدأ
-            </button>
+            </Button>
           )}
         </div>
         <div className="flex items-center justify-between gap-2 ps-10">
           {task.reason ? (
-            <button type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="text-xs font-bold text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+            <Button variant="bare" type="button" onClick={() => setWhy((w) => !w)} aria-expanded={why} className="text-caption font-bold text-ink-muted hover:text-ink inline-flex items-center gap-1">
               ليش هذي الجلسة؟
               <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", why && "rotate-180")} aria-hidden />
-            </button>
+            </Button>
           ) : (
             <span />
           )}
           <span className="flex items-center gap-1">
-            <button type="button" onClick={() => onEdit(task)} aria-label={`تعديل ${task.title}`} className="w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/5 inline-flex items-center justify-center">
+            <Button variant="bare" type="button" onClick={() => onEdit(task)} aria-label={`تعديل ${task.title}`} className="w-8 h-8 rounded-control text-ink-muted hover:text-ink hover:bg-surface-sunken inline-flex items-center justify-center">
               <Pencil className="w-4 h-4" aria-hidden />
-            </button>
-            <button type="button" onClick={() => onDelete(task)} aria-label={`حذف ${task.title}`} className="w-8 h-8 rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-500/10 inline-flex items-center justify-center">
+            </Button>
+            <Button variant="bare" type="button" onClick={() => onDelete(task)} aria-label={`حذف ${task.title}`} className="w-8 h-8 rounded-control text-ink-muted hover:text-danger-ink hover:bg-danger-soft inline-flex items-center justify-center">
               <Trash2 className="w-4 h-4" aria-hidden />
-            </button>
+            </Button>
           </span>
         </div>
-        {why && task.reason && <p className="ps-10 text-sm leading-7 text-muted-foreground">{task.reason}</p>}
+        {why && task.reason && <p className="ps-10 text-small leading-7 text-ink-muted">{task.reason}</p>}
       </article>
     </div>
   );
@@ -800,33 +801,33 @@ function CourseBalance({
 }) {
   const max = Math.max(60, ...shares.map((s) => s.plannedMin));
   return (
-    <section aria-labelledby="balance-title" className="rounded-3xl border border-foreground/10 p-5 space-y-4">
-      <h2 id="balance-title" className="font-black">وقتك على المواد</h2>
+    <section aria-labelledby="balance-title" className="rounded-card border border-line p-5 space-y-4">
+      <h2 id="balance-title" className="font-bold">وقتك على المواد</h2>
       <ul className="space-y-3.5">
         {shares.map((s) => {
           const color = colors[s.code] ?? "#6d5ae6";
           return (
             <li key={s.code} className="space-y-1.5">
-              <div className="flex items-center justify-between gap-3 text-sm">
+              <div className="flex items-center justify-between gap-3 text-small">
                 <span className="flex items-center gap-2 min-w-0">
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} aria-hidden />
                   <span className="font-bold truncate">{s.name}</span>
                 </span>
                 {s.sessions > 0 ? (
-                  <span className="text-muted-foreground shrink-0">
+                  <span className="text-ink-muted shrink-0">
                     {minutesShort(s.doneMin)} من {minutesShort(s.plannedMin)}
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2 shrink-0 text-xs">
-                    <span className="text-muted-foreground">بدون جلسات</span>
-                    <button type="button" onClick={() => onAdd(s.code)} className="font-bold text-uqu-accent" aria-label={`أضف جلسة لـ ${s.name}`}>
+                  <span className="flex items-center gap-2 shrink-0 text-caption">
+                    <span className="text-ink-muted">بدون جلسات</span>
+                    <Button variant="bare" type="button" onClick={() => onAdd(s.code)} className="font-bold text-info-ink" aria-label={`أضف جلسة لـ ${s.name}`}>
                       أضف جلسة
-                    </button>
+                    </Button>
                   </span>
                 )}
               </div>
               {/* planned (faded) under done (solid), both from the start edge */}
-              <div className="relative h-2 rounded-full bg-foreground/[0.06] overflow-hidden" aria-hidden>
+              <div className="relative h-2 rounded-full bg-surface-sunken overflow-hidden" aria-hidden>
                 <div className="absolute inset-y-0 start-0 rounded-full" style={{ width: `${(s.plannedMin / max) * 100}%`, backgroundColor: color, opacity: 0.35 }} />
                 <div className="absolute inset-y-0 start-0 rounded-full" style={{ width: `${(s.doneMin / max) * 100}%`, backgroundColor: color }} />
               </div>
@@ -858,46 +859,46 @@ function Appointments({
   const fmt = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <section aria-labelledby="appointments-title" className="rounded-3xl border border-foreground/10 p-5 space-y-3">
+    <section aria-labelledby="appointments-title" className="rounded-card border border-line p-5 space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="appointments-title" className="font-black">مواعيدك المسجّلة</h2>
-        <button type="button" onClick={onAdd} className="text-sm font-bold text-uqu-accent inline-flex items-center gap-1">
+        <h2 id="appointments-title" className="font-bold">مواعيدك المسجّلة</h2>
+        <Button variant="bare" type="button" onClick={onAdd} className="text-small font-bold text-info-ink inline-flex items-center gap-1">
           <CalendarPlus className="w-4 h-4" aria-hidden /> سجّل موعد
-        </button>
+        </Button>
       </div>
       {list.length === 0 ? (
-        <p className="text-sm text-muted-foreground leading-6">سجّل اختبار أو تسليم بتاريخه، ويظهر في يومه هنا وفي «وقتي».</p>
+        <p className="text-small text-ink-muted leading-6">سجّل اختبار أو تسليم بتاريخه، ويظهر في يومه هنا وفي «وقتي».</p>
       ) : (
-        <ul className="divide-y divide-foreground/5">
+        <ul className="divide-y divide-line">
           {list.map((t) => {
             const isPast = t.targetDate! < today;
             const [y, m, d] = t.targetDate!.split("-").map(Number);
             return (
               <li key={taskKey(t)} className={cn("flex items-center gap-3 py-2.5", isPast && "opacity-60")}>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold truncate">
-                    <span className="text-muted-foreground font-semibold me-1.5">{TYPE_LABEL[t.taskType ?? "other"] ?? "موعد"}</span>
+                  <div className="text-small font-bold truncate">
+                    <span className="text-ink-muted font-semibold me-1.5">{TYPE_LABEL[t.taskType ?? "other"] ?? "موعد"}</span>
                     {t.title}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-caption text-ink-muted">
                     {fmt.format(new Date(y, m - 1, d))}، {formatClock(t.suggestedTime)}
                   </div>
                 </div>
-                <button type="button" onClick={() => onEdit(t)} aria-label={`تعديل ${t.title}`} className="w-8 h-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/5 inline-flex items-center justify-center">
+                <Button variant="bare" type="button" onClick={() => onEdit(t)} aria-label={`تعديل ${t.title}`} className="w-8 h-8 rounded-control text-ink-muted hover:text-ink hover:bg-surface-sunken inline-flex items-center justify-center">
                   <Pencil className="w-4 h-4" aria-hidden />
-                </button>
-                <button type="button" onClick={() => onDelete(t)} aria-label={`حذف ${t.title}`} className="w-8 h-8 rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-500/10 inline-flex items-center justify-center">
+                </Button>
+                <Button variant="bare" type="button" onClick={() => onDelete(t)} aria-label={`حذف ${t.title}`} className="w-8 h-8 rounded-control text-ink-muted hover:text-danger-ink hover:bg-danger-soft inline-flex items-center justify-center">
                   <Trash2 className="w-4 h-4" aria-hidden />
-                </button>
+                </Button>
               </li>
             );
           })}
         </ul>
       )}
       {past.length > 0 && (
-        <button type="button" onClick={() => setShowPast((v) => !v)} className="text-xs font-bold text-muted-foreground hover:text-foreground">
+        <Button variant="bare" type="button" onClick={() => setShowPast((v) => !v)} className="text-caption font-bold text-ink-muted hover:text-ink">
           {showPast ? "أخفِ المواعيد السابقة" : `اعرض المواعيد السابقة (${past.length})`}
-        </button>
+        </Button>
       )}
     </section>
   );
@@ -924,33 +925,33 @@ function AboutPlan({
     ? new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", { weekday: "long", day: "numeric", month: "long" }).format(new Date(generatedAt))
     : null;
   return (
-    <section aria-labelledby="about-title" className="rounded-3xl bg-foreground/[0.03] p-5 space-y-4">
+    <section aria-labelledby="about-title" className="rounded-card bg-surface-sunken p-5 space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="about-title" className="font-black">كيف انبنت الخطة</h2>
-        <button type="button" onClick={onEditPrefs} className="text-sm font-bold text-uqu-accent inline-flex items-center gap-1">
+        <h2 id="about-title" className="font-bold">كيف انبنت الخطة</h2>
+        <Button variant="bare" type="button" onClick={onEditPrefs} className="text-small font-bold text-info-ink inline-flex items-center gap-1">
           <SlidersHorizontal className="w-4 h-4" aria-hidden /> تفضيلاتك
-        </button>
+        </Button>
       </div>
-      {overview && <p className="text-sm leading-7">{overview}</p>}
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+      {overview && <p className="text-small leading-7">{overview}</p>}
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-small">
         <div>
-          <dt className="text-muted-foreground text-xs">وقت نشاطك</dt>
+          <dt className="text-ink-muted text-caption">وقت نشاطك</dt>
           <dd className="font-bold">{peak}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground text-xs">طريقة الترتيب</dt>
+          <dt className="text-ink-muted text-caption">طريقة الترتيب</dt>
           <dd className="font-bold">{strategy}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground text-xs">مدة التركيز</dt>
+          <dt className="text-ink-muted text-caption">مدة التركيز</dt>
           <dd className="font-bold">{focus} دقيقة</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground text-xs">يوم الراحة</dt>
+          <dt className="text-ink-muted text-caption">يوم الراحة</dt>
           <dd className="font-bold">{dayOff}</dd>
         </div>
       </dl>
-      {built && <p className="text-xs text-muted-foreground">بنيتها {built}. لو غيّرت تفضيلاتك، أعد بناء الأسبوع عشان تنطبق.</p>}
+      {built && <p className="text-caption text-ink-muted">بنيتها {built}. لو غيّرت تفضيلاتك، أعد بناء الأسبوع عشان تنطبق.</p>}
     </section>
   );
 }
@@ -980,26 +981,26 @@ function BuildPanel({
 }) {
   if (courseCount === 0) {
     return (
-      <section aria-labelledby="build-title" className="rounded-3xl bg-foreground text-background p-6 md:p-8 space-y-3">
-        <h2 id="build-title" className="text-2xl font-black">{hasGradedRecord ? "ما فيه مواد مسجّلة في سجلك الحين" : "نحتاج مواد فصلك عشان نبني خطتك"}</h2>
-        <p className="opacity-80 leading-7 max-w-xl">
+      <section aria-labelledby="build-title" className="space-y-3 rounded-card bg-brand p-6 text-on-brand shadow-card md:p-8">
+        <h2 id="build-title" className="text-heading font-bold">{hasGradedRecord ? "ما فيه مواد مسجّلة في سجلك الحين" : "نحتاج مواد فصلك عشان نبني خطتك"}</h2>
+        <p className="max-w-xl text-body text-white/90">
           {hasGradedRecord
             ? "سجلك المرفوع مرصود بالكامل (بين فصلين أو بعد التخرج). بعد ما تسجّل مواد الفصل الجديد ارفع السجل مرة ثانية."
             : "ارفع سجلك الأكاديمي من الملف الشخصي. منه نعرف مواد الفصل ونوزّع عليها جلسات المراجعة."}
         </p>
-        <Link href="/profile" prefetch={false} className="inline-flex items-center h-11 px-5 rounded-xl bg-background text-foreground font-bold">
+        <Link href="/profile" prefetch={false} className="inline-flex h-11 items-center rounded-control bg-white px-5 font-semibold text-brand focus-ring">
           ارفع السجل
         </Link>
       </section>
     );
   }
   return (
-    <section aria-labelledby="build-title" className="rounded-3xl bg-foreground text-background p-6 md:p-8 space-y-5">
+    <section aria-labelledby="build-title" className="space-y-5 rounded-card bg-brand p-6 text-on-brand shadow-card md:p-8">
       <div className="space-y-1.5 max-w-xl">
-        <h2 id="build-title" className="text-2xl font-black">ابنِ أسبوعك</h2>
-        <p className="opacity-80 leading-7">نوزّع جلسات مراجعة على فراغات جدولك في وقت نشاطك، ونبعد عن محاضراتك ويوم راحتك.</p>
+        <h2 id="build-title" className="text-heading font-bold">ابنِ أسبوعك</h2>
+        <p className="text-body text-white/90">نوزّع جلسات مراجعة على فراغات جدولك في وقت نشاطك، ونبعد عن محاضراتك ويوم راحتك.</p>
       </div>
-      <ul className="space-y-2 text-sm">
+      <ul className="space-y-2 text-small">
         <Check3 ok text={`${courseCount} ${courseCount === 1 ? "مادة" : courseCount <= 10 ? "مواد" : "مادة"} من سجلك هذا الفصل`} />
         <Check3
           ok={hasSchedule}
@@ -1011,14 +1012,14 @@ function BuildPanel({
           <span>
             نشاطك {peak}، جلسات {focus} دقيقة{dayOff ? `، وراحتك يوم ${dayOff}` : ""}
           </span>
-          <button type="button" onClick={onEditPrefs} className="font-bold underline underline-offset-4 decoration-background/40">
+          <Button variant="bare" type="button" onClick={onEditPrefs} className="rounded-sm font-semibold underline decoration-white/50 underline-offset-4 focus-ring">
             غيّرها
-          </button>
+          </Button>
         </li>
       </ul>
-      <button type="button" onClick={onBuild} className="h-12 px-6 rounded-2xl bg-background text-foreground font-black hover:opacity-90">
+      <Button variant="bare" type="button" onClick={onBuild} className="h-12 rounded-control bg-white px-6 text-subheading font-bold text-brand hover:bg-white/90 focus-ring">
         ابنِ خطة الأسبوع
-      </button>
+      </Button>
     </section>
   );
 }
@@ -1026,10 +1027,10 @@ function BuildPanel({
 function Check3({ ok, text, action }: { ok: boolean; text: string; action?: { href: string; label: string } }) {
   return (
     <li className="flex items-center gap-2.5">
-      {ok ? <Check className="w-4 h-4 shrink-0" aria-hidden /> : <span className="w-4 h-4 shrink-0 rounded-full border-2 border-background/50" aria-hidden />}
-      <span className={ok ? "" : "opacity-80"}>{text}</span>
+      {ok ? <Check className="w-4 h-4 shrink-0" aria-hidden /> : <span className="size-4 shrink-0 rounded-full border-2 border-white/60" aria-hidden />}
+      <span className={ok ? "" : "text-white/90"}>{text}</span>
       {action && (
-        <Link href={action.href} prefetch={false} className="font-bold underline underline-offset-4 decoration-background/40">
+        <Link href={action.href} prefetch={false} className="rounded-sm font-semibold underline decoration-white/50 underline-offset-4 focus-ring">
           {action.label}
         </Link>
       )}
@@ -1044,21 +1045,21 @@ function Building() {
     return () => window.clearInterval(t);
   }, []);
   return (
-    <section aria-busy="true" className="rounded-3xl bg-foreground text-background p-6 md:p-8 space-y-4">
-      <h2 className="text-2xl font-black">أبني أسبوعك</h2>
-      <ol className="space-y-2 text-sm">
+    <section aria-busy="true" className="space-y-4 rounded-card bg-brand p-6 text-on-brand shadow-card md:p-8">
+      <h2 className="text-heading font-bold">أبني أسبوعك</h2>
+      <ol className="space-y-2 text-small">
         {BUILD_STEPS.map((s, i) => (
-          <li key={s} className={cn("flex items-center gap-2.5 transition-opacity", i > step && "opacity-35")}>
+          <li key={s} className={cn("flex items-center gap-2.5 transition-opacity", i > step && "opacity-70")}>
             {i < step ? (
               <Check className="w-4 h-4 shrink-0" aria-hidden />
             ) : (
-              <span className={cn("w-4 h-4 shrink-0 rounded-full border-2 border-background/60", i === step && "motion-safe:animate-pulse bg-background/40")} aria-hidden />
+              <span className={cn("size-4 shrink-0 rounded-full border-2 border-white/70", i === step && "bg-white/40 motion-safe:animate-pulse")} aria-hidden />
             )}
             <span aria-live={i === step ? "polite" : undefined}>{s}</span>
           </li>
         ))}
       </ol>
-      <p className="text-xs opacity-70">قد تاخذ حتى دقيقة.</p>
+      <p className="text-caption text-white/90">قد تاخذ حتى دقيقة.</p>
     </section>
   );
 }

@@ -70,8 +70,6 @@
     "src/components/setup-wizard/Step3Complete.tsx",
     "src/components/study/flashcards.tsx",
     "src/components/study/study-home.tsx",
-    "src/components/time/parts.tsx",
-    "src/components/time/week-view.tsx",
     "src/components/toast-list.tsx",
     "src/components/tutor/blocks.tsx",
     "src/components/tutor/focus-timer.tsx",

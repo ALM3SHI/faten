@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  * Design system v2 button. One primary action per screen; everything else is
  * secondary or quiet. The default size is a 44px touch target.
  */
-export type ButtonVariant = "primary" | "secondary" | "quiet" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "quiet" | "danger" | "bare";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const BASE =
@@ -17,7 +17,15 @@ const VARIANT: Record<ButtonVariant, string> = {
   secondary: "border-line-strong bg-surface text-ink hover:bg-surface-sunken",
   quiet: "border-transparent bg-transparent text-ink hover:bg-surface-sunken",
   danger: "border-danger-line bg-danger-soft text-danger-ink hover:border-danger-ink",
+  bare: "",
 };
+
+/**
+ * `bare`: no look of its own — only the shared focus ring and disabled
+ * behaviour. For controls whose shape is the content itself (a day in the
+ * week strip, an inline text action, a checkbox circle), styled by the caller.
+ */
+const BARE = "focus-ring disabled:pointer-events-none disabled:opacity-50 aria-busy:pointer-events-none";
 
 const SIZE: Record<ButtonSize, string> = {
   sm: "h-9 px-3 text-small",
@@ -30,6 +38,7 @@ export function buttonClass({
   size = "md",
   className,
 }: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) {
+  if (variant === "bare") return cn(BARE, className);
   return cn(BASE, VARIANT[variant], SIZE[size], className);
 }
 
