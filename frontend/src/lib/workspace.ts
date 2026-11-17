@@ -6,7 +6,7 @@
 
 import type { ChatMessage } from "@/store/workspaceStore";
 import { api } from "@/lib/api";
-import { setStoreSyncEnabled, clearPendingPushTimers } from "@/lib/firebase/sync";
+import { setStoreSyncEnabled, clearPendingPushTimers } from "@/lib/firebase/gate";
 import { useProfileStore } from "@/store/profileStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
 import { useScheduleStore } from "@/store/scheduleStore";

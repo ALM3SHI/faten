@@ -59,6 +59,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { ToastProvider } from "@/components/toast-provider";
 import { RouteGuard } from "@/components/route-guard";
 import { BackendWarmup } from "@/components/backend-warmup";
+import { ServiceWorkerHost } from "@/components/service-worker-host";
 import { BottomNav } from "@/components/bottom-nav";
 import { AppSidebarHost } from "@/components/app-sidebar-host";
 import { CommandPaletteHost } from "@/components/command-palette-host";
@@ -100,6 +101,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             <BackendWarmup />
+            <ServiceWorkerHost />
             <AppSidebarHost />
             <div id="content" tabIndex={-1} className="outline-none">
               <RouteGuard>{children}</RouteGuard>

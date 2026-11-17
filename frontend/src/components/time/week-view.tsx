@@ -39,7 +39,11 @@ import {
 import { LectureAbsence, NextExam, RoomLink, TimeTools } from "@/components/time/parts";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { StudySessionDialog } from "@/components/plan/StudySessionDialog";
-import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
+import dynamic from "next/dynamic";
+import { useLatch } from "@/lib/use-latch";
+
+// Loads the first time «تفضيلات الخطة» opens, not with the week.
+const SmartPreferencesModal = dynamic(() => import("@/components/profile/SmartPreferencesModal").then((m) => m.SmartPreferencesModal), { ssr: false });
 import { strategyLabelAr } from "@/components/profile/preferenceOptions";
 import { AR_WEEKDAYS } from "@/lib/academic-term";
 import { buildAgenda, formatClock, formatMinutes, weekDates, type AgendaItem } from "@/lib/agenda";
@@ -127,6 +131,7 @@ function PlanReady({ initialDay }: { initialDay: number | null }) {
   const [deleteTarget, setDeleteTarget] = useState<{ key: string; title: string } | null>(null);
   const [confirmRebuild, setConfirmRebuild] = useState(false);
   const [prefsOpen, setPrefsOpen] = useState(false);
+  const prefsMounted = useLatch(prefsOpen);
 
   // ── derived ─────────────────────────────────────────────────────────
   const tasks = useMemo(() => plan?.tasks ?? [], [plan]);
@@ -385,12 +390,14 @@ function PlanReady({ initialDay }: { initialDay: number | null }) {
         confirmLabel="أعد البناء"
         onConfirm={() => void build()}
       />
-      <SmartPreferencesModal
-        isOpen={prefsOpen}
-        onClose={() => setPrefsOpen(false)}
-        preferences={preferences}
-        onPreferencesChange={setPreferences}
-      />
+      {prefsMounted && (
+        <SmartPreferencesModal
+          isOpen={prefsOpen}
+          onClose={() => setPrefsOpen(false)}
+          preferences={preferences}
+          onPreferencesChange={setPreferences}
+        />
+      )}
     </div>
   );
 }

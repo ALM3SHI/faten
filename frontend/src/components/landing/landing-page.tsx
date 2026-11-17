@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { LazyMotion, m as motion, useReducedMotion } from "framer-motion";
+
+// The reveal needs only the DOM animation features; they load after the
+// first paint instead of shipping the whole of Framer Motion with the page.
+const motionFeatures = () => import("framer-motion").then((mod) => mod.domAnimation);
 import {
   ArrowLeft,
   BookOpenCheck,
@@ -134,6 +138,7 @@ export function LandingPage() {
   };
 
   return (
+    <LazyMotion features={motionFeatures}>
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
 
@@ -464,5 +469,6 @@ export function LandingPage() {
         </div>
       </footer>
     </div>
+    </LazyMotion>
   );
 }

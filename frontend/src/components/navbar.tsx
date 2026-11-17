@@ -15,7 +15,14 @@ import { LogoMark } from "@/components/logo";
 
 import { useAuth } from "@/components/auth-provider";
 import { useProfileStore } from "@/store/profileStore";
-import { AccountMenu } from "@/components/account-menu";
+import dynamic from "next/dynamic";
+
+// Only signed-in visitors see the account menu, so its menu primitives load
+// with it instead of with every public page.
+const AccountMenu = dynamic(() => import("@/components/account-menu").then((m) => m.AccountMenu), {
+  ssr: false,
+  loading: () => <div className="size-9 rounded-full bg-surface-sunken" aria-hidden />,
+});
 
 export function Navbar() {
   const pathname = usePathname();

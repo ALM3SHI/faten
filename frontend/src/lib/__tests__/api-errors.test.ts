@@ -27,8 +27,12 @@ describe("api helper", () => {
     expect(err.message).toBe("سجّل دخولك أولاً.");
   });
   it("turns network failures into status 0 with an Arabic message", async () => {
+    vi.useFakeTimers();
     vi.stubGlobal("fetch", vi.fn(async () => { throw new TypeError("Failed to fetch"); }));
-    const err = await api.get("/api/workspace").catch((e) => e);
+    const pending = api.get("/api/workspace").catch((e) => e);
+    await vi.runAllTimersAsync(); // GETs retry twice before giving up
+    const err = await pending;
+    vi.useRealTimers();
     expect(err).toBeInstanceOf(ApiError);
     expect(err.status).toBe(0);
     expect(err.message).toBe(NETWORK_ERROR_MESSAGE);

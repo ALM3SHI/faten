@@ -19,7 +19,7 @@ import { NextExamHero } from "@/components/exams/next-exam";
 import { ExamStudyPlanCard } from "@/components/exams/study-plan";
 import { useHydrated } from "@/lib/use-hydrated";
 import { buildStudyPlan, dayKey, findConflicts, sortExams, upcomingExams, type Exam } from "@/lib/exams";
-import { refreshExams } from "@/lib/firebase/sync";
+import { loadSync } from "@/lib/firebase/lazy";
 import { buildCreditsResolver } from "@/lib/transcript-utils";
 import { useExamsStore } from "@/store/examsStore";
 import { useTranscriptStore } from "@/store/transcriptStore";
@@ -43,7 +43,7 @@ export default function ExamsPage() {
 
   // Pick up exams the agent added since sign-in.
   useEffect(() => {
-    refreshExams().catch((err) => console.warn("[exams] refresh failed:", err));
+    loadSync().then((m) => m.refreshExams()).catch((err) => console.warn("[exams] refresh failed:", err));
   }, []);
 
   const today = mounted ? dayKey(new Date()) : "";

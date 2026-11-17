@@ -27,13 +27,16 @@ import {
   type ProfileGoals,
   type ProfilePreferences,
 } from "@/store/profileStore";
-import { SetupWizard } from "@/components/setup-wizard/SetupWizard";
+import dynamic from "next/dynamic";
+import { useLatch } from "@/lib/use-latch";
 import { PrivacyCard } from "@/components/profile/privacy-card";
 import { NotificationsCard } from "@/components/profile/notifications-card";
 import { ReplayTourButton } from "@/components/profile/replay-tour-button";
 import { AdminLink } from "@/components/profile/admin-link";
 import { PageTabs } from "@/components/ui/page-tabs";
-import { SmartPreferencesModal } from "@/components/profile/SmartPreferencesModal";
+// Dialogs load the first time they open, not with the page.
+const SetupWizard = dynamic(() => import("@/components/setup-wizard/SetupWizard").then((m) => m.SetupWizard), { ssr: false });
+const SmartPreferencesModal = dynamic(() => import("@/components/profile/SmartPreferencesModal").then((m) => m.SmartPreferencesModal), { ssr: false });
 import { summarizePreferences } from "@/components/profile/preferenceOptions";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +58,8 @@ function draftFromStore(): ProfileDraft {
 export default function ProfilePage() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isPrefsOpen, setIsPrefsOpen] = useState(false);
+  const wizardMounted = useLatch(isWizardOpen);
+  const prefsMounted = useLatch(isPrefsOpen);
 
   // Phase 4B.4 — edit in local draft; commit to store only on "حفظ التغييرات".
   const [draft, setDraft] = useState<ProfileDraft>(draftFromStore);
@@ -469,13 +474,15 @@ export default function ProfilePage() {
         )}
       </main>
 
-      <SetupWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} />
-      <SmartPreferencesModal
-        isOpen={isPrefsOpen}
-        onClose={() => setIsPrefsOpen(false)}
-        preferences={draft.preferences}
-        onPreferencesChange={handlePreferencesChange}
-      />
+      {wizardMounted && <SetupWizard isOpen={isWizardOpen} onClose={() => setIsWizardOpen(false)} />}
+      {prefsMounted && (
+        <SmartPreferencesModal
+          isOpen={isPrefsOpen}
+          onClose={() => setIsPrefsOpen(false)}
+          preferences={draft.preferences}
+          onPreferencesChange={handlePreferencesChange}
+        />
+      )}
     </div>
   );
 }
