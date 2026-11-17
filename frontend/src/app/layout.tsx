@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SITE } from "@/lib/site";
@@ -59,6 +59,7 @@ import { AuthProvider } from "@/components/auth-provider";
 import { ToastProvider } from "@/components/toast-provider";
 import { RouteGuard } from "@/components/route-guard";
 import { BackendWarmup } from "@/components/backend-warmup";
+import { ArabicValidation } from "@/components/arabic-validation";
 import { ServiceWorkerHost } from "@/components/service-worker-host";
 import { BottomNav } from "@/components/bottom-nav";
 import { AppSidebarHost } from "@/components/app-sidebar-host";
@@ -101,6 +102,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             <BackendWarmup />
+            <ArabicValidation />
             <ServiceWorkerHost />
             <AppSidebarHost />
             <div id="content" tabIndex={-1} className="outline-none">
