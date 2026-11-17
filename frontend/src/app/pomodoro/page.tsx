@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useBumpOnIncrease } from "@/lib/use-bump";
 import { useHydrated } from "@/lib/use-hydrated";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -43,6 +44,7 @@ export default function PomodoroPage() {
   const mode = usePomodoroStore((s) => s.mode);
   const activeTask = usePomodoroStore((s) => s.activeTask);
   const completedSessions = usePomodoroStore((s) => s.completedSessions);
+  const sessionsBump = useBumpOnIncrease<SVGSVGElement>(completedSessions);
   const setTimeLeft = usePomodoroStore((s) => s.setTimeLeft);
   const setTimerState = usePomodoroStore((s) => s.setTimerState);
   const setMode = usePomodoroStore((s) => s.setMode);
@@ -475,7 +477,7 @@ export default function PomodoroPage() {
 
           {/* Session counter */}
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-sunken border border-line text-caption font-bold text-ink-muted">
-            <Zap className="w-3 h-3 text-warning-ink" />
+            <Zap ref={sessionsBump} className="w-3 h-3 text-warning-ink" aria-hidden />
             <span>
               أكملت {completedSessions}{" "}
               {completedSessions === 1 ? "جلسة تركيز" : "جلسات تركيز"} اليوم!

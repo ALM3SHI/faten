@@ -20,11 +20,13 @@ import {
   Loader2,
   PauseCircle,
   PlayCircle,
+  Presentation,
   RotateCcw,
   Send,
   Sparkles,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { useBoardMode } from "@/lib/use-board-mode";
 import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
 import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
@@ -109,6 +111,7 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   const [failed, setFailed] = useState<{ message: string; retry: { action: string; payload: Record<string, unknown> } | null } | null>(null);
   const [question, setQuestion] = useState("");
   const [topicsOpen, setTopicsOpen] = useState(false);
+  const [board, setBoard] = useBoardMode();
   const [slide, setSlide] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
@@ -320,6 +323,16 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
               </span>
               {state.reviewDue.length > 0 && <span className="text-info-ink whitespace-nowrap">· {state.reviewDue.length} للمراجعة</span>}
             </Button>
+            <Button
+              variant="bare"
+              type="button"
+              aria-pressed={board}
+              onClick={() => setBoard(!board)}
+              className="h-9 px-3 rounded-control border border-line hover:bg-surface-sunken aria-pressed:border-brand aria-pressed:bg-info-soft aria-pressed:text-info-ink text-small font-bold inline-flex items-center gap-1.5"
+            >
+              <Presentation className="w-4 h-4" aria-hidden /> <span className="hidden sm:inline">السبورة</span>
+              <span className="sr-only sm:hidden">وضع السبورة</span>
+            </Button>
             <Button variant="bare" type="button" onClick={() => setPaused(true)} className="h-9 px-3 rounded-control border border-line hover:bg-surface-sunken text-small font-bold inline-flex items-center gap-1.5" aria-label="إيقاف مؤقت">
               <PauseCircle className="w-4 h-4" aria-hidden /> <span className="hidden sm:inline">إيقاف مؤقت</span>
             </Button>
@@ -327,7 +340,14 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
         </div>
 
         {/* Conversation */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto py-4 space-y-4 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-surface-sunken" aria-live="polite">
+        <div
+          ref={scrollRef}
+          className={cn(
+            "flex-1 overflow-y-auto py-4 space-y-4 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-surface-sunken",
+            board && "dark board-mode -mx-2 rounded-card border-4 border-board-frame px-3 sm:-mx-4 sm:px-5",
+          )}
+          aria-live="polite"
+        >
           {messages.map((m) => (
             <MessageRow
               key={m.seq}

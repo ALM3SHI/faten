@@ -12,6 +12,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
+import { EmptyState } from "@/components/ds/states";
+import { BlankLectureArt } from "@/components/sketch/notebook-art";
 import { Button } from "@/components/ds/button";
 import { useRouter } from "next/navigation";
 import { BookOpenCheck, Brain, FileText, GraduationCap, Loader2, RefreshCw, Trash2, Upload, X } from "lucide-react";
@@ -265,7 +267,9 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
             <span className="sr-only">جاري التحميل…</span>
           </div>
         )}
-        {nothingYet && <p className="text-small text-ink-muted">لم ترفع محاضرة بعد. ابدأ بأقرب محاضرة عندك اختبار فيها.</p>}
+        {nothingYet && (
+          <EmptyState art={<BlankLectureArt />} title="لم ترفع محاضرة بعد." text="ابدأ بأقرب محاضرة عندك اختبار فيها." className="py-8" />
+        )}
 
         <ul className="space-y-2">
           {(lectures ?? []).map((l) => {

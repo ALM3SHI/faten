@@ -72,6 +72,13 @@
   /* Status tones: a soft background, its border, and readable text on it.
      Colour carries meaning only — success, warning, danger, info. */
   --color-success-soft: var(--ds-success-soft);
+  /* The chalkboard: a slate surface with chalk ink (landing, «ذاكر محاضرة»). */
+  --color-board: var(--ds-board);
+  --color-board-ink: var(--ds-board-ink);
+  --color-board-muted: var(--ds-board-muted);
+  --color-board-line: var(--ds-board-line);
+  --color-board-accent: var(--ds-board-accent);
+  --color-board-frame: var(--ds-board-frame);
   --color-success-line: var(--ds-success-line);
   --color-success-ink: var(--ds-success-ink);
   --color-warning-soft: var(--ds-warning-soft);
@@ -196,6 +203,12 @@
   --ds-brand: hsl(245 65% 52%);
   --ds-brand-hover: hsl(245 65% 46%);
   --ds-success-soft: hsl(152 55% 94%);
+  --ds-board: hsl(160 30% 18%);
+  --ds-board-ink: hsl(45 30% 93%);
+  --ds-board-muted: hsl(45 15% 76%);
+  --ds-board-line: hsl(45 30% 93% / 0.18);
+  --ds-board-accent: hsl(46 86% 70%);
+  --ds-board-frame: hsl(30 30% 32%);
   --ds-success-line: hsl(152 42% 78%);
   --ds-success-ink: hsl(158 78% 21%);
   --ds-warning-soft: hsl(42 95% 91%);
@@ -275,6 +288,7 @@
   --ds-brand: hsl(245 65% 52%);
   --ds-brand-hover: hsl(245 65% 46%);
   --ds-success-soft: hsl(158 45% 12%);
+  --ds-board: hsl(160 28% 13%);
   --ds-success-line: hsl(158 40% 24%);
   --ds-success-ink: hsl(152 60% 72%);
   --ds-warning-soft: hsl(38 50% 12%);
@@ -493,4 +507,72 @@ select option {
   html[data-app-sidebar] .app-topbar-sections {
     display: none;
   }
+}
+
+/* ── Sketch: hand-drawn strokes that draw themselves once, when seen ──────
+ * components/sketch/*. Paths use pathLength="1"; the static HTML ships them
+ * fully drawn, JS only hides a stroke that is still below the fold until it
+ * scrolls in. With reduced motion they are simply there. */
+.sketch path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.sketch[data-sketch="wait"] path {
+  stroke-dashoffset: 1;
+}
+.sketch[data-sketch="draw"] path {
+  animation: sketch-draw var(--sketch-duration, 650ms) var(--ds-ease) both;
+}
+.sketch[data-sketch="draw"] path:nth-child(2) { animation-delay: 180ms; }
+.sketch[data-sketch="draw"] path:nth-child(3) { animation-delay: 360ms; }
+@keyframes sketch-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* A number that just went up (the focus streak): one small hop. */
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.22) rotate(-6deg); }
+  100% { transform: scale(1); }
+}
+.animate-bump {
+  animation: bump 600ms var(--ds-ease);
+}
+
+/* Chalk: slightly soft edges, as if written on a board. */
+.chalk {
+  text-shadow: 0 0 1px hsl(45 30% 93% / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch path,
+  .sketch[data-sketch] path {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .animate-bump {
+    animation: none;
+  }
+}
+
+/* «وضع السبورة» (tutor): the lesson written on a chalkboard. Used together
+ * with .dark, so status tones take their dark-theme values; this then
+ * re-points surfaces, ink and lines at the board and chalk. Every component
+ * inside follows, with no per-component styling. */
+.board-mode {
+  --ds-canvas: var(--ds-board);
+  --ds-surface: hsl(160 26% 21%);
+  --ds-surface-raised: hsl(160 26% 24%);
+  --ds-surface-sunken: hsl(160 30% 14%);
+  --ds-ink: var(--ds-board-ink);
+  --ds-ink-muted: var(--ds-board-muted);
+  --ds-line: var(--ds-board-line);
+  --ds-line-strong: hsl(45 30% 93% / 0.32);
+  background-color: var(--ds-board);
+  color: var(--ds-ink);
+}
+.board-mode p,
+.board-mode li {
+  text-shadow: 0 0 1px hsl(45 30% 93% / 0.3);
 }

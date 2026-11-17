@@ -12,27 +12,27 @@ export const metadata: Metadata = {
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-28 space-y-3">
-      <h2 className="text-xl font-black">{title}</h2>
-      <div className="space-y-3 text-[15px] leading-8 text-foreground/90">{children}</div>
+      <h2 className="text-heading font-bold">{title}</h2>
+      <div className="space-y-3 text-body leading-8 text-ink">{children}</div>
     </section>
   );
 }
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-background pb-28" dir="rtl">
+    <div className="min-h-screen bg-surface pb-28" dir="rtl">
       <Navbar />
       <main className="container mx-auto pt-28 md:pt-32 px-4 max-w-3xl">
-        <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
+        <Link href="/" className="inline-flex items-center gap-1 text-small text-ink-muted hover:text-ink mb-6">
           <ArrowRight className="w-4 h-4" /> الرئيسية
         </Link>
         <header className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-black flex items-center gap-3 mb-3">
-            <ShieldCheck className="w-8 h-8 text-uqu-accent" />
+          <h1 className="text-title md:text-title font-bold flex items-center gap-3 mb-3">
+            <ShieldCheck className="w-8 h-8 text-info-ink" />
             الخصوصية وشروط الاستخدام
           </h1>
-          <p className="text-muted-foreground">آخر تحديث: {SITE.legalUpdated}</p>
-          <nav className="mt-5 flex flex-wrap gap-2 text-sm">
+          <p className="text-ink-muted">آخر تحديث: {SITE.legalUpdated}</p>
+          <nav className="mt-5 flex flex-wrap gap-2 text-small">
             {[
               ["#summary", "الخلاصة"],
               ["#data", "البيانات التي نجمعها"],
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
               ["#rights", "حقوقك"],
               ["#terms", "شروط الاستخدام"],
             ].map(([href, label]) => (
-              <a key={href} href={href} className="px-3 py-1.5 rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:border-uqu-accent/40">
+              <a key={href} href={href} className="px-3 py-1.5 rounded-control border border-line bg-surface-sunken hover:border-info-line">
                 {label}
               </a>
             ))}
@@ -54,8 +54,8 @@ export default function PrivacyPage() {
               <li>فطن منصة طلابية <b>مستقلة</b>، وليست جهة رسمية تابعة لجامعة أم القرى.</li>
               <li>نجمع فقط ما تُدخله أنت لنقدّم لك الخدمة: سجلك الأكاديمي، جدولك، خطتك، غيابك، ومحادثاتك مع المساعد.</li>
               <li>لا نبيع بياناتك ولا نشاركها لأغراض إعلانية.</li>
-              <li>ما تكتبه للمساعد وما ترفعه من ملفات يُعالَج بخدمة Google Gemini، فلا تُدخل فيها معلومات شخصية حساسة (<a className="text-uqu-accent underline" href="#ai">التفاصيل</a>).</li>
-              <li>تقدر تشوف ما يتذكره المساعد عنك وتحذفه، وتحذف حسابك وكل بياناتك نهائياً من صفحة <Link className="text-uqu-accent underline" href="/profile">الملف الشخصي</Link>.</li>
+              <li>ما تكتبه للمساعد وما ترفعه من ملفات يُعالَج بخدمة Google Gemini، فلا تُدخل فيها معلومات شخصية حساسة (<a className="text-info-ink underline" href="#ai">التفاصيل</a>).</li>
+              <li>تقدر تشوف ما يتذكره المساعد عنك وتحذفه، وتحذف حسابك وكل بياناتك نهائياً من صفحة <Link className="text-info-ink underline" href="/profile">الملف الشخصي</Link>.</li>
             </ul>
           </Section>
 
@@ -110,10 +110,10 @@ export default function PrivacyPage() {
             <ul className="list-disc pr-5 space-y-2">
               <li><b>العلم والاطلاع:</b> بياناتك كلها ظاهرة لك داخل المنصة.</li>
               <li><b>التصحيح:</b> عدّل بياناتك من الملف الشخصي، أو أعد رفع سجلك وجدولك.</li>
-              <li><b>الإتلاف:</b> احذف ذاكرة المساعد أو حسابك كاملاً من <Link className="text-uqu-accent underline" href="/profile">الملف الشخصي</Link> — يُحذف كل شيء فوراً ونهائياً.</li>
+              <li><b>الإتلاف:</b> احذف ذاكرة المساعد أو حسابك كاملاً من <Link className="text-info-ink underline" href="/profile">الملف الشخصي</Link> — يُحذف كل شيء فوراً ونهائياً.</li>
               <li><b>التواصل:</b>{" "}
                 {SITE.contactEmail ? (
-                  <>راسلنا على <a className="text-uqu-accent underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.</>
+                  <>راسلنا على <a className="text-info-ink underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.</>
                 ) : (
                   <>عبر زر 👎 تحت أي رد في المحادثة مع كتابة ملاحظتك.</>
                 )}

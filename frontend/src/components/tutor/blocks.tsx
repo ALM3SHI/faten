@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SketchCheck, SketchCircle } from "@/components/sketch";
 import { Button } from "@/components/ds/button";
 import {
   AlertTriangle,
@@ -408,7 +409,13 @@ function TopicSummaryCard({ block }: { block: Block } & Common) {
   return (
     <Card className={block.mastered ? "border-success-line" : "border-warning-line"}>
       <div className="flex items-center gap-2 font-bold mb-3">
-        {block.mastered ? <Trophy className="w-5 h-5 text-success-ink" aria-hidden /> : <ListChecks className="w-5 h-5 text-warning-ink" aria-hidden />}
+        {block.mastered ? (
+          <SketchCircle className="text-success-ink">
+            <SketchCheck className="size-5" />
+          </SketchCircle>
+        ) : (
+          <ListChecks className="w-5 h-5 text-warning-ink" aria-hidden />
+        )}
         {block.mastered ? `أتقنت: ${block.title}` : `${block.title} — يحتاج مراجعة`}
       </div>
       <div className="grid sm:grid-cols-2 gap-3 mb-3">

@@ -35,23 +35,23 @@ export function WelcomeTour({ open, onClose }: { open: boolean; onClose: () => v
         dir="rtl"
         showCloseButton={false}
         initialFocus={nextRef}
-        className="sm:max-w-md rounded-[28px] p-0 overflow-hidden"
+        className="sm:max-w-md rounded-card p-0 overflow-hidden"
       >
         <div className="px-6 pt-7 pb-5 text-center space-y-4" aria-live="polite">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center">
-            <Icon className="w-8 h-8 text-uqu-accent" aria-hidden />
+          <div className="mx-auto w-16 h-16 rounded-card bg-info-soft border border-info-line flex items-center justify-center">
+            <Icon className="w-8 h-8 text-info-ink" aria-hidden />
           </div>
-          <div className="text-xs font-bold text-muted-foreground">
+          <div className="text-caption font-bold text-ink-muted">
             {index + 1} من {steps.length}
           </div>
-          <DialogTitle className="text-xl font-black">{step.title}</DialogTitle>
-          <DialogDescription className="text-sm leading-7 text-foreground/80">{step.body}</DialogDescription>
+          <DialogTitle className="text-heading font-bold">{step.title}</DialogTitle>
+          <DialogDescription className="text-small leading-7 text-ink">{step.body}</DialogDescription>
           {step.link && (
             <Link
               href={step.link.href}
               prefetch={false}
               onClick={onClose}
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-uqu-accent hover:underline"
+              className="inline-flex items-center gap-1.5 text-small font-bold text-info-ink hover:underline"
             >
               {step.link.label}
               <ArrowLeft className="w-4 h-4" aria-hidden />
@@ -63,29 +63,29 @@ export function WelcomeTour({ open, onClose }: { open: boolean; onClose: () => v
           {steps.map((s, i) => (
             <span
               key={s.id}
-              className={cn("h-1.5 rounded-full transition-all", i === index ? "w-6 bg-uqu-accent" : "w-1.5 bg-foreground/15")}
+              className={cn("h-1.5 rounded-full transition-all", i === index ? "w-6 bg-brand" : "w-1.5 bg-surface-sunken")}
             />
           ))}
         </div>
 
-        <div className="flex items-center justify-between gap-2 px-6 py-5 mt-1 border-t border-foreground/10">
+        <div className="flex items-center justify-between gap-2 px-6 py-5 mt-1 border-t border-line">
           {last ? (
             <span />
           ) : (
-            <Button variant="ghost" className="rounded-xl text-muted-foreground" onClick={onClose}>
+            <Button variant="ghost" className="rounded-control text-ink-muted" onClick={onClose}>
               تخطي الجولة
             </Button>
           )}
           <div className="flex gap-2">
             {index > 0 && (
-              <Button variant="ghost" className="rounded-xl gap-1" onClick={() => setIndex((i) => i - 1)}>
+              <Button variant="ghost" className="rounded-control gap-1" onClick={() => setIndex((i) => i - 1)}>
                 <ArrowRight className="w-4 h-4" aria-hidden />
                 السابق
               </Button>
             )}
             <Button
               ref={nextRef}
-              className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-1 min-w-24"
+              className="rounded-control bg-brand hover:bg-brand-hover text-on-brand gap-1 min-w-24"
               onClick={() => (last ? onClose() : setIndex((i) => i + 1))}
             >
               {last ? "يلا نبدأ" : "التالي"}
