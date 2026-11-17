@@ -38,6 +38,24 @@ QUESTION = {
     "required": ["pool", "format", "skill", "bloom", "difficulty", "concept_ids", "prompt", "hints", "explanation"],
 }
 
+# One picture per lesson part, described in text (the model draws nothing):
+# nodes/edges are short lines parsed by services/tutor/visuals.py, which keeps
+# this schema flat.
+VISUAL = {
+    "type": "object",
+    "properties": {
+        "kind": {"type": "string", "enum": ["diagram", "photo", "slide", "none"]},
+        "caption": _STR,
+        "diagram_type": {"type": "string", "enum": ["flow", "sequence", "cycle"]},
+        "direction": {"type": "string", "enum": ["lr", "tb"]},
+        "nodes": _STRS,
+        "edges": _STRS,
+        "queries": _STRS,
+        "page": _INT,
+    },
+    "required": ["kind"],
+}
+
 LESSON = {
     "type": "object",
     "properties": {
@@ -45,7 +63,7 @@ LESSON = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {"title": _STR, "markdown": _STR, "pages": _INTS, "concept_ids": _STRS},
+                "properties": {"title": _STR, "markdown": _STR, "pages": _INTS, "concept_ids": _STRS, "visual": VISUAL},
                 "required": ["title", "markdown", "pages"],
             },
         },

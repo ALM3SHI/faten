@@ -87,8 +87,11 @@ class FakeTutorAI:
             ]
             qs += [self._q("final", c1, "apply", 2), self._q("final", c2, "analyze", 3, skill="compare")]
             return {"segments": [
-                {"title": "الفكرة", "markdown": "المكدس بنية بيانات تعمل بمبدأ آخر داخل أول خارج [ص 1]. " * 3, "pages": [1], "concept_ids": [c1]},
-                {"title": "مثال", "markdown": "```python\nstack.append(1)\n```\nمثال من الشريحة [ص 2] وصفحة غير موجودة [ص 999]. " * 2, "pages": [2, 999], "concept_ids": [c2]},
+                {"title": "الفكرة", "markdown": "المكدس بنية بيانات تعمل بمبدأ آخر داخل أول خارج [ص 1]. " * 3, "pages": [1], "concept_ids": [c1],
+                 "visual": {"kind": "diagram", "caption": "الدفع والسحب", "diagram_type": "flow", "direction": "lr",
+                            "nodes": ["push | push", "s | المكدس | db", "pop | pop"], "edges": ["push -> s | يضيف للأعلى", "s -> pop | يسحب الأعلى"]}},
+                {"title": "مثال", "markdown": "```python\nstack.append(1)\n```\nمثال من الشريحة [ص 2] وصفحة غير موجودة [ص 999]. " * 2, "pages": [2, 999], "concept_ids": [c2],
+                 "visual": {"kind": "photo", "caption": "كومة أطباق", "queries": ["stack of plates"]}},
             ], "questions": qs}
         if "needs help" in prompt:
             self.calls["teach_again"] += 1

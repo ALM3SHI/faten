@@ -74,6 +74,29 @@ async function openDoc(hash: string, blob: Blob): Promise<PDFDocumentProxy> {
   return docCache.get(hash)!;
 }
 
+/**
+ * Draws one page of the lecture kept on this device into `canvas`, `width`
+ * CSS pixels wide. Returns false when the file is not on this device.
+ * Used by the lesson's picture of a slide (components/tutor/lesson-visual.tsx).
+ */
+export async function renderLecturePage(fileHash: string, page: number, canvas: HTMLCanvasElement, width: number): Promise<boolean> {
+  const blob = await getLectureFile(fileHash);
+  if (!blob) return false;
+  const doc = await openDoc(fileHash, blob);
+  const pg = await doc.getPage(Math.min(Math.max(1, page), doc.numPages));
+  const base = pg.getViewport({ scale: 1 });
+  const ratio = window.devicePixelRatio || 1;
+  const vp = pg.getViewport({ scale: (width / base.width) * ratio });
+  canvas.width = vp.width;
+  canvas.height = vp.height;
+  canvas.style.width = `${vp.width / ratio}px`;
+  canvas.style.height = `${vp.height / ratio}px`;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no 2d context");
+  await pg.render({ canvasContext: ctx, viewport: vp, canvas }).promise;
+  return true;
+}
+
 type Status = "loading" | "ready" | "missing" | "error";
 
 /**

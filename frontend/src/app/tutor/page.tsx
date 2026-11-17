@@ -31,6 +31,8 @@ import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
 import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
 import { SlideViewer } from "@/components/tutor/slide-viewer";
+import { CourseOutline } from "@/components/tutor/course-outline";
+import { LectureRef } from "@/components/tutor/lesson-visual";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ApiError } from "@/lib/api";
 import { logPomodoroSession, todayYmd } from "@/lib/pomodoro";
@@ -289,11 +291,22 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   const actions = (lastTutor?.actions ?? []).filter((a) => !pendingId || WHILE_PENDING.has(a.id));
   const current = lecture.topics.find((t) => t.id === state.currentTopicId);
   const lastPendingSeq = pendingId ? lastSeqWithQuestion(messages, pendingId) : -1;
+  const lectureRef = { id: lecture.id, fileHash: lecture.fileHash };
 
   return (
     <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-surface" dir="rtl">
       <Navbar />
-      <main className="flex-1 flex flex-col overflow-hidden w-full max-w-4xl mx-auto px-3 sm:px-4 pt-20">
+      <main className="flex-1 flex gap-6 overflow-hidden w-full max-w-4xl lg:max-w-6xl mx-auto px-3 sm:px-4 pt-20">
+        {/* The lecture as a course, beside the lesson on wide screens */}
+        <CourseOutline
+          className="hidden lg:flex"
+          lecture={lecture}
+          state={state}
+          busy={!!busy}
+          onGoto={(tid) => void act("goto", { topicId: tid })}
+        />
+        <LectureRef.Provider value={lectureRef}>
+        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
         {/* Header: what matters now; details on demand */}
         <div className="shrink-0 space-y-2 pb-2 border-b border-line">
           <div className="flex items-center gap-2">
@@ -426,6 +439,8 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
             </Button>
           </form>
         </div>
+        </div>
+        </LectureRef.Provider>
       </main>
 
       <TopicPanel

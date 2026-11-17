@@ -139,6 +139,35 @@ def test_bad_files_cost_nothing(api):
     assert r.status_code == 400 and "محتوى دراسي" in r.json()["detail"]
 
 
+def test_lesson_parts_carry_their_pictures(api):
+    """A diagram comes with the lesson part; a photo shows once the background
+    lookup has found it (the screen asks /visual, a reopened lecture refreshes)."""
+    http, db, fake, _ = api
+    s = Session(http, db, upload(http).json())
+    s.step("next")
+    s.step("next")
+    first = s.blocks("lesson")[-1]
+    assert first["visual"]["kind"] == "diagram"
+    d = first["visual"]["diagram"]
+    assert [n["label"] for n in d["nodes"]] == ["push", "المكدس", "pop"]
+    assert d["nodes"][1]["shape"] == "db" and len(d["edges"]) == 2
+
+    tid = first["topicId"]
+    r = http.get(f"/api/tutor/lectures/{s.lid}/visual", params={"topic": tid, "segment": 1})
+    assert r.json()["visual"] == {"kind": "photo", "caption": "كومة أطباق", "status": "pending"}
+
+    # the background lookup finds a photo
+    lesson_ref = ("tutor_cache", s.hash, "lessons", tid)
+    db.store[lesson_ref]["photos"] = {"1": {"status": "ready", "photo": {"url": "https://upload.wikimedia.org/plates.jpg", "title": "Plates", "license": "CC BY 4.0", "artist": "A", "page": "p", "width": 800, "height": 533}}}
+    got = http.get(f"/api/tutor/lectures/{s.lid}/visual", params={"topic": tid, "segment": 1}).json()["visual"]
+    assert got["status"] == "ready" and got["photo"]["url"].endswith("plates.jpg")
+    assert http.get(f"/api/tutor/lectures/{s.lid}/visual", params={"topic": tid, "segment": 9}).json()["visual"] is None
+    # no credits for looking
+    before = credits(db)
+    http.get(f"/api/tutor/lectures/{s.lid}/visual", params={"topic": tid, "segment": 1})
+    assert credits(db) == before
+
+
 def test_full_study_journey(api):
     http, db, fake, _ = api
     s = Session(http, db, upload(http).json())

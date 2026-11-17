@@ -28,6 +28,9 @@ os.environ.setdefault("ENABLE_INTERNAL_SCHEDULER", "false")
 os.environ.setdefault("AI_MAX_PER_MINUTE", "0")
 os.environ.setdefault("AI_MAX_CONCURRENT", "0")
 os.environ.setdefault("AI_MAX_PER_DAY", "0")
+# No background lesson prefetch / photo lookup (it would reach the network);
+# test_tutor_visuals.py drives that code directly.
+os.environ.setdefault("COURSE_BACKGROUND", "false")
 
 
 @pytest.fixture(autouse=True)

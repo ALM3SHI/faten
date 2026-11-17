@@ -83,6 +83,16 @@ class Settings(BaseSettings):
     # How long a request may wait in line for a free slot before "busy".
     AI_QUEUE_WAIT_SECONDS: float = 20.0
 
+    # ── «ذاكر محاضرة» as a course (services/tutor/visuals.py) ──
+    # Work done in the background while the student studies: the next
+    # topic's lesson is prepared ahead, and photos are looked up on Wikimedia
+    # Commons (free licences) and checked by the model before they are shown.
+    # Results are cached per lecture file, so each file is prepared once for everyone.
+    COURSE_BACKGROUND: bool = True
+    # Lessons per day whose photos may be looked up and checked (each costs
+    # 1-3 small model calls). 0 turns photo lookup off.
+    COURSE_PHOTO_LESSONS_PER_DAY: int = 80
+
     # ── Admin dashboard (/admin) ──
     # Comma-separated emails allowed to open it. The email must be verified
     # in Firebase. Empty = nobody (the page answers 403).
