@@ -74,3 +74,26 @@ def test_schedule_reader_tries_the_fast_model_when_the_main_one_is_busy(replies)
     except Exception:
         pass  # an empty schedule may be rejected later; what matters is who was asked
     assert seen == [s.GEMINI_MODEL, s.GEMINI_FAST_MODEL]
+
+
+def test_the_shared_llm_client_falls_back_and_remembers(settings):
+    """Study plan, transcript, advisor and notifications all use this client."""
+    from openai import APIStatusError
+
+    from services.llm import _TunedCompletions
+
+    calls = []
+
+    class Inner:
+        async def create(self, **kw):
+            calls.append(kw["model"])
+            if kw["model"] == settings.llm_model:
+                raise APIStatusError("busy", response=httpx.Response(503, request=httpx.Request("POST", "http://x")), body=None)
+            return {"model": kw["model"]}
+
+    c = _TunedCompletions(Inner())
+    assert asyncio.run(c.create(model=settings.llm_model, messages=[])) == {"model": settings.llm_fast_model}
+    assert calls == [settings.llm_model, settings.llm_fast_model]
+    # the next caller skips the busy model
+    asyncio.run(c.create(model=settings.llm_model, messages=[]))
+    assert calls[2:] == [settings.llm_fast_model]
