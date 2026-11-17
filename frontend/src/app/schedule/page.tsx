@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Navbar } from "@/components/navbar";
 import { SectionTabs } from "@/components/section-tabs";
@@ -28,6 +28,7 @@ import { getCurrentTerm, weekdayIndex } from "@/lib/academic-term";
 import { buildScheduleIcs, downloadIcs } from "@/lib/ics";
 import { dateOfWeekday, prayerDuringLecture, prayerTimesFor, toMinutes, type PrayerTime } from "@/lib/prayer-times";
 import { toast } from "@/lib/toast";
+import { count, formatDayTime } from "@/lib/format-date";
 
 const PRAYER_PREF_KEY = "uqu_show_prayers";
 
@@ -148,11 +149,11 @@ export default function SchedulePage() {
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="bg-success-soft text-success-ink border-success-line">
                   <CheckCircle2 className="w-3 h-3 mr-1" />
-                  {slotsToRender.length} محاضرة محفوظة
+                  {count(slotsToRender.length, "محاضرة محفوظة", "محاضرات محفوظة")}
                 </Badge>
                 {lastUpdated && (
                   <span className="text-caption text-ink-muted">
-                    آخر تحديث: {new Date(lastUpdated).toLocaleString("ar-SA")}
+                    آخر تحديث: {formatDayTime(lastUpdated)}
                   </span>
                 )}
               </div>
@@ -352,15 +353,17 @@ function ScheduleGrid({ slots, showPrayers }: { slots: ScheduleSlot[]; showPraye
           })),
           ...prayers.map((prayer) => ({ kind: "prayer" as const, prayer, at: toMinutes(prayer.time) })),
         ].sort((a, b) => a.at - b.at);
+        const empty = daySlots.length === 0 && prayers.length === 0;
         return (
           <Card key={day} className="border border-line bg-surface shadow-card rounded-card overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-line bg-surface-sunken flex items-center justify-between">
+            <div className={cn("p-4 bg-surface-sunken flex items-center justify-between", !empty && "border-b border-line")}>
               <h3 className="font-bold text-small">{day}</h3>
               <span className="text-caption text-ink-muted font-bold">
-                {daySlots.length} محاضرة
+                {daySlots.length === 0 ? "لا محاضرات" : count(daySlots.length, "محاضرة", "محاضرات")}
               </span>
             </div>
-            <div className="p-3 flex flex-col gap-2 min-h-[120px]">
+            {/* an empty day is just its header on phones; full height beside the others on wide screens */}
+            <div className={cn("p-3 flex-col gap-2 min-h-[120px]", empty ? "hidden md:flex" : "flex")}>
               {daySlots.length === 0 && prayers.length === 0 ? (
                 <p className="text-center text-caption text-ink-muted my-auto">لا محاضرات</p>
               ) : (

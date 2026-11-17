@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Navbar } from "@/components/navbar";
 import { useHydrated } from "@/lib/use-hydrated";
@@ -52,7 +52,7 @@ export default function ChatPage() {
 }
 
 const NEW_CHAT_WELCOME =
-  "أهلاً بك من جديد! بدأنا محادثة جديدة. كيف يمكنني مساعدتك؟";
+  "بدأنا محادثة جديدة. وش تبي تعرف؟";
 
 // ── Manual navigation CTA helpers ─────────────────────────────────────
 // The agent used to hard-redirect via `window.location.assign(path)` /

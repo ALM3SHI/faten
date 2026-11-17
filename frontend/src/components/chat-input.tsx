@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { Mic, Send, Loader2 } from "lucide-react";
@@ -216,8 +216,8 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
       : micState === "transcribing"
         ? "جارٍ تحويل الصوت إلى نص…"
         : unsupported
-          ? "اكتب استفسارك (التسجيل الصوتي غير مدعوم في هذا المتصفح)"
-          : "اكتب استفسارك للمساعد الذكي...";
+          ? "اسأل فطن… (التسجيل الصوتي غير مدعوم في هذا المتصفح)"
+          : "اسأل فطن عن أي شي…";
 
   const micTitle =
     micState === "recording"
@@ -247,7 +247,7 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
 
       <input
         placeholder={placeholder}
-        aria-label={placeholder}
+        aria-label="اسأل فطن"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {

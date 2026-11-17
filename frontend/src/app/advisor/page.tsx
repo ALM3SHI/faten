@@ -34,6 +34,7 @@ import {
   type ProgramSummary,
 } from "@/lib/advisor";
 import { toast } from "@/lib/toast";
+import { useTranscriptStore } from "@/store/transcriptStore";
 
 type Status = "loading" | "ready" | "error";
 
@@ -44,6 +45,7 @@ export default function AdvisorPage() {
   const [run, setRun] = useState<AdvisorRun | null>(null);
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
+  const hasTranscript = useTranscriptStore((s) => s.completedCourses.length > 0);
 
   const analyze = useCallback(async () => {
     setBusy(true);
@@ -138,11 +140,25 @@ export default function AdvisorPage() {
         )}
 
         {status === "ready" && !run && !editing && (
-          <Card className="border border-line bg-surface shadow-card rounded-card p-8 text-center space-y-3">
+          <Card className="border border-line bg-surface shadow-card rounded-card p-8 text-center space-y-4">
             <GraduationCap className="w-12 h-12 mx-auto text-info-ink" aria-hidden />
-            <p className="text-small text-ink-muted leading-7 max-w-md mx-auto">
-              ارفع سجلك الأكاديمي من صفحة <Link href="/transcript" className="underline">السجل</Link> أولاً لنعرف مقرراتك المجتازة، ثم اضغط «حلّل وضعي».
-            </p>
+            {hasTranscript ? (
+              <p className="text-small text-ink-muted leading-7 max-w-md mx-auto">
+                سجلك جاهز. اضغط «حلّل وضعي» ونحسب لك وش تسجّل الفصل القادم ومتى تتخرج.
+              </p>
+            ) : (
+              <>
+                <p className="text-small text-ink-muted leading-7 max-w-md mx-auto">
+                  نحتاج سجلك الأكاديمي أولاً لنعرف المقررات اللي اجتزتها. ارفعه مرة وحدة، ونرجعك هنا.
+                </p>
+                <Link
+                  href="/transcript"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-control bg-brand px-5 font-bold text-on-brand hover:bg-brand-hover"
+                >
+                  ارفع سجلك الأكاديمي
+                </Link>
+              </>
+            )}
           </Card>
         )}
 

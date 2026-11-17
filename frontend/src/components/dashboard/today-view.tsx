@@ -114,7 +114,7 @@ export function NextUpCard({ now }: { now: Date }) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
           <h2 id="next-title" className="text-small font-semibold text-white/85">
-            التالي: {kind}
+            {next.now ? "الحين" : "التالي"}: {kind}
           </h2>
           <p className="font-heading text-title font-bold text-balance">{title}</p>
           {detail && <p className="text-body text-white/90">{detail}</p>}

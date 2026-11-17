@@ -377,6 +377,12 @@ export default function PomodoroPage() {
 
           {/* Timer display */}
           <div className="relative flex flex-col items-center gap-3">
+            {/* above the digits, not over them: on a phone the digits fill the width */}
+            {mode === "focus" ? (
+              <Brain aria-hidden className={cn("size-7 text-info-ink", isRunning && "motion-safe:animate-pulse")} />
+            ) : (
+              <Coffee aria-hidden className={cn("size-7 text-success-ink", isRunning && "motion-safe:animate-bounce")} />
+            )}
             <div
               className={cn(
                 "text-[clamp(4.5rem,22vw,7.5rem)] font-bold tracking-tighter leading-none select-none font-mono tabular-nums transition-colors",
@@ -418,23 +424,6 @@ export default function PomodoroPage() {
                 <span>دقيقة</span>
               </div>
             )}
-            <div className="absolute -top-4 -right-4">
-              {mode === "focus" ? (
-                <Brain
-                  className={cn(
-                    "w-8 h-8 text-info-ink",
-                    isRunning && "animate-pulse",
-                  )}
-                />
-              ) : (
-                <Coffee
-                  className={cn(
-                    "w-8 h-8 text-success-ink",
-                    isRunning && "animate-bounce",
-                  )}
-                />
-              )}
-            </div>
           </div>
 
           {/* Controls */}

@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import type { EnrichedCourse } from "@/lib/transcript-parser";
 import { useScheduleStore, WEEK_DAYS, type ScheduleSlot } from "@/store/scheduleStore";
 import { ManualScheduleBuilder } from "./ManualScheduleBuilder";
+import { formatDay } from "@/lib/format-date";
 
 interface Step2Props {
   currentCourses: EnrichedCourse[];
@@ -158,7 +159,7 @@ function SummaryView({
             <strong className="text-success-ink">{populatedDays.length}</strong> أيام
             {lastUpdated && (
               <span className="text-ink-muted mr-1">
-                · آخر تحديث {new Date(lastUpdated).toLocaleDateString("ar-SA")}
+                · آخر تحديث {formatDay(lastUpdated)}
               </span>
             )}
           </p>

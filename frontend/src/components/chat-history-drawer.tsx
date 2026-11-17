@@ -8,6 +8,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { toast } from "@/lib/toast";
 import { Button, IconButton } from "@/components/ds/button";
 import { cn } from "@/lib/utils";
+import { formatTime, formatDayShort } from "@/lib/format-date";
 
 interface ChatHistoryDrawerProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ function formatRelative(iso: string): string {
   if (diffMin < 60) return `قبل ${diffMin} دقيقة`;
   const diffHr = Math.round(diffMin / 60);
   if (diffHr < 24 && now.getDate() === t.getDate()) {
-    return `اليوم، ${t.toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })}`;
+    return `اليوم، ${formatTime(t)}`;
   }
   const yesterday = new Date(now);
   yesterday.setDate(now.getDate() - 1);
@@ -38,9 +39,9 @@ function formatRelative(iso: string): string {
     t.getMonth() === yesterday.getMonth() &&
     t.getFullYear() === yesterday.getFullYear()
   ) {
-    return `أمس، ${t.toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })}`;
+    return `أمس، ${formatTime(t)}`;
   }
-  return t.toLocaleDateString("ar-SA", { day: "2-digit", month: "short" });
+  return formatDayShort(t);
 }
 
 export function ChatHistoryDrawer({

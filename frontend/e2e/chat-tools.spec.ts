@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+﻿import { expect, test, type Page } from "@playwright/test";
 import { signIn } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function ask(page: Page, question: string) {
-  const input = page.getByRole("textbox", { name: /اكتب استفسارك/ });
+  const input = page.getByRole("textbox", { name: "اسأل فطن" });
   await input.fill(question);
   await input.press("Enter");
 }

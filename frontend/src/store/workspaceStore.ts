@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 
 // Strict per-zone cap. The workspace UI is `overflow-hidden` on each column —
 // no scrollbars — so we cannot exceed this without clipping. Two widgets per
@@ -68,7 +68,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   chatMessages: [
     {
       role: "bot",
-      content: "أهلاً بك! أنا المساعد الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني مساعدتك اليوم؟",
+      content: "أهلاً 👋 أنا فطن. اسألني عن لائحة أم القرى، جدولك، غيابك أو معدلك — وأجاوبك من المصدر الرسمي.",
       timestamp: new Date(),
     }
   ],
