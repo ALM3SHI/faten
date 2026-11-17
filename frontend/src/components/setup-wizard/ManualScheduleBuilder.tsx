@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button as DsButton } from "@/components/ds/button";
 import { useHydrated } from "@/lib/use-hydrated";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -247,10 +248,10 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
     >
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1">
+          <h2 className="text-heading font-bold tracking-tight mb-1">
             بناء الجدول الدراسي
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-small text-ink-muted">
             اسحب المواد من اليمين وأفلتها على الخلية المناسبة. يمكنك سحب نفس المادة عدة مرات
             للنظري والعملي على أوقات مختلفة.
           </p>
@@ -260,7 +261,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
             variant="outline"
             onClick={onBack}
             size="sm"
-            className="rounded-xl glass border-foreground/10 gap-2"
+            className="rounded-control border border-line bg-surface shadow-card gap-2"
           >
             <ArrowLeft className="w-4 h-4 rotate-180" />
             خيار آخر
@@ -269,7 +270,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
             onClick={() => onSave(slots)}
             disabled={slots.length === 0}
             size="sm"
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 gap-2"
+            className="rounded-control bg-success-ink hover:bg-success-ink disabled:opacity-50 gap-2"
           >
             <Save className="w-4 h-4" />
             حفظ ({slots.length})
@@ -285,7 +286,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-200 text-[13px] font-bold"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-control bg-danger-soft border border-danger-line text-danger-ink text-small font-bold"
             role="status"
           >
             <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -302,18 +303,18 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
       >
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
           {/* Grid */}
-          <Card className="glass border-foreground/10 rounded-2xl overflow-hidden">
+          <Card className="border border-line bg-surface shadow-card rounded-card overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-xs">
+              <table className="w-full border-collapse text-caption">
                 <thead>
                   <tr>
-                    <th className="bg-foreground/5 border border-foreground/10 p-2 text-[10px] font-mono text-muted w-16">
+                    <th className="bg-surface-sunken border border-line p-2 text-caption font-mono text-ink-muted w-16">
                       الوقت
                     </th>
                     {WEEK_DAYS.map((day) => (
                       <th
                         key={day}
-                        className="bg-foreground/5 border border-foreground/10 p-2 text-[12px] font-bold"
+                        className="bg-surface-sunken border border-line p-2 text-small font-bold"
                       >
                         {day}
                       </th>
@@ -323,7 +324,7 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
                 <tbody>
                   {TIME_SLOTS.map((time, rowIdx) => (
                     <tr key={time.start}>
-                      <td className="bg-foreground/5 border border-foreground/10 p-1 text-[10px] font-mono text-muted text-center align-top">
+                      <td className="bg-surface-sunken border border-line p-1 text-caption font-mono text-ink-muted text-center align-top">
                         {time.start}
                       </td>
                       {WEEK_DAYS.map((day) => {
@@ -357,15 +358,15 @@ export function ManualScheduleBuilder({ currentCourses, onBack, onSave }: Manual
           </Card>
 
           {/* Courses sidebar */}
-          <Card className="glass border-foreground/10 rounded-2xl p-3 flex flex-col gap-2 h-fit max-h-[600px] overflow-y-auto">
-            <div className="px-2 py-1 text-[11px] font-bold text-muted sticky top-0 bg-card/95 backdrop-blur z-10">
+          <Card className="border border-line bg-surface shadow-card rounded-card p-3 flex flex-col gap-2 h-fit max-h-[600px] overflow-y-auto">
+            <div className="px-2 py-1 text-caption font-bold text-ink-muted sticky top-0 bg-surface z-10">
               مواد الترم ({currentCourses.length})
             </div>
             {currentCourses.map((c) => (
               <DraggableCourseChip key={c.code} course={c} />
             ))}
             {currentCourses.length === 0 && (
-              <p className="text-xs text-muted-foreground p-4 text-center">لا توجد مواد</p>
+              <p className="text-caption text-ink-muted p-4 text-center">لا توجد مواد</p>
             )}
           </Card>
         </div>
@@ -457,19 +458,19 @@ function CourseChipVisual({
   return (
     <div
       className={cn(
-        "w-full flex items-center gap-2 p-2.5 rounded-xl text-right transition-all",
-        "bg-foreground/5 border border-foreground/10",
+        "w-full flex items-center gap-2 p-2.5 rounded-control text-right transition-all",
+        "bg-surface-sunken border border-line",
         dragging
-          ? "border-uqu-accent/60 bg-uqu-accent/10 shadow-[0_8px_30px_hsla(245,78%,62%,0.45)] scale-105 cursor-grabbing"
-          : "hover:bg-foreground/5 hover:border-uqu-accent/30",
+          ? "border-info-line bg-info-soft scale-105 cursor-grabbing"
+          : "hover:bg-surface-sunken hover:border-info-line",
       )}
     >
-      <div className="w-8 h-8 rounded-lg bg-uqu-accent/15 border border-uqu-accent/25 flex items-center justify-center shrink-0">
-        <BookOpen className="w-3.5 h-3.5 text-uqu-accent" />
+      <div className="w-8 h-8 rounded-control bg-info-soft border border-info-line flex items-center justify-center shrink-0">
+        <BookOpen className="w-3.5 h-3.5 text-info-ink" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[12px] font-bold truncate">{course.nameAr || course.code}</div>
-        <div className="text-[9px] text-muted font-mono">
+        <div className="text-small font-bold truncate">{course.nameAr || course.code}</div>
+        <div className="text-caption text-ink-muted font-mono">
           {course.code} · {course.creditHours}س
         </div>
       </div>
@@ -483,19 +484,19 @@ function DraggableCourseChip({ course }: { course: EnrichedCourse }) {
   });
 
   return (
-    <button
+    <DsButton variant="bare"
       ref={setNodeRef}
       {...listeners}
       {...attributes}
       className={cn(
-        "w-full text-right rounded-xl cursor-grab active:cursor-grabbing touch-none transition-opacity",
+        "w-full text-right rounded-control cursor-grab active:cursor-grabbing touch-none transition-opacity",
         isDragging && "opacity-30",
       )}
       aria-roledescription="draggable course"
       aria-label={`اسحب المادة ${course.nameAr || course.code}`}
     >
       <CourseChipVisual course={course} />
-    </button>
+    </DsButton>
   );
 }
 
@@ -519,9 +520,9 @@ function DroppableCell({
       className={cn(
         // Explicit min-h + min-w so the cell ALWAYS has a hit target,
         // even when it's empty.
-        "border border-foreground/10 p-1 align-top min-h-[60px] h-[60px] min-w-[110px] transition-colors",
+        "border border-line p-1 align-top min-h-[60px] h-[60px] min-w-[110px] transition-colors",
         isOver
-          ? "bg-uqu-accent/20 border-uqu-accent/60 shadow-[inset_0_0_0_2px_hsla(245,78%,62%,0.4)]"
+          ? "bg-info-soft border-info-line "
           : "bg-transparent",
       )}
     >
@@ -553,44 +554,44 @@ function SpanningSlotCell({
       className={cn(
         "border align-top p-1 min-w-[110px] transition-colors",
         isLab
-          ? "border-amber-500/30 bg-amber-500/[0.06]"
-          : "border-uqu-accent/30 bg-uqu-accent/[0.06]",
+          ? "border-warning-line bg-warning-soft"
+          : "border-info-line bg-info-soft",
       )}
       style={{ height: duration * CELL_HEIGHT_PX }}
     >
       <div
         className={cn(
-          "group h-full w-full rounded-lg border p-2 flex flex-col gap-1 relative overflow-hidden",
+          "group h-full w-full rounded-control border p-2 flex flex-col gap-1 relative overflow-hidden",
           isLab
-            ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
-            : "bg-uqu-accent/15 border-uqu-accent/40 text-foreground",
+            ? "bg-warning-soft border-warning-line text-warning-ink "
+            : "bg-info-soft border-info-line text-ink",
         )}
       >
         <div className="flex items-center justify-between gap-1 shrink-0">
-          <span className="text-[9px] font-mono font-bold opacity-80">
+          <span className="text-caption font-mono font-bold opacity-80">
             {slot.course_code || "—"}
           </span>
-          <button
+          <DsButton variant="bare"
             onClick={onRemove}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-rose-700 hover:text-rose-600 dark:text-rose-300 dark:hover:text-rose-200"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-danger-ink hover:text-danger-ink"
             aria-label="حذف"
           >
             <Trash2 className="w-3 h-3" />
-          </button>
+          </DsButton>
         </div>
-        <div className="text-[11px] font-bold leading-tight line-clamp-2">
+        <div className="text-caption font-bold leading-tight line-clamp-2">
           {slot.course_name}
         </div>
-        <div className="mt-auto flex items-center justify-between gap-1 text-[9px] font-mono opacity-70">
+        <div className="mt-auto flex items-center justify-between gap-1 text-caption font-mono opacity-70">
           <span>
             {slot.start_time}–{slot.end_time}
           </span>
-          <span className="px-1.5 py-0.5 rounded bg-foreground/10 dark:bg-black/30">
+          <span className="px-1.5 py-0.5 rounded bg-surface-sunken">
             {isLab ? "عملي" : "نظري"} · {duration}س
           </span>
         </div>
         {slot.room && (
-          <div className="text-[9px] opacity-60 truncate">
+          <div className="text-caption opacity-60 truncate">
             {slot.building ? `${slot.building} · ` : ""}
             {slot.room}
           </div>
@@ -627,35 +628,35 @@ function PendingPlacementDialog({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[60] bg-black/60"
         onClick={onCancel}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[61] w-[min(440px,calc(100%-2rem))] bg-card/95 backdrop-blur-2xl border border-foreground/10 rounded-3xl shadow-2xl"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[61] w-[min(440px,calc(100%-2rem))] bg-surface border border-line rounded-card shadow-card"
         dir="rtl"
       >
-        <div className="flex items-center justify-between p-5 border-b border-foreground/10">
-          <h3 className="font-bold text-base">تفاصيل المحاضرة</h3>
-          <button
+        <div className="flex items-center justify-between p-5 border-b border-line">
+          <h3 className="font-bold text-body">تفاصيل المحاضرة</h3>
+          <DsButton variant="bare"
             onClick={onCancel}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/5"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-surface-sunken"
           >
             <X className="w-4 h-4" />
-          </button>
+          </DsButton>
         </div>
         <div className="p-5 space-y-4">
-          <div className="space-y-1 p-3 bg-foreground/5 border border-foreground/10 rounded-xl">
-            <div className="text-[11px] text-muted font-bold">المادة</div>
-            <div className="text-sm font-bold">{pending.courseName}</div>
-            <div className="text-[11px] text-muted font-mono">
+          <div className="space-y-1 p-3 bg-surface-sunken border border-line rounded-control">
+            <div className="text-caption text-ink-muted font-bold">المادة</div>
+            <div className="text-small font-bold">{pending.courseName}</div>
+            <div className="text-caption text-ink-muted font-mono">
               {pending.day} · {pending.startTime}
             </div>
           </div>
 
           <div>
-            <div className="text-[11px] font-bold text-muted mb-2">النوع</div>
+            <div className="text-caption font-bold text-ink-muted mb-2">النوع</div>
             <div className="grid grid-cols-2 gap-2">
               <TypeChoice
                 active={type === "نظري"}
@@ -676,9 +677,9 @@ function PendingPlacementDialog({
 
           <div>
             <div className="flex items-baseline justify-between mb-2">
-              <div className="text-[11px] font-bold text-muted">عدد الساعات</div>
+              <div className="text-caption font-bold text-ink-muted">عدد الساعات</div>
               {pending.maxHours < 4 && (
-                <div className="text-[10px] text-muted">
+                <div className="text-caption text-ink-muted">
                   الحد الأقصى المتاح: {pending.maxHours}س
                 </div>
               )}
@@ -688,22 +689,22 @@ function PendingPlacementDialog({
                 const disabled = h > pending.maxHours;
                 const active = extraHours === h - 1 && !disabled;
                 return (
-                  <button
+                  <DsButton variant="bare"
                     key={h}
                     onClick={() => !disabled && setExtraHours(h - 1)}
                     disabled={disabled}
                     className={cn(
-                      "rounded-xl border py-2 text-sm font-bold transition-all relative",
+                      "rounded-control border py-2 text-small font-bold transition-all relative",
                       active
-                        ? "bg-uqu-accent border-uqu-accent text-white"
+                        ? "bg-brand border-info-line text-on-brand"
                         : disabled
-                          ? "bg-foreground/5 border-foreground/10 text-muted cursor-not-allowed"
-                          : "bg-foreground/5 border-foreground/10 text-muted hover:border-foreground/10",
+                          ? "bg-surface-sunken border-line text-ink-muted cursor-not-allowed"
+                          : "bg-surface-sunken border-line text-ink-muted hover:border-line",
                     )}
                     title={disabled ? "هذا الامتداد يتعارض مع محاضرة موجودة" : undefined}
                   >
                     {h} س
-                  </button>
+                  </DsButton>
                 );
               })}
             </div>
@@ -711,37 +712,37 @@ function PendingPlacementDialog({
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <div className="text-[11px] font-bold text-muted mb-1.5">القاعة (اختياري)</div>
+              <div className="text-caption font-bold text-ink-muted mb-1.5">القاعة (اختياري)</div>
               <input
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
                 placeholder="1.042"
                 dir="ltr"
-                className="w-full bg-input border border-border rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/50 dark:bg-black/40 dark:border-foreground/10"
+                className="w-full bg-surface border border-line rounded-control px-3 py-2 text-small text-ink placeholder:text-ink-muted outline-none focus:border-info-line"
               />
             </div>
             <div>
-              <div className="text-[11px] font-bold text-muted mb-1.5">المبنى (اختياري)</div>
+              <div className="text-caption font-bold text-ink-muted mb-1.5">المبنى (اختياري)</div>
               <div className="relative">
-                <Building2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none" />
+                <Building2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-muted pointer-events-none" />
                 <input
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="25"
                   dir="ltr"
-                  className="w-full bg-input border border-border rounded-xl pr-8 pl-3 py-2 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/50 dark:bg-black/40 dark:border-foreground/10"
+                  className="w-full bg-surface border border-line rounded-control pr-8 pl-3 py-2 text-small text-ink placeholder:text-ink-muted outline-none focus:border-info-line"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-2 p-5 border-t border-foreground/10">
-          <Button variant="ghost" onClick={onCancel} className="rounded-xl">
+        <div className="flex items-center justify-end gap-2 p-5 border-t border-line">
+          <Button variant="ghost" onClick={onCancel} className="rounded-control">
             إلغاء
           </Button>
           <Button
             onClick={() => onCommit(type, room, building, extraHours)}
-            className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90"
+            className="rounded-control bg-brand hover:bg-brand-hover"
           >
             إضافة المحاضرة
           </Button>
@@ -765,20 +766,20 @@ function TypeChoice({
   accent: "blue" | "amber";
 }) {
   return (
-    <button
+    <DsButton variant="bare"
       onClick={onClick}
       className={cn(
-        "flex items-center justify-center gap-2 py-2.5 rounded-xl border transition-all font-bold text-sm",
+        "flex items-center justify-center gap-2 py-2.5 rounded-control border transition-all font-bold text-small",
         active
           ? accent === "blue"
-            ? "bg-uqu-accent/15 border-uqu-accent/50 text-uqu-accent"
-            : "bg-amber-500/15 border-amber-500/50 text-amber-800 dark:text-amber-300"
-          : "bg-foreground/5 border-foreground/10 text-muted hover:border-foreground/10",
+            ? "bg-info-soft border-info-line text-info-ink"
+            : "bg-warning-soft border-warning-line text-warning-ink "
+          : "bg-surface-sunken border-line text-ink-muted hover:border-line",
       )}
     >
       {icon}
       {label}
-    </button>
+    </DsButton>
   );
 }
 

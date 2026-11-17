@@ -16,7 +16,7 @@ import {
   type ProgramSummary,
 } from "@/lib/advisor";
 
-const FIELD = "h-11 rounded-xl border border-foreground/15 bg-background px-3 text-sm w-full";
+const FIELD = "h-11 rounded-control border border-line-strong bg-surface px-3 text-small w-full";
 
 /** Everything here is the student's own input; nothing is guessed for them. */
 export function SetupForm({
@@ -61,11 +61,11 @@ export function SetupForm({
   };
 
   return (
-    <Card className="glass rounded-[24px] border-foreground/10 p-5 md:p-6">
+    <Card className="border border-line bg-surface shadow-card rounded-card p-5 md:p-6">
       <form onSubmit={submit} className="space-y-5" aria-labelledby="advisor-setup-title">
         <div className="flex items-center gap-2">
-          <Settings2 className="w-5 h-5 text-uqu-accent" aria-hidden />
-          <h2 id="advisor-setup-title" className="text-lg font-black">
+          <Settings2 className="w-5 h-5 text-info-ink" aria-hidden />
+          <h2 id="advisor-setup-title" className="text-subheading font-bold">
             بياناتك وأهدافك
           </h2>
         </div>
@@ -82,7 +82,7 @@ export function SetupForm({
               ))}
             </select>
             {program && (
-              <p className="text-xs text-muted-foreground leading-6">
+              <p className="text-caption text-ink-muted leading-6">
                 الخطة {VERIFICATION_LABEL[program.curriculum.verification]} من{" "}
                 <a href={program.curriculum.source_url} target="_blank" rel="noreferrer" className="underline">
                   موقع الجامعة
@@ -94,13 +94,13 @@ export function SetupForm({
           </div>
 
           <fieldset className="space-y-2 md:col-span-2">
-            <legend className="text-sm font-medium mb-2">أولويتك</legend>
+            <legend className="text-small font-medium mb-2">أولويتك</legend>
             <div className="flex flex-wrap gap-2">
               {(Object.keys(PRIORITY_LABEL) as Priority[]).map((p) => (
                 <label
                   key={p}
-                  className={`cursor-pointer rounded-full border px-4 h-9 inline-flex items-center text-sm font-bold ${
-                    priority === p ? "border-uqu-accent/50 bg-uqu-accent/10 text-uqu-accent" : "border-foreground/15"
+                  className={`cursor-pointer rounded-full border px-4 h-9 inline-flex items-center text-small font-bold ${
+                    priority === p ? "border-info-line bg-info-soft text-info-ink" : "border-line-strong"
                   }`}
                 >
                   <input type="radio" name="priority" value={p} checked={priority === p} onChange={() => setPriority(p)} className="sr-only" />
@@ -113,7 +113,7 @@ export function SetupForm({
           <div className="space-y-2">
             <Label htmlFor="adv-load">أقصى عبء تتحمله في الفصل (ساعة)</Label>
             <Input id="adv-load" type="number" min={10} max={21} inputMode="numeric" placeholder="اتركه فارغاً = 18 (افتراض)"
-              value={maxLoad} onChange={(e) => setMaxLoad(e.target.value)} className="h-11 rounded-xl" />
+              value={maxLoad} onChange={(e) => setMaxLoad(e.target.value)} className="h-11 rounded-control" />
           </div>
 
           <div className="space-y-2">
@@ -128,7 +128,7 @@ export function SetupForm({
             </select>
           </div>
 
-          <label className="flex items-center gap-3 text-sm font-medium md:col-span-2">
+          <label className="flex items-center gap-3 text-small font-medium md:col-span-2">
             <input type="checkbox" checked={summer} onChange={(e) => setSummer(e.target.checked)} className="size-4 accent-[var(--accent)]" />
             أقبل الدراسة في الفصل الصيفي (حدّه 10 ساعات بالنظام)
           </label>
@@ -136,30 +136,30 @@ export function SetupForm({
           <div className="space-y-2">
             <Label htmlFor="adv-grad">معدل التخرج المطلوب لتخصصك (إن كنت تعرفه)</Label>
             <Input id="adv-grad" type="number" step="0.01" min={1} max={4} inputMode="decimal" placeholder="مثال: 2.00"
-              value={gradGpa} onChange={(e) => setGradGpa(e.target.value)} className="h-11 rounded-xl" />
-            <p className="text-xs text-muted-foreground">لم نجده منشوراً؛ بدونه لا نحكم بأنك في إنذار.</p>
+              value={gradGpa} onChange={(e) => setGradGpa(e.target.value)} className="h-11 rounded-control" />
+            <p className="text-caption text-ink-muted">لم نجده منشوراً؛ بدونه لا نحكم بأنك في إنذار.</p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="adv-work">ساعات عمل أو التزامات أسبوعية (اختياري)</Label>
             <Input id="adv-work" type="number" min={0} max={80} inputMode="numeric" value={work}
-              onChange={(e) => setWork(e.target.value)} className="h-11 rounded-xl" />
+              onChange={(e) => setWork(e.target.value)} className="h-11 rounded-control" />
           </div>
 
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="adv-offered">مقررات تعرف أنها غير مطروحة الفصل القادم</Label>
             <Input id="adv-offered" placeholder="مثال: CS2105، MTH1441" value={notOffered}
-              onChange={(e) => setNotOffered(e.target.value)} className="h-11 rounded-xl" dir="ltr" />
+              onChange={(e) => setNotOffered(e.target.value)} className="h-11 rounded-control" dir="ltr" />
           </div>
 
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="adv-interests">اهتماماتك (لمقارنة التخصصات)</Label>
             <Input id="adv-interests" placeholder="مثال: تعلم الآلة، الشبكات، تطوير الويب" value={interests}
-              onChange={(e) => setInterests(e.target.value)} className="h-11 rounded-xl" />
+              onChange={(e) => setInterests(e.target.value)} className="h-11 rounded-control" />
           </div>
         </div>
 
-        <Button type="submit" disabled={saving || !programId} className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 text-white px-6">
+        <Button type="submit" disabled={saving || !programId} className="rounded-card h-11 bg-brand hover:bg-brand-hover text-on-brand px-6">
           {saving ? "جارٍ الحساب…" : "احفظ واحسب خطتي"}
         </Button>
       </form>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Button as DsButton } from "@/components/ds/button";
 import { useSearchParams } from "next/navigation";
 import { Search, X, Plus, Minus, Maximize2, AlertCircle } from "lucide-react";
 import { Navbar } from "@/components/navbar";
@@ -226,19 +227,19 @@ export function LocationsContent() {
 
   // ── Render ───────────────────────────────────────────────────────
   return (
-    <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-background overflow-hidden">
+    <div className="h-[calc(100dvh-var(--bottom-nav-h))] ds-page flex flex-col bg-canvas text-ink overflow-hidden">
       <Navbar />
 
       <main className="flex-1 flex flex-col md:flex-row pt-16 min-h-0">
         {/* ── Sidebar ─────────────────────────────────────────────── */}
         <aside
-          className="w-full md:w-[380px] bg-card text-foreground border-l border-border flex flex-col gap-4 relative z-30 shadow-2xl min-h-0"
+          className="w-full md:w-[380px] bg-surface text-ink border-l border-line flex flex-col gap-4 relative z-30 shadow-card min-h-0"
           dir="rtl"
         >
           {/* Header — sticky title */}
           <div className="px-6 pt-4 pb-2 shrink-0 space-y-3">
             <SectionTabs />
-            <h1 className="text-2xl font-black">الخريطة</h1>
+            <h1 className="text-heading font-bold">الخريطة</h1>
           </div>
 
           {/* Sticky search — ONLY visible in browse mode. When the user
@@ -248,22 +249,22 @@ export function LocationsContent() {
           {mode === "browse" && !selectedRoom && !navRoute && (
             <div className="px-6 sticky top-0 shrink-0 z-10 bg-transparent">
               <div className="relative">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="ابحث عن قاعة، مكتب، أو معمل..."
-                  className="pr-10 rounded-xl glass border-foreground/10"
+                  className="pr-10 rounded-control border border-line bg-surface shadow-card"
                   aria-label="بحث"
                 />
                 {searchQuery && (
-                  <button
+                  <DsButton variant="bare"
                     onClick={() => setSearchQuery("")}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted hover:text-ink"
                     aria-label="مسح البحث"
                   >
                     <X className="w-3.5 h-3.5" />
-                  </button>
+                  </DsButton>
                 )}
               </div>
             </div>
@@ -272,7 +273,7 @@ export function LocationsContent() {
           {/* Body — scrollable. Branches are mutually exclusive so the
               sidebar always presents ONE focused view, never a stack
               of cards on top of a long list. */}
-          <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6 space-y-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="flex-1 min-h-0 overflow-y-auto px-6 pb-6 space-y-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded-full">
             {mode === "pickStart" ? (
               // 1. Start-picker takes over the whole body.
               <PickStart
@@ -307,7 +308,7 @@ export function LocationsContent() {
                   onChangeStart={openPickStart}
                 />
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-control border-danger-line bg-danger-soft text-danger-ink p-3 text-caption flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -326,7 +327,7 @@ export function LocationsContent() {
                   onClear={clearSelection}
                 />
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-control border-danger-line bg-danger-soft text-danger-ink p-3 text-caption flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -354,7 +355,7 @@ export function LocationsContent() {
                   />
                 )}
                 {navError && (
-                  <Card className="rounded-xl border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 p-3 text-xs flex items-start gap-2">
+                  <Card className="rounded-control border-danger-line bg-danger-soft text-danger-ink p-3 text-caption flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{navError}</span>
                   </Card>
@@ -365,10 +366,10 @@ export function LocationsContent() {
         </aside>
 
         {/* ── Map ────────────────────────────────────────────────── */}
-        <div className="flex-1 relative bg-muted/30 dark:bg-[#020202] min-h-0">
+        <div className="flex-1 relative bg-surface-sunken min-h-0">
           <div className="absolute inset-0 pointer-events-none opacity-30">
-            <div className="aurora-blob w-[1000px] h-[1000px] -top-96 -right-96 bg-uqu-accent/20 blur-[180px]" />
-            <div className="aurora-blob w-[800px] h-[800px] -bottom-64 -left-64 bg-uqu-cyan/20 blur-[180px]" />
+            <div className="aurora-blob w-[1000px] h-[1000px] -top-96 -right-96 bg-info-soft blur-[180px]" />
+            <div className="aurora-blob w-[800px] h-[800px] -bottom-64 -left-64 bg-info-soft blur-[180px]" />
           </div>
 
           <IndoorMap
@@ -388,7 +389,7 @@ export function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.zoomBy(1.25)}
-              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
+              className="rounded-control w-10 h-10 bg-surface border-line text-ink hover:bg-surface-sunken"
               aria-label="تكبير"
             >
               <Plus className="w-4 h-4" />
@@ -397,7 +398,7 @@ export function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.zoomBy(0.8)}
-              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
+              className="rounded-control w-10 h-10 bg-surface border-line text-ink hover:bg-surface-sunken"
               aria-label="تصغير"
             >
               <Minus className="w-4 h-4" />
@@ -406,7 +407,7 @@ export function LocationsContent() {
               size="icon"
               variant="outline"
               onClick={() => mapRef.current?.resetView()}
-              className="rounded-xl w-10 h-10 bg-card border-border text-foreground shadow-sm hover:bg-accent/50 dark:glass dark:border-foreground/10 dark:hover:bg-foreground/5"
+              className="rounded-control w-10 h-10 bg-surface border-line text-ink hover:bg-surface-sunken"
               aria-label="إعادة الضبط"
             >
               <Maximize2 className="w-4 h-4" />

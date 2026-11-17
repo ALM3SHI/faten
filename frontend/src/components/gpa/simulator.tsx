@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, Trash2 } from "lucide-react";
+import { Button } from "@/components/ds/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { GRADE_POINTS, SELECTABLE_GRADES, gradeToneClass, MUTED_GRADE_TONE, type SelectableGrade } from "@/lib/grade-scale";
@@ -35,11 +36,11 @@ export function SimulatorSection({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="glass rounded-[28px] border-foreground/10 overflow-hidden">
-      <div className="p-5 md:p-6 border-b border-foreground/10 flex items-center justify-between gap-3 flex-wrap">
+    <Card className="border border-line bg-surface shadow-card rounded-card overflow-hidden">
+      <div className="p-5 md:p-6 border-b border-line flex items-center justify-between gap-3 flex-wrap">
         <div className="min-w-0">
-          <h3 className="text-base font-black truncate">{CURRENT_TERM_LABEL}</h3>
-          <p className="text-sm md:text-base font-medium text-foreground/80 mt-1.5">
+          <h3 className="text-body font-bold truncate">{CURRENT_TERM_LABEL}</h3>
+          <p className="text-small md:text-body font-medium text-ink mt-1.5">
             {subtitle}
           </p>
         </div>
@@ -58,20 +59,20 @@ export function RegisteredCourseRow({
   onGradeChange: (g: SelectableGrade) => void;
 }) {
   return (
-    <div className="grid grid-cols-12 items-center gap-3 p-3 rounded-xl bg-uqu-accent/[0.04] border border-uqu-accent/15 hover:border-uqu-accent/30 transition-colors">
+    <div className="grid grid-cols-12 items-center gap-3 p-3 rounded-control bg-info-soft border border-info-line hover:border-info-line transition-colors">
       <div className="col-span-12 sm:col-span-6 min-w-0">
-        <div className="text-[13px] font-bold truncate">{row.name}</div>
+        <div className="text-small font-bold truncate">{row.name}</div>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-[10px] text-muted font-mono">{row.code}</span>
-          <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-uqu-accent/20 text-uqu-accent border border-uqu-accent/30">
+          <span className="text-caption text-ink-muted font-mono">{row.code}</span>
+          <span className="text-caption font-bold px-1.5 py-0.5 rounded bg-info-soft text-info-ink border border-info-line">
             مسجّلة
           </span>
         </div>
       </div>
-      <div className="col-span-4 sm:col-span-2 text-[11px] text-muted">
-        <span className="font-mono font-bold text-foreground">{row.credits}</span> ساعة
+      <div className="col-span-4 sm:col-span-2 text-caption text-ink-muted">
+        <span className="font-mono font-bold text-ink">{row.credits}</span> ساعة
       </div>
-      <div className="col-span-4 sm:col-span-2 text-[11px] text-muted font-mono">
+      <div className="col-span-4 sm:col-span-2 text-caption text-ink-muted font-mono">
         {((GRADE_POINTS[row.grade] ?? 0) * row.credits).toFixed(2)} نقطة
       </div>
       <div className="col-span-4 sm:col-span-2 flex justify-end">
@@ -92,22 +93,22 @@ export function MockCourseRow({
   onRemove: () => void;
 }) {
   return (
-    <div className="grid grid-cols-12 items-center gap-3 p-3 rounded-xl bg-amber-500/[0.04] border border-amber-500/15 group">
+    <div className="grid grid-cols-12 items-center gap-3 p-3 rounded-control bg-warning-soft border border-warning-line group">
       <div className="col-span-12 sm:col-span-6 min-w-0 space-y-1">
         <input
           value={row.name === "مادة افتراضية" ? "" : row.name}
           onChange={(e) => onChange("name", e.target.value)}
           placeholder="اسم المادة الافتراضية"
-          className="w-full bg-transparent outline-none text-[13px] font-bold placeholder:text-muted placeholder:font-normal"
+          className="w-full bg-transparent outline-none text-small font-bold placeholder:text-ink-muted placeholder:font-normal"
         />
         <div className="flex items-center gap-2">
           <input
             value={row.code === "—" ? "" : row.code}
             onChange={(e) => onChange("code", e.target.value.toUpperCase())}
             placeholder="CODE"
-            className="w-20 bg-foreground/5 rounded px-1.5 py-0.5 text-[10px] font-mono text-muted outline-none focus:bg-foreground/5"
+            className="w-20 bg-surface-sunken rounded px-1.5 py-0.5 text-caption font-mono text-ink-muted outline-none focus:bg-surface-sunken"
           />
-          <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+          <span className="text-caption font-bold px-1.5 py-0.5 rounded bg-warning-soft text-warning-ink border border-warning-line">
             افتراضية
           </span>
         </div>
@@ -124,11 +125,11 @@ export function MockCourseRow({
               Math.max(1, Math.min(6, parseInt(e.target.value, 10) || 1)),
             )
           }
-          className="w-12 bg-foreground/5 rounded px-1.5 py-1 text-[11px] font-mono outline-none focus:bg-foreground/5"
+          className="w-12 bg-surface-sunken rounded px-1.5 py-1 text-caption font-mono outline-none focus:bg-surface-sunken"
         />
-        <span className="text-[11px] text-muted">ساعة</span>
+        <span className="text-caption text-ink-muted">ساعة</span>
       </div>
-      <div className="col-span-4 sm:col-span-2 text-[11px] text-muted font-mono">
+      <div className="col-span-4 sm:col-span-2 text-caption text-ink-muted font-mono">
         {((GRADE_POINTS[row.grade] ?? 0) * row.credits).toFixed(2)} نقطة
       </div>
       <div className="col-span-4 sm:col-span-2 flex justify-end items-center gap-2">
@@ -137,14 +138,14 @@ export function MockCourseRow({
           onChange={(g) => onChange("grade", g)}
           tone={gradeToneClass(row.grade, MUTED_GRADE_TONE)}
         />
-        <button
+        <Button variant="bare"
           type="button"
           onClick={onRemove}
           aria-label="حذف المادة الافتراضية"
-          className="text-muted hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+          className="text-ink-muted hover:text-danger-ink opacity-0 group-hover:opacity-100 transition-opacity p-1"
         >
           <Trash2 className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -163,7 +164,7 @@ function GradePicker({
   return (
     <div
       className={cn(
-        "relative inline-flex items-center rounded-md border font-mono font-black text-[11px]",
+        "relative inline-flex items-center rounded-md border font-mono font-bold text-caption",
         tone,
       )}
     >
@@ -174,7 +175,7 @@ function GradePicker({
         className="appearance-none bg-transparent pr-2 pl-6 py-1 outline-none cursor-pointer"
       >
         {SELECTABLE_GRADES.map((g) => (
-          <option key={g} value={g} className="bg-background text-foreground">
+          <option key={g} value={g} className="bg-surface text-ink">
             {g}
           </option>
         ))}

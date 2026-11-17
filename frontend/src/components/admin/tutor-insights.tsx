@@ -48,23 +48,23 @@ export function TutorInsights() {
   }, []);
 
   return (
-    <Card className="glass rounded-3xl p-6 space-y-4">
-      <h2 className="text-lg font-black flex items-center gap-2">
-        <GraduationCap className="w-5 h-5 text-uqu-accent" aria-hidden /> المذاكرة الذكية — مؤشرات جماعية مجهولة الهوية
+    <Card className="border border-line bg-surface shadow-card rounded-card p-6 space-y-4">
+      <h2 className="text-subheading font-bold flex items-center gap-2">
+        <GraduationCap className="w-5 h-5 text-info-ink" aria-hidden /> المذاكرة الذكية — مؤشرات جماعية مجهولة الهوية
       </h2>
-      {error && <p className="text-sm text-rose-500">{error}</p>}
-      {!data && !error && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" aria-label="جاري التحميل" />}
-      {data && data.lectures.length === 0 && <p className="text-sm text-muted-foreground">لا توجد بيانات بعد.</p>}
+      {error && <p className="text-small text-danger-ink">{error}</p>}
+      {!data && !error && <Loader2 className="w-5 h-5 animate-spin text-ink-muted" aria-label="جاري التحميل" />}
+      {data && data.lectures.length === 0 && <p className="text-small text-ink-muted">لا توجد بيانات بعد.</p>}
       {data?.lectures.map((l) => (
-        <div key={l.id} className="rounded-2xl border border-foreground/10 p-4 space-y-3">
+        <div key={l.id} className="rounded-card border border-line p-4 space-y-3">
           <div className="flex items-center justify-between gap-2">
             <h3 className="font-bold" dir="auto">{l.title}</h3>
-            <span className="text-xs text-muted-foreground">{l.students} طالب</span>
+            <span className="text-caption text-ink-muted">{l.students} طالب</span>
           </div>
           {!l.enough_data ? (
-            <p className="text-sm text-muted-foreground">{l.note}</p>
+            <p className="text-small text-ink-muted">{l.note}</p>
           ) : (
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div className="grid md:grid-cols-2 gap-4 text-small">
               <div>
                 <div className="font-bold mb-1">أصعب الموضوعات</div>
                 <ul className="space-y-1">
@@ -78,15 +78,15 @@ export function TutorInsights() {
               <div>
                 <div className="font-bold mb-1">أكثر المفاهيم خطأً</div>
                 <ul className="space-y-1">
-                  {l.most_missed_concepts?.length ? l.most_missed_concepts.map((c) => <li key={c.concept}>{c.concept}: {p(c.accuracy)} ({c.answers} إجابة)</li>) : <li className="text-muted-foreground">لم تكتمل العينة لكل مفهوم.</li>}
+                  {l.most_missed_concepts?.length ? l.most_missed_concepts.map((c) => <li key={c.concept}>{c.concept}: {p(c.accuracy)} ({c.answers} إجابة)</li>) : <li className="text-ink-muted">لم تكتمل العينة لكل مفهوم.</li>}
                 </ul>
               </div>
               <div>
                 <div className="font-bold mb-1">أسئلة تحتاج مراجعة</div>
                 <ul className="space-y-1.5">
                   {l.question_flags?.length ? l.question_flags.map((f, i) => (
-                    <li key={i}><span className="font-bold">{f.flag}</span> ({p(f.accuracy)} من {f.answers}): <span dir="auto">{f.question}</span><div className="text-xs text-muted-foreground">{f.advice}</div></li>
-                  )) : <li className="text-muted-foreground">لا توجد أسئلة شاذة الصعوبة.</li>}
+                    <li key={i}><span className="font-bold">{f.flag}</span> ({p(f.accuracy)} من {f.answers}): <span dir="auto">{f.question}</span><div className="text-caption text-ink-muted">{f.advice}</div></li>
+                  )) : <li className="text-ink-muted">لا توجد أسئلة شاذة الصعوبة.</li>}
                 </ul>
               </div>
               <div>
@@ -107,7 +107,7 @@ export function TutorInsights() {
           )}
         </div>
       ))}
-      <p className="text-xs text-muted-foreground leading-6">
+      <p className="text-caption text-ink-muted leading-6">
         أرقام مجمّعة بلا هوية طالب. لا تُعرض نتائج محاضرة قبل {data?.min_students ?? 10} طلاب. انخفاض الدرجات لا يعني صعوبة المحتوى بالضرورة — راجع صياغة السؤال وتغطية الشرح أولاً.
       </p>
     </Card>

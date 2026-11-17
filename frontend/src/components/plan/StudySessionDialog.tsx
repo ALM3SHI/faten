@@ -252,26 +252,26 @@ export function StudySessionDialog({
   };
 
   const fieldClass =
-    "h-9 w-full rounded-lg border border-border bg-background px-2.5 text-sm text-foreground dark:border-white/10 dark:bg-[#1c1c1c]";
+    "h-9 w-full rounded-control border border-line bg-surface px-2.5 text-small text-ink";
   const selectClass = fieldClass;
-  const inputClass = cn(fieldClass, "placeholder:text-muted-foreground");
+  const inputClass = cn(fieldClass, "placeholder:text-ink-muted");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-2xl",
-          "!bg-card border border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95",
-          "[&_[data-slot=dialog-close]]:text-muted-foreground [&_[data-slot=dialog-close]]:hover:text-foreground",
+          "sm:max-w-lg gap-0 p-0 overflow-hidden rounded-card",
+          "!bg-surface border border-line text-ink shadow-card ",
+          "[&_[data-slot=dialog-close]]:text-ink-muted [&_[data-slot=dialog-close]]:hover:text-ink",
         )}
         dir="rtl"
       >
         <form onSubmit={handleSubmit} className="flex flex-col">
           <DialogHeader className="px-6 pt-6 pb-2 text-right space-y-1">
-            <DialogTitle className="text-lg font-bold text-foreground">
+            <DialogTitle className="text-subheading font-bold text-ink">
               {mode === "add" ? "إضافة جلسة" : "تعديل جلسة"}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
+            <DialogDescription className="text-caption text-ink-muted">
               حدد اليوم والوقت والمدة — سيتم التحقق من التعارض مع المحاضرات والجلسات الأخرى
               عند الحفظ.
             </DialogDescription>
@@ -333,7 +333,7 @@ export function StudySessionDialog({
                   ))}
                 </select>
                 {hasDate && (
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-caption text-ink-muted">
                     يُحدد اليوم تلقائياً من التاريخ المختار.
                   </p>
                 )}
@@ -439,7 +439,7 @@ export function StudySessionDialog({
                 </select>
               </div>
             </div>
-            <p className="text-[10px] text-muted-foreground -mt-1">
+            <p className="text-caption text-ink-muted -mt-1">
               التاريخ اختياري. عند إضافة تاريخ ستظهر الجلسة ضمن الأحداث المسجلة.
             </p>
 
@@ -455,21 +455,21 @@ export function StudySessionDialog({
             </div>
 
             {fieldError && (
-              <p className="text-xs text-rose-400 font-medium">{fieldError}</p>
+              <p className="text-caption text-danger-ink font-medium">{fieldError}</p>
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-start gap-3 border-t border-border dark:border-white/10 px-6 py-4 mt-1 shrink-0">
+          <div className="flex flex-row items-center justify-start gap-3 border-t border-line px-6 py-4 mt-1 shrink-0">
             <Button
               type="submit"
-              className="h-9 px-4 rounded-xl text-sm font-bold bg-uqu-accent hover:bg-uqu-accent/90 text-white shadow-[0_0_16px_-4px_hsla(245,78%,62%,0.5)]"
+              className="h-9 px-4 rounded-control text-small font-bold bg-brand hover:bg-brand-hover text-on-brand"
             >
               {mode === "add" ? "إضافة الجلسة" : "حفظ التعديلات"}
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="h-9 px-4 rounded-xl text-sm font-medium border-border bg-transparent hover:bg-foreground/5 text-foreground dark:border-white/10 dark:hover:bg-white/5"
+              className="h-9 px-4 rounded-control text-small font-medium border-line bg-transparent hover:bg-surface-sunken text-ink"
               onClick={() => onOpenChange(false)}
             >
               إلغاء

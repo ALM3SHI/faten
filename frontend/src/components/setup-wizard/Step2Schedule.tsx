@@ -144,20 +144,20 @@ function SummaryView({
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-2xl font-black tracking-tight">جدولك الدراسي المحفوظ</h2>
+            <h2 className="text-heading font-bold tracking-tight">جدولك الدراسي المحفوظ</h2>
             <Badge
               variant="outline"
-              className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px]"
+              className="bg-success-soft text-success-ink border-success-line text-caption"
             >
               <ShieldCheck className="w-3 h-3 ml-1" />
               محفوظ
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">
-            <strong className="text-emerald-400">{totalSlots}</strong> محاضرة موزعة على{" "}
-            <strong className="text-emerald-400">{populatedDays.length}</strong> أيام
+          <p className="text-small text-ink-muted">
+            <strong className="text-success-ink">{totalSlots}</strong> محاضرة موزعة على{" "}
+            <strong className="text-success-ink">{populatedDays.length}</strong> أيام
             {lastUpdated && (
-              <span className="text-muted mr-1">
+              <span className="text-ink-muted mr-1">
                 · آخر تحديث {new Date(lastUpdated).toLocaleDateString("ar-SA")}
               </span>
             )}
@@ -167,7 +167,7 @@ function SummaryView({
           variant="outline"
           size="sm"
           onClick={onRebuild}
-          className="rounded-xl glass border-foreground/10 gap-2"
+          className="rounded-control border border-line bg-surface shadow-card gap-2"
         >
           <RefreshCw className="w-4 h-4" />
           إعادة بناء الجدول 🔄
@@ -175,7 +175,7 @@ function SummaryView({
       </header>
 
       {/* Stats strip */}
-      <Card className="glass rounded-2xl border-foreground/10 p-4">
+      <Card className="border border-line bg-surface shadow-card rounded-card p-4">
         <div className="grid grid-cols-3 gap-3">
           <StatTile
             icon={<Calendar className="w-3.5 h-3.5" />}
@@ -198,8 +198,8 @@ function SummaryView({
 
       {/* Day groups */}
       {populatedDays.length === 0 ? (
-        <Card className="rounded-2xl border-dashed border-foreground/10 p-10 text-center">
-          <p className="text-sm text-muted-foreground">
+        <Card className="rounded-card border-dashed border-line p-10 text-center">
+          <p className="text-small text-ink-muted">
             الجدول محفوظ لكنه فارغ — أعد بناءه لإضافة المحاضرات.
           </p>
         </Card>
@@ -216,7 +216,7 @@ function SummaryView({
         <Button
           variant="ghost"
           onClick={onBackToStep1}
-          className="rounded-xl text-muted hover:text-foreground gap-2"
+          className="rounded-control text-ink-muted hover:text-ink gap-2"
         >
           <ArrowLeft className="w-4 h-4 rotate-180" />
           العودة للخطوة السابقة
@@ -224,8 +224,8 @@ function SummaryView({
         <Button
           onClick={onNext}
           className={cn(
-            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold mr-auto",
-            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
+            "rounded-card bg-brand hover:bg-brand-hover gap-2 px-6 py-6 text-body font-bold mr-auto",
+            "",
           )}
         >
           التالي: حفظ والمتابعة
@@ -243,15 +243,15 @@ function DayCard({ day, slots }: { day: string; slots: ScheduleSlot[] }) {
   }, 0);
 
   return (
-    <Card className="glass rounded-2xl border-foreground/10 p-4 space-y-3">
+    <Card className="border border-line bg-surface shadow-card rounded-card p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center text-uqu-accent">
+          <div className="w-7 h-7 rounded-control bg-info-soft border border-info-line flex items-center justify-center text-info-ink">
             <Calendar className="w-3.5 h-3.5" />
           </div>
-          <h3 className="font-bold text-[15px]">{day}</h3>
+          <h3 className="font-bold text-body">{day}</h3>
         </div>
-        <span className="text-[10px] text-muted font-mono">
+        <span className="text-caption text-ink-muted font-mono">
           {slots.length} محاضرة · {formatHours(totalMins)}
         </span>
       </div>
@@ -270,48 +270,48 @@ function SlotRow({ slot }: { slot: ScheduleSlot }) {
   return (
     <div
       className={cn(
-        "rounded-xl p-3 border flex items-start gap-3",
+        "rounded-control p-3 border flex items-start gap-3",
         isLab
-          ? "bg-amber-500/[0.06] border-amber-500/20"
-          : "bg-uqu-accent/[0.06] border-uqu-accent/20",
+          ? "bg-warning-soft border-warning-line"
+          : "bg-info-soft border-info-line",
       )}
     >
       <div
         className={cn(
-          "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+          "w-8 h-8 rounded-control flex items-center justify-center shrink-0",
           isLab
-            ? "bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30"
-            : "bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30",
+            ? "bg-warning-soft text-warning-ink border border-warning-line"
+            : "bg-info-soft text-info-ink border border-info-line",
         )}
       >
         {isLab ? <FlaskConical className="w-4 h-4" /> : <GraduationCap className="w-4 h-4" />}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 flex-wrap">
-          <span className="text-[13px] font-bold truncate">
+          <span className="text-small font-bold truncate">
             {slot.course_name || slot.course_code || "—"}
           </span>
-          <span className="text-[10px] font-mono text-muted shrink-0">
+          <span className="text-caption font-mono text-ink-muted shrink-0">
             {slot.course_code}
           </span>
         </div>
-        <div className="flex items-center gap-3 mt-1 text-[11px] text-muted font-mono flex-wrap">
+        <div className="flex items-center gap-3 mt-1 text-caption text-ink-muted font-mono flex-wrap">
           <span className="inline-flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {slot.start_time} – {slot.end_time}
           </span>
           {(slot.building || slot.room) && (
-            <span className="inline-flex items-center gap-1 text-muted">
+            <span className="inline-flex items-center gap-1 text-ink-muted">
               <MapPin className="w-3 h-3" />
               {[slot.building, slot.room].filter(Boolean).join(" · ")}
             </span>
           )}
           <span
             className={cn(
-              "px-1.5 py-0.5 rounded text-[9px] font-bold",
+              "px-1.5 py-0.5 rounded text-caption font-bold",
               isLab
-                ? "bg-amber-500/15 text-amber-800 dark:text-amber-300"
-                : "bg-uqu-accent/15 text-uqu-accent",
+                ? "bg-warning-soft text-warning-ink "
+                : "bg-info-soft text-info-ink",
             )}
           >
             {isLab ? "عملي" : "نظري"}
@@ -334,12 +334,12 @@ function StatTile({
   mono?: boolean;
 }) {
   return (
-    <div className="rounded-xl bg-foreground/5 border border-foreground/10 p-3">
-      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted mb-1">
+    <div className="rounded-control bg-surface-sunken border border-line p-3">
+      <div className="flex items-center gap-1 text-caption font-bold uppercase tracking-wider text-ink-muted mb-1">
         {icon}
         <span>{label}</span>
       </div>
-      <div className={cn("text-lg font-black", mono && "font-mono")}>{value}</div>
+      <div className={cn("text-subheading font-bold", mono && "font-mono")}>{value}</div>
     </div>
   );
 }

@@ -5,34 +5,34 @@ import { CONFIDENCE_LABEL, VERIFICATION_LABEL, type AdvisorRun } from "@/lib/adv
 import { DocumentsList, RulesByKind, UncertaintyList } from "@/components/advisor/evidence";
 
 const SEVERITY = {
-  high: { label: "مرتفع", cls: "border-rose-500/30 bg-rose-500/10" },
-  medium: { label: "متوسط", cls: "border-amber-500/30 bg-amber-500/10" },
-  low: { label: "منخفض", cls: "border-foreground/10 bg-foreground/5" },
+  high: { label: "مرتفع", cls: "border-danger-line bg-danger-soft" },
+  medium: { label: "متوسط", cls: "border-warning-line bg-warning-soft" },
+  low: { label: "منخفض", cls: "border-line bg-surface-sunken" },
 } as const;
 
 export function RisksPanel({ run }: { run: AdvisorRun }) {
   return (
     <div className="space-y-6">
       <section aria-labelledby="risks-title" className="space-y-3">
-        <h3 id="risks-title" className="font-black flex items-center gap-2">
-          <ShieldAlert className="w-5 h-5 text-uqu-accent" aria-hidden />
+        <h3 id="risks-title" className="font-bold flex items-center gap-2">
+          <ShieldAlert className="w-5 h-5 text-info-ink" aria-hidden />
           المخاطر
         </h3>
         {run.risks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">لا توجد مؤشرات خطر في بياناتك الحالية.</p>
+          <p className="text-small text-ink-muted">لا توجد مؤشرات خطر في بياناتك الحالية.</p>
         ) : (
           <ul className="space-y-2">
             {run.risks.map((r) => (
-              <li key={r.kind + r.message} className={`rounded-2xl border p-3 text-sm ${SEVERITY[r.severity].cls}`}>
+              <li key={r.kind + r.message} className={`rounded-card border p-3 text-small ${SEVERITY[r.severity].cls}`}>
                 <p className="flex flex-wrap items-center gap-2 font-bold">
                   <span>خطر {SEVERITY[r.severity].label}</span>
-                  <span className="rounded-full border border-foreground/15 px-2 text-[11px]">
+                  <span className="rounded-full border border-line-strong px-2 text-caption">
                     {r.basis === "fact" ? "حقيقة من سجلك" : "تقدير وليس يقيناً"}
                   </span>
                 </p>
                 <p className="mt-1 leading-7">{r.message}</p>
                 {r.evidence.length > 0 && (
-                  <p className="mt-1 text-xs text-muted-foreground" dir="auto">
+                  <p className="mt-1 text-caption text-ink-muted" dir="auto">
                     {r.evidence.join(" · ")}
                   </p>
                 )}
@@ -45,14 +45,14 @@ export function RisksPanel({ run }: { run: AdvisorRun }) {
       <UncertaintyList run={run} />
 
       <section aria-labelledby="gaps-title" className="space-y-3">
-        <h3 id="gaps-title" className="font-black flex items-center gap-2">
-          <Database className="w-5 h-5 text-uqu-accent" aria-hidden />
+        <h3 id="gaps-title" className="font-bold flex items-center gap-2">
+          <Database className="w-5 h-5 text-info-ink" aria-hidden />
           الثقة والبيانات الناقصة
         </h3>
-        <p className="text-sm">
+        <p className="text-small">
           درجة الثقة: <b>{CONFIDENCE_LABEL[run.confidence.level]}</b>
         </p>
-        <ul className="text-sm list-disc ps-5 space-y-1 leading-7 text-muted-foreground">
+        <ul className="text-small list-disc ps-5 space-y-1 leading-7 text-ink-muted">
           {run.confidence.reasons.map((r) => (
             <li key={r}>{r}</li>
           ))}
@@ -60,43 +60,43 @@ export function RisksPanel({ run }: { run: AdvisorRun }) {
         {run.data_gaps.length > 0 && (
           <ul className="space-y-2">
             {run.data_gaps.map((g) => (
-              <li key={g.field} className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 text-sm">
+              <li key={g.field} className="rounded-card border border-warning-line bg-warning-soft p-3 text-small">
                 <p className="font-bold flex gap-2">
                   <AlertOctagon className="w-4 h-4 mt-0.5 shrink-0" aria-hidden />
                   {g.message}
                 </p>
-                <p className="text-muted-foreground mt-1">{g.impact}</p>
+                <p className="text-ink-muted mt-1">{g.impact}</p>
               </li>
             ))}
           </ul>
         )}
         {run.profile.notes.map((n) => (
-          <p key={n} className="text-sm flex gap-2">
-            <Info className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground" aria-hidden />
+          <p key={n} className="text-small flex gap-2">
+            <Info className="w-4 h-4 mt-0.5 shrink-0 text-ink-muted" aria-hidden />
             {n}
           </p>
         ))}
       </section>
 
       <section aria-labelledby="sources-title" className="space-y-3">
-        <h3 id="sources-title" className="font-black flex items-center gap-2">
-          <FileCheck2 className="w-5 h-5 text-uqu-accent" aria-hidden />
+        <h3 id="sources-title" className="font-bold flex items-center gap-2">
+          <FileCheck2 className="w-5 h-5 text-info-ink" aria-hidden />
           المصادر
         </h3>
-        <p className="text-sm leading-7">
+        <p className="text-small leading-7">
           {run.curriculum.label} — حالة الخطة: <b>{VERIFICATION_LABEL[run.curriculum.verification]}</b>.{" "}
           <a href={run.curriculum.source_url} target="_blank" rel="noreferrer" className="underline">
             صفحة الخطة الرسمية
           </a>
         </p>
-        <ul className="text-sm list-disc ps-5 space-y-1 leading-7">
+        <ul className="text-small list-disc ps-5 space-y-1 leading-7">
           {run.curriculum.issues.map((i) => (
             <li key={i.code + i.message}>{i.message}</li>
           ))}
         </ul>
         <DocumentsList run={run} />
         <RulesByKind rules={run.rules} />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-ink-muted">
           نسخة المحرك {run.engine_version} · معرّف التحليل <span dir="ltr">{run.run_id}</span> — نفس البيانات تعطي نفس النتيجة.
         </p>
       </section>

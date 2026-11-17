@@ -2,34 +2,7 @@
   "desktop dark /login/": {
     "color-contrast": 1
   },
-  "desktop light /attendance/": {
-    "color-contrast": 2
-  },
-  "desktop light /gpa/": {
-    "color-contrast": 3
-  },
-  "desktop light /profile/": {
-    "color-contrast": 1
-  },
-  "desktop light /schedule/": {
-    "color-contrast": 4
-  },
   "mobile dark /": {
     "color-contrast": 1
-  },
-  "mobile light /attendance/": {
-    "color-contrast": 2
-  },
-  "mobile light /dashboard/": {
-    "color-contrast": 1
-  },
-  "mobile light /gpa/": {
-    "color-contrast": 5
-  },
-  "mobile light /profile/": {
-    "color-contrast": 1
-  },
-  "mobile light /schedule/": {
-    "color-contrast": 4
   }
 }

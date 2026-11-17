@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ds/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -24,31 +25,31 @@ const STUDY_PRIORITY_STYLES: Record<
   { border: string; bg: string; inner: string; chip: string; dot: string; subtext: string }
 > = {
   high: {
-    border: "border-rose-300 dark:border-rose-500/40",
-    bg: "bg-rose-50 dark:bg-rose-500/[0.06]",
+    border: "border-danger-line ",
+    bg: "bg-danger-ink ",
     inner:
-      "bg-rose-100 border-rose-300 text-rose-900 dark:bg-rose-500/20 dark:border-rose-500/45 dark:text-rose-100",
-    chip: "bg-rose-200/90 text-rose-900 dark:bg-rose-500/25 dark:text-rose-200",
-    dot: "bg-rose-600 dark:bg-rose-400",
-    subtext: "text-rose-800/80 dark:text-rose-200/80",
+      "bg-danger-ink border-danger-line text-danger-ink",
+    chip: "bg-danger-soft text-danger-ink",
+    dot: "bg-danger-ink ",
+    subtext: "text-danger-ink ",
   },
   medium: {
-    border: "border-violet-300 dark:border-violet-500/40",
-    bg: "bg-violet-50 dark:bg-violet-500/[0.06]",
+    border: "border-info-line ",
+    bg: "bg-info-ink ",
     inner:
-      "bg-violet-100 border-violet-300 text-violet-900 dark:bg-violet-500/20 dark:border-violet-500/45 dark:text-violet-100",
-    chip: "bg-violet-200/90 text-violet-900 dark:bg-violet-500/25 dark:text-violet-200",
-    dot: "bg-violet-600 dark:bg-violet-400",
-    subtext: "text-violet-800/80 dark:text-violet-200/80",
+      "bg-info-ink border-info-line text-info-ink",
+    chip: "bg-info-soft text-info-ink",
+    dot: "bg-info-ink ",
+    subtext: "text-info-ink ",
   },
   low: {
-    border: "border-emerald-300 dark:border-emerald-500/35",
-    bg: "bg-emerald-50 dark:bg-emerald-500/[0.05]",
+    border: "border-success-line ",
+    bg: "bg-success-ink ",
     inner:
-      "bg-emerald-100 border-emerald-300 text-emerald-900 dark:bg-emerald-500/15 dark:border-emerald-500/40 dark:text-emerald-100",
-    chip: "bg-emerald-200/90 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200",
-    dot: "bg-emerald-600 dark:bg-emerald-400",
-    subtext: "text-emerald-800/80 dark:text-emerald-200/80",
+      "bg-success-ink border-success-line text-success-ink",
+    chip: "bg-success-soft text-success-ink",
+    dot: "bg-success-ink ",
+    subtext: "text-success-ink ",
   },
 };
 
@@ -91,14 +92,14 @@ export function WeeklyScheduleGrid({
   return (
     <Card
       className={cn(
-        "glass rounded-2xl overflow-hidden w-full py-0 gap-0 ring-0 border-0",
+        "border border-line bg-surface shadow-card rounded-card overflow-hidden w-full py-0 gap-0 ring-0 border-0",
         className,
       )}
     >
-      <div className="px-5 py-4 border-b border-foreground/10 bg-foreground/5 flex items-center justify-between gap-3 rounded-t-[inherit]">
-        <h2 className="text-base font-bold">{title}</h2>
+      <div className="px-5 py-4 border-b border-line bg-surface-sunken flex items-center justify-between gap-3 rounded-t-card">
+        <h2 className="text-body font-bold">{title}</h2>
         {!hasAnyBlock && emptyHint && (
-          <p className="text-xs text-amber-400/90 font-medium shrink-0">{emptyHint}</p>
+          <p className="text-caption text-warning-ink font-medium shrink-0">{emptyHint}</p>
         )}
       </div>
 
@@ -108,7 +109,7 @@ export function WeeklyScheduleGrid({
           style={{ scrollbarGutter: "stable" }}
         >
           <table
-            className="w-full border-collapse text-sm table-fixed"
+            className="w-full border-collapse text-small table-fixed"
             style={{ minWidth: tableMinWidth }}
           >
             <colgroup>
@@ -119,21 +120,21 @@ export function WeeklyScheduleGrid({
             </colgroup>
             <thead className="sticky top-0 z-20">
               <tr>
-                <th className="sticky right-0 z-30 bg-card border border-foreground/10 px-1 py-2.5 text-[11px] font-mono font-semibold text-muted-foreground text-center">
+                <th className="sticky right-0 z-30 bg-surface border border-line px-1 py-2.5 text-caption font-mono font-semibold text-ink-muted text-center">
                   الوقت
                 </th>
                 {days.map((day) => (
                   <th
                     key={day}
                     className={cn(
-                      "bg-card border border-foreground/10 p-2.5 text-sm font-bold",
+                      "bg-surface border border-line p-2.5 text-small font-bold",
                       day === todayColumn &&
-                        "bg-uqu-accent/15 text-uqu-accent border-uqu-accent/40",
+                        "bg-info-soft text-info-ink border-info-line",
                     )}
                   >
                     {day}
                     {day === todayColumn && (
-                      <span className="mr-1 text-[10px] font-medium text-uqu-accent/80">
+                      <span className="mr-1 text-caption font-medium text-info-ink">
                         • اليوم
                       </span>
                     )}
@@ -144,7 +145,7 @@ export function WeeklyScheduleGrid({
             <tbody>
               {timeSlots.map((time, rowIdx) => (
                 <tr key={time.start}>
-                  <td className="sticky right-0 z-10 bg-card border border-foreground/10 px-1 py-2 text-[11px] font-mono font-semibold text-muted-foreground text-center align-top">
+                  <td className="sticky right-0 z-10 bg-surface border border-line px-1 py-2 text-caption font-mono font-semibold text-ink-muted text-center align-top">
                     {time.start}
                   </td>
                   {days.map((day) => {
@@ -192,7 +193,7 @@ export function WeeklyScheduleGrid({
       </div>
 
       {hiddenStudyCount > 0 && (
-        <p className="px-5 py-3 text-xs text-amber-400/90 border-t border-foreground/10 bg-amber-500/[0.04]">
+        <p className="px-5 py-3 text-caption text-warning-ink border-t border-line bg-warning-soft">
           {hiddenStudyCount} جلسة مذاكرة لم تظهر بسبب تعارض أو وقت غير معروف
         </p>
       )}
@@ -219,8 +220,8 @@ function EmptyGridCell({
   return (
     <td
       className={cn(
-        "border border-foreground/10 p-1.5 align-top",
-        isToday ? "bg-uqu-accent/[0.04]" : "bg-transparent",
+        "border border-line p-1.5 align-top",
+        isToday ? "bg-info-soft" : "bg-transparent",
       )}
       style={{ height: rowHeightPx, minHeight: rowHeightPx }}
     >
@@ -245,33 +246,33 @@ function LectureSpanningCell({
       className={cn(
         "border align-top p-1.5",
         isLab
-          ? "border-amber-500/30 bg-amber-500/[0.06]"
-          : "border-uqu-accent/30 bg-uqu-accent/[0.06]",
+          ? "border-warning-line bg-warning-soft"
+          : "border-info-line bg-info-soft",
       )}
       style={{ height: duration * rowHeightPx }}
     >
       <div
         className={cn(
-          "h-full w-full rounded-lg border p-3 flex flex-col gap-1.5 relative overflow-hidden",
+          "h-full w-full rounded-control border p-3 flex flex-col gap-1.5 relative overflow-hidden",
           isLab
-            ? "bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-100"
-            : "bg-uqu-accent/15 border-uqu-accent/40 text-foreground",
+            ? "bg-warning-soft border-warning-line text-warning-ink "
+            : "bg-info-soft border-info-line text-ink",
         )}
       >
-        <div className="text-sm font-bold leading-snug line-clamp-3">
+        <div className="text-small font-bold leading-snug line-clamp-3">
           {lectureDisplayName(slot)}
         </div>
-        <div className="mt-auto flex items-center justify-between gap-1 text-[10px] font-mono opacity-70">
+        <div className="mt-auto flex items-center justify-between gap-1 text-caption font-mono opacity-70">
           <span>
             {slot.start_time}–{slot.end_time}
           </span>
-          <span className="px-2 py-0.5 rounded bg-foreground/10 dark:bg-black/30 shrink-0">
+          <span className="px-2 py-0.5 rounded bg-surface-sunken shrink-0">
             {isLab ? "عملي" : "نظري"}
             {duration > 1 ? ` · ${duration}س` : ""}
           </span>
         </div>
         {slot.room && (
-          <div className="text-[10px] opacity-60 truncate">
+          <div className="text-caption opacity-60 truncate">
             {slot.building ? `${slot.building} · ` : ""}
             {slot.room}
           </div>
@@ -311,7 +312,7 @@ function StudySpanningCell({
     >
       <div
         className={cn(
-          "group h-full w-full rounded-lg border p-2.5 flex flex-col gap-1.5 relative overflow-hidden transition-opacity min-h-[44px]",
+          "group h-full w-full rounded-control border p-2.5 flex flex-col gap-1.5 relative overflow-hidden transition-opacity min-h-[44px]",
           p.inner,
           study.done && "opacity-55",
         )}
@@ -319,7 +320,7 @@ function StudySpanningCell({
         <div className="flex items-start justify-between gap-1.5 shrink-0 min-w-0">
           <div
             className={cn(
-              "text-[13px] font-bold leading-snug line-clamp-2 flex-1 min-w-0",
+              "text-small font-bold leading-snug line-clamp-2 flex-1 min-w-0",
               study.done && "line-through opacity-70",
             )}
           >
@@ -327,33 +328,33 @@ function StudySpanningCell({
           </div>
           <div className="flex items-center gap-1 shrink-0">
             {interactive && onEdit && (
-              <button
+              <Button variant="bare"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit(study);
                 }}
-                className="w-6 h-6 rounded-md border border-violet-400/50 flex items-center justify-center text-violet-700 hover:bg-violet-500/15 transition-colors dark:border-violet-300/40 dark:text-violet-200/90 dark:hover:bg-violet-500/25"
+                className="w-6 h-6 rounded-md border border-info-line flex items-center justify-center text-info-ink hover:bg-info-soft transition-colors"
                 aria-label="تعديل الجلسة"
               >
                 <Pencil className="w-3 h-3" />
-              </button>
+              </Button>
             )}
             {interactive && onDelete && (
-              <button
+              <Button variant="bare"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete(study);
                 }}
-                className="w-6 h-6 rounded-md border border-rose-400/50 flex items-center justify-center text-rose-700 hover:bg-rose-500/15 transition-colors dark:border-rose-400/35 dark:text-rose-200/90 dark:hover:bg-rose-500/20"
+                className="w-6 h-6 rounded-md border border-danger-line flex items-center justify-center text-danger-ink hover:bg-danger-soft transition-colors"
                 aria-label="حذف الجلسة"
               >
                 <Trash2 className="w-3 h-3" />
-              </button>
+              </Button>
             )}
             {onToggle && (
-              <button
+              <Button variant="bare"
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -362,20 +363,20 @@ function StudySpanningCell({
                 className={cn(
                   "w-6 h-6 rounded-full border flex items-center justify-center transition-all shrink-0",
                   study.done
-                    ? "bg-violet-600 border-violet-500 text-white dark:bg-violet-500 dark:border-violet-400 dark:text-white"
-                    : "border-violet-400/60 text-violet-700 hover:border-violet-500 hover:bg-violet-500/10 dark:border-violet-300/50 dark:text-violet-200/80 dark:hover:border-violet-300",
+                    ? "bg-brand border-brand text-on-brand"
+                    : "border-info-line text-info-ink hover:border-info-line hover:bg-info-soft",
                 )}
                 aria-label={study.done ? "إلغاء الإتمام" : "وضع علامة منجز"}
               >
                 {study.done && <CheckCircle2 className="w-3.5 h-3.5" />}
-              </button>
+              </Button>
             )}
           </div>
         </div>
         {courseLabel && (
           <div
             className={cn(
-              "text-[10px] font-semibold truncate leading-tight",
+              "text-caption font-semibold truncate leading-tight",
               p.subtext,
               study.done && "line-through opacity-70",
             )}
@@ -383,13 +384,13 @@ function StudySpanningCell({
             {courseLabel}
           </div>
         )}
-        <div className="mt-auto flex items-center justify-between gap-1 text-[10px] font-mono pt-0.5">
+        <div className="mt-auto flex items-center justify-between gap-1 text-caption font-mono pt-0.5">
           <span className="truncate shrink min-w-0 opacity-90">
             {study.start_time}–{study.end_time}
           </span>
           <span
             className={cn(
-              "px-1.5 py-0.5 rounded shrink-0 inline-flex items-center gap-1 text-[9px] font-sans font-bold",
+              "px-1.5 py-0.5 rounded shrink-0 inline-flex items-center gap-1 text-caption font-sans font-bold",
               p.chip,
             )}
           >
