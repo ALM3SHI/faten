@@ -3,11 +3,16 @@ import { readFirestore, seedFirestore, signIn, STUDENT } from "./helpers";
 
 const COL = `users/${STUDENT.uid}/exams`;
 
+/**
+ * A date n days from today, on RIYADH's calendar — the browser in these tests
+ * runs in Asia/Riyadh (playwright.config.ts). Using the runner's own clock
+ * (UTC on CI) put "tomorrow" on the wrong day between 21:00 and 24:00 UTC.
+ */
 function inDays(n: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  const p = (x: number) => String(x).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  const riyadhToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Riyadh" }).format(new Date());
+  const [y, m, d] = riyadhToday.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1, d + n));
+  return t.toISOString().slice(0, 10);
 }
 
 test("add exams, see the countdown, the clash and the study plan", async ({ page }) => {
