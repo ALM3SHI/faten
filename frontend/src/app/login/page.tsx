@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { safeNextPath } from "@/lib/routes";
-import { auth, googleProvider } from "@/lib/firebase";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-} from "firebase/auth";
+import { loadFirebase } from "@/lib/firebase/lazy";
+
+// Firebase loads in the background while the form renders (AuthProvider
+// starts it on /login); each handler awaits the same import.
+async function fb() {
+  const [{ auth, googleProvider }, sdk] = await Promise.all([loadFirebase(), import("firebase/auth")]);
+  return { auth, googleProvider, ...sdk };
+}
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -58,6 +58,7 @@ export default function LoginPage() {
     }
     setResetting(true);
     try {
+      const { auth, sendPasswordResetEmail } = await fb();
       await sendPasswordResetEmail(auth, address);
       toast.success(PASSWORD_RESET_SENT);
     } catch (error: unknown) {
@@ -93,6 +94,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
+      const { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } = await fb();
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
@@ -116,6 +118,7 @@ export default function LoginPage() {
 
   const handleGoogleAuth = async () => {
     try {
+      const { auth, googleProvider, signInWithPopup } = await fb();
       await signInWithPopup(auth, googleProvider);
       router.replace(nextPath());
     } catch (error: unknown) {

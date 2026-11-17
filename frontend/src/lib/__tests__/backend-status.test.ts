@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/api", () => ({ AGENT_BASE_URL: "http://api.test" }));
+vi.mock("@/lib/api", () => ({ AGENT_BASE_URL: "http://api.test", connectBackendStatus: () => {} }));
 
 import { __resetWarmupForTests, useBackendStatus, warmupBackend } from "@/lib/backend-status";
 

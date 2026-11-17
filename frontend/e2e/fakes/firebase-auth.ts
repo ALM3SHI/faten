@@ -1,13 +1,13 @@
 /**
  * E2E stand-in for `firebase/auth`. A signed-in user lives in localStorage
- * (`__e2e_auth_user__`) so tests can start signed in by seeding it, or sign
+ * (`firebase:authUser:e2e:[DEFAULT]`) so tests can start signed in by seeding it, or sign
  * in through the real login form (any password of 8+ chars works; the
  * address `wrong@test.local` is rejected to exercise the error path).
  */
 
 import { readJson, writeJson } from "./store";
 
-const USER_KEY = "__e2e_auth_user__";
+const USER_KEY = "firebase:authUser:e2e:[DEFAULT]";
 
 type Stored = { uid: string; email: string; displayName: string | null; emailVerified: boolean };
 

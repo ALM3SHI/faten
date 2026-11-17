@@ -8,7 +8,14 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ChatResponse } from "@/lib/ai";
 import type { SuggestedNavigation } from "@/store/workspaceStore";
-import { BotMarkdown } from "@/components/bot-markdown";
+import dynamic from "next/dynamic";
+import { useLatch } from "@/lib/use-latch";
+
+// Markdown rendering loads with the first answer; until then the text shows as is.
+const BotMarkdown = dynamic(() => import("@/components/bot-markdown").then((m) => m.BotMarkdown), {
+  ssr: false,
+  loading: () => null,
+});
 import { SourceCards } from "@/components/chat/source-cards";
 import { toolStatusLabel } from "@/lib/sse";
 import { useBackendStatus } from "@/lib/backend-status";
@@ -18,10 +25,12 @@ import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button, IconButton, buttonClass } from "@/components/ds/button";
 import { AIService, Message as AIMessage } from "@/lib/ai";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m as motion, AnimatePresence } from "framer-motion";
+
+const motionFeatures = () => import("framer-motion").then((mod) => mod.domAnimation);
 import { ChatInput } from "@/components/chat-input";
 import { ChatModeSwitch } from "@/components/tutor/mode-switch";
-import { ChatHistoryDrawer } from "@/components/chat-history-drawer";
+const ChatHistoryDrawer = dynamic(() => import("@/components/chat-history-drawer").then((m) => m.ChatHistoryDrawer), { ssr: false });
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -179,6 +188,10 @@ function ChatPageContent() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const historyMounted = useLatch(isHistoryOpen);
+  useEffect(() => {
+    void import("@/components/bot-markdown");
+  }, []);
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
   const mounted = useHydrated();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -367,6 +380,7 @@ function ChatPageContent() {
   }, [initialQuery, hasInitialized]);
 
   return (
+    <LazyMotion features={motionFeatures}>
     <div className="ds-page flex h-[calc(100dvh-var(--bottom-nav-h))] flex-col overflow-hidden bg-canvas text-ink" dir="rtl">
       <Navbar />
 
@@ -579,6 +593,7 @@ function ChatPageContent() {
         }}
       />
 
+      {historyMounted && (
       <ChatHistoryDrawer
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
@@ -595,7 +610,9 @@ function ChatPageContent() {
           setIsHistoryOpen(false);
         }}
       />
+      )}
     </div>
+    </LazyMotion>
   );
 }
 

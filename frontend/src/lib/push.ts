@@ -11,8 +11,11 @@
  * works after "Add to Home Screen" (iOS 16.4+).
  */
 
-import { getMessaging, getToken, deleteToken, isSupported } from "firebase/messaging";
-import { app } from "@/lib/firebase";
+import { loadFirebase } from "@/lib/firebase/lazy";
+
+// Firebase Messaging loads only when push is checked or changed (profile page).
+const messaging = () => import("firebase/messaging");
+const isSupported = () => messaging().then((m) => m.isSupported());
 import { api } from "@/lib/api";
 
 export const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "";
@@ -58,6 +61,7 @@ export async function enablePush(): Promise<PushState> {
   if (permission !== "granted") return permission === "denied" ? "denied" : "off";
   const registration = await navigator.serviceWorker.register(SW_URL);
   await navigator.serviceWorker.ready;
+  const [{ getMessaging, getToken }, { app }] = await Promise.all([messaging(), loadFirebase()]);
   const token = await getToken(getMessaging(app), { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
   const res = (await api.post("/api/notifications/devices", { token, platform: "web" })) as { id: string };
   try {
@@ -77,7 +81,10 @@ export async function disablePush(): Promise<void> {
     /* ignore */
   }
   if (id) await api.delete(`/api/notifications/devices/${id}`).catch(() => undefined);
-  if (await isSupported().catch(() => false)) await deleteToken(getMessaging(app)).catch(() => undefined);
+  if (await isSupported().catch(() => false)) {
+    const [{ getMessaging, deleteToken }, { app }] = await Promise.all([messaging(), loadFirebase()]);
+    await deleteToken(getMessaging(app)).catch(() => undefined);
+  }
 }
 
 export async function getNotificationPrefs(): Promise<NotificationPrefs> {

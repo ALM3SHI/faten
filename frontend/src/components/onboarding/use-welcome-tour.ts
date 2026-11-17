@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
-import { markTourDone, readTourDone } from "@/lib/firebase/sync";
+import { loadSync } from "@/lib/firebase/lazy";
 import { TOUR_LOCAL_KEY, TOUR_REPLAY_KEY, TOUR_VERSION, readStorage, writeStorage } from "@/lib/tour";
 
 const localMark = (uid: string) => `${uid}:${TOUR_VERSION}`;
@@ -11,7 +11,7 @@ const localMark = (uid: string) => `${uid}:${TOUR_VERSION}`;
 async function shouldOpen(uid: string): Promise<boolean> {
   if (readStorage("session", TOUR_REPLAY_KEY)) return true;
   if (readStorage("local", TOUR_LOCAL_KEY) === localMark(uid)) return false;
-  const done = await readTourDone(uid, TOUR_VERSION);
+  const done = await (await loadSync()).readTourDone(uid, TOUR_VERSION);
   if (done) writeStorage("local", TOUR_LOCAL_KEY, localMark(uid));
   return !done;
 }
@@ -48,7 +48,7 @@ export function useWelcomeTour(): { open: boolean; close: () => void } {
     setOpen(false);
     if (!uid) return;
     writeStorage("local", TOUR_LOCAL_KEY, localMark(uid));
-    markTourDone(uid, TOUR_VERSION).catch((err) => console.warn("[tour] could not save:", err));
+    loadSync().then((m) => m.markTourDone(uid, TOUR_VERSION)).catch((err) => console.warn("[tour] could not save:", err));
   }, [uid]);
 
   return { open, close };

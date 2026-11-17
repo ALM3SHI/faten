@@ -4,7 +4,7 @@
  */
 
 import { useAttendanceStore, type CourseAttendance } from "@/store/attendanceStore";
-import { clearPendingPushTimers, setStoreSyncEnabled } from "@/lib/firebase/sync";
+import { clearPendingPushTimers, setStoreSyncEnabled } from "@/lib/firebase/gate";
 import { useExamsStore } from "@/store/examsStore";
 import { normalizeExam, type Exam } from "@/lib/exams";
 

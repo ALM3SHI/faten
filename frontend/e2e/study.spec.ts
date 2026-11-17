@@ -67,7 +67,7 @@ test("deleting a pack reaches the account, and logout clears the device", async 
   const local = await page.evaluate(() => localStorage.getItem("uqu_study_v1"));
   expect(local).toBeNull();
   // signed out: the fake auth record was wiped with the rest of the device data
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("__e2e_auth_user__") ?? "null"))).toBeNull();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("firebase:authUser:e2e:[DEFAULT]") ?? "null"))).toBeNull();
 });
 
 test("flashcards: hard cards come back, progress is saved with the pack", async ({ page }) => {

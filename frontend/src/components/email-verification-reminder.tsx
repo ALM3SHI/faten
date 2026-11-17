@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { sendEmailVerification } from "firebase/auth";
 import { Mail, RefreshCw } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
-import { auth } from "@/lib/firebase";
+import { loadFirebase } from "@/lib/firebase/lazy";
 import {
   EMAIL_VERIFICATION_MESSAGES,
   getEmailVerificationErrorMessage,
@@ -25,6 +24,7 @@ export function EmailVerificationReminder() {
   if (isVerified) return null;
 
   const handleResend = async () => {
+    const [{ auth }, { sendEmailVerification }] = await Promise.all([loadFirebase(), import("firebase/auth")]);
     const currentUser = auth.currentUser;
     if (!currentUser) return;
 
@@ -40,6 +40,7 @@ export function EmailVerificationReminder() {
   };
 
   const handleRefresh = async () => {
+    const { auth } = await loadFirebase();
     const currentUser = auth.currentUser;
     if (!currentUser) return;
 
