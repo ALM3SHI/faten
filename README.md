@@ -53,7 +53,7 @@ The experience is **RTL-first** (Arabic UI) with a modern glassmorphism design, 
 - 🤖 **Agent tools** — mutate Zustand stores in real time (`emit_client_action`), navigate pages, query calendar
 - 📅 **UQU Academic Calendar** — 1447/1448 Hijri calendar with date-aware "next 3 events" on the dashboard
 - 📊 **Backend analytics** — GPA math, target analysis, and chart series computed server-side (`POST /api/analytics/dashboard`)
-- 🔐 **Firebase Auth** — Google sign-in, Firestore sync, bearer-token API auth
+- 🔐 **Firebase Auth** — email/password and Google sign-in, Firestore sync, bearer-token API auth
 
 ---
 
@@ -76,11 +76,9 @@ flowchart TB
         Agent[AI Agent Loop]
         Tools[Function Calling · 20+ Tools]
         Analytics[Analytics Engine]
-        NavSvc[Navigation Service]
         API --> Agent
         Agent --> Tools
         API --> Analytics
-        API --> NavSvc
     end
 
     subgraph Cloud["Firebase"]
@@ -89,7 +87,7 @@ flowchart TB
     end
 
     subgraph AI["External AI Providers"]
-        OpenAI[OpenAI-compatible LLM]
+        OpenAI[Gemini or OpenAI]
     end
 
     Client <-->|Bearer Token + REST| Backend
@@ -103,7 +101,7 @@ flowchart TB
 1. **Student signs in** → Firebase Auth issues an ID token
 2. **Frontend stores** (profile, transcript, plan, pomodoro) sync to Firestore and backend REST endpoints
 3. **Chat message** → backend loads full student context → agent loop with tool calls → structured response + optional client actions
-4. **Navigation** → `MAP_DATA` + `NAV_GRAPH` JSON drive both client-side (`NavEngine`) and server-side (`/api/nav/route`) pathfinding
+4. **Navigation** → `MAP_DATA` + `NAV_GRAPH` JSON drive the client-side `NavEngine` pathfinding, entirely in the browser
 
 ---
 
@@ -114,8 +112,8 @@ flowchart TB
 | **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui, Radix UI, Framer Motion, Recharts, Zustand, pdf.js |
 | **Backend** | FastAPI, Uvicorn, Pydantic v2, APScheduler, pdfplumber |
 | **Database** | Firebase Firestore |
-| **Auth** | Firebase Auth (Google provider) |
-| **AI** | OpenAI-compatible chat API (plans/vision) |
+| **Auth** | Firebase Auth (email & password, Google) |
+| **AI** | Gemini (default) or OpenAI, via an OpenAI-compatible client |
 | **Navigation** | Custom A* engine (MinHeap PQ), SVG polygon overlay, percentage-based coordinates |
 
 ---
@@ -127,13 +125,13 @@ flowchart TB
 - **Node.js** 20+ and **npm**
 - **Python** 3.12+
 - A **Firebase** project (Auth + Firestore enabled)
-- API keys for at least the **OpenAI-compatible LLM** (required for chat)
+- A **Gemini** API key (default provider) or an **OpenAI** key (required for chat)
 
 ### 1. Clone & install
 
 ```bash
-git clone <repository-url>
-cd Faten
+git clone https://github.com/ALM3SHI/faten.git
+cd faten
 
 # Python virtual environment (recommended)
 python -m venv .venv
@@ -149,11 +147,13 @@ cd frontend && npm install && cd ..
 **Backend** — create `backend/.env`:
 
 ```env
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4o
-
-# Optional — study plan generator & schedule vision
+# AI provider for the chat agent and other AI features: gemini (default) or openai
+AI_PROVIDER=gemini
 GEMINI_API_KEY=
+
+# Only needed when AI_PROVIDER=openai
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o
 
 # Optional — AI study plan (OpenRouter / Groq / Ollama)
 LLAMA_API_KEY=
@@ -166,7 +166,7 @@ GROQ_API_KEY=
 FIREBASE_CREDENTIALS_PATH=serviceAccountKey.json
 ```
 
-Place your Firebase Admin SDK key at `backend/serviceAccountKey.json` (git-ignored).
+See `backend/.env.example` for the full list. Place your Firebase Admin SDK key at `backend/serviceAccountKey.json` (git-ignored).
 
 **Frontend** — optional override in `frontend/.env.local`:
 
@@ -200,7 +200,6 @@ npm run dev
 |---------|-----|
 | Frontend | http://localhost:3000 |
 | Swagger API docs | http://localhost:8000/docs |
-| Nav engine status | http://localhost:8000/api/nav/status |
 
 ---
 
@@ -210,7 +209,9 @@ npm run dev
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
-| `OPENAI_API_KEY` | ✅ | Primary LLM for the chat agent and Plan generator|
+| `AI_PROVIDER` | — | `gemini` (default) or `openai` |
+| `GEMINI_API_KEY` | ✅ (gemini) | LLM for the chat agent and other AI features |
+| `OPENAI_API_KEY` | ✅ (openai) | Used instead of Gemini when `AI_PROVIDER=openai` |
 | `OPENAI_MODEL` | — | Model id (default: `gpt-4o`) |
 | `FIREBASE_CREDENTIALS_PATH` | ✅ | Path to Firebase Admin JSON |
 | `NEXT_PUBLIC_AGENT_BASE_URL` | — | Backend URL for the frontend (default: `:8000`) |
@@ -254,7 +255,6 @@ The navigation system is a faithful React port of the legacy UQU floor-plan PWA.
 | `frontend/src/components/map/IndoorMap.tsx` | Pan/zoom map renderer |
 | `frontend/src/app/locations/page.tsx` | Search sidebar, routing UI |
 | `assets/map-data.json` | Source-of-truth mirror for map edits |
-| `backend/services/navigation.py` | Server-side path API |
 
 ### Usage tips
 
@@ -395,8 +395,6 @@ Faten/
 | `/api/tutor/lectures/{id}/focus` | PUT | Save the session's Pomodoro (absolute times) |
 | `/api/admin/tutor-insights` | GET | Anonymous aggregate learning statistics (admins) |
 | `/api/analytics/dashboard` | POST | Dashboard GPA analytics |
-| `/api/nav/route` | POST | Server-side indoor routing |
-| `/api/nav/status` | GET | Navigation engine health |
 | `/api/student-context` | GET | Full student Firestore snapshot |
 | `/docs` | GET | Interactive Swagger UI |
 

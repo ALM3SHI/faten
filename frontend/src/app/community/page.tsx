@@ -213,7 +213,7 @@ function Shell({ children, onBack }: { children: React.ReactNode; onBack: () => 
       <main className="container mx-auto pt-24 px-4 max-w-5xl">
         <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-xl glass border-foreground/10">
+          <Button variant="ghost" size="icon" onClick={onBack} aria-label="رجوع" className="rounded-xl glass border-foreground/10">
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div>

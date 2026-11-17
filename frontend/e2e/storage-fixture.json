@@ -1,0 +1,224 @@
+{
+  "uqu_tour_done_v1": "e2e-omar:1",
+  "uqu_study_v1": {
+    "state": {
+      "packs": [],
+      "deletedIds": [],
+      "lastUpdated": null,
+      "ownerUid": "e2e-omar"
+    },
+    "version": 2
+  },
+  "uqu_transcript_v1": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "name": "عمر",
+      "nameEn": "Omar",
+      "studentId": "441000000",
+      "university": "جامعة أم القرى",
+      "major": "علوم الحاسب",
+      "faculty": "الحاسبات",
+      "degree": "بكالوريوس",
+      "gpa": 3.56,
+      "earnedHours": 15,
+      "planHours": null,
+      "completedCourses": [
+        {
+          "code": "CS1101",
+          "nameAr": "مقدمة في البرمجة",
+          "nameEn": "Intro to Programming",
+          "creditHours": 4,
+          "grade": "A+",
+          "gradePoints": 4,
+          "semester": "الفصل الأول 1444",
+          "semesterStatus": "completed"
+        },
+        {
+          "code": "MATH1101",
+          "nameAr": "تفاضل وتكامل",
+          "nameEn": "Calculus",
+          "creditHours": 4,
+          "grade": "B+",
+          "gradePoints": 3.5,
+          "semester": "الفصل الأول 1444",
+          "semesterStatus": "completed"
+        },
+        {
+          "code": "CS1102",
+          "nameAr": "برمجة متقدمة",
+          "nameEn": "Advanced Programming",
+          "creditHours": 4,
+          "grade": "A",
+          "gradePoints": 3.75,
+          "semester": "الفصل الثاني 1444",
+          "semesterStatus": "completed"
+        },
+        {
+          "code": "CS2201",
+          "nameAr": "هياكل البيانات",
+          "nameEn": "Data Structures",
+          "creditHours": 3,
+          "grade": "B",
+          "gradePoints": 3,
+          "semester": "الفصل الثاني 1444",
+          "semesterStatus": "completed"
+        }
+      ],
+      "currentCourses": [
+        {
+          "code": "CS3301",
+          "nameAr": "الذكاء الاصطناعي",
+          "nameEn": "Artificial Intelligence",
+          "creditHours": 3,
+          "grade": null,
+          "gradePoints": null,
+          "semester": "الفصل الأول 1448",
+          "semesterStatus": "in_progress"
+        },
+        {
+          "code": "CS3302",
+          "nameAr": "قواعد البيانات",
+          "nameEn": "Databases",
+          "creditHours": 3,
+          "grade": null,
+          "gradePoints": null,
+          "semester": "الفصل الأول 1448",
+          "semesterStatus": "in_progress"
+        }
+      ],
+      "confidence": 95,
+      "lastUpdated": "2026-10-01T08:00:00.000Z"
+    },
+    "version": 0
+  },
+  "uqu_profile_v3": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "basic": {
+        "name": "عمر",
+        "major": "علوم الحاسب",
+        "studentId": "441000000",
+        "totalPlanHours": 132
+      },
+      "goals": {
+        "currentGpa": 3.56,
+        "targetGpa": 3.75
+      },
+      "preferences": {
+        "learningStyle": "visual",
+        "energyPeak": "morning",
+        "taskStrategy": "eat_frog",
+        "pomodoroFocus": 25,
+        "pomodoroShortBreak": 5,
+        "pomodoroLongBreak": 15,
+        "dayOff": "friday"
+      },
+      "lastUpdated": "2026-10-01T08:00:00.000Z"
+    },
+    "version": 0
+  },
+  "uqu_ai_plan_v1": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "plan": null,
+      "model": null,
+      "generatedAt": null,
+      "completed": []
+    },
+    "version": 0
+  },
+  "uqu_attendance_v1": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "courses": {
+        "CS3301": {
+          "entries": [
+            {
+              "id": "mwihosr7orqq0",
+              "date": "2026-11-15",
+              "excused": false
+            }
+          ],
+          "totalOverride": null
+        }
+      },
+      "lastUpdated": "2026-11-15T23:52:26.515Z"
+    },
+    "version": 0
+  },
+  "uqu_schedule_v1": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "schedule": [
+        {
+          "course_code": "CS3301",
+          "course_name": "الذكاء الاصطناعي",
+          "day": "الأحد",
+          "start_time": "08:00",
+          "end_time": "09:40",
+          "type": "نظري",
+          "room": "A-101"
+        },
+        {
+          "course_code": "CS3302",
+          "course_name": "قواعد البيانات",
+          "day": "الثلاثاء",
+          "start_time": "10:00",
+          "end_time": "11:40",
+          "type": "نظري",
+          "room": "B-204"
+        }
+      ],
+      "lastUpdated": "2026-10-01T08:00:00.000Z"
+    },
+    "version": 0
+  },
+  "uqu_chat_history_v1": {
+    "state": {
+      "ownerUid": "e2e-omar",
+      "threads": [
+        {
+          "id": "thread_1794786748449_nhtoq",
+          "title": "متى اختباري الجاي؟",
+          "preview": "موعد اختبارك القادم في مادة الذكاء الاصطناعي يوم الأحد. بالتوفيق!",
+          "createdAt": "2026-11-15T23:52:28.449Z",
+          "updatedAt": "2026-11-15T23:52:28.449Z",
+          "messages": [
+            {
+              "role": "bot",
+              "content": "أهلاً بك! أنا المساعد الأكاديمي الذكي لجامعة أم القرى. كيف يمكنني مساعدتك اليوم؟",
+              "timestamp": "2026-11-15T23:52:27.978Z"
+            },
+            {
+              "role": "user",
+              "content": "متى اختباري الجاي؟",
+              "timestamp": "2026-11-15T23:52:28.336Z"
+            },
+            {
+              "role": "bot",
+              "content": "موعد اختبارك القادم في مادة الذكاء الاصطناعي يوم الأحد. بالتوفيق!",
+              "timestamp": "2026-11-15T23:52:28.448Z",
+              "actions": [],
+              "suggestedActions": [],
+              "errorType": null
+            }
+          ],
+          "conversationId": "conv-e2e"
+        }
+      ],
+      "activeId": "thread_1794786748449_nhtoq"
+    },
+    "version": 0
+  },
+  "uqu_exams_v1": {
+    "state": {
+      "exams": [],
+      "deletedIds": [],
+      "lastUpdated": null,
+      "ownerUid": "e2e-omar",
+      "studyDone": {},
+      "dailyMinutes": 180
+    },
+    "version": 0
+  }
+}

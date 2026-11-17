@@ -144,7 +144,7 @@ export default function TranscriptParserPage() {
 
         <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-xl glass border-foreground/10">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="رجوع" className="rounded-xl glass border-foreground/10">
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div>

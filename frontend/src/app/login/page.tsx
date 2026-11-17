@@ -9,6 +9,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,9 @@ import {
 import { EMAIL_VERIFICATION_MESSAGES } from "@/lib/email-verification";
 import { ThemeToggle } from "@/components/theme-toggle";
 
+const PASSWORD_RESET_SENT =
+  "إذا كان هذا البريد مسجّلًا عندنا، فقد أرسلنا إليه رابط إعادة تعيين كلمة المرور. تفقّد البريد الوارد والرسائل غير المرغوبة.";
+
 function nextPath(): string {
   if (typeof window === "undefined") return "/dashboard";
   return safeNextPath(new URLSearchParams(window.location.search).get("next"));
@@ -39,7 +43,30 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const router = useRouter();
+
+  // Sends the reset link to the address already typed in the form. The reply
+  // is the same whether or not the address has an account, so the form can't
+  // be used to find out who is registered.
+  const handlePasswordReset = async () => {
+    const address = email.trim();
+    const emailError = validateSignupEmail(address);
+    if (emailError) {
+      toast.error("اكتب بريدك الإلكتروني في الحقل أولًا، ثم اضغط «نسيت كلمة المرور؟».");
+      return;
+    }
+    setResetting(true);
+    try {
+      await sendPasswordResetEmail(auth, address);
+      toast.success(PASSWORD_RESET_SENT);
+    } catch (error: unknown) {
+      if (getAuthErrorCode(error) === "auth/user-not-found") toast.success(PASSWORD_RESET_SENT);
+      else toast.error(getArabicAuthError(error, "login"));
+    } finally {
+      setResetting(false);
+    }
+  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,6 +246,19 @@ export default function LoginPage() {
                   required
                 />
               </div>
+
+              {isLogin && (
+                <div className="flex justify-start">
+                  <button
+                    type="button"
+                    onClick={handlePasswordReset}
+                    disabled={resetting}
+                    className="rounded-md px-1 py-1 text-xs font-semibold text-uqu-accent hover:underline focus-visible:outline-2 focus-visible:outline-uqu-accent disabled:opacity-60"
+                  >
+                    {resetting ? "جاري الإرسال..." : "نسيت كلمة المرور؟"}
+                  </button>
+                </div>
+              )}
 
               {!isLogin && (
                 <ul

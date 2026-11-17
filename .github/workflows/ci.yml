@@ -50,6 +50,9 @@ jobs:
       - run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+      # Fails when a page loads noticeably more JavaScript than recorded in
+      # frontend/bundle-budget.json (scripts/check-bundle.mjs).
+      - run: npm run check:bundle
 
   e2e:
     name: Frontend (Playwright end-to-end)
@@ -68,6 +71,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # Static build with Firebase replaced by e2e/fakes and the API pointed
       # at e2e/mock-server.mjs — no secrets, no real Firebase project.
+      # The suite includes the accessibility ratchet (e2e/a11y.spec.ts).
       - run: npm run build:e2e
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4

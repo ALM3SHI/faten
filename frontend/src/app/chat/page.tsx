@@ -383,6 +383,7 @@ function ChatPageContent() {
             {/* Right: History */}
             <button
               onClick={() => setIsHistoryOpen(true)}
+              aria-label="سجل الدردشات"
               className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium"
             >
               <History className="w-4 h-4" />
@@ -395,6 +396,7 @@ function ChatPageContent() {
             {/* Left: Settings dropdown (Task 2) */}
             <DropdownMenu>
               <DropdownMenuTrigger
+                aria-label="الإعدادات"
                 className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium outline-none"
               >
                 <span className="hidden sm:inline">الإعدادات</span>

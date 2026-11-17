@@ -78,6 +78,12 @@ export async function signInWithPopup(auth: FakeAuth) {
 
 export async function sendEmailVerification(): Promise<void> {}
 
+/** Records the address so a test can assert a reset was requested. */
+export async function sendPasswordResetEmail(_auth: FakeAuth, email: string): Promise<void> {
+  if (email === "missing@test.local") throw authError("auth/user-not-found");
+  writeJson("__e2e_password_reset__", email);
+}
+
 export async function signOut(auth: FakeAuth): Promise<void> {
   auth.set(null);
 }

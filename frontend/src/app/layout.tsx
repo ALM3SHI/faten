@@ -30,22 +30,27 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "فطن — المساعد الأكاديمي لجامعة أم القرى",
   applicationName: "فطن",
+  keywords: ["فطن", "جامعة أم القرى", "لوائح أم القرى", "حاسبة المعدل", "لائحة الدراسة والاختبارات", "الحرمان", "المرشد الأكاديمي", "جدول المذاكرة", "UQU"],
+  category: "education",
+  formatDetection: { telephone: false, email: false, address: false },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
   appleWebApp: { capable: true, title: "فطن", statusBarStyle: "black-translucent" },
   description: "اسأل عن لوائح أم القرى وتصلك الإجابة بالمادة الرسمية، وتابع معدلك، ونظّم مذاكرتك وجدولك في مكان واحد.",
   metadataBase: new URL(SITE.url),
   openGraph: {
     type: "website",
+    url: "/",
     locale: "ar_SA",
     siteName: "فطن",
     title: "فطن — المساعد الأكاديمي لجامعة أم القرى",
     description: "لوائح الجامعة بالمادة الرسمية، معدلك، جدولك، غيابك ومذاكرتك — في مكان واحد.",
-    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "فطن" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "فطن — اسأل عن جامعتك، وخذ الجواب من اللائحة" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "فطن — المساعد الأكاديمي لجامعة أم القرى",
     description: "لوائح الجامعة بالمادة الرسمية، معدلك، جدولك، غيابك ومذاكرتك — في مكان واحد.",
-    images: ["/icon-512.png"],
+    images: ["/og.png"],
   },
 };
 

@@ -10,7 +10,12 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "build:e2e": "node e2e/build.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "capture:landing": "node scripts/capture-landing.mjs",
+    "a11y:baseline": "node scripts/a11y-baseline.mjs",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "visual:baseline": "node scripts/visual.mjs --update",
+    "visual:check": "node scripts/visual.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -34,6 +39,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

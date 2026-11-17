@@ -99,6 +99,23 @@ git push
 
 ---
 
+## النشر الآلي من GitHub (اختياري)
+ملف `.github/workflows/deploy.yml` ينشر الواجهة تلقائياً، فيصير المنشور مطابقاً للمستودع دائماً:
+
+- بعد نجاح الفحوصات على `main` ← ينشر الموقع الحي.
+- على كل Pull Request ← ينشر نسخة معاينة مؤقتة (7 أيام) ورابطها في ملخص التشغيل.
+
+ما يشتغل إلا بعد إعداد لمرة واحدة، وقبلها يتخطى نفسه بدون أخطاء:
+
+1. Firebase Console ← ⚙️ **Project settings** ← **Service accounts** ← **Generate new private key**. يفضّل حساب خدمة مستقل بصلاحية **Firebase Hosting Admin** فقط.
+2. GitHub ← المستودع ← **Settings** ← **Secrets and variables** ← **Actions**:
+   - تبويب **Secrets**: أضف `FIREBASE_SERVICE_ACCOUNT` والصق محتوى ملف JSON كاملاً.
+   - تبويب **Variables**: أضف `NEXT_PUBLIC_AGENT_BASE_URL` (رابط الخادم)، واختيارياً `NEXT_PUBLIC_FIREBASE_VAPID_KEY`.
+
+قواعد Firestore وفهارسه ما تُنشر من هنا. تبقى مع `DEPLOY_FRONTEND.bat` عمداً، حتى يكون تغيير القواعد قراراً مقصوداً.
+
+---
+
 ## مشاكل شائعة
 | المشكلة | الحل |
 |---|---|
