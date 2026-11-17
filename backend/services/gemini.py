@@ -23,6 +23,7 @@ from common.errors import (
 )
 
 from services.ai_gate import AIBusyError, gate
+from services import model_health
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +132,9 @@ async def call_gemini(
     if not settings.GEMINI_API_KEY:
         raise HTTPException(status_code=503, detail=AI_KEY_MISSING_MESSAGE)
 
-    url = f"{GEMINI_BASE}/{model or settings.GEMINI_MODEL}:generateContent"
+    # a model that just answered "busy" is skipped for a while (services/model_health.py)
+    model = model_health.prefer(model or settings.GEMINI_MODEL, settings.GEMINI_FAST_MODEL)
+    url = f"{GEMINI_BASE}/{model}:generateContent"
 
     # Prepare parts
     parts = []
@@ -187,6 +190,8 @@ async def call_gemini(
         raise UpstreamAIError(upstream_status=503, status_code=502) from exc
 
     if response.status_code != 200:
+        if response.status_code in model_health.BUSY_STATUSES:
+            model_health.mark_busy(model)
         logger.error(f"Gemini API Error (HTTP {response.status_code}): {response.text}")
         # Try to extract a structured error message — Google returns
         # { "error": { "code": 4xx, "message": "...", "status": "..." } }
@@ -277,7 +282,8 @@ async def call_gemini_chat_text(
         logger.warning("Gemini chat fallback skipped — GEMINI_API_KEY not set")
         return None
 
-    url = f"{GEMINI_BASE}/{settings.GEMINI_MODEL}:generateContent"
+    model = model_health.prefer(settings.GEMINI_MODEL, settings.GEMINI_FAST_MODEL)
+    url = f"{GEMINI_BASE}/{model}:generateContent"
 
     # Translate OpenAI-style messages to Gemini's `contents` shape.
     # Gemini uses role "model" instead of "assistant"; "tool" / "system"
@@ -318,6 +324,8 @@ async def call_gemini_chat_text(
         return None
 
     if response.status_code != 200:
+        if response.status_code in model_health.BUSY_STATUSES:
+            model_health.mark_busy(model)
         logger.error("Gemini chat fallback HTTP %s — body=%s", response.status_code, response.text[:500])
         return None
 

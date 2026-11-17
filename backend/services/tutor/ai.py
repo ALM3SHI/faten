@@ -21,14 +21,13 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import time
 from typing import Any
 
 from fastapi import HTTPException
 
 from common.errors import AI_BAD_REPLY_MESSAGE, AI_EMPTY_REPLY_MESSAGE, RETRYABLE_UPSTREAM
 from config import get_settings
-from services import gemini
+from services import gemini, model_health
 
 logger = logging.getLogger(__name__)
 
@@ -65,16 +64,13 @@ def _refused_options(exc: HTTPException, sent: set[str]) -> set[str]:
 # answers. So a model that just answered 503/429 is skipped for a while
 # instead of costing every request a failed round trip, and the last model is
 # tried again after short waits before the student sees an error.
-OVERLOAD_SKIP_SECONDS = 120.0
 RETRY_WAITS: tuple[float, ...] = (4.0, 10.0)
-_OVERLOAD = frozenset({429, 503})
-_overloaded: dict[str, float] = {}
+_OVERLOAD = model_health.BUSY_STATUSES
 
 
 def _models(s) -> list[str]:
     models = list(dict.fromkeys([s.GEMINI_MODEL, s.GEMINI_FAST_MODEL]))
-    now = time.monotonic()
-    usable = [m for m in models if _overloaded.get(m, 0.0) <= now]
+    usable = [m for m in models if not model_health.is_busy(m)]
     return usable or models  # all marked busy: try them all anyway
 
 
@@ -133,7 +129,7 @@ async def ask_json(
                     raise
                 if upstream not in _OVERLOAD:
                     break  # a timeout or an unreadable reply: next model, no waiting
-                _overloaded[model] = time.monotonic() + OVERLOAD_SKIP_SECONDS
+                model_health.mark_busy(model)
                 if attempt < len(waits):
                     await asyncio.sleep(waits[attempt])
     assert last is not None

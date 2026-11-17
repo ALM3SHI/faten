@@ -31,6 +31,8 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException
 
+from common.errors import AI_BAD_REPLY_MESSAGE, AI_EMPTY_REPLY_MESSAGE, RETRYABLE_UPSTREAM
+from config import get_settings
 from services.gemini import call_gemini
 
 logger = logging.getLogger(__name__)
@@ -143,8 +145,8 @@ async def analyze_schedule_vision(pdf_bytes: bytes) -> Dict[str, Any]:
         len(pdf_bytes), GEMINI_MAX_OUTPUT_TOKENS,
     )
 
-    try:
-        result = await call_gemini(
+    async def read(model: str | None) -> Any:
+        return await call_gemini(
             system_prompt=SYSTEM_PROMPT,
             user_content=(
                 "Analyze the attached UQU schedule PDF and return the JSON "
@@ -158,7 +160,20 @@ async def analyze_schedule_vision(pdf_bytes: bytes) -> Dict[str, Any]:
             mime_type="application/pdf",
             max_output_tokens=GEMINI_MAX_OUTPUT_TOKENS,
             timeout_seconds=GEMINI_TIMEOUT_SECONDS,
+            model=model,
         )
+
+    try:
+        try:
+            result = await read(None)
+        except HTTPException as first:
+            # Busy / down / unreadable on the main model: one more try on the
+            # fast model before telling the student it failed.
+            fast = get_settings().GEMINI_FAST_MODEL
+            if getattr(first, "upstream_status", None) not in RETRYABLE_UPSTREAM and first.detail not in (AI_BAD_REPLY_MESSAGE, AI_EMPTY_REPLY_MESSAGE):
+                raise
+            logger.warning("Schedule vision: main model failed (%s) — trying %s", first.detail, fast)
+            result = await read(fast)
     except HTTPException as exc:
         # `call_gemini` raises HTTPException on quota / payload / parse failures.
         # Bubble the (Arabic) reason up — the frontend shows it to the user.
