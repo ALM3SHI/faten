@@ -145,3 +145,40 @@ def test_other_callers_keep_working_without_new_options(fake):
 def test_schemas_are_plain_json():
     for name in ("LESSON", "QUESTIONS", "TEACH", "GRADE", "ASK", "STRUCTURE", "VISION"):
         assert json.loads(json.dumps(getattr(schemas, name)))["type"] == "object"
+
+
+# ── overload (measured: the main model can stay "high demand" for long) ──
+
+
+def busy():
+    return 503, {"error": {"code": 503, "status": "UNAVAILABLE", "message": "This model is currently experiencing high demand."}}
+
+
+def test_an_overloaded_main_model_is_skipped_for_a_while(fake):
+    f = fake([busy(), ok('{"a": 1}'), ok('{"a": 2}')])
+    assert run(ai.ask_json("p", "u")) == {"a": 1}
+    assert f.models == ["gemini-3.6-flash", "gemini-3.5-flash-lite"]
+    # the next request goes straight to the fast model: no wasted round trip
+    assert run(ai.ask_json("p", "u")) == {"a": 2}
+    assert f.models[2:] == ["gemini-3.5-flash-lite"]
+
+
+def test_a_busy_last_model_is_tried_again_after_short_waits(fake, monkeypatch):
+    waited = []
+
+    async def no_sleep(s):
+        waited.append(s)
+
+    monkeypatch.setattr(ai.asyncio, "sleep", no_sleep)
+    monkeypatch.setattr(ai, "RETRY_WAITS", (4.0, 10.0))
+    f = fake([busy(), busy(), busy(), ok('{"done": true}')])
+    assert run(ai.ask_json("p", "u")) == {"done": True}
+    assert f.models == ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.5-flash-lite", "gemini-3.5-flash-lite"]
+    assert waited == [4.0, 10.0]
+
+
+def test_when_everything_stays_busy_the_student_gets_the_known_error(fake):
+    fake([busy(), busy(), busy(), busy()])
+    with pytest.raises(HTTPException) as e:
+        run(ai.ask_json("p", "u"))
+    assert getattr(e.value, "upstream_status", None) == 503

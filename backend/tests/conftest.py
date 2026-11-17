@@ -34,12 +34,17 @@ os.environ.setdefault("COURSE_BACKGROUND", "false")
 
 
 @pytest.fixture(autouse=True)
-def _fresh_ai_gate():
+def _fresh_ai_gate(monkeypatch):
     from services.ai_gate import gate
+    from services.tutor import ai
 
     gate.reset()
+    # the tutor's overload memory starts empty, and its retry waits take no time
+    ai._overloaded.clear()
+    monkeypatch.setattr(ai, "RETRY_WAITS", (0.0, 0.0))
     yield
     gate.reset()
+    ai._overloaded.clear()
 
 
 # ── In-memory Firestore ──────────────────────────────────────────

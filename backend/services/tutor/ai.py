@@ -19,7 +19,9 @@ fast model. Every failure is logged with its reason.
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import time
 from typing import Any
 
 from fastapi import HTTPException
@@ -57,6 +59,52 @@ def _refused_options(exc: HTTPException, sent: set[str]) -> set[str]:
     return (named & sent) or set(sent)
 
 
+# ── Overload handling ──
+# Measured on real lectures (evals/course_eval.py): the main model can be
+# saturated ("high demand", 503) for long stretches while the fast model still
+# answers. So a model that just answered 503/429 is skipped for a while
+# instead of costing every request a failed round trip, and the last model is
+# tried again after short waits before the student sees an error.
+OVERLOAD_SKIP_SECONDS = 120.0
+RETRY_WAITS: tuple[float, ...] = (4.0, 10.0)
+_OVERLOAD = frozenset({429, 503})
+_overloaded: dict[str, float] = {}
+
+
+def _models(s) -> list[str]:
+    models = list(dict.fromkeys([s.GEMINI_MODEL, s.GEMINI_FAST_MODEL]))
+    now = time.monotonic()
+    usable = [m for m in models if _overloaded.get(m, 0.0) <= now]
+    return usable or models  # all marked busy: try them all anyway
+
+
+async def _call_once(model: str, prompt: str, user: str, *, pdf, image, temperature, max_tokens, timeout, schema) -> Any:
+    """One model; drops options it refuses (HTTP 400) and asks again without them."""
+    for _ in range(3):  # at most: with options → without the refused one(s) → plain
+        sent = {o for o, on in (("schema", schema is not None), ("thinking", True)) if on and o not in _disabled}
+        try:
+            return await gemini.call_gemini(
+                system_prompt=prompt,
+                user_content=user,
+                temperature=temperature,
+                response_mime_type="application/json",
+                file_data=pdf or (image[0] if image else None),
+                mime_type="application/pdf" if pdf else (image[1] if image else None),
+                timeout_seconds=timeout,
+                max_output_tokens=max_tokens,
+                model=model,
+                response_json_schema=schema if "schema" in sent else None,
+                thinking_level=THINKING_LEVEL if "thinking" in sent else None,
+            )
+        except HTTPException as exc:
+            refused = _refused_options(exc, sent)
+            if not refused:
+                raise
+            _disabled.update(refused)
+            logger.warning("[tutor.ai] %s refused %s (%s) — retrying without", model, sorted(refused), getattr(exc, "upstream_message", "")[:160])
+    raise HTTPException(status_code=502, detail=AI_BAD_REPLY_MESSAGE)
+
+
 async def ask_json(
     prompt: str,
     user: str,
@@ -71,33 +119,22 @@ async def ask_json(
 ) -> Any:
     s = get_settings()
     last: HTTPException | None = None
-    for model in dict.fromkeys([s.GEMINI_MODEL, s.GEMINI_FAST_MODEL]):
-        for _ in range(3):  # at most: with options → without the refused one(s) → plain
-            sent = {o for o, on in (("schema", schema is not None), ("thinking", True)) if on and o not in _disabled}
+    models = _models(s)
+    for i, model in enumerate(models):
+        waits = RETRY_WAITS if i == len(models) - 1 else ()
+        for attempt in range(len(waits) + 1):
             try:
-                return await gemini.call_gemini(
-                    system_prompt=prompt,
-                    user_content=user,
-                    temperature=temperature,
-                    response_mime_type="application/json",
-                    file_data=pdf or (image[0] if image else None),
-                    mime_type="application/pdf" if pdf else (image[1] if image else None),
-                    timeout_seconds=timeout,
-                    max_output_tokens=max_tokens,
-                    model=model,
-                    response_json_schema=schema if "schema" in sent else None,
-                    thinking_level=THINKING_LEVEL if "thinking" in sent else None,
-                )
+                return await _call_once(model, prompt, user, pdf=pdf, image=image, temperature=temperature, max_tokens=max_tokens, timeout=timeout, schema=schema)
             except HTTPException as exc:
-                refused = _refused_options(exc, sent)
-                if refused:
-                    _disabled.update(refused)
-                    logger.warning("[tutor.ai] %s refused %s (%s) — retrying without", model, sorted(refused), getattr(exc, "upstream_message", "")[:160])
-                    continue
                 last = exc
-                logger.warning("[tutor.ai] %s failed for %s: %s (upstream=%s)", model, kind, str(exc.detail)[:120], getattr(exc, "upstream_status", None))
+                upstream = getattr(exc, "upstream_status", None)
+                logger.warning("[tutor.ai] %s failed for %s: %s (upstream=%s)", model, kind, str(exc.detail)[:120], upstream)
                 if not _retryable(exc):
                     raise
-                break
+                if upstream not in _OVERLOAD:
+                    break  # a timeout or an unreadable reply: next model, no waiting
+                _overloaded[model] = time.monotonic() + OVERLOAD_SKIP_SECONDS
+                if attempt < len(waits):
+                    await asyncio.sleep(waits[attempt])
     assert last is not None
     raise last
