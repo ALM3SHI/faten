@@ -155,7 +155,7 @@ export function PreparingCard({
               <span className={cn(state === "now" && "font-bold")}>
                 {s.label}
                 {state === "now" && s.id === "structure" && job.total && job.total > 1 ? ` (الجزء ${(job.done ?? 0) + 1} من ${job.total})` : ""}
-                {state === "now" && s.id === "vision" && job.total ? ` (${job.total} صفحة)` : ""}
+                {state === "now" && s.id === "vision" && job.total ? ` (${job.done ?? 0} من ${job.total} صفحة)` : ""}
               </span>
               <span className="sr-only">{state === "done" ? "— تم" : state === "now" ? "— الآن" : ""}</span>
             </li>

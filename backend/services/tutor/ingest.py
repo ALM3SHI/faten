@@ -60,13 +60,31 @@ def lecture_id_for(digest: str) -> str:
 # ── 2. vision for pages without a text layer ─────────────────────
 
 
-async def read_visual_pages(pdf: bytes, pages: list[PageContent]) -> dict[str, Any]:
+# Pages per vision request. Measured: one request with many dense scanned
+# pages (code, tables) can run past the timeout, and then every page in it
+# is lost. Small batches fail alone and let the progress move page by page.
+VISION_BATCH = 6
+
+
+async def read_visual_pages(pdf: bytes, pages: list[PageContent], progress: Callable[[str, int, int], None] | None = None) -> dict[str, Any]:
     wanted = [p.n for p in pages if p.needs_vision]
     report = {"requested": len(wanted), "read": [], "failed": [], "skipped": []}
     if not wanted:
         return report
-    batch, skipped = wanted[:VISION_MAX_PAGES], wanted[VISION_MAX_PAGES:]
+    todo, skipped = wanted[:VISION_MAX_PAGES], wanted[VISION_MAX_PAGES:]
     report["skipped"] = skipped
+    for start in range(0, len(todo), VISION_BATCH):
+        if progress:
+            progress("vision", start, len(todo))
+        got = await _read_vision_batch(pdf, pages, todo[start : start + VISION_BATCH])
+        report["read"] += got
+        report["failed"] += [n for n in todo[start : start + VISION_BATCH] if n not in got]
+    report["read"] = sorted(report["read"])
+    return report
+
+
+async def _read_vision_batch(pdf: bytes, pages: list[PageContent], batch: list[int]) -> list[int]:
+    """Read one small batch of scanned pages; returns the pages it could read."""
     try:
         small = await asyncio.to_thread(sub_pdf, pdf, batch)
         raw = await ai.ask_json(
@@ -79,9 +97,8 @@ async def read_visual_pages(pdf: bytes, pages: list[PageContent]) -> dict[str, A
             max_tokens=16000,
         )
     except (HTTPException, Exception) as exc:  # vision is best-effort
-        logger.warning("[tutor.ingest] vision failed: %s", getattr(exc, "detail", exc))
-        report["failed"] = batch
-        return report
+        logger.warning("[tutor.ingest] vision failed for pages %s: %s", batch, getattr(exc, "detail", exc))
+        return []
 
     by_n = {p.n: p for p in pages}
     got = raw.get("pages") if isinstance(raw, dict) else None
@@ -105,9 +122,7 @@ async def read_visual_pages(pdf: bytes, pages: list[PageContent]) -> dict[str, A
         p.visual = visual
         p.source = "vision"
         seen.add(p.n)
-    report["read"] = sorted(seen)
-    report["failed"] = [n for n in batch if n not in seen]
-    return report
+    return sorted(seen)
 
 
 # ── 3. structure ──────────────────────────────────────────────────
@@ -342,10 +357,7 @@ async def build_lecture(pdf: bytes, file_name: str, progress: Progress | None = 
     except ExtractError as exc:
         raise IngestError(str(exc)) from exc
 
-    wanted = sum(1 for p in pages if p.needs_vision)
-    if wanted:
-        progress("vision", 0, min(wanted, VISION_MAX_PAGES))
-    vision = await read_visual_pages(pdf, pages)
+    vision = await read_visual_pages(pdf, pages, progress)
     for p in pages:
         if p.needs_vision and p.source != "vision" and letter_count(p.text) == 0 and not p.tables:
             p.source = "none"

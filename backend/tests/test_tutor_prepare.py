@@ -172,3 +172,28 @@ def test_an_already_prepared_file_still_opens_at_once(api, captured):
     r = upload(http)
     assert r.status_code == 200 and r.json()["reused"] == "mine"
     assert r.json()["lecture"]["id"] == lid
+
+
+def test_scanned_pages_are_read_in_small_batches_and_a_failed_batch_loses_only_its_pages(monkeypatch):
+    from services.tutor import ingest
+    from services.tutor.extract import extract_pages
+
+    pdf = make_pdf([{"image": True} for _ in range(14)])
+    pages = extract_pages(pdf)
+    assert sum(p.needs_vision for p in pages) == 14
+    asked: list[str] = []
+
+    async def ask(prompt, user, **kw):
+        nums = [int(n) for n in __import__("re").findall(r"صفحة (\d+)", prompt)]
+        asked.append(nums)
+        if 7 in nums:
+            raise RuntimeError("timeout on a dense batch")
+        return {"pages": [{"index": i + 1, "text": "Diagram of a stack", "visual": "", "readable": True} for i in range(len(nums))]}
+
+    monkeypatch.setattr(ingest.ai, "ask_json", ask)
+    stages = []
+    report = asyncio.run(ingest.read_visual_pages(pdf, pages, lambda s, d, t: stages.append((s, d, t))))
+    assert [len(b) for b in asked] == [6, 6, 2]
+    assert report["failed"] == list(range(7, 13))
+    assert report["read"] == [1, 2, 3, 4, 5, 6, 13, 14]
+    assert stages == [("vision", 0, 14), ("vision", 6, 14), ("vision", 12, 14)]
