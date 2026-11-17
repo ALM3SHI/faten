@@ -16,8 +16,11 @@ writes a report:
 It spends real model calls. Use a SEPARATE key from the live site's, so a run
 never eats the students' daily quota:
 
-    set GEMINI_API_KEY=<a key for testing>      (PowerShell: $env:GEMINI_API_KEY=...)
+    backend/.env.eval  (git-ignored)  with one line:  GEMINI_API_KEY=<a key for testing>
     python evals/course_eval.py <folder-with-pdfs> [--judge] [--max-topics N] [--out report.md]
+
+The key is read ONLY from backend/.env.eval — never from backend/.env, which
+holds the live site's key — and the run refuses to start if both are the same.
 
 Nothing is uploaded anywhere except to the model API and Wikimedia Commons.
 """
@@ -170,6 +173,16 @@ def report_md(results: list[dict], judge: bool) -> str:
     return "\n".join(lines)
 
 
+def _key_from(path: Path) -> str:
+    if not path.exists():
+        return ""
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        name, _, value = line.partition("=")
+        if name.strip() == "GEMINI_API_KEY":
+            return value.strip().strip('"').strip("'")
+    return ""
+
+
 async def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("folder")
@@ -181,11 +194,15 @@ async def main() -> None:
     os.environ.setdefault("ENABLE_INTERNAL_SCHEDULER", "false")
     os.environ["DAILY_AI_CREDITS"] = "0"
     os.environ["COURSE_BACKGROUND"] = "false"  # photos are resolved inline here, and timed
+    key = _key_from(HERE.parent / ".env.eval")
+    if not key:
+        sys.exit("Put a testing key in backend/.env.eval:  GEMINI_API_KEY=...")
+    if key == _key_from(HERE.parent / ".env"):
+        sys.exit("backend/.env.eval holds the live site's key. Use a separate key for testing.")
+    os.environ["GEMINI_API_KEY"] = key  # an explicit variable wins over backend/.env in Settings
     from config import get_settings
 
     get_settings.cache_clear()
-    if not os.environ.get("GEMINI_API_KEY"):
-        sys.exit("Set GEMINI_API_KEY to a key for testing (not the live site's).")
     pdfs = sorted(Path(args.folder).glob("*.pdf"))
     if not pdfs:
         sys.exit(f"No PDF files in {args.folder}")

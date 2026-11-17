@@ -1,4 +1,7 @@
 .env
+# the measurement tool's own key (evals/course_eval.py) — never committed
+.env.eval
+evals/*report*
 serviceAccountKey.json
 __pycache__/
 *.pyc
