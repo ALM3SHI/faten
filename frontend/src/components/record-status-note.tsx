@@ -12,15 +12,15 @@ export function RecordStatusNote({ assessment }: { assessment: RecordAssessment 
   return (
     <div
       role="status"
-      className={`rounded-2xl border p-4 text-sm leading-7 flex gap-3 ${
-        grad ? "bg-emerald-500/10 border-emerald-500/30" : "bg-uqu-accent/5 border-uqu-accent/20"
+      className={`rounded-card border p-4 text-small leading-7 flex gap-3 ${
+        grad ? "bg-success-soft border-success-line" : "bg-info-soft border-info-line"
       }`}
     >
-      <Icon className={`w-5 h-5 mt-1 shrink-0 ${grad ? "text-emerald-700 dark:text-emerald-300" : "text-uqu-accent"}`} aria-hidden />
+      <Icon className={`w-5 h-5 mt-1 shrink-0 ${grad ? "text-success-ink " : "text-info-ink"}`} aria-hidden />
       <div>
-        <p className="font-black">{text.title}</p>
+        <p className="font-bold">{text.title}</p>
         <p>{text.body}</p>
-        {assessment.reasons.length > 0 && <p className="text-xs text-muted-foreground mt-1">{assessment.reasons.join(" ")}</p>}
+        {assessment.reasons.length > 0 && <p className="text-caption text-ink-muted mt-1">{assessment.reasons.join(" ")}</p>}
       </div>
     </div>
   );

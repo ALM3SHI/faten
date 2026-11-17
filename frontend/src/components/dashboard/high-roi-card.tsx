@@ -26,14 +26,14 @@ export function HighRoiCard({
   bare?: boolean;
 }) {
   return (
-    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-foreground/10 relative overflow-hidden">
+    <PanelRoot bare={bare} className="border border-line bg-surface shadow-card p-8 rounded-card border-line relative overflow-hidden">
       <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "sr-only" : "mb-5")}>
         <div>
-          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-700 dark:text-amber-400" />
+          <h3 className="text-heading font-bold mb-1 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-warning-ink" />
             روافع المعدل
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-small text-ink-muted">
             المواد الحالية الأعلى تأثيراً على معدلك التراكمي.
           </p>
         </div>
@@ -41,13 +41,13 @@ export function HighRoiCard({
 
       {loading ? (
         <div className="space-y-3 animate-pulse">
-          <div className="h-20 rounded-2xl bg-foreground/5" />
-          <div className="h-20 rounded-2xl bg-foreground/5" />
+          <div className="h-20 rounded-card bg-surface-sunken" />
+          <div className="h-20 rounded-card bg-surface-sunken" />
         </div>
       ) : courses.length === 0 ? (
-        <div className="min-h-[140px] flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl text-center gap-2 p-6">
-          <Zap className="w-8 h-8 text-muted" />
-          <p className="text-sm text-muted-foreground">
+        <div className="min-h-[140px] flex flex-col items-center justify-center border-2 border-dashed border-line rounded-card text-center gap-2 p-6">
+          <Zap className="w-8 h-8 text-ink-muted" />
+          <p className="text-small text-ink-muted">
             {hasCurrentTerm
               ? "لا تتوفر بيانات كافية لحساب الرافعة الآن."
               : "لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من الملف الشخصي."}
@@ -58,7 +58,7 @@ export function HighRoiCard({
           {courses.map((c, i) => (
             <RoiRow key={c.code} course={c} rank={i + 1} />
           ))}
-          <p className="text-[10px] text-muted mt-3 leading-relaxed">
+          <p className="text-caption text-ink-muted mt-3 leading-relaxed">
             الحساب: <span className="font-mono">credits × 4.00</span> +
             تقدير الرفعة المحتملة على المعدل التراكمي عند الحصول على A+.
             اضغط البطاقة لفتح محاكي السيناريوهات الكامل.
@@ -72,38 +72,38 @@ export function HighRoiCard({
 
 function RoiRow({ course, rank }: { course: HighRoiCourse; rank: number }) {
   return (
-    <div className="p-4 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-amber-500/30 transition-colors flex items-start gap-4">
+    <div className="p-4 rounded-card bg-surface-sunken border border-line hover:border-warning-line transition-colors flex items-start gap-4">
       <div
         className={cn(
-          "w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border",
+          "w-10 h-10 rounded-control flex items-center justify-center font-bold text-small shrink-0 border",
           rank === 1
-            ? "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30 shadow-[0_0_18px_rgba(245,158,11,0.18)]"
-            : "bg-foreground/5 text-muted border-foreground/10",
+            ? "bg-warning-soft text-warning-ink border-warning-line"
+            : "bg-surface-sunken text-ink-muted border-line",
         )}
       >
         #{rank}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 flex-wrap">
-          <h4 className="text-[14px] font-black truncate">{course.name}</h4>
-          <span className="text-[10px] font-mono text-muted shrink-0">{course.code}</span>
+          <h4 className="text-body font-bold truncate">{course.name}</h4>
+          <span className="text-caption font-mono text-ink-muted shrink-0">{course.code}</span>
         </div>
-        <p className="text-[11px] text-muted leading-relaxed mt-1">{course.label}</p>
-        <div className="flex items-center gap-4 mt-2 text-[11px]">
-          <span className="text-muted">
+        <p className="text-caption text-ink-muted leading-relaxed mt-1">{course.label}</p>
+        <div className="flex items-center gap-4 mt-2 text-caption">
+          <span className="text-ink-muted">
             الساعات:{" "}
-            <span className="font-mono font-bold text-foreground">{course.credits}</span>
+            <span className="font-mono font-bold text-ink">{course.credits}</span>
           </span>
-          <span className="text-muted">
+          <span className="text-ink-muted">
             أقصى مساهمة:{" "}
-            <span className="font-mono font-bold text-amber-800 dark:text-amber-300">
+            <span className="font-mono font-bold text-warning-ink">
               {course.max_point_contribution.toFixed(2)}
             </span>
           </span>
           {course.projected_delta > 0 && (
-            <span className="text-muted">
+            <span className="text-ink-muted">
               رفعة محتملة:{" "}
-              <span className="font-mono font-bold text-emerald-800 dark:text-emerald-300">
+              <span className="font-mono font-bold text-success-ink">
                 +{course.projected_delta.toFixed(2)}
               </span>
             </span>

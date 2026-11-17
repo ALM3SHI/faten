@@ -88,7 +88,7 @@ export function Tabs({
 }
 
 export const TAB_CLASS = cn(
-  "flex-1 min-w-fit px-3 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors outline-none",
-  "text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-uqu-accent/50",
-  "data-[active]:bg-uqu-accent data-[active]:text-white data-[active]:hover:text-white",
+  "flex-1 min-w-fit px-3 py-2 rounded-control text-small font-semibold whitespace-nowrap transition-colors outline-none",
+  "text-ink-muted hover:text-ink focus-visible:ring-2 focus-visible:ring-brand",
+  "data-[active]:bg-brand data-[active]:text-on-brand data-[active]:hover:text-on-brand",
 );

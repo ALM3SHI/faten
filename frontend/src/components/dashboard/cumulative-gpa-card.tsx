@@ -40,26 +40,26 @@ export function CumulativeGpaCard({
   // just below the fold, and recharts is the heaviest script on this page.
   const [chartRef, chartVisible] = useInViewOnce<HTMLDivElement>("0px");
   return (
-    <PanelRoot bare={bare} className="glass p-8 rounded-[32px] border-border dark:border-foreground/10 relative overflow-hidden min-h-[400px] flex flex-col">
+    <PanelRoot bare={bare} className="border border-line bg-surface shadow-card p-8 rounded-card border-line relative overflow-hidden min-h-[400px] flex flex-col">
       <div className={cn("flex items-center justify-between flex-wrap gap-3", bare ? "mb-3" : "mb-6")}>
         <div className={cn(bare && "sr-only")}>
-          <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
-            <LineChartIcon className="w-5 h-5 text-uqu-accent" />
+          <h3 className="text-heading font-bold mb-1 flex items-center gap-2">
+            <LineChartIcon className="w-5 h-5 text-info-ink" />
             تقدم المعدل التراكمي
           </h3>
-          <p className="text-sm text-muted-foreground">مسارك نحو الهدف الدراسي</p>
+          <p className="text-small text-ink-muted">مسارك نحو الهدف الدراسي</p>
         </div>
         <Badge
           variant="outline"
           className={cn(
-            "text-[10px]",
+            "text-caption",
             badgeStatus === "achieved" || badgeStatus === "feasible"
-              ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20"
+              ? "bg-success-soft text-success-ink border-success-line"
               : badgeStatus === "stretch"
-                ? "bg-amber-500/10 text-amber-800 dark:text-amber-400 border-amber-500/30 dark:border-amber-400/20"
+                ? "bg-warning-soft text-warning-ink border-warning-line"
                 : badgeStatus === "impossible"
-                  ? "bg-rose-500/10 text-rose-800 dark:text-rose-400 border-rose-500/30 dark:border-rose-400/20"
-                  : "bg-foreground/5 text-muted border-foreground/10",
+                  ? "bg-danger-soft text-danger-ink border-danger-line"
+                  : "bg-surface-sunken text-ink-muted border-line",
           )}
         >
           {badgeStatus === "achieved"
@@ -78,12 +78,12 @@ export function CumulativeGpaCard({
         {loading ? (
           <ChartSkeleton />
         ) : series.length < 2 ? (
-          <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl p-8 text-center gap-2">
-            <LineChartIcon className="w-8 h-8 text-muted" />
-            <p className="text-sm text-muted-foreground">
+          <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-line rounded-card p-8 text-center gap-2">
+            <LineChartIcon className="w-8 h-8 text-ink-muted" />
+            <p className="text-small text-ink-muted">
               نحتاج فصلين دراسيين على الأقل لرسم منحنى التقدم.
             </p>
-            <p className="text-xs text-muted">
+            <p className="text-caption text-ink-muted">
               {completedCount === 0
                 ? "ارفع سجلك الأكاديمي للبدء."
                 : `لديك بيانات ${series.length} فصل فقط — أكمل ترماً آخر وستظهر هنا.`}
@@ -95,18 +95,18 @@ export function CumulativeGpaCard({
       </div>
 
       {series.length >= 2 && (
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border dark:border-foreground/10 text-[11px] flex-wrap gap-2">
-          <span className="text-muted-foreground font-mono">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-line text-caption flex-wrap gap-2">
+          <span className="text-ink-muted font-mono">
             {series[0].semester} → {series[series.length - 1].semester}
           </span>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-2.5 h-0.5 rounded-full bg-uqu-accent" />
-              <span className="text-muted-foreground font-bold">تراكمي</span>
+              <span className="w-2.5 h-0.5 rounded-full bg-brand" />
+              <span className="text-ink-muted font-bold">تراكمي</span>
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="w-2.5 h-0.5 rounded-full bg-foreground/35 dark:bg-white/30 [background-image:repeating-linear-gradient(90deg,var(--foreground)_0_2px,transparent_2px_4px)] dark:[background-image:repeating-linear-gradient(90deg,white_0_2px,transparent_2px_4px)]" />
-              <span className="text-muted-foreground font-bold">فصلي</span>
+              <span className="w-2.5 h-0.5 rounded-full bg-surface-sunken [background-image:repeating-linear-gradient(90deg,var(--foreground)_0_2px,transparent_2px_4px)] dark:[background-image:repeating-linear-gradient(90deg,white_0_2px,transparent_2px_4px)]" />
+              <span className="text-ink-muted font-bold">فصلي</span>
             </span>
           </div>
         </div>
@@ -119,22 +119,22 @@ export function CumulativeGpaCard({
 /**
  * Sprint-4 Bug #8 — GPA trend insight box.
  * Renders the backend's one-sentence narrative about per-semester
- * variance directly under the cumulative-GPA chart. The card is glass
+ * variance directly under the cumulative-GPA chart. The card is border border-line bg-surface shadow-card
  * + glow + AI sparkle icon to read as "model said this" rather than
  * "static label".
  */
 export function GpaTrendInsight({ text }: { text: string }) {
   if (!text) return null;
   return (
-    <div className="glass rounded-2xl border border-uqu-accent/20 bg-gradient-to-l from-uqu-accent/[0.06] via-cyan-500/[0.04] to-transparent p-4 flex items-start gap-3 shadow-[0_0_24px_-12px_hsla(245,78%,62%,0.5)]">
-      <div className="w-9 h-9 rounded-xl bg-uqu-accent/15 border border-uqu-accent/30 flex items-center justify-center shrink-0 mt-0.5">
-        <Sparkles className="w-4 h-4 text-uqu-accent" />
+    <div className="rounded-card border border-info-line bg-info-soft p-4 flex items-start gap-3">
+      <div className="w-9 h-9 rounded-control bg-info-soft border border-info-line flex items-center justify-center shrink-0 mt-0.5">
+        <Sparkles className="w-4 h-4 text-info-ink" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[10px] font-black uppercase tracking-widest text-uqu-accent mb-1">
+        <div className="text-caption font-bold uppercase tracking-widest text-info-ink mb-1">
           تحليل ذكي للمسار
         </div>
-        <p className="text-[13px] text-foreground leading-relaxed">{text}</p>
+        <p className="text-small text-ink leading-relaxed">{text}</p>
       </div>
     </div>
   );
@@ -143,10 +143,10 @@ export function GpaTrendInsight({ text }: { text: string }) {
 
 function ChartSkeleton() {
   return (
-    <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-foreground/10 rounded-2xl p-8 text-center gap-3 animate-pulse">
-      <div className="w-8 h-8 rounded-full bg-foreground/5" />
-      <div className="h-2.5 w-40 rounded-full bg-foreground/5" />
-      <div className="h-2 w-28 rounded-full bg-foreground/5" />
+    <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-line rounded-card p-8 text-center gap-3 animate-pulse">
+      <div className="w-8 h-8 rounded-full bg-surface-sunken" />
+      <div className="h-2.5 w-40 rounded-full bg-surface-sunken" />
+      <div className="h-2 w-28 rounded-full bg-surface-sunken" />
     </div>
   );
 }

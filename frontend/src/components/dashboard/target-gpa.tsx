@@ -71,11 +71,11 @@ export function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
       <div className="flex items-baseline justify-between gap-2 flex-wrap">
         <label
           htmlFor="target-gpa-input"
-          className="text-[11px] font-black uppercase tracking-widest text-muted"
+          className="text-caption font-bold uppercase tracking-widest text-ink-muted"
         >
           تعديل الهدف
         </label>
-        <span className="text-[10px] font-mono text-muted">
+        <span className="text-caption font-mono text-ink-muted">
           الحد الأقصى الممكن: {maxPossible.toFixed(2)}
         </span>
       </div>
@@ -93,12 +93,12 @@ export function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
             if (e.key === "Enter") handleSave();
           }}
           placeholder={`0.00 – ${maxPossible.toFixed(2)}`}
-          className="flex-1 bg-background border border-border rounded-xl px-3 py-2.5 text-sm font-mono font-black text-foreground outline-none focus:border-uqu-accent/50 focus:ring-1 focus:ring-uqu-accent/30 transition-all dark:bg-foreground/5 dark:border-foreground/10"
+          className="flex-1 bg-surface border border-line rounded-control px-3 py-2.5 text-small font-mono font-bold text-ink outline-none focus:border-info-line focus:ring-1 focus:ring-brand transition-all"
         />
         <Button
           onClick={handleSave}
           disabled={!isValid}
-          className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+          className="rounded-control bg-brand hover:bg-brand-hover disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
         >
           حفظ
         </Button>
@@ -107,22 +107,22 @@ export function TargetGpaEditDialog({ targetGpa }: { targetGpa: number }) {
       {/* Validation messages — ordered by severity. The amber "max possible"
           warning is the headline fix for Bug #5. */}
       {exceedsMax && (
-        <p className="text-[11px] text-amber-800 dark:text-amber-300 font-bold flex items-center gap-1.5 leading-relaxed">
+        <p className="text-caption text-warning-ink font-bold flex items-center gap-1.5 leading-relaxed">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           أقصى معدل ممكن رياضياً هو{" "}
-          <span className="font-mono font-black">{maxPossible.toFixed(2)}</span>
-          <span className="text-amber-700/80 dark:text-amber-300/70 font-normal">
+          <span className="font-mono font-bold">{maxPossible.toFixed(2)}</span>
+          <span className="text-warning-ink font-normal">
             (بافتراض A+ في كل ساعة متبقية)
           </span>
         </p>
       )}
       {belowZero && (
-        <p className="text-[11px] text-rose-700 dark:text-rose-300 font-bold">
+        <p className="text-caption text-danger-ink font-bold">
           القيمة لا يمكن أن تكون سالبة.
         </p>
       )}
       {savedAt && parsed === targetGpa && (
-        <p className="text-[11px] text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1.5">
+        <p className="text-caption text-success-ink font-bold flex items-center gap-1.5">
           <CheckCircle2 className="w-3.5 h-3.5" />
           تم تحديث الهدف إلى {targetGpa.toFixed(2)}
         </p>
@@ -145,7 +145,7 @@ export function TargetGpaCallout({
 }) {
   if (status === "unknown") {
     return (
-      <div className="p-4 rounded-xl bg-background border border-border text-sm text-muted-foreground dark:bg-foreground/5 dark:border-foreground/10">
+      <div className="p-4 rounded-control bg-surface border border-line text-small text-ink-muted">
         حدّد هدفاً وارفع سجلك الأكاديمي حتى نستطيع حساب المطلوب.
       </div>
     );
@@ -153,7 +153,7 @@ export function TargetGpaCallout({
 
   if (status === "achieved") {
     return (
-      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+      <div className="p-4 rounded-control bg-success-soft border border-success-line text-success-ink text-small leading-relaxed">
         🎉 وصلت لهدفك بالفعل! حافظ على مستواك الحالي في الفصل القادم.
       </div>
     );
@@ -161,9 +161,9 @@ export function TargetGpaCallout({
 
   if (status === "impossible") {
     return (
-      <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-200 text-sm leading-relaxed">
+      <div className="p-4 rounded-control bg-danger-soft border border-danger-line text-danger-ink text-small leading-relaxed">
         ⚠️ المطلوب{" "}
-        <strong className="font-black font-mono">{required.toFixed(2)}</strong> وهو فوق سقف الـ
+        <strong className="font-bold font-mono">{required.toFixed(2)}</strong> وهو فوق سقف الـ
         4.00. غيّر الهدف لقيمة قابلة للتحقيق، أو تابع التقدم على فصلين أو أكثر.
       </div>
     );
@@ -171,15 +171,15 @@ export function TargetGpaCallout({
 
   const accent =
     status === "stretch"
-      ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-200"
-      : "bg-uqu-accent/10 border-uqu-accent/30 text-foreground";
+      ? "bg-warning-soft border-warning-line text-warning-ink "
+      : "bg-info-soft border-info-line text-ink";
 
   return (
-    <div className={cn("p-4 rounded-xl border text-sm leading-relaxed", accent)}>
+    <div className={cn("p-4 rounded-control border text-small leading-relaxed", accent)}>
       للوصول لهدفك{" "}
-      <strong className="font-black font-mono">{targetGpa.toFixed(2)}</strong>، تحتاج إلى تحقيق
+      <strong className="font-bold font-mono">{targetGpa.toFixed(2)}</strong>، تحتاج إلى تحقيق
       معدل{" "}
-      <strong className="font-black font-mono text-base">{required.toFixed(2)}</strong> في الـ{" "}
+      <strong className="font-bold font-mono text-body">{required.toFixed(2)}</strong> في الـ{" "}
       {nextHours} ساعة القادمة.
     </div>
   );
