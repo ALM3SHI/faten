@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Sparkles } from "lucide-react";
+import { Button } from "@/components/ds/button";
 import { cn } from "@/lib/utils";
 
 const SUGGESTIONS = ["متى اختباري الجاي؟", "كم أغيب قبل الحرمان؟", "كيف أرفع معدلي؟"];
@@ -17,16 +18,16 @@ export function AskFaten({ className }: { className?: string }) {
   };
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("space-y-2.5", className)}>
       <form
         role="search"
         onSubmit={(e) => {
           e.preventDefault();
           ask(q);
         }}
-        className="flex items-center gap-2 rounded-2xl border border-uqu-accent/25 bg-uqu-accent/[0.06] ps-4 pe-1.5 py-1.5 focus-within:border-uqu-accent/50 transition-colors"
+        className="flex items-center gap-2 rounded-card border border-line-strong bg-surface py-1.5 ps-4 pe-1.5 shadow-card motion-fast transition-colors focus-within:border-brand"
       >
-        <Sparkles className="w-4 h-4 text-uqu-accent shrink-0" aria-hidden />
+        <Sparkles className="size-4 shrink-0 text-info-ink" aria-hidden />
         <label htmlFor="ask-faten" className="sr-only">
           اسأل فطن
         </label>
@@ -35,29 +36,21 @@ export function AskFaten({ className }: { className?: string }) {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="اسأل فطن عن لوائحك، معدلك، أو جدولك…"
-          className="flex-1 min-w-0 bg-transparent text-sm py-2 outline-none placeholder:text-muted-foreground"
+          className="min-w-0 flex-1 bg-transparent py-2 text-body text-ink outline-none placeholder:text-ink-muted"
           autoComplete="off"
           enterKeyHint="send"
         />
-        <button
-          type="submit"
-          disabled={!q.trim()}
-          className="inline-flex items-center gap-1 h-9 px-4 rounded-xl bg-uqu-accent text-white text-sm font-bold disabled:opacity-50 transition-opacity"
-        >
+        <Button type="submit" variant="primary" size="sm" disabled={!q.trim()}>
           اسأل
-          <ArrowLeft className="w-4 h-4" aria-hidden />
-        </button>
+          <ArrowLeft aria-hidden />
+        </Button>
       </form>
-      <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
+      {/* Wraps instead of scrolling sideways, so no suggestion is ever cut off. */}
+      <div className="flex flex-wrap gap-2">
         {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => ask(s)}
-            className="shrink-0 text-xs font-bold rounded-full border border-foreground/10 px-3 py-1.5 text-muted-foreground hover:text-foreground hover:border-uqu-accent/30 transition-colors"
-          >
+          <Button key={s} size="sm" onClick={() => ask(s)} className="rounded-full font-medium text-ink-muted hover:text-ink">
             {s}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

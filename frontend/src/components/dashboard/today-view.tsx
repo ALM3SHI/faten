@@ -23,6 +23,8 @@ import { EXAM_TYPE_LABELS, dayKey } from "@/lib/exams";
 import { courseColors, weekPlan } from "@/lib/plan-week";
 import { prayerTimesFor } from "@/lib/prayer-times";
 import { cn } from "@/lib/utils";
+import { Button, IconButton, buttonClass } from "@/components/ds/button";
+import { EmptyState } from "@/components/ds/states";
 import { useExamsStore } from "@/store/examsStore";
 import { usePlanStore, type PlanTask } from "@/store/planStore";
 import { usePomodoroStore } from "@/store/pomodoroStore";
@@ -65,21 +67,21 @@ export function NextUpCard({ now }: { now: Date }) {
   if (!next) {
     const nothingAtAll = input.schedule.length === 0 && input.tasks.length === 0;
     return (
-      <section aria-labelledby="next-title" className="rounded-3xl bg-foreground text-background p-6 md:p-7 space-y-3">
-        <h2 id="next-title" className="text-sm font-bold opacity-70">التالي</h2>
-        <p className="text-2xl font-black">{nothingAtAll ? "رتّب أسبوعك وخلّ فطن يذكّرك" : "ما فيه شي قدامك هالأسبوع"}</p>
-        <p className="opacity-80 leading-7 max-w-lg">
+      <section aria-labelledby="next-title" className="rounded-card bg-brand p-5 text-on-brand shadow-card md:p-7 space-y-3">
+        <h2 id="next-title" className="text-small font-semibold text-white/85">التالي</h2>
+        <p className="font-heading text-title font-bold">{nothingAtAll ? "رتّب أسبوعك وخلّ فطن يذكّرك" : "ما فيه شي قدامك هالأسبوع"}</p>
+        <p className="max-w-lg text-body text-white/90">
           {nothingAtAll
             ? "ارفع جدولك الدراسي وابنِ خطة مذاكرة، ويصير هنا أول شي عليك: المحاضرة الجاية أو جلسة المذاكرة."
             : "استغلها: ابنِ خطة مذاكرة للأسبوع أو أضف جلسة."}
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           {input.schedule.length === 0 && (
-            <Link href="/schedule" prefetch={false} className="h-11 px-5 rounded-xl bg-background text-foreground font-bold inline-flex items-center">
+            <Link href="/schedule" prefetch={false} className={buttonClass({ className: "border-transparent bg-white text-brand hover:bg-white/90" })}>
               ارفع جدولك
             </Link>
           )}
-          <Link href="/time" prefetch={false} className="h-11 px-5 rounded-xl border border-background/30 font-bold inline-flex items-center">
+          <Link href="/time" prefetch={false} className={buttonClass({ className: "border-white/40 bg-transparent text-white hover:bg-white/10" })}>
             ابنِ خطتك
           </Link>
         </div>
@@ -107,26 +109,26 @@ export function NextUpCard({ now }: { now: Date }) {
   }
 
   return (
-    <section aria-labelledby="next-title" className="rounded-3xl bg-foreground text-background p-6 md:p-7 space-y-5">
+    <section aria-labelledby="next-title" className="rounded-card bg-brand p-5 text-on-brand shadow-card md:p-7 space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
-          <h2 id="next-title" className="text-sm font-bold opacity-70">
+          <h2 id="next-title" className="text-small font-semibold text-white/85">
             التالي: {kind}
           </h2>
-          <p className="text-2xl md:text-3xl font-black leading-tight">{title}</p>
-          {detail && <p className="opacity-75">{detail}</p>}
+          <p className="font-heading text-title font-bold text-balance">{title}</p>
+          {detail && <p className="text-body text-white/90">{detail}</p>}
         </div>
-        <span className={cn("shrink-0 rounded-full px-3 py-1 text-sm font-black", next.now ? "bg-uqu-accent text-white" : "bg-background/15")}>{when}</span>
+        <span className={cn("nums shrink-0 rounded-full px-3 py-1 text-small font-semibold", next.now ? "bg-white text-brand" : "bg-white/15 text-white")}>{when}</span>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
         {item.kind === "lecture" && (
           <>
-            <Link href={roomHref(item.slot.room)} prefetch={false} className="h-11 px-4 rounded-xl bg-background text-foreground font-bold inline-flex items-center gap-1.5">
-              <MapPin className="w-4 h-4" aria-hidden /> وين القاعة؟
+            <Link href={roomHref(item.slot.room)} prefetch={false} className={buttonClass({ className: "border-transparent bg-white text-brand hover:bg-white/90" })}>
+              <MapPin aria-hidden /> وين القاعة؟
             </Link>
             {next.dayOffset === 0 && (
-              <span className="[&_button]:h-11 [&_button]:px-4 [&_button]:text-sm [&_button]:border-background/30 [&_button]:text-background">
+              <span className="[&_button]:h-11 [&_button]:border-white/40 [&_button]:bg-transparent [&_button]:px-4 [&_button]:text-white [&_button]:hover:bg-white/10 [&_button[aria-pressed=true]]:bg-white [&_button[aria-pressed=true]]:text-brand">
                 <LectureAbsence code={item.slot.course_code} date={today} today={today} compact />
               </span>
             )}
@@ -134,16 +136,16 @@ export function NextUpCard({ now }: { now: Date }) {
         )}
         {item.kind === "task" && !item.task.targetDate && (
           <>
-            <button type="button" onClick={() => start(item.task, item.key)} className="h-11 px-5 rounded-xl bg-background text-foreground font-bold inline-flex items-center gap-1.5">
-              <Play className="w-4 h-4 fill-current" aria-hidden /> ابدأ الجلسة
-            </button>
-            <button type="button" onClick={() => toggle(item.key)} className="h-11 px-4 rounded-xl border border-background/30 font-bold inline-flex items-center gap-1.5">
-              <Check className="w-4 h-4" aria-hidden /> خلّصتها
-            </button>
+            <Button onClick={() => start(item.task, item.key)} className="border-transparent bg-white text-brand hover:bg-white/90">
+              <Play className="fill-current" aria-hidden /> ابدأ الجلسة
+            </Button>
+            <Button onClick={() => toggle(item.key)} className="border-white/40 bg-transparent text-white hover:bg-white/10">
+              <Check aria-hidden /> خلّصتها
+            </Button>
           </>
         )}
         {item.kind === "exam" && (
-          <Link href="/exams" prefetch={false} className="h-11 px-5 rounded-xl bg-background text-foreground font-bold inline-flex items-center">
+          <Link href="/exams" prefetch={false} className={buttonClass({ className: "border-transparent bg-white text-brand hover:bg-white/90" })}>
             خطة المراجعة
           </Link>
         )}
@@ -167,17 +169,15 @@ export function TodayTimeline({ now }: { now: Date }) {
   return (
     <section aria-labelledby="today-title" className="space-y-3">
       <div className="flex items-baseline justify-between px-1">
-        <h2 id="today-title" className="font-black">اليوم</h2>
-        <Link href="/time" prefetch={false} className="text-sm font-bold text-uqu-accent inline-flex items-center gap-0.5">
-          الأسبوع كامل <ChevronLeft className="w-4 h-4" aria-hidden />
+        <h2 id="today-title" className="text-subheading font-bold">اليوم</h2>
+        <Link href="/time" prefetch={false} className="inline-flex items-center gap-0.5 rounded-control text-small font-semibold text-info-ink hover:underline focus-ring">
+          الأسبوع كامل <ChevronLeft className="size-4" aria-hidden />
         </Link>
       </div>
       {items.length === 0 ? (
-        <p className="rounded-3xl border border-dashed border-foreground/15 px-5 py-8 text-center text-muted-foreground">
-          {isDayOff ? "يوم راحتك — ما فيه شي مجدول. ارتاح." : "ما عندك محاضرات ولا جلسات اليوم."}
-        </p>
+        <EmptyState title={isDayOff ? "يوم راحتك — ما فيه شي مجدول. ارتاح." : "ما عندك محاضرات ولا جلسات اليوم."} className="py-8" />
       ) : (
-        <ol className="rounded-3xl border border-foreground/10 divide-y divide-foreground/5 overflow-hidden">
+        <ol className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-card">
           {items.map((it, i) => (
             <TimelineRow key={`${it.kind}-${it.start}-${i}`} item={it} past={it.end <= nowMin && it.kind !== "prayer"} today={today} onToggle={toggle} onStart={start} />
           ))}
@@ -202,63 +202,67 @@ function TimelineRow({
 }) {
   if (item.kind === "prayer") {
     return (
-      <li className="px-4 py-1.5 text-xs text-muted-foreground text-center bg-foreground/[0.02]">
+      <li className="bg-surface-sunken px-4 py-1.5 text-center text-caption text-ink-muted">
         {item.name} {formatClock(item.time)}
       </li>
     );
   }
   const time = (
-    <span className="w-14 shrink-0 text-sm font-black leading-tight pt-0.5">
+    <span className="nums w-14 shrink-0 pt-0.5 text-body font-semibold leading-tight">
       {formatMinutes(item.start).split(" ")[0]}
-      <span className="block text-[11px] font-normal text-muted-foreground">{formatMinutes(item.start).split(" ")[1]}</span>
+      <span className="block text-caption font-normal text-ink-muted">{formatMinutes(item.start).split(" ")[1]}</span>
     </span>
   );
   return (
-    <li className={cn("flex items-start gap-2 px-4 py-3", past && "opacity-55")}>
+    <li className={cn("flex items-start gap-2 px-4 py-3", past ? "text-ink-muted" : "text-ink")}>
       {time}
       <div className="flex-1 min-w-0">
         {item.kind === "lecture" && (
           <div className="space-y-1.5">
-            <p className="text-sm leading-6">
-              <span className="font-bold">{item.slot.course_name || item.slot.course_code}</span>
-              <span className="text-muted-foreground"> محاضرة حتى {formatMinutes(item.end)}{item.slot.room ? `، قاعة ${item.slot.room}` : ""}</span>
+            <p className="text-body">
+              <span className="font-semibold">{item.slot.course_name || item.slot.course_code}</span>
+              <span className="text-ink-muted"> محاضرة حتى {formatMinutes(item.end)}{item.slot.room ? `، قاعة ${item.slot.room}` : ""}</span>
             </p>
             <LectureAbsence code={item.slot.course_code} date={today} today={today} compact />
           </div>
         )}
         {item.kind === "exam" && (
-          <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
+          <p className="text-body font-semibold text-warning-ink">
             {EXAM_TYPE_LABELS[item.exam.exam_type] ?? "اختبار"} {item.exam.subject}
           </p>
         )}
         {item.kind === "task" && item.task.targetDate && (
-          <p className="text-sm">
-            <span className="text-muted-foreground font-bold">{TYPE_LABEL[item.task.taskType ?? "other"] ?? "موعد"} </span>
-            <span className="font-bold">{item.task.title}</span>
+          <p className="text-body">
+            <span className="font-medium text-ink-muted">{TYPE_LABEL[item.task.taskType ?? "other"] ?? "موعد"} </span>
+            <span className="font-semibold">{item.task.title}</span>
           </p>
         )}
         {item.kind === "task" && !item.task.targetDate && (
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
+          <div className="flex items-center gap-1">
+            {/* A 44px target around a 24px circle, pulled into the gutter of the row. */}
+            <IconButton
+              label={item.done ? `إلغاء إنجاز ${item.task.title}` : `تم: ${item.task.title}`}
               onClick={() => onToggle(item.key)}
               aria-pressed={item.done}
-              aria-label={item.done ? `إلغاء إنجاز ${item.task.title}` : `تم: ${item.task.title}`}
-              className={cn(
-                "w-6 h-6 shrink-0 rounded-full border-2 flex items-center justify-center",
-                item.done ? "bg-uqu-accent border-uqu-accent text-white" : "border-foreground/25 hover:border-uqu-accent",
-              )}
+              className="group -my-2 -ms-2.5 shrink-0 rounded-full hover:bg-transparent"
             >
-              {item.done && <Check className="w-3.5 h-3.5" strokeWidth={3} aria-hidden />}
-            </button>
-            <p className={cn("flex-1 min-w-0 text-sm leading-6", item.done && "line-through text-muted-foreground")}>
-              <span className="font-bold">{item.task.title}</span>
-              <span className="text-muted-foreground"> {item.task.durationMinutes} د</span>
+              <span
+                className={cn(
+                  "flex size-6 items-center justify-center rounded-full border-2 motion-fast transition-colors",
+                  item.done ? "border-brand bg-brand text-on-brand" : "border-line-strong group-hover:border-brand",
+                )}
+              >
+                {item.done && <Check className="size-3.5" strokeWidth={3} aria-hidden />}
+              </span>
+            </IconButton>
+            <p className={cn("min-w-0 flex-1 text-body", item.done && "text-ink-muted line-through")}>
+              <span className="font-semibold">{item.task.title}</span>
+              <span className="text-ink-muted"> {item.task.durationMinutes} د</span>
             </p>
             {!item.done && !past && (
-              <button type="button" onClick={() => onStart(item.task, item.key)} className="h-8 px-3 shrink-0 rounded-lg bg-uqu-accent text-white text-xs font-bold inline-flex items-center gap-1">
-                <Play className="w-3 h-3 fill-current" aria-hidden /> ابدأ
-              </button>
+              <Button variant="primary" size="sm" onClick={() => onStart(item.task, item.key)} className="shrink-0">
+                <Play className="fill-current" aria-hidden /> ابدأ
+              </Button>
             )}
           </div>
         )}
