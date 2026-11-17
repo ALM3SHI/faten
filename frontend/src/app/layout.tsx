@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SITE } from "@/lib/site";
+import { plexArabic } from "@/app/fonts/plex";
 
 // Cairo variable font, self-hosted (SIL OFL — see fonts/OFL-Cairo.txt).
 // Bundling it removes the build-time fetch from Google Fonts, so builds work
@@ -68,12 +69,13 @@ export default function RootLayout({
   // Inline pre-hydration script: read the saved theme from localStorage and
   // apply the `dark` class on <html> BEFORE React boots. This avoids the
   // flash-of-wrong-theme on first paint and prevents hydration mismatch.
-  // Defaults to dark so existing users keep the look they expect.
+  // With no saved choice the site follows the device's light/dark setting;
+  // a choice made with the toggle always wins.
   const themeBootScript = `
     (function() {
       try {
         var saved = localStorage.getItem('uqu-theme');
-        var isDark = saved ? saved === 'dark' : true;
+        var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (isDark) document.documentElement.classList.add('dark');
         else document.documentElement.classList.remove('dark');
       } catch (e) {
@@ -90,7 +92,7 @@ export default function RootLayout({
         <link rel="preconnect" href={API_ORIGIN} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${cairo.variable} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${cairo.variable} ${plexArabic.variable} font-sans antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <ToastProvider>
             <BackendWarmup />
