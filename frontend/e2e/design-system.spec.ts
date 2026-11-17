@@ -55,11 +55,15 @@ test.describe("design system reference", () => {
     expect(await loaded(/cairo/)).toBe(true);
   });
 
-  test("pages that have not moved to the design system do not download Plex", async ({ page }) => {
-    await page.goto("/privacy/");
-    await page.evaluate(() => document.fonts.ready);
-    expect(await page.evaluate(() => [...document.fonts].some((f) => f.status === "loaded" && /plex/i.test(f.family)))).toBe(false);
-  });
+});
+
+// Signed-in students see the app shell (sidebar, command palette), which reads
+// in Plex. Visitors on pages that have not moved to the design system must not
+// pay for a font they never see.
+test("a visitor on a page that has not moved to the design system does not download Plex", async ({ page }) => {
+  await page.goto("/privacy/");
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => [...document.fonts].some((f) => f.status === "loaded" && /plex/i.test(f.family)))).toBe(false);
 });
 
 test.describe("default theme", () => {

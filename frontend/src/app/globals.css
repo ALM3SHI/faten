@@ -458,3 +458,39 @@ select option {
     animation: none !important;
   }
 }
+
+/* ── App shell ───────────────────────────────────────────────────────
+   Skip link (first focusable element on every page) and the desktop
+   sidebar's effect on the rest of the layout. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  inset-inline-start: 0.75rem;
+  z-index: 90;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: var(--ds-brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transform: translateY(-200%);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* components/app-sidebar.tsx sets data-app-sidebar on <html> while it shows. */
+@media (min-width: 1024px) {
+  html[data-app-sidebar] body {
+    padding-inline-start: 15rem;
+  }
+  html[data-app-sidebar] .app-topbar,
+  html[data-app-sidebar] .app-fixed-x {
+    inset-inline-start: 15rem;
+  }
+  /* The sidebar carries the logo and the four spaces. */
+  html[data-app-sidebar] .app-topbar-brand,
+  html[data-app-sidebar] .app-topbar-sections {
+    display: none;
+  }
+}
