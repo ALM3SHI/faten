@@ -73,6 +73,53 @@ test("study mode: upload → lecture map → goal → lesson → check with retr
   await expect(files.getByRole("listitem").filter({ has: page.getByText("بطاقات", { exact: true }) })).toHaveCount(1);
 });
 
+test("the lecture reads as a course: units beside the lesson, and a diagram drawn from the lecture", async ({ page }) => {
+  await asNewStudent(page, "course");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toBeVisible();
+
+  const outline = page.getByRole("complementary", { name: "محتوى الدورة" });
+  if (test.info().project.name.includes("mobile")) {
+    // phones keep the topics drawer instead of a side column
+    await expect(outline).toBeHidden();
+  } else {
+    await expect(outline.getByText("دورة من محاضرتك")).toBeVisible();
+    await expect(outline.getByRole("navigation", { name: "وحدات الدورة" }).getByRole("button")).toHaveCount(2);
+  }
+
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+  await expect(page.getByText("آخر داخل أول خارج")).toBeVisible();
+
+  const figure = page.locator("figure").filter({ has: page.locator("[data-diagram]") });
+  await expect(figure).toBeVisible();
+  await expect(figure.getByText("مخطط من محاضرتك")).toBeVisible();
+  await expect(figure.getByText("الدفع يضيف للأعلى والسحب يأخذ من الأعلى").first()).toBeVisible();
+  // the diagram's content is readable without seeing it
+  await expect(figure.locator(".sr-only li")).toHaveText(["push إلى المكدس: يضيف للأعلى", "المكدس إلى pop: يسحب الأعلى"]);
+  const at = await figure.locator("svg text").evaluateAll((els) =>
+    Object.fromEntries(els.map((e) => [e.textContent, e.getBoundingClientRect().toJSON()])),
+  );
+  if (test.info().project.name.includes("mobile")) {
+    // too wide for a phone: the flow is stacked top to bottom instead of cut off
+    expect(at["push"].y).toBeLessThan(at["المكدس"].y);
+    expect(at["المكدس"].y).toBeLessThan(at["pop"].y);
+  } else {
+    // drawn right to left: the first step is to the right of the next one
+    expect(at["push"].x).toBeGreaterThan(at["المكدس"].x);
+    expect(at["المكدس"].x).toBeGreaterThan(at["pop"].x);
+  }
+  // nothing is cut off: the whole drawing fits its box
+  const fits = await figure.locator("[data-diagram]").evaluate((el) => el.scrollWidth <= el.clientWidth + 1);
+  expect(fits).toBe(true);
+
+  if (!test.info().project.name.includes("mobile")) {
+    await expect(outline.getByRole("button", { name: /المكدس/ })).toHaveAttribute("aria-current", "step");
+  }
+});
+
 test("asking and studying are the two separate modes of فطن", async ({ page }) => {
   await asNewStudent(page, "modes");
   await page.goto("/chat/");

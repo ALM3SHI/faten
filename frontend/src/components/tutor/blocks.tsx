@@ -20,6 +20,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { BotMarkdown } from "@/components/bot-markdown";
+import { LessonVisual } from "@/components/tutor/lesson-visual";
 import { cn } from "@/lib/utils";
 import { CONTEXT_LABEL, pct, type Block, type Confidence, type QuestionBlock, type ReportReason } from "@/lib/tutor";
 
@@ -91,6 +92,7 @@ export function TutorBlock({ block, ...c }: { block: Block } & Common & Question
             ) : null}
           </div>
           <BotMarkdown content={block.md} onSlide={c.onSlide} />
+          {block.visual && <LessonVisual visual={block.visual} topicId={block.topicId} segment={block.segment} onSlide={c.onSlide} />}
           <PageChips pages={block.pages} onSlide={c.onSlide} />
         </Card>
       );

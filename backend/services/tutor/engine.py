@@ -28,7 +28,7 @@ from typing import Any, Callable
 from fastapi import HTTPException
 
 from services.quota import COST_TUTOR_LESSON, COST_TUTOR_SMALL
-from services.tutor import ai, analytics, mastery, prompts, schemas, store
+from services.tutor import ai, analytics, mastery, prompts, schemas, store, visuals
 from services.tutor.extract import PageContent, page_block
 from services.tutor.questions import (
     SKILL_AR,
@@ -406,18 +406,23 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
         timeout=180.0,
     )
     segments = []
+    photos_left = [visuals.MAX_PHOTOS_PER_LESSON]
     for s in (raw.get("segments") if isinstance(raw, dict) else None) or []:
         if not isinstance(s, dict):
             continue
         md = strip_bad_refs(clip(s.get("markdown"), 6000), allowed)
         if len(md) < 40:
             continue
-        segments.append({
+        seg = {
             "title": clip(s.get("title"), 140) or f"الجزء {len(segments) + 1}",
             "markdown": md,
             "pages": valid_pages(s.get("pages"), allowed) or cited_pages(md)[:6],
             "concept_ids": [c for c in s.get("concept_ids") or [] if any(c == k["id"] for k in topic.get("concepts") or [])],
-        })
+        }
+        visual = visuals.normalize_visual(s.get("visual"), allowed, photos_left)
+        if visual:
+            seg["visual"] = visual
+        segments.append(seg)
     segments = segments[:5]
     if not segments:
         raise TutorError("تعذّر تجهيز شرح هذا الموضوع الآن. اضغط «حاول مرة أخرى» بعد قليل.", 502)
@@ -430,7 +435,22 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
     lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso}
     store.save_lesson(ctx.db, ctx.lecture["fileHash"], tid, lesson)
     ctx._lessons[tid] = lesson
+    visuals.schedule_photos(ctx.db, ctx.lecture["fileHash"], tid, lesson)
     return lesson
+
+
+def prefetch_next(ctx: Ctx, tid: str) -> None:
+    """While the student studies `tid`, prepare the next topic's lesson in the
+    background (shared cache, no credits charged), so it opens instantly."""
+    nxt = _next_topic_after(ctx, tid)
+    if not nxt or ctx.lesson(nxt):
+        return
+    background = Ctx(db=ctx.db, uid=ctx.uid, lecture=ctx.lecture, progress={}, now=ctx.now, charge=lambda _n: None)
+
+    async def prepare() -> None:
+        await ensure_lesson(background, nxt)
+
+    visuals.schedule_prefetch(nxt, prepare, ctx.lecture["fileHash"])
 
 
 async def more_questions(ctx: Ctx, tid: str, n: int, pool: str, shared: bool = True) -> list[dict]:
@@ -566,7 +586,15 @@ async def show_segment(ctx: Ctx, seg: int) -> None:
     step["stage"] = "explain"
     step["segment"] = seg
     s = segs[seg]
-    ctx.say({"type": "lesson", "topicId": tid, "segment": seg, "total": len(segs), "title": s["title"], "md": s["markdown"], "pages": s["pages"]})
+    block = {"type": "lesson", "topicId": tid, "segment": seg, "total": len(segs), "title": s["title"], "md": s["markdown"], "pages": s["pages"]}
+    visual = visuals.public_visual(s, lesson.get("photos") or {}, seg)
+    if visual:
+        block["visual"] = visual
+    ctx.say(block)
+    if seg == 0:
+        # photos lost to a restart are looked up again; the next topic gets ready
+        visuals.schedule_photos(ctx.db, ctx.lecture["fileHash"], tid, lesson)
+        prefetch_next(ctx, tid)
     check = next(
         (q for q in lesson["questions"] if q["pool"] == "check" and str(q.get("segment")) == str(seg) and q["id"] not in ctx.asked and not q.get("disabled")),
         None,
@@ -1559,4 +1587,33 @@ async def run_action(ctx: Ctx, action: str, payload: dict) -> None:
 
 
 def snapshot(ctx: Ctx, messages: list[dict]) -> dict:
-    return {"lecture": store.public_lecture(ctx.lecture), "state": public_state(ctx), "messages": messages}
+    return {"lecture": store.public_lecture(ctx.lecture), "state": public_state(ctx), "messages": refresh_visuals(ctx, messages)}
+
+
+def refresh_visuals(ctx: Ctx, messages: list[dict]) -> list[dict]:
+    """A photo still being looked up when its lesson part was shown is stored
+    as "pending" in the conversation; reopening the lecture shows the outcome."""
+    for msg in messages:
+        for b in msg.get("blocks") or []:
+            v = b.get("visual") if b.get("type") == "lesson" else None
+            if not v or v.get("kind") != "photo" or v.get("status") != "pending":
+                continue
+            lesson = ctx.lesson(b.get("topicId") or "") or {}
+            segs = lesson.get("segments") or []
+            seg = b.get("segment")
+            if isinstance(seg, int) and 0 <= seg < len(segs):
+                fresh = visuals.public_visual(segs[seg], lesson.get("photos") or {}, seg)
+                if fresh:
+                    b["visual"] = fresh
+                else:
+                    b.pop("visual", None)
+    return messages
+
+
+def visual_of(ctx: Ctx, tid: str, seg: int) -> dict | None:
+    """The current picture of one lesson part (the screen asks while a photo is pending)."""
+    lesson = ctx.lesson(tid) or {}
+    segs = lesson.get("segments") or []
+    if not 0 <= seg < len(segs):
+        return None
+    return visuals.public_visual(segs[seg], lesson.get("photos") or {}, seg)

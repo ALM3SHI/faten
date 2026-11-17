@@ -510,6 +510,16 @@
     ],
     "response": []
   },
+  "GET /api/tutor/lectures/{lid}/visual": {
+    "params": [
+      "header:authorization",
+      "path:lid",
+      "query:segment",
+      "query:topic"
+    ],
+    "body": [],
+    "response": []
+  },
   "GET /api/workspace": {
     "params": [
       "header:authorization"

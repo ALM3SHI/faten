@@ -54,6 +54,25 @@ function say(s, role, blocks, actions) {
   return m;
 }
 
+// A lesson diagram as the backend sends it (services/tutor/visuals.py).
+const DIAGRAM = {
+  kind: "diagram",
+  caption: "الدفع يضيف للأعلى والسحب يأخذ من الأعلى",
+  diagram: {
+    type: "flow",
+    direction: "lr",
+    nodes: [
+      { id: "push", label: "push", shape: "box" },
+      { id: "s", label: "المكدس", shape: "db" },
+      { id: "pop", label: "pop", shape: "box" },
+    ],
+    edges: [
+      { from: "push", to: "s", label: "يضيف للأعلى", reply: false },
+      { from: "s", to: "pop", label: "يسحب الأعلى", reply: false },
+    ],
+  },
+};
+
 function step(s, action, payload) {
   const out = [];
   const st = s.state;
@@ -67,7 +86,7 @@ function step(s, action, payload) {
     st.stage = "check";
     st.segment = 0;
     st.pending = { type: "question", context: "check", question: QUESTION, index: null, total: null, attempts: 0, hints: 0 };
-    out.push(say(s, "tutor", [{ type: "lesson", topicId: "t1", segment: 0, total: 2, title: "الفكرة", md: "المكدس يعمل بمبدأ **آخر داخل أول خارج** [ص 2].\n\n```python\nstack.append(1)\n```", pages: [2] }]));
+    out.push(say(s, "tutor", [{ type: "lesson", topicId: "t1", segment: 0, total: 2, title: "الفكرة", md: "المكدس يعمل بمبدأ **آخر داخل أول خارج** [ص 2].\n\n```python\nstack.append(1)\n```", pages: [2], visual: DIAGRAM }]));
     out.push(say(s, "tutor", [{ type: "question", context: "check", question: QUESTION }], [{ id: "hint", label: "تلميح" }, { id: "reexplain", label: "اشرحه بطريقة ثانية" }]));
   } else if (action === "answer") {
     if (!st.pending || payload.questionId !== QUESTION.id) return { error: [409, "هذا السؤال لم يعد مفتوحاً."] };
@@ -142,6 +161,10 @@ export function handleTutor(req, p, body, send, res) {
     const r = step(s, body.action, body.payload ?? {});
     if (r.error) send(res, r.error[0], { detail: r.error[1] });
     else send(res, 200, r);
+    return true;
+  }
+  if (p.endsWith("/visual") && req.method === "GET") {
+    send(res, 200, { visual: DIAGRAM });
     return true;
   }
   if (req.method === "GET") {

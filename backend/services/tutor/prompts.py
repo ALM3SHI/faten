@@ -78,11 +78,31 @@ Return ONE JSON object:
         slides EXACTLY inside ``` fences with the language name. Cite pages like [ص 12].
         150-350 words. Do not put the check question here.",
       "pages": [pages this part explains],
-      "concept_ids": ["c1"]
+      "concept_ids": ["c1"],
+      "visual": VISUAL
     }}
   ],
   "questions": [ QUESTION, ... ]
 }}
+
+VISUAL — the ONE picture that best helps a student understand this part, or none.
+You never draw: you describe, and the app draws or finds it.
+  {{"kind": "diagram", "caption": "one Arabic line",
+    "diagram_type": "flow" | "sequence" | "cycle", "direction": "lr" | "tb",
+    "nodes": ["id | label", "id | label | db", "id | label | decision"],
+    "edges": ["id -> id", "id -> id | label", "id --> id | reply label"]}}
+     for a process, a flow of data, an architecture, an interaction over time
+     (sequence: nodes are the actors, edges are the messages in order; "-->" is a reply),
+     or a repeating cycle. 2-8 nodes, labels of at most 5 words (Arabic, English terms kept).
+     Only what the lecture says — never invent steps.
+  {{"kind": "slide", "caption": "...", "page": N}}
+     when a figure, table or code on that lecture page already shows it best.
+  {{"kind": "photo", "caption": "...", "queries": ["short English search", "another"]}}
+     only when a REAL picture helps (hardware, a lab instrument, an organ, a place,
+     a classic textbook figure). It is searched on Wikimedia Commons and checked
+     before it is shown. At most 2 photos per lesson.
+  {{"kind": "none"}}
+     when a picture would not add understanding — that is fine and often right.
 
 {question_spec}
 

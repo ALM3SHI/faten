@@ -99,6 +99,45 @@ export interface TutorState {
   version: number;
 }
 
+// ── Lesson pictures (backend: services/tutor/visuals.py) ──
+export interface DiagramNode {
+  id: string;
+  label: string;
+  shape: "box" | "db" | "decision";
+}
+export interface DiagramEdge {
+  from: string;
+  to: string;
+  label: string;
+  reply: boolean;
+}
+export interface Diagram {
+  type: "flow" | "sequence" | "cycle";
+  direction: "lr" | "tb";
+  nodes: DiagramNode[];
+  edges: DiagramEdge[];
+}
+export interface CommonsPhoto {
+  url: string;
+  width?: number;
+  height?: number;
+  title?: string;
+  page?: string;
+  license?: string;
+  artist?: string;
+}
+export type Visual =
+  | { kind: "diagram"; caption: string; diagram: Diagram }
+  | { kind: "slide"; caption: string; page: number }
+  | { kind: "photo"; caption: string; status: "pending" }
+  | { kind: "photo"; caption: string; status: "ready"; photo: CommonsPhoto };
+
+export async function loadVisual(id: string, topicId: string, segment: number): Promise<Visual | null> {
+  const q = `topic=${encodeURIComponent(topicId)}&segment=${segment}`;
+  const data = (await fetchWithAuth(`/api/tutor/lectures/${encodeURIComponent(id)}/visual?${q}`, { method: "GET" })) as { visual: Visual | null };
+  return data.visual ?? null;
+}
+
 // Blocks are open-ended records from the server; each renderer reads its own fields.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Block = { type: string } & Record<string, any>;

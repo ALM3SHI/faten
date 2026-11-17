@@ -5,6 +5,7 @@ Dynamic study mode — «المذاكرة الذكية الديناميكية».
   GET    /api/tutor/lectures                 the student's lectures + progress
   GET    /api/tutor/lectures/{id}            full session: lecture, state, messages, timer
   POST   /api/tutor/lectures/{id}/step       one tutor step {action, payload, version}
+  GET    /api/tutor/lectures/{id}/visual     one lesson part's picture (photo looked up in the background)
   PUT    /api/tutor/lectures/{id}/focus      save the study timer
   POST   /api/tutor/lectures/{id}/reset      start the lecture over (keeps the analysis)
   DELETE /api/tutor/lectures/{id}
@@ -216,6 +217,16 @@ async def step(lid: str, body: StepRequest, user_id: str = Depends(get_current_u
         raise HTTPException(status_code=409, detail="تقدّمت الجلسة من نافذة أو جهاز آخر — حدّثنا الصفحة لتكمل من آخر نقطة.")
     ctx, messages = await _apply(db, user_id, lecture, progress, body.action, body.payload, current)
     return {"state": engine.public_state(ctx), "messages": messages}
+
+
+@router.get("/lectures/{lid}/visual")
+async def get_visual(lid: str, topic: str, segment: int, user_id: str = Depends(get_current_user)):
+    """The picture of one lesson part — polled by the screen while a photo is
+    still being looked up in the background. Costs no credits."""
+    db = dbmod.get_db()
+    lecture = _load(db, user_id, lid)
+    ctx = _ctx(db, user_id, lecture, {})
+    return {"visual": engine.visual_of(ctx, topic[:40], segment)}
 
 
 @router.put("/lectures/{lid}/focus")
