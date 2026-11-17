@@ -142,24 +142,24 @@ export function RecordView() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-2xl md:text-3xl font-black">معدّلي</h1>
-        <p className="text-sm text-muted-foreground mt-1">معدلك وساعاتك وهدفك، وكيف توصل له.</p>
+        <h1 className="text-heading md:text-title font-bold">معدّلي</h1>
+        <p className="text-small text-ink-muted mt-1">معدلك وساعاتك وهدفك، وكيف توصل له.</p>
       </header>
 
       {noRecord ? (
         <Link
           href="/transcript"
           prefetch={false}
-          className="flex items-center gap-4 rounded-3xl border border-uqu-accent/30 bg-uqu-accent/[0.05] p-5 hover:bg-uqu-accent/10 transition-colors"
+          className="flex items-center gap-4 rounded-card border border-info-line bg-info-soft p-5 hover:bg-info-soft transition-colors"
         >
-          <span className="w-11 h-11 rounded-2xl bg-uqu-accent/15 text-uqu-accent flex items-center justify-center shrink-0">
+          <span className="w-11 h-11 rounded-card bg-info-soft text-info-ink flex items-center justify-center shrink-0">
             <Upload className="w-5 h-5" aria-hidden />
           </span>
           <span className="flex-1">
-            <span className="block font-black">ارفع سجلك الأكاديمي</span>
-            <span className="block text-sm text-muted-foreground">PDF من البوابة — نحسب معدلك وساعاتك وكم تحتاج لهدفك.</span>
+            <span className="block font-bold">ارفع سجلك الأكاديمي</span>
+            <span className="block text-small text-ink-muted">PDF من البوابة — نحسب معدلك وساعاتك وكم تحتاج لهدفك.</span>
           </span>
-          <ChevronLeft className="w-4 h-4 text-uqu-accent" aria-hidden />
+          <ChevronLeft className="w-4 h-4 text-info-ink" aria-hidden />
         </Link>
       ) : (
         <>
@@ -191,7 +191,7 @@ export function RecordView() {
           <Link
             href="/gpa"
             prefetch={false}
-            className="flex items-center justify-center gap-2 h-12 rounded-2xl bg-uqu-accent text-white font-bold hover:bg-uqu-accent/90 transition-colors"
+            className="flex items-center justify-center gap-2 h-12 rounded-card bg-brand font-semibold text-on-brand motion-fast transition-colors hover:bg-brand-hover focus-ring"
           >
             <Calculator className="w-4 h-4" aria-hidden />
             جرّب سيناريو لدرجات هذا الفصل
@@ -270,17 +270,17 @@ export function RecordView() {
       )}
 
       <section aria-labelledby="record-more" className="pt-2">
-        <h2 id="record-more" className="text-sm font-black text-muted-foreground px-1 mb-2">المزيد</h2>
-        <ul className="rounded-3xl border border-foreground/10 divide-y divide-foreground/5 overflow-hidden">
+        <h2 id="record-more" className="text-small font-bold text-ink-muted px-1 mb-2">المزيد</h2>
+        <ul className="rounded-card border border-line divide-y divide-line overflow-hidden">
           {MORE.map(({ href, label, detail, Icon }) => (
             <li key={href}>
-              <Link href={href} prefetch={false} className="group flex items-center gap-3 px-4 py-3 hover:bg-foreground/5 transition-colors">
-                <Icon className="w-5 h-5 text-muted-foreground shrink-0" aria-hidden />
+              <Link href={href} prefetch={false} className="group flex items-center gap-3 px-4 py-3 hover:bg-surface-sunken transition-colors">
+                <Icon className="w-5 h-5 text-ink-muted shrink-0" aria-hidden />
                 <span className="flex-1 min-w-0">
-                  <span className="block text-sm font-bold">{label}</span>
-                  <span className="block text-xs text-muted-foreground truncate">{detail}</span>
+                  <span className="block text-small font-bold">{label}</span>
+                  <span className="block text-caption text-ink-muted truncate">{detail}</span>
                 </span>
-                <ChevronLeft className="w-4 h-4 text-muted-foreground/60 group-hover:text-foreground" aria-hidden />
+                <ChevronLeft className="w-4 h-4 text-ink-muted group-hover:text-ink" aria-hidden />
               </Link>
             </li>
           ))}
@@ -288,7 +288,7 @@ export function RecordView() {
       </section>
 
       {analyticsError && analyticsError.kind !== "migration" && (
-        <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 text-rose-700 dark:text-rose-200 text-xs flex items-start gap-3">
+        <div className="p-4 rounded-card bg-danger-soft border border-danger-line text-danger-ink text-caption flex items-start gap-3">
           <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
           <span>
             {analyticsError.kind === "network"

@@ -8,7 +8,14 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { ChatResponse } from "@/lib/ai";
 import type { SuggestedNavigation } from "@/store/workspaceStore";
-import { BotMarkdown } from "@/components/bot-markdown";
+import dynamic from "next/dynamic";
+import { useLatch } from "@/lib/use-latch";
+
+// Markdown rendering loads with the first answer; until then the text shows as is.
+const BotMarkdown = dynamic(() => import("@/components/bot-markdown").then((m) => m.BotMarkdown), {
+  ssr: false,
+  loading: () => null,
+});
 import { SourceCards } from "@/components/chat/source-cards";
 import { toolStatusLabel } from "@/lib/sse";
 import { useBackendStatus } from "@/lib/backend-status";
@@ -16,11 +23,14 @@ import { api, ApiError, NETWORK_ERROR_MESSAGE } from "@/lib/api";
 import { SmartLoadingIndicator } from "@/components/smart-loading-indicator";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button, IconButton, buttonClass } from "@/components/ds/button";
 import { AIService, Message as AIMessage } from "@/lib/ai";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m as motion, AnimatePresence } from "framer-motion";
+
+const motionFeatures = () => import("framer-motion").then((mod) => mod.domAnimation);
 import { ChatInput } from "@/components/chat-input";
 import { ChatModeSwitch } from "@/components/tutor/mode-switch";
-import { ChatHistoryDrawer } from "@/components/chat-history-drawer";
+const ChatHistoryDrawer = dynamic(() => import("@/components/chat-history-drawer").then((m) => m.ChatHistoryDrawer), { ssr: false });
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -153,11 +163,11 @@ function NavigationCTA({ actions }: { actions: SuggestedNavigation[] }) {
         <Link
           key={a.path}
           href={a.path}
-          className="group inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-uqu-accent/10 hover:bg-uqu-accent/20 border border-uqu-accent/30 hover:border-uqu-accent/60 text-uqu-accent text-xs font-bold transition-all active:scale-95 shadow-sm"
+          className="group inline-flex min-h-11 items-center gap-2 rounded-full border border-info-line bg-info-soft px-4 text-small font-semibold text-info-ink motion-fast transition-colors hover:border-info-ink focus-ring"
         >
           <span aria-hidden>{a.icon}</span>
           <span>{a.label}</span>
-          <ArrowLeft className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:-translate-x-0.5 transition-all" />
+          <ArrowLeft className="size-4 opacity-70 motion-fast transition-transform group-hover:-translate-x-0.5" aria-hidden />
         </Link>
       ))}
     </div>
@@ -178,6 +188,10 @@ function ChatPageContent() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const historyMounted = useLatch(isHistoryOpen);
+  useEffect(() => {
+    void import("@/components/bot-markdown");
+  }, []);
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
   const mounted = useHydrated();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -366,7 +380,8 @@ function ChatPageContent() {
   }, [initialQuery, hasInitialized]);
 
   return (
-    <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-background text-foreground font-sans overflow-hidden" dir="rtl">
+    <LazyMotion features={motionFeatures}>
+    <div className="ds-page flex h-[calc(100dvh-var(--bottom-nav-h))] flex-col overflow-hidden bg-canvas text-ink" dir="rtl">
       <Navbar />
 
       <main className="flex-1 flex overflow-hidden w-full p-4 pt-20 gap-4">
@@ -377,40 +392,31 @@ function ChatPageContent() {
           initial={false}
           className="h-full flex flex-col relative transition-all duration-500 w-full max-w-5xl mx-auto"
         >
-          {/* Header — bot-identity block removed (Task 1). Minimal control bar
-              keeps History + Settings accessible without burning vertical space. */}
-          <div className="flex items-center justify-between pb-2 mb-2 shrink-0 px-1">
+          <h1 className="sr-only">اسأل فطن</h1>
+          {/* Control bar: history, the three modes of فطن, settings. */}
+          <div className="mb-2 flex shrink-0 items-center justify-between gap-2 px-1 pb-2">
             {/* Right: History */}
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              aria-label="سجل الدردشات"
-              className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium"
-            >
-              <History className="w-4 h-4" />
-              <span className="hidden sm:inline">سجل الدردشات</span>
-            </button>
+            <Button variant="quiet" size="sm" onClick={() => setIsHistoryOpen(true)} className="text-ink-muted hover:text-ink">
+              <History aria-hidden />
+              {/* Visible on wider screens; always the button's name. */}
+              <span className="sr-only sm:not-sr-only">سجل الدردشات</span>
+            </Button>
 
             {/* Middle: general chat ↔ guided study mode (/tutor) */}
             <ChatModeSwitch active="chat" />
 
             {/* Left: Settings dropdown (Task 2) */}
             <DropdownMenu>
-              <DropdownMenuTrigger
-                aria-label="الإعدادات"
-                className="flex items-center gap-2 text-muted hover:text-foreground hover:bg-foreground/5 rounded-xl px-3 py-2 transition-all text-[13px] font-medium outline-none"
-              >
-                <span className="hidden sm:inline">الإعدادات</span>
-                <Settings className="w-4 h-4" />
+              <DropdownMenuTrigger className={buttonClass({ variant: "quiet", size: "sm", className: "text-ink-muted hover:text-ink" })}>
+                <span className="sr-only sm:not-sr-only">الإعدادات</span>
+                <Settings aria-hidden />
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="min-w-[220px] bg-card/95 backdrop-blur-xl border border-foreground/10 text-foreground"
-              >
+              <DropdownMenuContent align="end" className="min-w-56 border border-line bg-surface-raised text-ink shadow-menu">
                 <DropdownMenuItem
                   onClick={() => setClearHistoryOpen(true)}
-                  className="gap-2 text-[13px] text-red-500 focus:bg-red-500/10 focus:text-red-400"
+                  className="gap-2 text-small text-danger-ink focus:bg-danger-soft focus:text-danger-ink"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="size-4" aria-hidden />
                   <span>مسح سجل المحادثة</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -420,13 +426,13 @@ function ChatPageContent() {
           {/* Messages Container */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto pb-32 px-6 flex flex-col gap-5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full"
+            className="flex flex-1 flex-col gap-5 overflow-y-auto px-2 pb-32 sm:px-6"
             dir="rtl"
           >
             {(backendStatus === "waking" || backendStatus === "down") && (
-                <div className="mx-auto max-w-md text-center text-[12.5px] px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300" role="status">
+                <div className="mx-auto max-w-md rounded-card border border-warning-line bg-warning-soft px-4 py-2 text-center text-small text-warning-ink" role="status">
                   {backendStatus === "waking"
-                    ? "⏳ جارٍ تجهيز المساعد… أول استخدام بعد فترة هدوء قد يأخذ حتى دقيقة."
+                    ? "جارٍ تجهيز المساعد… أول استخدام بعد فترة هدوء قد يأخذ حتى دقيقة."
                     : "تعذّر الوصول للمساعد حالياً. تحقق من اتصالك وحاول بعد قليل."}
                 </div>
               )}
@@ -449,33 +455,31 @@ function ChatPageContent() {
                         error bubbles so the eye lands on it first. */}
                     {isBot ? (
                       isError ? (
-                        <div className="w-8 h-8 rounded-full bg-amber-500/15 border border-amber-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                          <AlertTriangle className="w-4 h-4 text-amber-500" />
+                        <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-warning-line bg-warning-soft text-warning-ink" aria-hidden>
+                          <AlertTriangle className="size-4" />
                         </div>
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-uqu-accent to-cyan-500 flex items-center justify-center shrink-0 shadow-[0_0_12px_hsla(245,78%,62%,0.3)] mt-0.5">
-                          <Sparkles className="w-4 h-4 text-foreground" />
+                        <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-brand text-on-brand" aria-hidden>
+                          <Sparkles className="size-4" />
                         </div>
                       )
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-uqu-accent/20 border border-uqu-accent/40 flex items-center justify-center shrink-0 mt-0.5">
-                        <UserIcon className="w-4 h-4 text-uqu-accent" />
+                      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-info-line bg-info-soft text-info-ink" aria-hidden>
+                        <UserIcon className="size-4" />
                       </div>
                     )}
 
                     {/* Bubble */}
                     <div className={cn(
-                      "max-w-[70%] flex flex-col gap-1",
+                      "flex max-w-[85%] flex-col gap-1.5 sm:max-w-[75%]",
                       isBot ? "items-start" : "items-end"
                     )}>
                       <div className={cn(
-                        "px-4 py-3 text-[15px] leading-relaxed rounded-2xl",
-                        !isBot && "bg-uqu-accent text-white rounded-tr-sm shadow-lg shadow-uqu-accent/15 text-left",
-                        isBot && !isError && "bg-card border border-foreground/10 text-foreground rounded-tl-sm text-right",
-                        // Warning style — orange tint + dashed border so
-                        // it visually reads as "system notice" rather
-                        // than a normal answer the user should act on.
-                        isBot && isError && "bg-amber-500/10 border border-amber-500/40 text-foreground rounded-tl-sm text-right shadow-[inset_0_0_0_1px_hsla(38,92%,55%,0.10)]"
+                        "rounded-card px-4 py-3 text-body",
+                        !isBot && "rounded-tr-sm bg-brand text-start text-on-brand",
+                        isBot && !isError && "rounded-tl-sm border border-line bg-surface text-start text-ink shadow-card",
+                        // A system notice, not an answer to act on.
+                        isBot && isError && "rounded-tl-sm border border-warning-line bg-warning-soft text-start text-ink"
                       )}>
                         {isBot ? (
                           isError ? (
@@ -504,12 +508,9 @@ function ChatPageContent() {
                       {isBot && msg.suggestedActions && msg.suggestedActions.length > 0 && (
                         <NavigationCTA actions={msg.suggestedActions} />
                       )}
-                      <span
-                        className="text-[10px] text-muted px-1"
-                        suppressHydrationWarning
-                      >
+                      <span className="nums px-1 text-caption text-ink-muted" suppressHydrationWarning>
                         {mounted
-                          ? msg.timestamp.toLocaleTimeString("ar-SA", {
+                          ? msg.timestamp.toLocaleTimeString("ar-SA-u-nu-latn", {
                               hour: "2-digit",
                               minute: "2-digit",
                             })
@@ -527,20 +528,20 @@ function ChatPageContent() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 items-start w-full flex-row"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-uqu-accent to-cyan-500 flex items-center justify-center shrink-0 animate-pulse mt-0.5">
-                    <Sparkles className="w-4 h-4 text-foreground" />
+                  <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-brand text-on-brand motion-safe:animate-pulse" aria-hidden>
+                    <Sparkles className="size-4" />
                   </div>
                   {streamText ? (
-                    <div className="max-w-[85%] px-4 py-3 text-[15px] leading-relaxed rounded-2xl rounded-tl-sm bg-card border border-foreground/10 text-foreground text-right">
+                    <div className="max-w-[85%] rounded-card rounded-tl-sm border border-line bg-surface px-4 py-3 text-start text-body text-ink shadow-card sm:max-w-[75%]">
                       <BotMarkdown content={streamText} />
-                      <span aria-hidden className="inline-block w-1.5 h-4 align-middle bg-uqu-accent/70 animate-pulse rounded-sm" />
+                      <span aria-hidden className="inline-block h-4 w-1.5 rounded-sm bg-brand align-middle motion-safe:animate-pulse" />
                     </div>
                   ) : (
                     <div className="flex flex-col gap-1.5 items-start">
                       <SmartLoadingIndicator />
                       {(streamStatus || slowReply) && (
-                        <span className="text-[12px] text-muted-foreground px-2" aria-live="polite">
-                          {streamStatus ?? "⏳ الخادم يصحى بعد فترة هدوء — أول رد قد يأخذ حتى دقيقة."}
+                        <span className="px-2 text-small text-ink-muted" aria-live="polite">
+                          {streamStatus ?? "الخادم يصحى بعد فترة هدوء — أول رد قد يأخذ حتى دقيقة."}
                         </span>
                       )}
                     </div>
@@ -551,16 +552,12 @@ function ChatPageContent() {
           {/* Starter prompts — only on a fresh conversation */}
             {!isLoading && !messages.some((m) => m.role === "user") && (
               <div className="mt-auto pt-6">
-                <p className="text-xs font-bold text-muted-foreground mb-2 text-center">جرّب تسأل:</p>
-                <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+                <p className="mb-3 text-center text-small font-semibold text-ink-muted">جرّب تسأل:</p>
+                <div className="mx-auto flex max-w-3xl flex-wrap justify-center gap-2">
                   {STARTER_PROMPTS.map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => handleSend(q)}
-                      className="px-3.5 py-2 rounded-xl border border-border bg-card hover:border-uqu-accent/50 hover:text-uqu-accent text-[13px] font-medium transition-colors text-right"
-                    >
+                    <Button key={q} size="sm" onClick={() => handleSend(q)} className="h-auto min-h-11 whitespace-normal rounded-full py-2 text-start font-medium">
                       {q}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -569,7 +566,7 @@ function ChatPageContent() {
           </div>
 
           {/* Floating Input Pill */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-1rem)] z-20">
+          <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-canvas from-60% to-transparent px-2 pt-6 pb-4 sm:px-4">
             <ChatInput
               value={input}
               onChange={setInput}
@@ -596,6 +593,7 @@ function ChatPageContent() {
         }}
       />
 
+      {historyMounted && (
       <ChatHistoryDrawer
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
@@ -612,7 +610,9 @@ function ChatPageContent() {
           setIsHistoryOpen(false);
         }}
       />
+      )}
     </div>
+    </LazyMotion>
   );
 }
 
@@ -662,21 +662,20 @@ function ReplyFeedback({
     <div className="flex flex-col gap-1.5 items-start">
       <div className="flex items-center gap-1" role="group" aria-label="قيّم الرد">
         {(["up", "down"] as const).map((r) => (
-          <button
+          <IconButton
             key={r}
-            type="button"
+            label={r === "up" ? "رد مفيد" : "رد غير مفيد"}
             onClick={() => click(r)}
             aria-pressed={msg.feedback === r}
-            aria-label={r === "up" ? "رد مفيد" : "رد غير مفيد"}
             className={cn(
-              "p-1.5 rounded-lg transition-colors text-muted-foreground hover:bg-foreground/5",
-              msg.feedback === r && (r === "up" ? "text-emerald-500 bg-emerald-500/10" : "text-rose-500 bg-rose-500/10"),
+              "size-9 text-ink-muted [&_svg]:size-4",
+              msg.feedback === r && (r === "up" ? "bg-success-soft text-success-ink hover:bg-success-soft" : "bg-danger-soft text-danger-ink hover:bg-danger-soft"),
             )}
           >
-            {r === "up" ? <ThumbsUp className="w-3.5 h-3.5" /> : <ThumbsDown className="w-3.5 h-3.5" />}
-          </button>
+            {r === "up" ? <ThumbsUp aria-hidden /> : <ThumbsDown aria-hidden />}
+          </IconButton>
         ))}
-        {sent && <span className="text-[11px] text-muted-foreground mr-1">شكراً، وصلت ملاحظتك.</span>}
+        {sent && <span className="ms-1 text-caption text-ink-muted" role="status">شكراً، وصلت ملاحظتك.</span>}
       </div>
       {askWhy && !sent && (
         <form
@@ -692,10 +691,11 @@ function ReplyFeedback({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             maxLength={1000}
+            aria-label="وش كان الخطأ؟ (اختياري)"
             placeholder="وش كان الخطأ؟ (اختياري)"
-            className="flex-1 min-w-0 h-8 px-3 rounded-lg bg-card border border-foreground/10 text-[12.5px] focus:outline-none focus:border-uqu-accent/50"
+            className="h-9 min-w-0 flex-1 rounded-control border border-line-strong bg-surface px-3 text-small text-ink placeholder:text-ink-muted focus-ring"
           />
-          <button type="submit" className="h-8 px-3 rounded-lg bg-uqu-accent text-white text-[12px] font-bold">إرسال</button>
+          <Button type="submit" variant="primary" size="sm">إرسال</Button>
         </form>
       )}
     </div>

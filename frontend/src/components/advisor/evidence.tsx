@@ -9,7 +9,7 @@
 import { AlertTriangle, BadgeCheck, FileText, HelpCircle, Scale } from "lucide-react";
 import { RULE_KIND_LABEL, type AdvisorRun, type RuleCite } from "@/lib/advisor";
 
-const BOX = "rounded-2xl border p-3 text-sm leading-7";
+const BOX = "rounded-card border p-3 text-small leading-7";
 
 export function StandingCard({ run }: { run: AdvisorRun }) {
   const st = run.standing;
@@ -17,27 +17,27 @@ export function StandingCard({ run }: { run: AdvisorRun }) {
   const w = st.warning;
   const tone =
     w.status === "warning"
-      ? "border-rose-500/30 bg-rose-500/10"
+      ? "border-danger-line bg-danger-soft"
       : w.status === "clear"
-        ? "border-emerald-500/30 bg-emerald-500/10"
-        : "border-foreground/10 bg-foreground/5";
+        ? "border-success-line bg-success-soft"
+        : "border-line bg-surface-sunken";
   return (
     <section aria-labelledby="standing-title" className="grid gap-3 sm:grid-cols-2">
       <h3 id="standing-title" className="sr-only">
         الوضع الأكاديمي
       </h3>
       <div className={`${BOX} ${tone}`}>
-        <p className="font-black flex items-center gap-2">
+        <p className="font-bold flex items-center gap-2">
           <Scale className="w-4 h-4" aria-hidden />
           الإنذار الأكاديمي: {w.status === "warning" ? "نعم" : w.status === "clear" ? "لا" : "غير محسوم"}
         </p>
         <p>{w.message}</p>
-        <p className="text-xs text-muted-foreground">{w.summer_note}</p>
+        <p className="text-caption text-ink-muted">{w.summer_note}</p>
       </div>
-      <div className={`${BOX} border-foreground/10`}>
-        <p className="font-black">شرط التخرج</p>
+      <div className={`${BOX} border-line`}>
+        <p className="font-bold">شرط التخرج</p>
         <p>{st.graduation.message}</p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-ink-muted">
           الإنذار والتخرج قاعدتان مختلفتان تشتركان في معدل التخرج المحدد لتخصصك.
         </p>
       </div>
@@ -51,7 +51,7 @@ export function FitAlert({ run }: { run: AdvisorRun }) {
   return (
     <>
       {fit && (fit.verdict === "other_edition" || fit.verdict === "mismatch") && (
-        <p role="alert" className={`${BOX} border-rose-500/30 bg-rose-500/10 flex gap-2 font-bold`}>
+        <p role="alert" className={`${BOX} border-danger-line bg-danger-soft flex gap-2 font-bold`}>
           <AlertTriangle className="w-4 h-4 mt-1.5 shrink-0" aria-hidden />
           <span>
             {fit.message}
@@ -67,7 +67,7 @@ export function FitAlert({ run }: { run: AdvisorRun }) {
         </p>
       )}
       {prep?.in_prep && prep.notice && (
-        <p role="status" className={`${BOX} border-uqu-accent/30 bg-uqu-accent/5`}>
+        <p role="status" className={`${BOX} border-info-line bg-info-soft`}>
           {prep.notice}
         </p>
       )}
@@ -80,43 +80,43 @@ export function EquivalenceList({ run }: { run: AdvisorRun }) {
   if (!eq || (eq.counts.total === 0 && eq.no_equivalent.length === 0)) return null;
   if (eq.counts.total === 0 && run.curriculum_fit?.verdict !== "transferred") return null;
   return (
-    <details className="rounded-2xl border border-foreground/10 p-4">
-      <summary className="cursor-pointer font-bold text-sm">
+    <details className="rounded-card border border-line p-4">
+      <summary className="cursor-pointer font-bold text-small">
         معادلة مقرراتك من خطتك السابقة ({eq.counts.total} مقرر
         {eq.counts.likely > 0 && `، ${eq.counts.likely} مرجّحة`})
       </summary>
-      <p className="mt-2 text-xs text-muted-foreground leading-6">
+      <p className="mt-2 text-caption text-ink-muted leading-6">
         نحتسب مقرراتك القديمة لمتطلبات الخطة الحالية فقط؛ معدلك وساعاتك المكتسبة تبقى كما في سجلك. «مرجّحة» تعني أن المقرر
         نفسه بالاسم والمحتوى لكن القسم لم يؤكد المعادلة بعد.
       </p>
-      <ul className="mt-3 space-y-2 text-sm">
+      <ul className="mt-3 space-y-2 text-small">
         {eq.applied.map((m) => (
-          <li key={m.to} className="rounded-xl border border-foreground/10 p-3 leading-7">
+          <li key={m.to} className="rounded-control border border-line p-3 leading-7">
             <p className="flex flex-wrap items-baseline gap-2">
               {m.from.map((f) => (
                 <span key={f.code}>
-                  <bdi dir="ltr">{f.code}</bdi> {f.name} <span className="text-xs text-muted-foreground">({f.credits} س)</span>
+                  <bdi dir="ltr">{f.code}</bdi> {f.name} <span className="text-caption text-ink-muted">({f.credits} س)</span>
                 </span>
               ))}
               <span aria-hidden>←</span>
               <span className="font-bold">
                 <bdi dir="ltr">{m.to}</bdi> {m.to_name}
               </span>
-              <span className="text-xs text-muted-foreground">({m.to_credits} س)</span>
+              <span className="text-caption text-ink-muted">({m.to_credits} س)</span>
               <span
-                className={`text-xs rounded-full px-2 ${
-                  m.confidence === "confirmed" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300" : "bg-amber-500/15 text-amber-800 dark:text-amber-300"
+                className={`text-caption rounded-full px-2 ${
+                  m.confidence === "confirmed" ? "bg-success-soft text-success-ink " : "bg-warning-soft text-warning-ink "
                 }`}
               >
                 {m.confidence_label}
               </span>
             </p>
-            {m.note && <p className="text-xs text-muted-foreground">{m.note}</p>}
+            {m.note && <p className="text-caption text-ink-muted">{m.note}</p>}
           </li>
         ))}
       </ul>
       {eq.no_equivalent.length > 0 && (
-        <p className="mt-3 text-xs text-muted-foreground leading-6">
+        <p className="mt-3 text-caption text-ink-muted leading-6">
           بلا مقابل في الخطة الحالية ({eq.no_equivalent.length}):{" "}
           {eq.no_equivalent.map((c) => c.name || c.code).join("، ")}. قد يحتسب القسم بعضها اختيارياً.
         </p>
@@ -129,19 +129,19 @@ export function ElectiveOptionsList({ run }: { run: AdvisorRun }) {
   const eo = run.elective_options;
   if (!eo || eo.options.length === 0) return null;
   return (
-    <details className="rounded-2xl border border-foreground/10 p-4">
-      <summary className="cursor-pointer font-bold text-sm">
+    <details className="rounded-card border border-line p-4">
+      <summary className="cursor-pointer font-bold text-small">
         مقررات اختيارية موثّقة ({eo.options.length}) — قائمة جزئية
       </summary>
-      <p className="mt-2 text-xs text-muted-foreground leading-6">{eo.note}</p>
-      <ul className="mt-3 space-y-2 text-sm">
+      <p className="mt-2 text-caption text-ink-muted leading-6">{eo.note}</p>
+      <ul className="mt-3 space-y-2 text-small">
         {eo.options.map((o) => (
-          <li key={o.code} className="rounded-xl border border-foreground/10 p-3 leading-7">
+          <li key={o.code} className="rounded-control border border-line p-3 leading-7">
             <p className="font-bold flex flex-wrap gap-2 items-baseline">
               <bdi dir="ltr">{o.code}</bdi> <span>{o.title}</span>
-              <span className="text-xs text-muted-foreground">({o.credits} ساعات)</span>
+              <span className="text-caption text-ink-muted">({o.credits} ساعات)</span>
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-ink-muted">
               {o.taken
                 ? "اجتزته."
                 : o.eligible
@@ -149,7 +149,7 @@ export function ElectiveOptionsList({ run }: { run: AdvisorRun }) {
                   : `ينقصك: ${o.missing_prerequisites.join("، ")}`}
               {o.corequisites_to_pair.length > 0 && ` — متطلب متزامن: ${o.corequisites_to_pair.join("، ")} (قبله أو معه)`}
             </p>
-            <a href={o.source_url} target="_blank" rel="noreferrer" className="text-xs underline">
+            <a href={o.source_url} target="_blank" rel="noreferrer" className="text-caption underline">
               توصيف المقرر {o.document?.version ? `(الإصدار ${o.document.version})` : ""}
             </a>
           </li>
@@ -164,15 +164,15 @@ export function UncertaintyList({ run }: { run: AdvisorRun }) {
   if (!items.length) return null;
   return (
     <section aria-labelledby="unc-title" className="space-y-3">
-      <h3 id="unc-title" className="font-black flex items-center gap-2">
-        <HelpCircle className="w-5 h-5 text-uqu-accent" aria-hidden />
+      <h3 id="unc-title" className="font-bold flex items-center gap-2">
+        <HelpCircle className="w-5 h-5 text-info-ink" aria-hidden />
         ما لا نعرفه وأثره على التوصية
       </h3>
       <ul className="space-y-2">
         {items.map((u) => (
-          <li key={u.topic} className={`${BOX} border-amber-500/30 bg-amber-500/5`}>
+          <li key={u.topic} className={`${BOX} border-warning-line bg-warning-soft`}>
             <p className="font-bold">{u.message}</p>
-            <p className="text-muted-foreground">الأثر: {u.effect}</p>
+            <p className="text-ink-muted">الأثر: {u.effect}</p>
           </li>
         ))}
       </ul>
@@ -184,7 +184,7 @@ export function DocumentsList({ run }: { run: AdvisorRun }) {
   const docs = run.documents ?? [];
   if (!docs.length) return null;
   return (
-    <details className="text-sm rounded-2xl border border-foreground/10 p-4">
+    <details className="text-small rounded-card border border-line p-4">
       <summary className="cursor-pointer font-bold flex items-center gap-2">
         <FileText className="w-4 h-4" aria-hidden />
         الوثائق الرسمية المستخدمة ({docs.length})
@@ -195,14 +195,14 @@ export function DocumentsList({ run }: { run: AdvisorRun }) {
             <a href={d.url} target="_blank" rel="noreferrer" className="underline" dir="auto">
               {d.title}
             </a>
-            <span className="text-muted-foreground">
+            <span className="text-ink-muted">
               {d.version ? ` — الإصدار ${d.version}` : ""}
               {d.date ? ` — ${d.date}` : ""}
             </span>
             {d.applicability === "not_applicable" ? (
-              <p className="text-xs text-amber-800 dark:text-amber-300">لا تنطبق على الخطة الحالية: {d.reason}</p>
+              <p className="text-caption text-warning-ink">لا تنطبق على الخطة الحالية: {d.reason}</p>
             ) : (
-              <span className="text-xs text-emerald-700 dark:text-emerald-300 ms-2 inline-flex items-center gap-1">
+              <span className="text-caption text-success-ink ms-2 inline-flex items-center gap-1">
                 <BadgeCheck className="w-3.5 h-3.5" aria-hidden /> مطبّقة
               </span>
             )}
@@ -219,21 +219,21 @@ export function RulesByKind({ rules }: { rules: RuleCite[] }) {
     .map((k) => [k, rules.filter((r) => (r.kind ?? (r.status === "verified" ? "hard" : "unknown")) === k)] as const)
     .filter(([, list]) => list.length > 0);
   return (
-    <details className="text-sm rounded-2xl border border-foreground/10 p-4">
+    <details className="text-small rounded-card border border-line p-4">
       <summary className="cursor-pointer font-bold">قواعد اللائحة والافتراضات المطبّقة</summary>
       <div className="mt-2 space-y-3">
         {groups.map(([kind, list]) => (
           <div key={kind}>
-            <p className="font-black text-xs text-muted-foreground mb-1">{RULE_KIND_LABEL[kind]}</p>
+            <p className="font-bold text-caption text-ink-muted mb-1">{RULE_KIND_LABEL[kind]}</p>
             <ul className="space-y-1.5 leading-7">
               {list.map((r) => (
                 <li key={r.rule}>
                   {r.text}
-                  {r.article && <span className="text-muted-foreground"> — {r.article}</span>}
+                  {r.article && <span className="text-ink-muted"> — {r.article}</span>}
                   {r.source_url && (
                     <>
                       {" "}
-                      <a href={r.source_url} target="_blank" rel="noreferrer" className="underline text-xs">
+                      <a href={r.source_url} target="_blank" rel="noreferrer" className="underline text-caption">
                         المصدر
                       </a>
                     </>

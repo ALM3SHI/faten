@@ -45,7 +45,6 @@ export function AccountMenu({ name, active }: { name: string; active: boolean })
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="حسابي والقائمة"
         className={cn(
           "flex items-center gap-2 rounded-xl px-1.5 py-1 hover:bg-foreground/5 outline-none focus-visible:ring-2 focus-visible:ring-uqu-accent/50 transition-colors",
           active && "bg-uqu-accent/10",
@@ -55,6 +54,9 @@ export function AccountMenu({ name, active }: { name: string; active: boolean })
           {name ? name.trim().charAt(0) : <User className="w-4 h-4" />}
         </span>
         <span className="hidden xl:inline text-xs font-bold text-foreground max-w-32 truncate">{name}</span>
+        {/* The button's name is its content — the visible name when shown, then
+            this — so the accessible name always contains what is on screen. */}
+        <span className="sr-only">حسابي والقائمة</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[240px] p-1.5">
         {name && (

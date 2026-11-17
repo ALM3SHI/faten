@@ -224,11 +224,11 @@ export const STATUS_LABEL: Record<TopicStatus, string> = {
 };
 
 export const STATUS_TONE: Record<TopicStatus, string> = {
-  not_started: "text-muted-foreground border-foreground/15 bg-foreground/[0.03]",
-  in_progress: "text-uqu-accent border-uqu-accent/30 bg-uqu-accent/10",
-  needs_review: "text-amber-700 dark:text-amber-300 border-amber-500/40 bg-amber-500/10",
-  review_due: "text-sky-700 dark:text-sky-300 border-sky-500/40 bg-sky-500/10",
-  mastered: "text-emerald-700 dark:text-emerald-300 border-emerald-500/40 bg-emerald-500/10",
+  not_started: "text-ink-muted border-line bg-surface-sunken",
+  in_progress: "text-info-ink border-info-line bg-info-soft",
+  needs_review: "text-warning-ink border-warning-line bg-warning-soft",
+  review_due: "text-info-ink border-info-line bg-info-soft",
+  mastered: "text-success-ink border-success-line bg-success-soft",
 };
 
 export const CONTEXT_LABEL: Record<QuestionBlock["context"], string> = {

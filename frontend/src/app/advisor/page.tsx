@@ -97,28 +97,28 @@ export default function AdvisorPage() {
   const otherEdition = run?.curriculum_fit?.verdict === "other_edition" || run?.curriculum_fit?.verdict === "mismatch";
 
   return (
-    <div className="min-h-screen bg-background pb-28" dir="rtl">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-28" dir="rtl">
       <Navbar />
       <main className="container mx-auto pt-24 px-4 max-w-4xl space-y-6">
         <SectionTabs />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black flex items-center gap-3">
-              <Compass className="w-8 h-8 text-uqu-accent" aria-hidden />
+            <h1 className="text-title font-bold flex items-center gap-3">
+              <Compass className="w-8 h-8 text-info-ink" aria-hidden />
               المرشد الأكاديمي
             </h1>
-            <p className="text-muted-foreground text-sm mt-1 leading-6 max-w-2xl">
+            <p className="text-ink-muted text-small mt-1 leading-6 max-w-2xl">
               ماذا تسجّل الفصل القادم، ومتى تتخرج، وما المخاطر — محسوبة من خطتك الرسمية وسجلك، مع توضيح كل ما هو غير مؤكد.
             </p>
           </div>
           {status === "ready" && (
             <div className="flex gap-2">
               {run && (
-                <Button variant="outline" onClick={() => setEditing((v) => !v)} className="rounded-2xl h-11">
+                <Button variant="outline" onClick={() => setEditing((v) => !v)} className="rounded-card h-11">
                   {editing ? "إخفاء الإعدادات" : "بياناتك وأهدافك"}
                 </Button>
               )}
-              <Button onClick={analyze} disabled={busy} className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-2">
+              <Button onClick={analyze} disabled={busy} className="rounded-card h-11 bg-brand hover:bg-brand-hover text-on-brand gap-2">
                 <RefreshCw className={`w-4 h-4 ${busy ? "animate-spin" : ""}`} aria-hidden />
                 {run ? "أعد التحليل" : "حلّل وضعي"}
               </Button>
@@ -126,9 +126,9 @@ export default function AdvisorPage() {
           )}
         </div>
 
-        {status === "loading" && <div className="h-48 rounded-[32px] bg-foreground/5 animate-pulse" aria-busy="true" />}
+        {status === "loading" && <div className="h-48 rounded-card bg-surface-sunken animate-pulse" aria-busy="true" />}
         {status === "error" && (
-          <Card className="glass rounded-[24px] border-foreground/10 p-8 text-center text-sm">
+          <Card className="border border-line bg-surface shadow-card rounded-card p-8 text-center text-small">
             تعذّر تحميل المرشد. تأكد من اتصالك ثم حدّث الصفحة.
           </Card>
         )}
@@ -138,9 +138,9 @@ export default function AdvisorPage() {
         )}
 
         {status === "ready" && !run && !editing && (
-          <Card className="glass rounded-[24px] border-foreground/10 p-8 text-center space-y-3">
-            <GraduationCap className="w-12 h-12 mx-auto text-uqu-accent" aria-hidden />
-            <p className="text-sm text-muted-foreground leading-7 max-w-md mx-auto">
+          <Card className="border border-line bg-surface shadow-card rounded-card p-8 text-center space-y-3">
+            <GraduationCap className="w-12 h-12 mx-auto text-info-ink" aria-hidden />
+            <p className="text-small text-ink-muted leading-7 max-w-md mx-auto">
               ارفع سجلك الأكاديمي من صفحة <Link href="/transcript" className="underline">السجل</Link> أولاً لنعرف مقرراتك المجتازة، ثم اضغط «حلّل وضعي».
             </p>
           </Card>
@@ -149,14 +149,14 @@ export default function AdvisorPage() {
         {status === "ready" && run && (
           <>
             {run.program_conflict && (
-              <p role="alert" className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm leading-7 flex flex-wrap items-center gap-2">
+              <p role="alert" className="rounded-card border border-warning-line bg-warning-soft p-4 text-small leading-7 flex flex-wrap items-center gap-2">
                 <span className="font-bold">{run.program_conflict.message}</span>
-                <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setEditing(true)}>
+                <Button variant="outline" size="sm" className="rounded-control" onClick={() => setEditing(true)}>
                   بياناتك وأهدافك
                 </Button>
               </p>
             )}
-            <Card className="glass rounded-[24px] border-foreground/10 p-5 md:p-6 space-y-4">
+            <Card className="border border-line bg-surface shadow-card rounded-card p-5 md:p-6 space-y-4">
               <div className="grid gap-4 sm:grid-cols-4 text-center">
                 <Stat label="التخصص" value={run.program.name} hint={`خطة ${VERIFICATION_LABEL[run.curriculum.verification]}`} />
                 <Stat
@@ -184,33 +184,33 @@ export default function AdvisorPage() {
                 <Stat label="درجة الثقة" value={CONFIDENCE_LABEL[run.confidence.level]} hint="حسب اكتمال البيانات" />
               </div>
               {planOk ? (
-                <div className="rounded-2xl bg-uqu-accent/5 border border-uqu-accent/20 p-4 text-sm leading-7">
-                  <p className="font-black">
+                <div className="rounded-card bg-info-soft border border-info-line p-4 text-small leading-7">
+                  <p className="font-bold">
                     المسار المقترح: {STRATEGY_LABEL[run.recommended_strategy]} — تخرج محسوب{" "}
                     {run.scenarios[run.recommended_strategy].graduation_label ?? "غير محدد"}
                   </p>
-                  <p className="text-muted-foreground">{run.strategy_reason}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-ink-muted">{run.strategy_reason}</p>
+                  <p className="text-caption text-ink-muted mt-1">
                     {run.load.basis}. الموعد ممكن رياضياً وفق الخطة المنشورة وليس مؤكداً للتسجيل.
                   </p>
                 </div>
               ) : graduated ? (
-                <div role="status" className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm leading-7 flex gap-3">
-                  <GraduationCap className="w-5 h-5 mt-1 shrink-0 text-emerald-700 dark:text-emerald-300" aria-hidden />
+                <div role="status" className="rounded-card border border-success-line bg-success-soft p-4 text-small leading-7 flex gap-3">
+                  <GraduationCap className="w-5 h-5 mt-1 shrink-0 text-success-ink" aria-hidden />
                   <div>
                     <p className="font-bold">{run.withheld_reason}</p>
                     {run.record_status?.reasons.map((r) => (
-                      <p key={r} className="text-xs text-muted-foreground">{r}</p>
+                      <p key={r} className="text-caption text-ink-muted">{r}</p>
                     ))}
                   </div>
                 </div>
               ) : (
-                <p role="alert" className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm leading-7 font-bold">
+                <p role="alert" className="rounded-card border border-danger-line bg-danger-soft p-4 text-small leading-7 font-bold">
                   {run.withheld_reason}
                 </p>
               )}
               {run.record_status?.status === "between_terms" && (
-                <p className="text-xs text-muted-foreground leading-6">
+                <p className="text-caption text-ink-muted leading-6">
                   سجلك مرصود بالكامل ولا توجد مقررات مسجلة حالياً، فنخطط لك من الفصل القادم.
                   {run.record_status.reasons.length > 0 && ` ${run.record_status.reasons.join(" ")}`}
                 </p>
@@ -219,7 +219,7 @@ export default function AdvisorPage() {
               <EquivalenceList run={run} />
               <StandingCard run={run} />
               {run.summary && (
-                <details className="text-sm">
+                <details className="text-small">
                   <summary className="cursor-pointer font-bold">الخلاصة في ست نقاط</summary>
                   <dl className="mt-2 space-y-2 leading-7">
                     <dt className="font-bold">ماذا أفعل؟</dt>
@@ -261,7 +261,7 @@ export default function AdvisorPage() {
                 { value: "ask", label: "اسأل المرشد", content: <AskAdvisor runId={run.run_id} /> },
               ]}
             />
-            <p className="text-xs text-muted-foreground leading-6">
+            <p className="text-caption text-ink-muted leading-6">
               فطن يساعدك على القرار ولا يسجّل عنك ولا يعدّل سجلك الرسمي. اعتمد التسجيل النهائي من نظام الجامعة وبعد مراجعة مرشدك الأكاديمي.
             </p>
           </>
@@ -272,15 +272,15 @@ export default function AdvisorPage() {
 }
 
 function Withheld({ text }: { text?: string | null }) {
-  return <p className="text-sm leading-7 text-muted-foreground">{text ?? "لا نستطيع اقتراح خطة لسجلك."}</p>;
+  return <p className="text-small leading-7 text-ink-muted">{text ?? "لا نستطيع اقتراح خطة لسجلك."}</p>;
 }
 
 function Stat({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
     <div className="space-y-1">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-lg font-black leading-tight">{value}</p>
-      <p className="text-[11px] text-muted-foreground">{hint}</p>
+      <p className="text-caption text-ink-muted">{label}</p>
+      <p className="text-subheading font-bold leading-tight">{value}</p>
+      <p className="text-caption text-ink-muted">{hint}</p>
     </div>
   );
 }

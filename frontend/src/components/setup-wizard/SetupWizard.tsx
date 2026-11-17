@@ -126,7 +126,7 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={handleClose}
-            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/70"
           />
           <motion.div
             key="wizard-modal"
@@ -134,14 +134,14 @@ export function SetupWizard({ isOpen, onClose, onComplete }: SetupWizardProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed inset-4 md:inset-x-auto md:inset-y-12 md:left-1/2 md:-translate-x-1/2 md:w-[min(1100px,calc(100%-2rem))] z-50 bg-card/95 backdrop-blur-2xl border border-foreground/10 rounded-[28px] shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-4 md:inset-x-auto md:inset-y-12 md:left-1/2 md:-translate-x-1/2 md:w-[min(1100px,calc(100%-2rem))] z-50 bg-surface border border-line rounded-card shadow-card flex flex-col overflow-hidden"
             dir="rtl"
             role="dialog"
             aria-label="معالج الإعداد الأكاديمي"
           >
             <StepIndicator step={step} onClose={handleClose} />
 
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded-full">
               {step === 1 && (
                 <Step1Transcript onConfirm={handleStep1Confirmed} />
               )}
@@ -177,7 +177,7 @@ function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => voi
   ];
 
   return (
-    <div className="flex items-center justify-between p-5 border-b border-foreground/10 shrink-0">
+    <div className="flex items-center justify-between p-5 border-b border-line shrink-0">
       <div className="flex items-center gap-3 md:gap-6">
         {labels.map((l, i) => {
           const isDone = step > l.n;
@@ -186,12 +186,12 @@ function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => voi
             <div key={l.n} className="flex items-center gap-3">
               <div
                 className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all shrink-0",
+                  "w-9 h-9 rounded-full flex items-center justify-center text-small font-bold transition-all shrink-0",
                   isDone
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                    ? "bg-success-soft text-success-ink border border-success-line"
                     : isActive
-                      ? "bg-uqu-accent text-white shadow-[0_0_18px_hsla(245,78%,62%,0.5)]"
-                      : "bg-foreground/5 text-muted border border-foreground/10",
+                      ? "bg-brand text-on-brand "
+                      : "bg-surface-sunken text-ink-muted border border-line",
                 )}
               >
                 {isDone ? <CheckCircle2 className="w-4 h-4" /> : l.n}
@@ -199,19 +199,19 @@ function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => voi
               <div className="hidden md:flex flex-col">
                 <span
                   className={cn(
-                    "text-[13px] font-bold tracking-tight",
-                    isActive ? "text-foreground" : isDone ? "text-emerald-400" : "text-muted",
+                    "text-small font-bold tracking-tight",
+                    isActive ? "text-ink" : isDone ? "text-success-ink" : "text-ink-muted",
                   )}
                 >
                   {l.title}
                 </span>
-                <span className="text-[10px] text-muted font-medium">{l.sub}</span>
+                <span className="text-caption text-ink-muted font-medium">{l.sub}</span>
               </div>
               {i < labels.length - 1 && (
                 <div
                   className={cn(
                     "h-px w-6 md:w-10 transition-colors",
-                    step > l.n ? "bg-emerald-500/40" : "bg-foreground/5",
+                    step > l.n ? "bg-success-soft" : "bg-surface-sunken",
                   )}
                 />
               )}
@@ -223,7 +223,7 @@ function StepIndicator({ step, onClose }: { step: WizardStep; onClose: () => voi
         variant="ghost"
         size="icon"
         onClick={onClose}
-        className="w-9 h-9 rounded-full hover:bg-foreground/5 text-muted hover:text-foreground shrink-0"
+        className="w-9 h-9 rounded-full hover:bg-surface-sunken text-ink-muted hover:text-ink shrink-0"
         aria-label="إغلاق"
       >
         <X className="w-4 h-4" />

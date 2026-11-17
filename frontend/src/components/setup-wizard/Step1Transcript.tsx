@@ -164,8 +164,8 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
     <div className="space-y-6">
       <header className="space-y-2 flex items-start justify-between gap-4 flex-wrap">
         <div className="space-y-2">
-          <h2 className="text-2xl font-black tracking-tight">الخطوة 1 — السجل الأكاديمي</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <h2 className="text-heading font-bold tracking-tight">الخطوة 1 — السجل الأكاديمي</h2>
+          <p className="text-small text-ink-muted leading-relaxed">
             ارفع ملف PDF لسجلك الأكاديمي. سنستخرج مواد ترمك الحالي تلقائياً
             (محلياً، بدون أي اتصال بخوادم خارجية).
           </p>
@@ -175,7 +175,7 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
             variant="outline"
             size="sm"
             onClick={() => setReupload(false)}
-            className="rounded-xl glass border-foreground/10 gap-2"
+            className="rounded-control border border-line bg-surface shadow-card gap-2"
           >
             <ArrowLeft className="w-4 h-4 rotate-180" />
             عودة للملخص
@@ -184,28 +184,28 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
       </header>
 
       {state.kind === "error" && (
-        <Card className="p-4 border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-300 dark:border-rose-400/20 rounded-2xl text-sm">
+        <Card className="p-4 border-danger-line bg-danger-soft text-danger-ink rounded-card text-small">
           {state.message}
         </Card>
       )}
 
       {state.kind === "parsing" ? (
-        <Card className="glass border-foreground/10 rounded-[32px] p-16 flex flex-col items-center justify-center gap-6">
-          <Loader2 className="w-12 h-12 text-uqu-accent animate-spin" />
-          <p className="text-lg font-bold">جاري تحليل السجل محلياً...</p>
-          <p className="text-xs text-muted-foreground">يتم استخراج المواد بدقة 100% بدون APIs.</p>
+        <Card className="border border-line bg-surface shadow-card rounded-card p-16 flex flex-col items-center justify-center gap-6">
+          <Loader2 className="w-12 h-12 text-info-ink animate-spin" />
+          <p className="text-subheading font-bold">جاري تحليل السجل محلياً...</p>
+          <p className="text-caption text-ink-muted">يتم استخراج المواد بدقة 100% بدون APIs.</p>
         </Card>
       ) : (
         <Card
-          className="glass border-dashed border-foreground/10 rounded-[32px] p-10 text-center flex flex-col items-center gap-5 hover:border-uqu-accent/30 transition-colors cursor-pointer"
+          className="border border-line bg-surface shadow-card border-dashed rounded-card p-10 text-center flex flex-col items-center gap-5 hover:border-info-line transition-colors cursor-pointer"
           onClick={() => document.getElementById("wizard-transcript-file")?.click()}
         >
-          <div className="w-20 h-20 rounded-3xl bg-uqu-accent/10 flex items-center justify-center">
-            <Upload className="w-9 h-9 text-uqu-accent" />
+          <div className="w-20 h-20 rounded-card bg-info-soft flex items-center justify-center">
+            <Upload className="w-9 h-9 text-info-ink" />
           </div>
           <div>
-            <h3 className="text-lg font-bold mb-1">ارفع السجل الأكاديمي (PDF)</h3>
-            <p className="text-xs text-muted-foreground">انقر للاختيار أو اسحب الملف هنا</p>
+            <h3 className="text-subheading font-bold mb-1">ارفع السجل الأكاديمي (PDF)</h3>
+            <p className="text-caption text-ink-muted">انقر للاختيار أو اسحب الملف هنا</p>
           </div>
           <input
             id="wizard-transcript-file"
@@ -215,16 +215,16 @@ export function Step1Transcript({ onConfirm }: Step1Props) {
             onChange={onPick}
           />
           {file && (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-foreground/5 border border-foreground/10">
-              <FileText className="w-4 h-4 text-uqu-cyan" />
-              <span className="text-sm font-medium truncate max-w-[260px]">{file.name}</span>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-control bg-surface-sunken border border-line">
+              <FileText className="w-4 h-4 text-info-ink" />
+              <span className="text-small font-medium truncate max-w-[260px]">{file.name}</span>
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   run();
                 }}
                 size="sm"
-                className="mr-2 rounded-lg bg-uqu-accent hover:bg-uqu-accent/90"
+                className="mr-2 rounded-control bg-brand hover:bg-brand-hover"
               >
                 تحليل الآن
               </Button>
@@ -290,24 +290,24 @@ function SummaryView({
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-2xl font-black tracking-tight">السجل الأكاديمي</h2>
+            <h2 className="text-heading font-bold tracking-tight">السجل الأكاديمي</h2>
             <Badge
               variant="outline"
-              className="bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 dark:border-emerald-400/20 text-[10px]"
+              className="bg-success-soft text-success-ink border-success-line text-caption"
             >
               <ShieldCheck className="w-3 h-3 ml-1" />
               محفوظ
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-small text-ink-muted">
             بياناتك محفوظة من رفع سابق
             {lastUpdated && (
-              <span className="text-muted mr-1">
+              <span className="text-ink-muted mr-1">
                 · آخر تحديث {new Date(lastUpdated).toLocaleDateString("ar-SA")}
               </span>
             )}
             {confidence > 0 && (
-              <span className="text-muted mr-1">· دقة {confidence}%</span>
+              <span className="text-ink-muted mr-1">· دقة {confidence}%</span>
             )}
           </p>
         </div>
@@ -315,7 +315,7 @@ function SummaryView({
           variant="outline"
           size="sm"
           onClick={onReupload}
-          className="rounded-xl glass border-foreground/10 gap-2"
+          className="rounded-control border border-line bg-surface shadow-card gap-2"
         >
           <RefreshCw className="w-4 h-4" />
           إعادة رفع السجل 🔄
@@ -323,7 +323,7 @@ function SummaryView({
       </header>
 
       {/* Basic Info */}
-      <Card className="glass border-foreground/10 rounded-2xl p-5 space-y-4">
+      <Card className="border border-line bg-surface shadow-card rounded-card p-5 space-y-4">
         <SectionTitle icon={<IdCard className="w-4 h-4" />} title="البيانات الأساسية" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <InfoTile label="الاسم" value={name || "—"} />
@@ -338,7 +338,7 @@ function SummaryView({
       </Card>
 
       {/* Academic Stats */}
-      <Card className="glass border-foreground/10 rounded-2xl p-5 space-y-4">
+      <Card className="border border-line bg-surface shadow-card rounded-card p-5 space-y-4">
         <SectionTitle icon={<GraduationCap className="w-4 h-4" />} title="المؤشرات الأكاديمية" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatTile label="المعدل" value={gpa != null ? gpa.toFixed(2) : "—"} accent="emerald" />
@@ -381,18 +381,18 @@ function SummaryView({
       </div>
 
       {/* Recommendations */}
-      <Card className="glass border-amber-500/15 bg-amber-500/[0.03] rounded-2xl p-5 space-y-3">
+      <Card className="border shadow-card border-warning-line bg-warning-soft rounded-card p-5 space-y-3">
         <SectionTitle
-          icon={<Lightbulb className="w-4 h-4 text-amber-400" />}
+          icon={<Lightbulb className="w-4 h-4 text-warning-ink" />}
           title="توصيات سريعة"
         />
         <ul className="space-y-2">
           {recommendations.map((r, i) => (
             <li
               key={i}
-              className="flex items-start gap-2 text-sm text-foreground leading-relaxed"
+              className="flex items-start gap-2 text-small text-ink leading-relaxed"
             >
-              <span className="text-amber-400 mt-1.5 shrink-0">•</span>
+              <span className="text-warning-ink mt-1.5 shrink-0">•</span>
               <span>{r}</span>
             </li>
           ))}
@@ -400,7 +400,7 @@ function SummaryView({
       </Card>
 
       {/* Current semester */}
-      <Card className="glass border-foreground/10 rounded-2xl p-5 space-y-4">
+      <Card className="border border-line bg-surface shadow-card rounded-card p-5 space-y-4">
         <SectionTitle
           icon={<BookOpen className="w-4 h-4" />}
           title={`مواد الترم الحالي · ${currentCourses.length}`}
@@ -423,7 +423,7 @@ function SummaryView({
         <Button
           variant="ghost"
           onClick={onReupload}
-          className="rounded-xl text-muted hover:text-foreground gap-2"
+          className="rounded-control text-ink-muted hover:text-ink gap-2"
         >
           <RefreshCw className="w-4 h-4" />
           إعادة رفع السجل
@@ -431,8 +431,8 @@ function SummaryView({
         <Button
           onClick={onNext}
           className={cn(
-            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold mr-auto",
-            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)] disabled:opacity-50 disabled:shadow-none",
+            "rounded-card bg-brand hover:bg-brand-hover gap-2 px-6 py-6 text-body font-bold mr-auto",
+            " disabled:opacity-50 disabled:shadow-none",
           )}
         >
           {currentCourses.length > 0 ? "التالي: الجدول الدراسي" : "التالي"}
@@ -479,22 +479,22 @@ function ReviewView({
     >
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-2xl font-black tracking-tight mb-1">{hasCurrent ? "مواد الترم الحالي" : "السجل الأكاديمي"}</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-heading font-bold tracking-tight mb-1">{hasCurrent ? "مواد الترم الحالي" : "السجل الأكاديمي"}</h2>
+          <p className="text-small text-ink-muted">
             {hasCurrent ? (
               <>
-                تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{currentCourses.length}</strong> مادة
+                تم استخراج <strong className="text-success-ink">{currentCourses.length}</strong> مادة
                 من السجل (دقة {parsed.confidence}%). راجعها وأكّدها للمتابعة.
               </>
             ) : (
               <>
-                تم استخراج <strong className="text-emerald-800 dark:text-emerald-400">{parsed.completedCourses.length}</strong> مادة
+                تم استخراج <strong className="text-success-ink">{parsed.completedCourses.length}</strong> مادة
                 مرصودة من السجل (دقة {parsed.confidence}%).
               </>
             )}
           </p>
           {hasCurrent && (
-            <p className="text-xs text-muted-foreground/90 leading-relaxed mt-2 max-w-xl">
+            <p className="text-caption text-ink-muted leading-relaxed mt-2 max-w-xl">
               قد تظهر ساعات مواد الترم الحالي بصفر لأنها لا تُحتسب في السجل إلا بعد رصد الدرجة. يمكنك
               تعديلها يدويًا قبل المتابعة.
             </p>
@@ -503,7 +503,7 @@ function ReviewView({
         <Button
           variant="outline"
           onClick={onReset}
-          className="rounded-xl glass border-foreground/10 gap-2"
+          className="rounded-control border border-line bg-surface shadow-card gap-2"
           size="sm"
         >
           <ArrowLeft className="w-4 h-4 rotate-180" />
@@ -527,8 +527,8 @@ function ReviewView({
         <Button
           onClick={handleConfirm}
           className={cn(
-            "rounded-2xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 px-6 py-6 text-base font-bold",
-            "shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
+            "rounded-card bg-brand hover:bg-brand-hover gap-2 px-6 py-6 text-body font-bold",
+            "",
           )}
         >
           {hasCurrent ? "تأكيد والمتابعة لإعداد الجدول" : "تأكيد وحفظ السجل"}
@@ -544,10 +544,10 @@ function ReviewView({
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="w-7 h-7 rounded-lg bg-foreground/5 flex items-center justify-center text-muted">
+      <div className="w-7 h-7 rounded-control bg-surface-sunken flex items-center justify-center text-ink-muted">
         {icon}
       </div>
-      <h3 className="text-base font-bold">{title}</h3>
+      <h3 className="text-body font-bold">{title}</h3>
     </div>
   );
 }
@@ -564,14 +564,14 @@ function InfoTile({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="p-3 rounded-xl bg-foreground/5 border border-foreground/10">
-      <div className="text-[10px] font-bold uppercase tracking-wider text-muted mb-1 flex items-center gap-1">
+    <div className="p-3 rounded-control bg-surface-sunken border border-line">
+      <div className="text-caption font-bold uppercase tracking-wider text-ink-muted mb-1 flex items-center gap-1">
         {icon}
         {label}
       </div>
       <div
         className={cn(
-          "text-sm font-bold text-foreground truncate",
+          "text-small font-bold text-ink truncate",
           mono && "font-mono",
         )}
         title={value}
@@ -593,18 +593,18 @@ function StatTile({
 }) {
   const tone = {
     emerald:
-      "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
+      "bg-success-soft border-success-line text-success-ink",
     cyan:
-      "bg-cyan-500/10 border-cyan-500/30 text-cyan-800 dark:text-cyan-300 dark:border-cyan-400/20",
+      "bg-info-soft border-info-line text-info-ink",
     violet:
-      "bg-uqu-accent/10 border-uqu-accent/30 text-purple-800 dark:text-uqu-accent dark:border-uqu-accent/20",
+      "bg-info-soft border-info-line text-info-ink",
   }[accent];
   return (
-    <div className={cn("p-3 rounded-xl border", tone)}>
-      <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-1">
+    <div className={cn("p-3 rounded-control border", tone)}>
+      <div className="text-caption font-bold uppercase tracking-wider opacity-70 mb-1">
         {label}
       </div>
-      <div className="text-xl font-black font-mono">{value}</div>
+      <div className="text-heading font-bold font-mono">{value}</div>
     </div>
   );
 }
@@ -624,43 +624,43 @@ function InsightCard({
 }) {
   const tone = {
     emerald: {
-      ring: "border-emerald-500/30 bg-emerald-500/[0.04] dark:border-emerald-500/20",
+      ring: "border-success-line bg-success-soft ",
       chip:
-        "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 dark:border-emerald-400/20",
+        "bg-success-soft border-success-line text-success-ink",
       icon:
-        "text-emerald-800 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 dark:border-emerald-400/20",
+        "text-success-ink bg-success-soft border border-success-line",
     },
     rose: {
-      ring: "border-rose-500/30 bg-rose-500/[0.04] dark:border-rose-500/20",
+      ring: "border-danger-line bg-danger-soft ",
       chip:
-        "bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-300 dark:border-rose-400/20",
+        "bg-danger-soft border-danger-line text-danger-ink",
       icon:
-        "text-rose-800 dark:text-rose-400 bg-rose-500/10 border border-rose-500/30 dark:border-rose-400/20",
+        "text-danger-ink bg-danger-soft border border-danger-line",
     },
   }[accent];
 
   return (
-    <Card className={cn("rounded-2xl p-5 space-y-3 border", tone.ring)}>
+    <Card className={cn("rounded-card p-5 space-y-3 border", tone.ring)}>
       <div className="flex items-center gap-2">
-        <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", tone.icon)}>
+        <div className={cn("w-7 h-7 rounded-control flex items-center justify-center", tone.icon)}>
           {icon}
         </div>
-        <h3 className="text-base font-bold">{title}</h3>
+        <h3 className="text-body font-bold">{title}</h3>
       </div>
       {items.length === 0 ? (
-        <p className="text-xs text-muted leading-relaxed">{empty}</p>
+        <p className="text-caption text-ink-muted leading-relaxed">{empty}</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {items.map((it, i) => (
             <span
               key={i}
               className={cn(
-                "inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[12px] font-bold",
+                "inline-flex items-center gap-2 px-3 py-1.5 rounded-control border text-small font-bold",
                 tone.chip,
               )}
             >
               <span className="truncate max-w-[160px]">{it.label}</span>
-              <span className="font-mono text-[10px] opacity-70">{it.sub}</span>
+              <span className="font-mono text-caption opacity-70">{it.sub}</span>
             </span>
           ))}
         </div>
@@ -671,17 +671,17 @@ function InsightCard({
 
 function CourseChip({ course }: { course: EnrichedCourse }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center shrink-0">
-        <BookOpen className="w-4 h-4 text-uqu-accent" />
+    <div className="flex items-center gap-3 p-3 rounded-card bg-surface-sunken border border-line hover:border-line transition-colors">
+      <div className="w-10 h-10 rounded-control bg-info-soft border border-info-line flex items-center justify-center shrink-0">
+        <BookOpen className="w-4 h-4 text-info-ink" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[13px] font-bold truncate">
+        <div className="text-small font-bold truncate">
           {course.nameAr || course.nameEn || course.code}
         </div>
-        <div className="text-[10px] text-muted font-mono">{course.code}</div>
+        <div className="text-caption text-ink-muted font-mono">{course.code}</div>
       </div>
-      <Badge variant="outline" className="bg-foreground/5 text-muted border-foreground/10 shrink-0">
+      <Badge variant="outline" className="bg-surface-sunken text-ink-muted border-line shrink-0">
         {course.creditHours} س
       </Badge>
     </div>
@@ -696,15 +696,15 @@ function EditableCourseChip({
   onHoursChange: (hours: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-2xl bg-foreground/5 border border-foreground/10 hover:border-foreground/10 transition-colors">
-      <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center shrink-0">
-        <BookOpen className="w-4 h-4 text-uqu-accent" />
+    <div className="flex items-center gap-3 p-3 rounded-card bg-surface-sunken border border-line hover:border-line transition-colors">
+      <div className="w-10 h-10 rounded-control bg-info-soft border border-info-line flex items-center justify-center shrink-0">
+        <BookOpen className="w-4 h-4 text-info-ink" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[13px] font-bold truncate">
+        <div className="text-small font-bold truncate">
           {course.nameAr || course.nameEn || course.code}
         </div>
-        <div className="text-[10px] text-muted font-mono">{course.code}</div>
+        <div className="text-caption text-ink-muted font-mono">{course.code}</div>
       </div>
       <div className="flex items-center gap-1 shrink-0">
         <Input
@@ -715,10 +715,10 @@ function EditableCourseChip({
           step={1}
           value={course.creditHours}
           onChange={(e) => onHoursChange(clampCreditHours(Number(e.target.value)))}
-          className="w-14 h-8 text-center font-mono text-sm px-1"
+          className="w-14 h-8 text-center font-mono text-small px-1"
           aria-label={`ساعات ${course.code}`}
         />
-        <span className="text-[11px] text-muted font-bold">س</span>
+        <span className="text-caption text-ink-muted font-bold">س</span>
       </div>
     </div>
   );

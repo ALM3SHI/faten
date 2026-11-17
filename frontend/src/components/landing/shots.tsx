@@ -33,7 +33,7 @@ function ThemedShot({
         loading={eager ? "eager" : "lazy"}
         fetchPriority={eager ? "high" : undefined}
         decoding="async"
-        className={cn("hidden dark:block w-full h-auto", className)}
+        className={cn("hidden w-full h-auto", className)}
       />
       {/* eslint-disable-next-line @next/next/no-img-element -- static export: no image optimizer */}
       <img
@@ -43,7 +43,7 @@ function ThemedShot({
         height={height}
         loading="lazy"
         decoding="async"
-        className={cn("block dark:hidden w-full h-auto", className)}
+        className={cn("block w-full h-auto", className)}
       />
     </>
   );
@@ -64,15 +64,15 @@ export function BrowserShot({
   return (
     <figure
       className={cn(
-        "overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/15 dark:shadow-black/60",
+        "overflow-hidden rounded-card border border-line bg-surface shadow-card ",
         className,
       )}
     >
-      <div className="flex items-center gap-1.5 border-b border-border bg-foreground/[0.03] px-4 py-2.5" aria-hidden dir="ltr">
-        <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-        <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-        <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
-        <span className="mx-auto rounded-md bg-foreground/[0.05] px-10 py-0.5 text-[11px] text-muted-foreground">
+      <div className="flex items-center gap-1.5 border-b border-line bg-surface-sunken px-4 py-2.5" aria-hidden dir="ltr">
+        <span className="h-2.5 w-2.5 rounded-full bg-surface-sunken" />
+        <span className="h-2.5 w-2.5 rounded-full bg-surface-sunken" />
+        <span className="h-2.5 w-2.5 rounded-full bg-surface-sunken" />
+        <span className="mx-auto rounded-md bg-surface-sunken px-10 py-0.5 text-caption text-ink-muted">
           fatenai.web.app
         </span>
       </div>
@@ -86,7 +86,7 @@ export function PhoneShot({ name, alt, className }: { name: string; alt: string;
   return (
     <figure
       className={cn(
-        "overflow-hidden rounded-[2rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-2xl shadow-black/40 dark:border-neutral-700",
+        "overflow-hidden rounded-[2rem] border-[6px] border-neutral-900 bg-neutral-900 shadow-card ",
         className,
       )}
     >

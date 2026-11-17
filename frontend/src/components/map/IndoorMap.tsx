@@ -362,7 +362,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
 
   if (imageError) {
     return (
-      <div className="w-full h-full grid place-items-center text-rose-400 p-8 text-center">
+      <div className="w-full h-full grid place-items-center text-danger-ink p-8 text-center">
         {imageError}
       </div>
     );
@@ -474,7 +474,7 @@ export const IndoorMap = forwardRef<IndoorMapHandle, IndoorMapProps>(function In
                   className={cn(
                     "transition-colors cursor-pointer",
                     selected
-                      ? "fill-uqu-accent/40 stroke-uqu-accent"
+                      ? "fill-uqu-accent/40 stroke-brand"
                       : "fill-white/[0.04] stroke-white/15 hover:fill-uqu-accent/15 hover:stroke-uqu-accent/40",
                   )}
                   strokeWidth={selected ? 0.35 : 0.18}

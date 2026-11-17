@@ -48,6 +48,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+import { cancelPush, clearPendingPushTimers, debouncedPush, isStoreSyncEnabled, setStoreSyncEnabled } from "@/lib/firebase/gate";
 
 import {
   deleteChatThreadFromBackend,
@@ -73,13 +74,10 @@ import { mergeStudySnapshots, sameSnapshot, type StudySnapshot } from "@/lib/stu
 // ─────────────────────────────────────────────────────────────────
 // Sync gating — pause pushes while we're pulling, to prevent loops.
 // ─────────────────────────────────────────────────────────────────
-let syncEnabled = false;
 let attached = false;
 
-/** Gate outbound Firestore pushes during hydration (API or direct pull). */
-export function setStoreSyncEnabled(enabled: boolean): void {
-  syncEnabled = enabled;
-}
+// The gate lives in ./gate so callers that only pause pushes stay Firestore-free.
+export { setStoreSyncEnabled, clearPendingPushTimers } from "@/lib/firebase/gate";
 
 function currentUid(): string | null {
   return auth.currentUser?.uid ?? null;
@@ -88,24 +86,12 @@ function currentUid(): string | null {
 /** Runs the side-effect only when sync is enabled. Errors are logged,
  *  never thrown — a failed Firestore write must not crash the UI. */
 function safeRun(label: string, fn: () => Promise<unknown>) {
-  if (!syncEnabled) return;
+  if (!isStoreSyncEnabled()) return;
   void fn().catch((err) => {
     console.error(`[firebase-sync] ${label} failed:`, err);
   });
 }
 
-// Per-key debouncer so bursts of state changes (e.g. typing in the
-// preferences hub) coalesce into a single write.
-const timers = new Map<string, ReturnType<typeof setTimeout>>();
-function debouncedPush(key: string, fn: () => void, delayMs = 600) {
-  const existing = timers.get(key);
-  if (existing) clearTimeout(existing);
-  const t = setTimeout(() => {
-    timers.delete(key);
-    fn();
-  }, delayMs);
-  timers.set(key, t);
-}
 
 // ─────────────────────────────────────────────────────────────────
 // PUSH — one function per collection. Each takes the current store
@@ -250,14 +236,12 @@ async function readRemoteStudy(uid: string): Promise<{ snapshot: StudySnapshot |
 
 /** Apply a merged snapshot locally without echoing it back as a push. */
 function applyStudyLocally(merged: StudySnapshot, lastUpdated: string | null) {
-  const wasEnabled = syncEnabled;
+  const wasEnabled = isStoreSyncEnabled();
   setStoreSyncEnabled(false);
   try {
     useStudyStore.setState({ ...merged, lastUpdated });
   } finally {
-    const pending = timers.get(`study:${currentUid()}`);
-    if (pending) clearTimeout(pending);
-    timers.delete(`study:${currentUid()}`);
+    cancelPush(`study:${currentUid()}`);
     setStoreSyncEnabled(wasEnabled);
   }
 }
@@ -319,7 +303,7 @@ export async function hydrateExams(uid: string): Promise<void> {
   }
   const merged = [...byId.values()];
 
-  const wasEnabled = syncEnabled;
+  const wasEnabled = isStoreSyncEnabled();
   setStoreSyncEnabled(false);
   try {
     useExamsStore.setState({ exams: merged });
@@ -365,7 +349,7 @@ export async function hydrateAttendance(uid: string): Promise<void> {
   const winner = newerAttendance(local.lastUpdated, remote?.lastUpdated as string | null | undefined);
 
   if (winner === "remote" && remote) {
-    const wasEnabled = syncEnabled;
+    const wasEnabled = isStoreSyncEnabled();
     setStoreSyncEnabled(false);
     try {
       useAttendanceStore.setState({
@@ -666,7 +650,7 @@ export function attachStoreSync(): void {
   useExamsStore.subscribe((state, prev) => {
     const uid = currentUid();
     // Hydration/agent updates run with sync paused — don't echo them back.
-    if (!uid || !syncEnabled) return;
+    if (!uid || !isStoreSyncEnabled()) return;
     if (state.lastUpdated == null || state.exams === prev.exams) return;
     const before = new Map(prev.exams.map((e) => [e.id, e]));
     const after = new Map(state.exams.map((e) => [e.id, e]));
@@ -769,12 +753,6 @@ export function attachStoreSync(): void {
 // fire after sync is re-enabled (e.g. after hydration or logout).
 // ─────────────────────────────────────────────────────────────────
 
-/** Cancel all pending debounced Firestore pushes. Safe to call at
- *  any time — a no-op when no timers are pending. */
-export function clearPendingPushTimers(): void {
-  for (const t of timers.values()) clearTimeout(t);
-  timers.clear();
-}
 
 export function pauseSyncForLogout(): void {
   setStoreSyncEnabled(false);

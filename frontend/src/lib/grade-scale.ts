@@ -78,10 +78,10 @@ const NEUTRAL_TONE =
  */
 export function gradeToneClass(grade: string | null | undefined, fallback: string = NEUTRAL_TONE): string {
   const g = (grade ?? "").toUpperCase();
-  if (g === "A+" || g === "A") return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30";
-  if (g === "B+" || g === "B") return "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30";
-  if (g === "C+" || g === "C") return "bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30";
-  if (g === "D+" || g === "D") return "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30";
-  if (g === "F" || g === "DN") return "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30";
+  if (g === "A+" || g === "A") return "bg-success-soft text-success-ink border-success-line";
+  if (g === "B+" || g === "B") return "bg-info-soft text-info-ink border-info-line";
+  if (g === "C+" || g === "C") return "bg-warning-soft text-warning-ink border-warning-line";
+  if (g === "D+" || g === "D") return "bg-warning-soft text-warning-ink border-warning-line";
+  if (g === "F" || g === "DN") return "bg-danger-soft text-danger-ink border-danger-line";
   return fallback;
 }

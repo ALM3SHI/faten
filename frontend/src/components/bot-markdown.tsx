@@ -3,6 +3,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
+import { Button } from "@/components/ds/button";
 import { linkPageRefs, slideFromHref } from "@/lib/tutor";
 
 /**
@@ -32,7 +33,7 @@ const INTERNAL_PATH_RE = /^\/[a-zA-Z0-9_\-/?&=#%.]*$/;
  */
 export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (page: number) => void }) {
   return (
-    <div className="text-[15px] leading-relaxed text-foreground break-words [&_p]:my-0 [&_p+p]:mt-2 [&>:first-child]:mt-0 [&>:last-child]:mb-0">
+    <div className="break-words text-body text-inherit [&_p]:my-0 [&_p+p]:mt-2 [&>:first-child]:mt-0 [&>:last-child]:mb-0">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -41,33 +42,33 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
             <p className="whitespace-pre-wrap">{children}</p>
           ),
           h1: ({ children }) => (
-            <h1 className="text-lg font-black mt-3 mb-1.5">{children}</h1>
+            <h1 className="mt-3 mb-1.5 text-heading font-bold">{children}</h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-base font-bold mt-3 mb-1">{children}</h2>
+            <h2 className="mt-3 mb-1 text-subheading font-bold">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-[15px] font-bold mt-2.5 mb-1">{children}</h3>
+            <h3 className="mt-2.5 mb-1 text-body font-bold">{children}</h3>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc pr-5 my-1.5 space-y-0.5 marker:text-muted">
+            <ul className="my-1.5 list-disc space-y-1 ps-5 marker:text-ink-muted">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal pr-5 my-1.5 space-y-0.5 marker:text-muted">
+            <ol className="my-1.5 list-decimal space-y-1 ps-5 marker:text-ink-muted">
               {children}
             </ol>
           ),
-          li: ({ children }) => <li className="leading-snug">{children}</li>,
+          li: ({ children }) => <li>{children}</li>,
           blockquote: ({ children }) => (
-            <blockquote className="my-2 border-r-2 border-uqu-accent/50 pr-3 text-muted italic">
+            <blockquote className="my-2 border-s-2 border-brand ps-3 text-ink-muted">
               {children}
             </blockquote>
           ),
-          hr: () => <hr className="my-3 border-foreground/10" />,
+          hr: () => <hr className="my-3 border-line" />,
           strong: ({ children }) => (
-            <strong className="font-bold text-foreground">{children}</strong>
+            <strong className="font-bold">{children}</strong>
           ),
           em: ({ children }) => <em className="italic">{children}</em>,
 
@@ -75,34 +76,34 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
           // Wrapped in a horizontally scrollable container so a wide
           // 8-column weekly schedule doesn't blow out the chat bubble.
           table: ({ children }) => (
-            <div className="my-2.5 overflow-x-auto rounded-xl border border-foreground/10 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/15 [&::-webkit-scrollbar-thumb]:rounded-full">
-              <table className="w-full text-[13px] border-collapse">
+            <div className="my-2.5 overflow-x-auto rounded-control border border-line">
+              <table className="nums w-full border-collapse text-small">
                 {children}
               </table>
             </div>
           ),
           thead: ({ children }) => (
-            <thead className="bg-uqu-accent/10 text-foreground">
+            <thead className="bg-surface-sunken text-ink">
               {children}
             </thead>
           ),
           tbody: ({ children }) => (
-            <tbody className="[&>tr:nth-child(even)]:bg-foreground/[0.03]">
+            <tbody className="[&>tr:nth-child(even)]:bg-surface-sunken/60">
               {children}
             </tbody>
           ),
           tr: ({ children }) => (
-            <tr className="border-b border-foreground/5 last:border-0">
+            <tr className="border-b border-line last:border-0">
               {children}
             </tr>
           ),
           th: ({ children }) => (
-            <th className="px-3 py-2 text-right font-bold whitespace-nowrap">
+            <th className="whitespace-nowrap px-3 py-2 text-start font-semibold">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="px-3 py-2 text-right align-top">{children}</td>
+            <td className="px-3 py-2 text-start align-top">{children}</td>
           ),
 
           // ── Inline & code ────────────────────────────────────
@@ -111,13 +112,13 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
             const slide = onSlide ? slideFromHref(raw) : null;
             if (slide !== null && onSlide) {
               return (
-                <button
-                  type="button"
+                <Button
+                  size="sm"
                   onClick={() => onSlide(slide)}
-                  className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-md bg-uqu-accent/10 border border-uqu-accent/25 text-uqu-accent text-[12px] font-bold hover:bg-uqu-accent/20 transition-colors align-baseline"
+                  className="mx-0.5 h-auto min-h-0 rounded-control border-info-line bg-info-soft px-1.5 py-0.5 align-baseline text-caption font-semibold text-info-ink hover:border-info-ink hover:bg-info-soft"
                 >
                   {children}
-                </button>
+                </Button>
               );
             }
             // Internal path → Next.js <Link> for SPA soft-nav.
@@ -125,7 +126,7 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
               return (
                 <Link
                   href={raw}
-                  className="text-uqu-accent font-bold underline underline-offset-2 hover:text-uqu-cyan transition-colors"
+                  className="rounded-sm font-semibold text-info-ink underline underline-offset-2 hover:no-underline focus-ring"
                 >
                   {children}
                 </Link>
@@ -137,7 +138,7 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
                 href={raw}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-uqu-accent font-bold underline underline-offset-2 hover:text-uqu-cyan transition-colors"
+                className="rounded-sm font-semibold text-info-ink underline underline-offset-2 hover:no-underline focus-ring"
               >
                 {children}
               </a>
@@ -151,7 +152,7 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
               && className.startsWith("language-");
             if (isBlock) {
               return (
-                <pre className="my-2 p-3 rounded-xl bg-foreground/5 border border-foreground/10 overflow-x-auto text-[12.5px] leading-relaxed font-mono text-foreground/90">
+                <pre className="my-2 overflow-x-auto rounded-control border border-line bg-surface-sunken p-3 font-mono text-small text-ink" dir="ltr">
                   <code className={className} {...props}>
                     {children}
                   </code>
@@ -159,7 +160,7 @@ export function BotMarkdown({ content, onSlide }: { content: string; onSlide?: (
               );
             }
             return (
-              <code className="px-1.5 py-0.5 rounded-md bg-foreground/5 border border-foreground/10 font-mono text-[12.5px]">
+              <code className="rounded-sm border border-line bg-surface-sunken px-1.5 py-0.5 font-mono text-small">
                 {children}
               </code>
             );

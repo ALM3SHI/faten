@@ -37,42 +37,42 @@ export function AdherenceDialogContent({
 }) {
   return (
     <DialogContent
-      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(760px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="!bg-surface border-line text-ink shadow-card backdrop-blur-xl rounded-card p-0 sm:max-w-[min(760px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
-        <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <ListChecks className="w-6 h-6 text-uqu-accent" />
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-line shrink-0">
+        <DialogTitle className="text-heading font-bold flex items-center gap-3">
+          <ListChecks className="w-6 h-6 text-info-ink" />
           تحليل الانضباط الدراسي
         </DialogTitle>
-        <DialogDescription className="text-muted-foreground text-sm">
+        <DialogDescription className="text-ink-muted text-small">
           توزيع نسبة إنجاز مهام خطتك الذكية على أيام الأسبوع.
         </DialogDescription>
       </DialogHeader>
 
-      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded-full">
         {/* Sprint-5: Overdue carry-over section pinned to the top of
             today's view so the user sees the backlog before the chart. */}
         {overdueTasks.length > 0 && (
-          <div className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.04] p-4 space-y-3">
+          <div className="rounded-card border border-warning-line bg-warning-soft p-4 space-y-3">
             <div className="flex items-baseline justify-between gap-2 flex-wrap">
-              <h4 className="text-[12px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-300">
+              <h4 className="text-small font-bold uppercase tracking-widest text-warning-ink">
                 مهام متأخرة من الأيام السابقة (Overdue)
               </h4>
-              <span className="text-[10px] font-mono text-amber-700/80 dark:text-amber-300/70">
+              <span className="text-caption font-mono text-warning-ink">
                 {overdueTasks.length} مهمة
               </span>
             </div>
-            <div className="space-y-1.5 max-h-[180px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded">
+            <div className="space-y-1.5 max-h-[180px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded">
               {overdueTasks.map((t, i) => (
                 <div
                   key={`${t.suggestedDay}-${t.suggestedTime}-${i}`}
-                  className="flex items-center gap-3 p-2 rounded-lg bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10 text-[11px]"
+                  className="flex items-center gap-3 p-2 rounded-control bg-surface border border-line text-caption"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_hsl(40,90%,60%)] shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-warning-ink shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="font-bold truncate">{t.title}</div>
-                    <div className="text-[10px] font-mono text-muted mt-0.5">
+                    <div className="text-caption font-mono text-ink-muted mt-0.5">
                       {t.suggestedDay} · {t.suggestedTime} · {t.durationMinutes}د
                     </div>
                   </div>
@@ -82,7 +82,7 @@ export function AdherenceDialogContent({
             <Button
               onClick={onOpenRollover}
               variant="outline"
-              className="w-full rounded-xl border-amber-500/30 text-amber-800 dark:text-amber-200 hover:bg-amber-500/10 gap-2"
+              className="w-full rounded-control border-warning-line text-warning-ink hover:bg-warning-soft gap-2"
             >
               <ArrowUpRight className="w-4 h-4" />
               ترحيل البقايا إلى الأسبوع الجديد
@@ -104,20 +104,20 @@ export function AdherenceDialogContent({
 
         {/* Weekly per-day adherence chart */}
         {!hasPlan || total === 0 ? (
-          <div className="h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-border dark:border-foreground/10 rounded-2xl gap-2 text-center p-6">
-            <Activity className="w-8 h-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
+          <div className="h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-line rounded-card gap-2 text-center p-6">
+            <Activity className="w-8 h-8 text-ink-muted" />
+            <p className="text-small text-ink-muted">
               ولّد خطتك الذكية أولاً لاستعراض توزيع الانضباط.
             </p>
             <Link href="/plan">
-              <Button className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2 mt-2">
+              <Button className="rounded-control bg-brand hover:bg-brand-hover gap-2 mt-2">
                 إنشاء خطة
               </Button>
             </Link>
           </div>
         ) : (
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-widest text-muted mb-3">
+            <h4 className="text-caption font-bold uppercase tracking-widest text-ink-muted mb-3">
               الانضباط حسب اليوم
             </h4>
             <div className="h-[260px]">
@@ -178,16 +178,16 @@ export function AdherenceDialogContent({
               {perDay.map((d) => (
                 <div
                   key={d.day}
-                  className="flex items-center gap-3 p-2.5 rounded-xl bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10"
+                  className="flex items-center gap-3 p-2.5 rounded-control bg-surface border border-line"
                 >
-                  <span className="text-[12px] font-bold w-20">{d.day}</span>
-                  <div className="flex-1 h-2 rounded-full bg-secondary/40 dark:bg-foreground/5 overflow-hidden">
+                  <span className="text-small font-bold w-20">{d.day}</span>
+                  <div className="flex-1 h-2 rounded-full bg-secondary/40 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-l from-uqu-accent to-cyan-400"
+                      className="h-full rounded-full bg-brand"
                       style={{ width: `${d.pct}%` }}
                     />
                   </div>
-                  <span className="text-[10px] font-mono text-muted w-16 text-left">
+                  <span className="text-caption font-mono text-ink-muted w-16 text-left">
                     {d.done}/{d.total} · {d.pct}%
                   </span>
                 </div>
@@ -196,7 +196,7 @@ export function AdherenceDialogContent({
           </div>
         )}
 
-        <p className="text-[10px] text-muted-foreground leading-relaxed pt-1 border-t border-border dark:border-foreground/10">
+        <p className="text-caption text-ink-muted leading-relaxed pt-1 border-t border-line">
           ملاحظة: التتبع التاريخي عبر الفصول الدراسية سيُتاح في إصدار قادم — حالياً
           نعرض توزيع الانضباط على خطتك الحالية فقط.
         </p>

@@ -32,6 +32,7 @@ function hoursHint(g: GraduationProgress | null): string {
 import { StatTile, KvRow, KvTile } from "@/components/dashboard/stat-tiles";
 import { RecentCourseRow } from "@/components/dashboard/recent-course-row";
 import { GraduationSummary } from "@/components/dashboard/graduation-card";
+import { CountUp } from "@/components/sketch/count-up";
 import { TargetGpaEditDialog, TargetGpaCallout } from "@/components/dashboard/target-gpa";
 import type { TargetCalloutStatus } from "@/components/dashboard/analytics";
 
@@ -39,7 +40,7 @@ const TRIGGER = (
   <div role="button" tabIndex={0} className="cursor-pointer text-right w-full h-full block focus:outline-none" />
 );
 const DIALOG_CLASS =
-  "!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10";
+  "!bg-surface border-line text-ink shadow-card backdrop-blur-xl";
 
 export function CurrentGpaKpi({
   hydrated,
@@ -58,32 +59,32 @@ export function CurrentGpaKpi({
       <DialogTrigger nativeButton={false} render={TRIGGER}>
         <StatTile
           title="المعدل"
-          value={hydrated ? currentGpa.toFixed(2) : "—"}
+          value={hydrated ? <CountUp value={currentGpa} decimals={2} /> : "—"}
           hint="من 4.00"
-          icon={<TrendingUp className="w-4 h-4 text-emerald-700 dark:text-emerald-500" />}
+          icon={<TrendingUp className="w-4 h-4 text-success-ink" />}
           color="emerald"
         />
       </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-md`}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-emerald-700 dark:text-emerald-500" />
+          <DialogTitle className="text-heading font-bold flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-success-ink" />
             تفاصيل المعدل الحالي
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-ink-muted">
             بياناتك مستخرجة من السجل الأكاديمي.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-3">
           <KvRow label="الساعات المكتسبة" value={`${earnedHours} ساعة`} />
           <KvRow label="المواد المنجزة" value={`${completedCount} مادة`} />
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-400 dark:border-emerald-400/20 flex justify-between items-center">
+          <div className="p-4 rounded-control bg-success-soft border border-success-line text-success-ink flex justify-between items-center">
             <span className="font-bold">المعدل التراكمي:</span>
-            <span className="font-black text-xl">{currentGpa.toFixed(2)}</span>
+            <span className="font-bold text-heading">{currentGpa.toFixed(2)}</span>
           </div>
           <Button
             onClick={() => router.push("/gpa")}
-            className="w-full rounded-xl bg-uqu-accent hover:bg-uqu-accent/90"
+            className="w-full rounded-control bg-brand hover:bg-brand-hover"
           >
             الانتقال لحاسبة المعدل
           </Button>
@@ -113,17 +114,17 @@ export function EarnedHoursKpi({
           title="الساعات"
           value={hydrated ? (graduation ? `${earnedHours}/${graduation.planHours}` : String(earnedHours)) : "—"}
           hint={hydrated ? hoursHint(graduation) : undefined}
-          icon={<BookOpen className="w-4 h-4 text-cyan-700 dark:text-cyan-500" />}
+          icon={<BookOpen className="w-4 h-4 text-info-ink" />}
           color="cyan"
         />
       </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-lg`}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-cyan-700 dark:text-cyan-500" />
+          <DialogTitle className="text-heading font-bold flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-info-ink" />
             تقدم الساعات
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-ink-muted">
             نسبة إنجازك من خطتك الأكاديمية + أحدث المواد المنجزة.
           </DialogDescription>
         </DialogHeader>
@@ -132,20 +133,20 @@ export function EarnedHoursKpi({
           {graduation ? (
             <GraduationSummary p={graduation} />
           ) : (
-            <p className="text-[11px] text-amber-800/90 dark:text-amber-400/70 leading-relaxed">
+            <p className="text-caption text-warning-ink leading-relaxed">
               أدخل عدد ساعات الخطة من الملف الشخصي لمعرفة النسبة.
             </p>
           )}
           <div className="space-y-2 min-w-0">
-            <div className="flex items-baseline justify-between text-xs text-muted">
+            <div className="flex items-baseline justify-between text-caption text-ink-muted">
               <span className="font-bold">آخر المواد المنجزة</span>
-              <span className="font-mono text-[10px]">
+              <span className="font-mono text-caption">
                 {recentCourses.length} من {completedCount}
               </span>
             </div>
-            <div className="max-h-[260px] overflow-y-auto space-y-1.5 pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded">
+            <div className="max-h-[260px] overflow-y-auto space-y-1.5 pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded">
               {recentCourses.length === 0 ? (
-                <p className="text-xs text-muted-foreground text-center py-8">
+                <p className="text-caption text-ink-muted text-center py-8">
                   لا توجد مواد منجزة بعد. ارفع السجل الأكاديمي من الملف الشخصي.
                 </p>
               ) : (
@@ -190,16 +191,16 @@ export function TargetGpaKpi({
           title="المستهدف"
           value={hydrated ? targetGpa.toFixed(2) : "—"}
           hint={hydrated ? targetHint(status, required, expectedGpa) : undefined}
-          icon={<Target className="w-4 h-4 text-uqu-accent" />}
+          icon={<Target className="w-4 h-4 text-info-ink" />}
           color="uqu"
         />      </DialogTrigger>
       <DialogContent className={`${DIALOG_CLASS} sm:max-w-md`}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <Target className="w-5 h-5 text-uqu-accent" />
+          <DialogTitle className="text-heading font-bold flex items-center gap-2">
+            <Target className="w-5 h-5 text-info-ink" />
             المطلوب للوصول لهدفك
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-ink-muted">
             حساب رياضي بناءً على معدلك الحالي وساعاتك المكتسبة.
           </DialogDescription>
         </DialogHeader>

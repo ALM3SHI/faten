@@ -7,14 +7,22 @@ import { isActivePath, normalizePath } from "@/lib/routes";
 import { NO_APP_NAV, sectionFor } from "@/lib/nav";
 import { useSectionLinks } from "@/components/nav-sections";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
+import { useCommandPalette } from "@/components/command-palette-host";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoMark } from "@/components/logo";
 
 import { useAuth } from "@/components/auth-provider";
 import { useProfileStore } from "@/store/profileStore";
-import { AccountMenu } from "@/components/account-menu";
+import dynamic from "next/dynamic";
+
+// Only signed-in visitors see the account menu, so its menu primitives load
+// with it instead of with every public page.
+const AccountMenu = dynamic(() => import("@/components/account-menu").then((m) => m.AccountMenu), {
+  ssr: false,
+  loading: () => <div className="size-9 rounded-full bg-surface-sunken" aria-hidden />,
+});
 
 export function Navbar() {
   const pathname = usePathname();
@@ -23,6 +31,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const sections = useSectionLinks();
+  const openPalette = useCommandPalette((s) => s.setOpen);
   const activeSection = sectionFor(pathname)?.id;
   // Phones use the bottom bar; the ☰ menu only exists where that bar is hidden.
   const showMenuButton = NO_APP_NAV.has(normalizePath(pathname));
@@ -43,7 +52,7 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-16 border-b",
+          "app-topbar fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-16 border-b",
           scrolled
             ? "bg-background/80 backdrop-blur-xl border-border shadow-lg"
             : "bg-transparent border-transparent"
@@ -51,7 +60,7 @@ export function Navbar() {
       >
         <div className="container mx-auto h-full flex items-center justify-between px-4 md:px-8">
           <div className="flex items-center gap-6">
-            <Link href="/" prefetch={false} className="flex items-center gap-2 group" aria-label="فطن — الصفحة الرئيسية">
+            <Link href="/" prefetch={false} className="app-topbar-brand flex items-center gap-2 group" aria-label="فطن — الصفحة الرئيسية">
               <LogoMark />
               <div className="hidden md:block">
                 <span className="font-bold text-lg">فطن</span>
@@ -60,7 +69,7 @@ export function Navbar() {
 
             {/* prefetch={false} on app links: prefetching every tab pulled the heavy
                 routes (map data, PDF reader, charts) into whatever page was open. */}
-            <nav className="hidden lg:block" aria-label="الأقسام">
+            <nav className="app-topbar-sections hidden lg:block" aria-label="الأقسام">
               <ul className="flex items-center gap-1">
                 {sections.map((item) => (
                   <li key={item.id}>
@@ -85,6 +94,18 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            {user && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={() => openPalette(true)}
+                aria-label="ابحث أو انتقل"
+                aria-keyshortcuts="Control+K"
+              >
+                <Search className="w-5 h-5" />
+              </Button>
+            )}
             <ThemeToggle />
 
             {authLoading ? (

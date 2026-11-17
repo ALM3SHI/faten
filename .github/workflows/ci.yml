@@ -45,6 +45,9 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      # The list of files still exempt from the design-system lint rules may
+      # only shrink (scripts/design-debt.mjs).
+      - run: npm run design:debt
       - run: npm test
       # Public Firebase web config is fine to leave empty for a build check.
       - run: npm run build

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loading, Skeleton } from "@/components/ds/states";
 import { useAuth } from "@/components/auth-provider";
 import { isProtectedPath, normalizePath, safeNextPath } from "@/lib/routes";
 
@@ -33,9 +33,19 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
 
   if (needsAuth && (loading || !user)) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center" aria-busy="true">
-        <Loader2 className="w-7 h-7 animate-spin text-uqu-accent" aria-label="جارٍ التحميل" />
-      </div>
+      // A skeleton with the page's rough shape: the wait reads as "loading
+      // this page", not as a blank screen with a spinner.
+      <Loading className="min-h-screen bg-background">
+        <div className="container mx-auto max-w-5xl space-y-6 px-4 pt-24">
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-4 w-72 max-w-full" />
+          <div className="grid gap-4 md:grid-cols-2">
+            <Skeleton className="h-40 rounded-card" />
+            <Skeleton className="h-40 rounded-card" />
+          </div>
+          <Skeleton className="h-56 rounded-card" />
+        </div>
+      </Loading>
     );
   }
   return <>{children}</>;

@@ -82,8 +82,8 @@ describe("grade helpers", () => {
     expect(clampGpa(3.21)).toBe(3.21);
   });
   it("colours grades by band and keeps the caller's fallback", () => {
-    expect(gradeToneClass("A+")).toContain("emerald");
-    expect(gradeToneClass("DN")).toContain("rose");
+    expect(gradeToneClass("A+")).toContain("success");
+    expect(gradeToneClass("DN")).toContain("danger");
     expect(gradeToneClass(null, "x")).toBe("x");
     expect(gradeToneClass("W", "x")).toBe("x");
   });

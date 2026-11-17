@@ -20,10 +20,10 @@ export function NextExamHero({ exam }: { exam: Exam }) {
     [c.minutes, "دقيقة"],
   ];
   return (
-    <Card className="glass rounded-[32px] border-uqu-accent/30 bg-gradient-to-l from-uqu-accent/[0.08] to-transparent p-6 md:p-8">
-      <div className="text-xs font-black text-uqu-accent mb-2">اختبارك القادم</div>
-      <h2 className="text-2xl md:text-3xl font-black mb-2">{exam.subject}</h2>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground mb-5">
+    <Card className="border shadow-card rounded-card border-info-line bg-info-soft p-6 md:p-8">
+      <div className="text-caption font-bold text-info-ink mb-2">اختبارك القادم</div>
+      <h2 className="text-heading md:text-title font-bold mb-2">{exam.subject}</h2>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-small text-ink-muted mb-5">
         <span>
           {weekdayAr(exam.date)} {formatExamDate(exam.date)}
         </span>
@@ -39,13 +39,13 @@ export function NextExamHero({ exam }: { exam: Exam }) {
         )}
       </div>
       {c.started ? (
-        <div className="text-lg font-black">بدأ الاختبار — بالتوفيق! 🤲</div>
+        <div className="text-subheading font-bold">بدأ الاختبار — بالتوفيق! 🤲</div>
       ) : (
         <div className="flex gap-3" role="timer" aria-label={`باقي ${c.days} يوم و${c.hours} ساعة و${c.minutes} دقيقة`}>
           {units.map(([n, label]) => (
-            <div key={label} className="min-w-[72px] rounded-2xl bg-background/70 border border-foreground/10 px-3 py-2 text-center">
-              <div className="text-3xl font-black font-mono leading-none">{n}</div>
-              <div className="text-[11px] font-bold text-muted-foreground mt-1">{label}</div>
+            <div key={label} className="min-w-[72px] rounded-card bg-surface border border-line px-3 py-2 text-center">
+              <div className="text-title font-bold font-mono leading-none">{n}</div>
+              <div className="text-caption font-bold text-ink-muted mt-1">{label}</div>
             </div>
           ))}
         </div>

@@ -34,41 +34,41 @@ export function TaskRolloverDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(640px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+        className="!bg-surface border-line text-ink shadow-card backdrop-blur-xl rounded-card p-0 sm:max-w-[min(640px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
         dir="rtl"
       >
-        <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-foreground/10 shrink-0">
-          <DialogTitle className="text-xl font-black flex items-center gap-3">
-            <ListChecks className="w-6 h-6 text-amber-800 dark:text-amber-300" />
+        <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-line shrink-0">
+          <DialogTitle className="text-heading font-bold flex items-center gap-3">
+            <ListChecks className="w-6 h-6 text-warning-ink" />
             ترحيل المهام المتأخرة
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground text-sm">
+          <DialogDescription className="text-ink-muted text-small">
             هذه المهام جدولتها من قبل ولم تُعلَّم كمكتملة. اختر كيف نتعامل معها.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded-full">
           {overdue.length === 0 ? (
-            <div className="text-center py-10 text-sm text-muted-foreground">
+            <div className="text-center py-10 text-small text-ink-muted">
               لا توجد مهام متأخرة. أحسنت!
             </div>
           ) : (
             <>
-              <div className="text-[11px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-300">
+              <div className="text-caption font-bold uppercase tracking-widest text-warning-ink">
                 {overdue.length} مهمة متأخرة
               </div>
               <div className="space-y-1.5">
                 {overdue.map((t, i) => (
                   <div
                     key={`${t.suggestedDay}-${t.suggestedTime}-${i}`}
-                    className="flex items-center gap-3 p-2.5 rounded-xl bg-amber-500/[0.05] border border-amber-500/20"
+                    className="flex items-center gap-3 p-2.5 rounded-control bg-warning-soft border border-warning-line"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_hsl(40,90%,60%)]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-warning-ink" />
                     <div className="flex-1 min-w-0">
-                      <div className="text-[12.5px] font-bold truncate">
+                      <div className="text-small font-bold truncate">
                         {t.title}
                       </div>
-                      <div className="text-[10px] text-muted font-mono mt-0.5">
+                      <div className="text-caption text-ink-muted font-mono mt-0.5">
                         {t.suggestedDay} · {t.suggestedTime} · {t.durationMinutes}د
                         {t.courseCode ? ` · ${t.courseCode}` : ""}
                       </div>
@@ -79,11 +79,11 @@ export function TaskRolloverDialog({
             </>
           )}
 
-          <div className="grid sm:grid-cols-2 gap-3 pt-2 border-t border-foreground/10">
+          <div className="grid sm:grid-cols-2 gap-3 pt-2 border-t border-line">
             <Button
               onClick={onAckAll}
               disabled={overdue.length === 0}
-              className="rounded-xl bg-emerald-500/90 hover:bg-emerald-500 text-foreground gap-2"
+              className="gap-2 rounded-control bg-brand text-on-brand hover:bg-brand-hover"
             >
               <CheckCircle2 className="w-4 h-4" />
               اعتبر كل المهام مكتملة
@@ -91,13 +91,13 @@ export function TaskRolloverDialog({
             <Button
               onClick={onGoToPlan}
               variant="outline"
-              className="rounded-xl glass border-uqu-accent/40 text-uqu-accent gap-2"
+              className="rounded-control border border-line bg-surface shadow-card border-info-line text-info-ink gap-2"
             >
               <ArrowUpRight className="w-4 h-4" />
               ولّد خطة جديدة (مع ترحيل البقايا)
             </Button>
           </div>
-          <p className="text-[10px] text-muted leading-relaxed">
+          <p className="text-caption text-ink-muted leading-relaxed">
             عند توليد خطة جديدة، يحقن النظام تلقائياً قائمة المتأخرات في
             طلب الذكاء الاصطناعي ليُضيفها للأسبوع القادم مع ملاحظة استراتيجية.
           </p>

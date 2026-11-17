@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ds/button";
 import { AlertTriangle, CheckCircle2, Circle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -31,20 +32,20 @@ export function ExamStudyPlanCard({
   const days = showAll ? plan.days : plan.days.slice(0, VISIBLE_DAYS);
   const hidden = plan.days.length - days.length;
   return (
-    <Card className="glass rounded-[32px] border-foreground/10 p-6 md:p-8 space-y-5">
+    <Card className="border border-line bg-surface shadow-card rounded-card p-6 md:p-8 space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-xl font-black">خطة المذاكرة قبل الاختبارات</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h2 className="text-heading font-bold">خطة المذاكرة قبل الاختبارات</h2>
+          <p className="text-small text-ink-muted mt-1">
             وقت أكثر للأقرب والأثقل، ومراجعة نهائية في اليوم الذي قبل كل اختبار.
           </p>
         </div>
-        <label className="text-sm font-bold flex items-center gap-2">
+        <label className="text-small font-bold flex items-center gap-2">
           وقتي اليومي
           <select
             value={dailyMinutes}
             onChange={(e) => onDailyMinutes(Number(e.target.value))}
-            className="h-10 rounded-xl px-3 border bg-background border-border dark:bg-foreground/5 dark:border-foreground/10"
+            className="h-10 rounded-control px-3 border bg-surface border-line"
           >
             {DAILY_CHOICES.map((m) => (
               <option key={m} value={m}>{minutesLabel(m)}</option>
@@ -54,7 +55,7 @@ export function ExamStudyPlanCard({
       </div>
 
       {tight.length > 0 && (
-        <p className="flex items-start gap-2 text-sm font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3">
+        <p className="flex items-start gap-2 text-small font-bold text-warning-ink bg-warning-soft border border-warning-line rounded-card p-3">
           <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" aria-hidden />
           الوقت ضيق لـ {tight.map((t) => t.subject).join("، ")} — زد وقتك اليومي أو ابدأ بالأهم.
         </p>
@@ -62,42 +63,42 @@ export function ExamStudyPlanCard({
 
       <ol className="space-y-3" id="exam-plan-days">
         {days.map((day) => (
-          <li key={day.date} className={cn("rounded-2xl border border-foreground/10 p-4", day.date === today && "border-uqu-accent/40 bg-uqu-accent/[0.04]")}>
+          <li key={day.date} className={cn("rounded-card border border-line p-4", day.date === today && "border-info-line bg-info-soft")}>
             <div className="flex items-baseline justify-between gap-2 mb-2">
-              <span className="font-black text-sm">
+              <span className="font-bold text-small">
                 {day.date === today ? "اليوم" : weekdayAr(day.date)} · {formatExamDate(day.date)}
               </span>
               {day.examsToday.length > 0 && (
-                <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
+                <span className="text-caption font-bold text-danger-ink">
                   اختبار: {day.examsToday.map((e) => e.subject).join("، ")}
                 </span>
               )}
             </div>
             {day.sessions.length === 0 ? (
-              <p className="text-xs text-muted-foreground">بالتوفيق في اختبارك 🤲</p>
+              <p className="text-caption text-ink-muted">بالتوفيق في اختبارك 🤲</p>
             ) : (
               <ul className="space-y-1.5">
                 {day.sessions.map((s) => {
                   const checked = !!done[s.key];
                   return (
                     <li key={s.key}>
-                      <button
+                      <Button variant="bare"
                         type="button"
                         onClick={() => onToggle(s.key)}
                         aria-pressed={checked}
-                        className="w-full flex items-center gap-3 text-right rounded-xl px-3 py-2 hover:bg-foreground/5"
+                        className="w-full flex items-center gap-3 text-right rounded-control px-3 py-2 hover:bg-surface-sunken"
                       >
                         {checked ? (
-                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" aria-hidden />
+                          <CheckCircle2 className="w-5 h-5 text-success-ink shrink-0" aria-hidden />
                         ) : (
-                          <Circle className="w-5 h-5 text-muted-foreground shrink-0" aria-hidden />
+                          <Circle className="w-5 h-5 text-ink-muted shrink-0" aria-hidden />
                         )}
-                        <span className={cn("flex-1 text-sm font-bold", checked && "line-through text-muted-foreground")}>
+                        <span className={cn("flex-1 text-small font-bold", checked && "line-through text-ink-muted")}>
                           {s.finalReview ? "مراجعة نهائية: " : ""}
                           {s.subject}
                         </span>
-                        <span className="text-xs font-bold text-muted-foreground">{minutesLabel(s.minutes)}</span>
-                      </button>
+                        <span className="text-caption font-bold text-ink-muted">{minutesLabel(s.minutes)}</span>
+                      </Button>
                     </li>
                   );
                 })}
@@ -107,15 +108,15 @@ export function ExamStudyPlanCard({
         ))}
       </ol>
       {(hidden > 0 || showAll) && plan.days.length > VISIBLE_DAYS && (
-        <button
+        <Button variant="bare"
           type="button"
           onClick={() => setShowAll((v) => !v)}
           aria-expanded={showAll}
           aria-controls="exam-plan-days"
-          className="w-full rounded-xl border border-foreground/10 py-2.5 text-sm font-bold text-uqu-accent hover:bg-uqu-accent/5"
+          className="w-full rounded-control border border-line py-2.5 text-small font-bold text-info-ink hover:bg-info-soft"
         >
           {showAll ? "عرض أقرب الأيام فقط" : `عرض كل الأيام (${plan.days.length})`}
-        </button>
+        </Button>
       )}
     </Card>
   );

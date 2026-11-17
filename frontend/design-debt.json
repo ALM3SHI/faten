@@ -1,0 +1,7 @@
+{
+  "files": [
+    "src/app/global-error.tsx",
+    "src/components/landing/shots.tsx",
+    "src/components/ui/button.tsx"
+  ]
+}

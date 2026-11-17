@@ -6,6 +6,8 @@ import { X, MessageSquare, Search, Plus, Trash2 } from "lucide-react";
 import { useChatHistoryStore, type ChatThread } from "@/store/chatHistoryStore";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { toast } from "@/lib/toast";
+import { Button, IconButton } from "@/components/ds/button";
+import { cn } from "@/lib/utils";
 
 interface ChatHistoryDrawerProps {
   isOpen: boolean;
@@ -85,7 +87,7 @@ export function ChatHistoryDrawer({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/40 dark:bg-black/60"
           />
 
           <motion.aside
@@ -94,61 +96,54 @@ export function ChatHistoryDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 280, damping: 32 }}
-            className="fixed top-0 right-0 h-screen w-full max-w-md z-50 bg-card/95 backdrop-blur-2xl border-l border-foreground/10 shadow-2xl flex flex-col"
+            className="ds-page fixed top-0 right-0 z-50 flex h-dvh w-full max-w-md flex-col border-s border-line bg-surface-raised text-ink shadow-dialog"
             dir="rtl"
             role="dialog"
             aria-label="سجل الدردشات"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-foreground/10 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-uqu-accent/15 border border-uqu-accent/20 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-4 h-4 text-uqu-accent" />
+            <div className="flex shrink-0 items-center justify-between border-b border-line py-3 ps-5 pe-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-info-line bg-info-soft text-info-ink" aria-hidden>
+                  <MessageSquare className="size-4" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-foreground font-bold text-[15px] tracking-tight truncate">
-                    سجل الدردشات
-                  </h2>
-                  <p className="text-muted text-[11px] font-medium mt-0.5">
+                  <h2 className="truncate text-subheading font-bold">سجل الدردشات</h2>
+                  <p className="text-caption font-medium text-ink-muted">
                     {threads.length === 0
                       ? "لا توجد محادثات محفوظة بعد"
                       : `${threads.length} محادثة محفوظة`}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                aria-label="إغلاق"
-                className="w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/5 transition-colors shrink-0"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <IconButton label="إغلاق" onClick={onClose} className="shrink-0 rounded-full text-ink-muted hover:text-ink">
+                <X aria-hidden />
+              </IconButton>
             </div>
 
             {/* Search + new */}
-            <div className="px-5 pt-4 pb-2 shrink-0 flex flex-col gap-2.5">
+            <div className="flex shrink-0 flex-col gap-2.5 px-5 pt-4 pb-2">
               <div className="relative">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                <Search className="pointer-events-none absolute end-auto start-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" aria-hidden />
                 <input
+                  type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  aria-label="ابحث في المحادثات"
                   placeholder="ابحث في المحادثات..."
-                  className="w-full bg-foreground/5 border border-foreground/10 rounded-xl pr-10 pl-4 py-2.5 text-sm text-foreground placeholder:text-muted outline-none focus:border-uqu-accent/40 focus:ring-1 focus:ring-uqu-accent/20 transition-all"
+                  className="h-11 w-full rounded-control border border-line-strong bg-surface ps-10 pe-3 text-body text-ink placeholder:text-ink-muted focus-ring"
                 />
               </div>
-              <button
-                onClick={onNewThread}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-uqu-accent/10 border border-uqu-accent/25 text-uqu-accent hover:bg-uqu-accent/15 transition-colors text-[13px] font-bold"
-              >
-                <Plus className="w-4 h-4" />
-                <span>محادثة جديدة</span>
-              </button>
+              <Button variant="primary" onClick={onNewThread} className="w-full">
+                <Plus aria-hidden />
+                محادثة جديدة
+              </Button>
             </div>
 
             {/* Sessions */}
-            <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-1.5 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+            <div className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-4 py-3">
               {filtered.length === 0 ? (
-                <div className="text-center text-muted text-xs py-12 px-4 leading-relaxed">
+                <div className="px-4 py-12 text-center text-small text-ink-muted">
                   {threads.length === 0
                     ? "ابدأ محادثة جديدة وستظهر هنا تلقائياً."
                     : "لا توجد محادثات تطابق بحثك."}
@@ -160,40 +155,34 @@ export function ChatHistoryDrawer({
                   return (
                     <div
                       key={rowKey}
-                      className={
-                        "group relative flex items-stretch gap-1 rounded-2xl transition-all " +
-                        (isActive
-                          ? "border border-uqu-accent/35 bg-uqu-accent/[0.06]"
-                          : "border border-foreground/10 bg-foreground/5 hover:bg-foreground/5 hover:border-foreground/10")
-                      }
+                      className={cn(
+                        "group relative flex items-stretch gap-1 rounded-card border motion-fast transition-colors",
+                        isActive ? "border-info-line bg-info-soft" : "border-line bg-surface hover:bg-surface-sunken",
+                      )}
                     >
-                      <button
+                      <Button
+                        variant="quiet"
                         onClick={() => onSelectThread(s.id)}
-                        className="flex-1 flex flex-col gap-1 p-3 text-right active:scale-[0.99] transition-transform min-w-0"
+                        aria-current={isActive || undefined}
+                        className="h-auto min-w-0 flex-1 flex-col items-stretch gap-1 whitespace-normal p-3 text-start font-normal hover:bg-transparent"
                       >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-foreground text-[13px] font-bold tracking-tight truncate">
-                            {s.title}
-                          </span>
-                          <span className="text-muted text-[10px] font-mono whitespace-nowrap shrink-0">
-                            {formatRelative(s.updatedAt)}
-                          </span>
-                        </div>
-                        <span className="text-muted text-[11px] truncate text-right">
-                          {s.preview}
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="truncate text-small font-semibold text-ink">{s.title}</span>
+                          <span className="nums shrink-0 whitespace-nowrap text-caption text-ink-muted">{formatRelative(s.updatedAt)}</span>
                         </span>
-                      </button>
-                      <button
+                        <span className="truncate text-caption text-ink-muted">{s.preview}</span>
+                      </Button>
+                      {/* Always visible on touch screens; on hover or focus with a mouse. */}
+                      <IconButton
+                        label="حذف المحادثة"
                         onClick={(e) => {
                           e.stopPropagation();
                           setPendingDeleteId(s.id);
                         }}
-                        aria-label="حذف المحادثة"
-                        title="حذف"
-                        className="w-9 self-stretch flex items-center justify-center text-muted hover:text-rose-400 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                        className="h-auto self-stretch text-ink-muted hover:bg-transparent hover:text-danger-ink focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                        <Trash2 aria-hidden />
+                      </IconButton>
                     </div>
                   );
                 })

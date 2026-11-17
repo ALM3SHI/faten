@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AlertTriangle, CalendarDays, ExternalLink, FileText } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { extractCitations, type Citation } from "@/lib/citations";
+import { Button } from "@/components/ds/button";
 
 /** Sources under an answer; tapping one shows the article (or the dates) right here. */
 export function SourceCards({ content, actions }: { content: string; actions?: unknown }) {
@@ -13,22 +14,23 @@ export function SourceCards({ content, actions }: { content: string; actions?: u
 
   return (
     <>
-      <div className="flex flex-wrap gap-2 w-full min-w-0" aria-label="المصادر">
+      <div className="flex w-full min-w-0 flex-wrap gap-2" role="group" aria-label="المصادر">
         {sources.map((s) => {
           const Icon = isCalendar(s) ? CalendarDays : FileText;
           return (
-            <button
+            <Button
               key={s.document + s.article}
-              type="button"
+              size="sm"
               onClick={() => setOpen(s)}
               title={`${s.article} — ${s.document}`}
-              aria-label={`عرض المصدر: ${s.article} — ${s.document}`}
-              className="flex items-center gap-1.5 min-w-0 max-w-full sm:max-w-[22rem] px-3 py-1.5 rounded-xl border border-uqu-accent/20 bg-uqu-accent/5 text-[12px] hover:border-uqu-accent/40 transition-colors text-right"
+              className="max-w-full min-w-0 justify-start border-info-line bg-info-soft text-small font-normal text-info-ink hover:border-info-ink hover:bg-info-soft sm:max-w-96"
             >
-              <Icon className="w-3.5 h-3.5 shrink-0 text-uqu-accent" aria-hidden />
-              <span className="font-bold shrink-0 max-w-[45%] truncate">{s.article}</span>
-              <span className="text-muted-foreground truncate min-w-0">— {s.document}</span>
-            </button>
+              <Icon className="text-info-ink" aria-hidden />
+              {/* The name reads «عرض المصدر: المادة 14 — …»; the first words are visual-only context. */}
+              <span className="sr-only">عرض المصدر: </span>
+              <span className="max-w-[45%] shrink-0 truncate font-semibold">{s.article}</span>
+              <span className="min-w-0 truncate text-ink"> — {s.document}</span>
+            </Button>
           );
         })}
       </div>
@@ -44,43 +46,43 @@ function isCalendar(s: Citation): boolean {
 function SourceDialog({ source, onClose }: { source: Citation | null; onClose: () => void }) {
   return (
     <Dialog open={source !== null} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent dir="rtl" className="sm:max-w-lg rounded-[24px] p-0 max-h-[85vh] flex flex-col">
+      <DialogContent dir="rtl" className="ds-page flex max-h-[85vh] flex-col rounded-dialog border-line bg-surface-raised p-0 text-ink shadow-dialog sm:max-w-lg">
         {source && (
           <>
-            <DialogHeader className="px-6 pt-6 pb-4 border-b border-foreground/10 text-right shrink-0">
-              <DialogTitle className="text-lg font-black leading-7 pl-8">
+            <DialogHeader className="shrink-0 border-b border-line px-6 pt-6 pb-4 text-start">
+              <DialogTitle className="ps-0 pe-8 text-heading font-bold">
                 {isCalendar(source) ? "التقويم الأكاديمي" : source.article}
               </DialogTitle>
-              <DialogDescription className="text-xs leading-6">
+              <DialogDescription className="text-small text-ink-muted">
                 {source.document}
                 {source.issued ? ` · ${source.issued}` : ""}
               </DialogDescription>
             </DialogHeader>
-            <div className="px-6 py-4 overflow-y-auto space-y-3">
-              {source.heading && <div className="text-xs font-bold text-muted-foreground">{source.heading}</div>}
+            <div className="space-y-3 overflow-y-auto px-6 py-4">
+              {source.heading && <div className="text-small font-semibold text-ink-muted">{source.heading}</div>}
               {source.text ? (
-                <p className="text-sm leading-8 whitespace-pre-line" dir="auto">
+                <p className="whitespace-pre-line text-body leading-loose" dir="auto">
                   {source.text}
                 </p>
               ) : (
-                <p className="text-sm text-muted-foreground">النص غير متوفر هنا — افتح المصدر الرسمي.</p>
+                <p className="text-body text-ink-muted">النص غير متوفر هنا — افتح المصدر الرسمي.</p>
               )}
               {source.note && (
-                <p className="flex items-start gap-2 text-xs text-amber-800 dark:text-amber-300 bg-amber-500/10 rounded-xl p-3">
-                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
+                <p className="flex items-start gap-2 rounded-card border border-warning-line bg-warning-soft p-3 text-small text-warning-ink">
+                  <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
                   {source.note}
                 </p>
               )}
             </div>
             {source.url && (
-              <div className="px-6 py-4 border-t border-foreground/10 shrink-0">
+              <div className="shrink-0 border-t border-line px-6 py-4">
                 <a
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-uqu-accent hover:underline"
+                  className="inline-flex items-center gap-1.5 rounded-control text-body font-semibold text-info-ink hover:underline focus-ring"
                 >
-                  <ExternalLink className="w-4 h-4" aria-hidden />
+                  <ExternalLink className="size-4" aria-hidden />
                   المصدر الرسمي في موقع الجامعة
                 </a>
               </div>

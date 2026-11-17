@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ds/button";
 import { Zap, Sparkles } from "lucide-react";
 import {
   DialogContent,
@@ -104,34 +105,34 @@ export function RoiSimulatorDialog({
 
   const projectionTone =
     delta >= 0.05
-      ? { glow: "hsl(160, 95%, 55%)", text: "text-emerald-700 dark:text-emerald-300" }
+      ? { glow: "hsl(160, 95%, 55%)", text: "text-success-ink " }
       : delta <= -0.05
-        ? { glow: "hsl(0, 80%, 60%)", text: "text-rose-700 dark:text-rose-300" }
-        : { glow: "hsl(245, 78%, 62%)", text: "text-uqu-accent" };
+        ? { glow: "hsl(0, 80%, 60%)", text: "text-danger-ink " }
+        : { glow: "hsl(245, 78%, 62%)", text: "text-info-ink" };
 
   const resetAll = () =>
     setPicks(Object.fromEntries(roster.map((c) => [c.code, "A+"])));
 
   return (
     <DialogContent
-      className="!bg-card border-border text-foreground shadow-2xl backdrop-blur-xl dark:!bg-card/95 dark:border-foreground/10 rounded-[28px] p-0 sm:max-w-[min(820px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
+      className="!bg-surface border-line text-ink shadow-card backdrop-blur-xl rounded-card p-0 sm:max-w-[min(820px,calc(100%-2rem))] max-h-[88vh] flex flex-col"
       dir="rtl"
     >
-      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-border dark:border-foreground/10 shrink-0">
-        <DialogTitle className="text-xl font-black flex items-center gap-3">
-          <Zap className="w-6 h-6 text-amber-700 dark:text-amber-400" />
+      <DialogHeader className="px-6 md:px-8 pt-6 pb-4 border-b border-line shrink-0">
+        <DialogTitle className="text-heading font-bold flex items-center gap-3">
+          <Zap className="w-6 h-6 text-warning-ink" />
           محاكي السيناريوهات — ماذا لو؟
         </DialogTitle>
-        <DialogDescription className="text-muted-foreground text-sm">
+        <DialogDescription className="text-ink-muted text-small">
           جرّب درجات افتراضية على مواد فصلك الحالي وشاهد أثرها الفوري على
           معدلك التراكمي.
         </DialogDescription>
       </DialogHeader>
 
-      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-foreground/5 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="flex-1 overflow-y-auto px-6 md:px-8 py-5 space-y-5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-surface-sunken [&::-webkit-scrollbar-thumb]:rounded-full">
         {/* HERO — projected cumulative GPA, glowing, updates instantly */}
         <div
-          className="relative rounded-3xl border border-border dark:border-foreground/10 bg-gradient-to-l from-uqu-accent/[0.08] via-cyan-500/[0.06] to-emerald-500/[0.08] p-6 text-center overflow-hidden"
+          className="relative rounded-card border border-info-line bg-info-soft p-6 text-center overflow-hidden"
           style={{
             boxShadow: `0 0 40px -10px ${projectionTone.glow}`,
           }}
@@ -141,19 +142,19 @@ export function RoiSimulatorDialog({
             style={{ background: projectionTone.glow }}
           />
           <div className="relative">
-            <div className="text-[10px] font-black uppercase tracking-widest text-muted mb-2">
+            <div className="text-caption font-bold uppercase tracking-widest text-ink-muted mb-2">
               المعدل التراكمي المتوقع
             </div>
             <div
               className={cn(
-                "text-6xl md:text-7xl font-black tracking-tighter font-mono leading-none",
+                "text-6xl md:text-7xl font-bold tracking-tighter font-mono leading-none",
                 projectionTone.text,
               )}
               style={{ textShadow: `0 0 24px ${projectionTone.glow}` }}
             >
               {projectedGpa.toFixed(2)}
             </div>
-            <div className="text-[11px] text-muted mt-3 font-mono">
+            <div className="text-caption text-ink-muted mt-3 font-mono">
               من أصل 4.00 · حالياً {currentGpa.toFixed(2)} ·{" "}
               <span className={cn("font-bold", projectionTone.text)}>
                 {delta >= 0 ? "+" : ""}
@@ -165,17 +166,17 @@ export function RoiSimulatorDialog({
 
         {/* AI strategy banner */}
         {leverageCourse && (
-          <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/[0.06] border border-amber-500/25">
-            <Sparkles className="w-5 h-5 text-amber-700 dark:text-amber-300 shrink-0 mt-0.5" />
-            <p className="text-[12.5px] text-amber-800 dark:text-amber-200 leading-relaxed">
-              <span className="font-black">استراتيجية ذكية:</span>{" "}
+          <div className="flex items-start gap-3 p-4 rounded-card bg-warning-soft border border-warning-line">
+            <Sparkles className="w-5 h-5 text-warning-ink shrink-0 mt-0.5" />
+            <p className="text-small text-warning-ink leading-relaxed">
+              <span className="font-bold">استراتيجية ذكية:</span>{" "}
               لتحقيق أعلى قفزة، لا تتنازل عن{" "}
-              <span className="font-mono font-black bg-amber-500/20 px-1.5 py-0.5 rounded">
+              <span className="font-mono font-bold bg-warning-soft px-1.5 py-0.5 rounded">
                 A+
               </span>{" "}
               في مادة{" "}
-              <span className="font-black">{leverageCourse.name}</span>{" "}
-              <span className="text-amber-700/80 dark:text-amber-200/70 font-normal">
+              <span className="font-bold">{leverageCourse.name}</span>{" "}
+              <span className="text-warning-ink font-normal">
                 ({leverageCourse.credits} ساعات — أعلى ثقل في فصلك).
               </span>
             </p>
@@ -184,33 +185,33 @@ export function RoiSimulatorDialog({
 
         {/* Per-course pickers */}
         {roster.length === 0 ? (
-          <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-border dark:border-foreground/10 rounded-2xl text-center gap-2 p-6">
-            <Zap className="w-8 h-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
+          <div className="h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-line rounded-card text-center gap-2 p-6">
+            <Zap className="w-8 h-8 text-ink-muted" />
+            <p className="text-small text-ink-muted">
               لا توجد مواد مسجّلة في الفصل الحالي. أكمل الإعداد من الملف الشخصي.
             </p>
           </div>
         ) : (
           <div className="space-y-2">
             <div className="flex items-baseline justify-between gap-2 flex-wrap">
-              <h4 className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">
+              <h4 className="text-caption font-bold uppercase tracking-widest text-ink-muted">
                 مواد الفصل الحالي ({roster.length})
               </h4>
-              <div className="flex items-center gap-3 text-[10px] font-mono text-muted">
+              <div className="flex items-center gap-3 text-caption font-mono text-ink-muted">
                 <span>مجموع الساعات: {termHours}</span>
                 <span>·</span>
                 <span>نقاط متوقعة: {termPoints.toFixed(2)}</span>
-                <button
+                <Button variant="bare"
                   type="button"
                   onClick={resetAll}
-                  className="text-uqu-accent hover:text-uqu-accent/80 font-bold underline mr-1"
+                  className="text-info-ink hover:text-info-ink font-bold underline mr-1"
                 >
                   إعادة الكل لـA+
-                </button>
+                </Button>
               </div>
             </div>
 
-            <div className="grid grid-cols-12 px-3 text-[10px] font-black uppercase tracking-wider text-muted">
+            <div className="grid grid-cols-12 px-3 text-caption font-bold uppercase tracking-wider text-ink-muted">
               <span className="col-span-6">المادة</span>
               <span className="col-span-2 text-center">ساعات</span>
               <span className="col-span-2 text-center">الدرجة</span>
@@ -229,7 +230,7 @@ export function RoiSimulatorDialog({
           </div>
         )}
 
-        <p className="text-[10px] text-muted-foreground leading-relaxed pt-1 border-t border-border dark:border-foreground/10">
+        <p className="text-caption text-ink-muted leading-relaxed pt-1 border-t border-line">
           الحساب:{" "}
           <span className="font-mono">
             projected = (current_gpa × earned + Σ(grade × credits)) / (earned + Σcredits)
@@ -255,18 +256,18 @@ function RoiSimRow({
   const contribution = points * course.credits;
   const tone = gradeToneClass(pick);
   return (
-    <div className="grid grid-cols-12 items-center px-3 py-2.5 rounded-xl bg-background border border-border dark:bg-foreground/5 dark:border-foreground/10 text-[12px] gap-2">
+    <div className="grid grid-cols-12 items-center px-3 py-2.5 rounded-control bg-surface border border-line text-small gap-2">
       <div className="col-span-6 min-w-0">
         <div className="font-bold truncate">{course.name}</div>
-        <div className="text-[10px] font-mono text-muted mt-0.5">{course.code}</div>
+        <div className="text-caption font-mono text-ink-muted mt-0.5">{course.code}</div>
       </div>
-      <div className="col-span-2 text-center font-mono font-bold text-foreground">
+      <div className="col-span-2 text-center font-mono font-bold text-ink">
         {course.credits}
       </div>
       <div className="col-span-2 flex justify-center">
         <div
           className={cn(
-            "relative inline-flex items-center rounded-md border font-mono font-black text-[11px]",
+            "relative inline-flex items-center rounded-md border font-mono font-bold text-caption",
             tone,
           )}
         >
@@ -277,7 +278,7 @@ function RoiSimRow({
             className="appearance-none bg-transparent pr-2 pl-6 py-1 outline-none cursor-pointer"
           >
             {SIMULATION_GRADES.map((g) => (
-              <option key={g.letter} value={g.letter} className="bg-background text-foreground">
+              <option key={g.letter} value={g.letter} className="bg-surface text-ink">
                 {g.letter}
               </option>
             ))}
@@ -285,7 +286,7 @@ function RoiSimRow({
           <span className="w-2 h-2 absolute left-2 pointer-events-none opacity-50 border-l-2 border-b-2 border-current rotate-[-45deg]" />
         </div>
       </div>
-      <div className="col-span-2 text-left font-mono font-black text-amber-800 dark:text-amber-300">
+      <div className="col-span-2 text-left font-mono font-bold text-warning-ink">
         {contribution.toFixed(2)}
       </div>
     </div>

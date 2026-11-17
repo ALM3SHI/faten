@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Button } from "@/components/ds/button";
 import Link from "next/link";
 import { LogoMark } from "@/components/logo";
 
@@ -11,22 +12,22 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4" dir="rtl">
+    <main className="min-h-screen bg-surface text-ink flex items-center justify-center px-4" dir="rtl">
       <div className="max-w-md text-center space-y-5">
         <LogoMark className="w-14 h-14 mx-auto" iconClassName="w-7 h-7" />
-        <h1 className="text-3xl font-black">صار خطأ غير متوقع</h1>
-        <p className="text-muted-foreground leading-relaxed">
+        <h1 className="text-title font-bold">صار خطأ غير متوقع</h1>
+        <p className="text-ink-muted leading-relaxed">
           ما قدرنا نعرض هذه الصفحة. بياناتك محفوظة — جرّب مرة ثانية، وإذا تكرر الخطأ ارجع لصفحة «اليوم».
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
-          <button
+          <Button variant="bare"
             type="button"
             onClick={reset}
-            className="px-5 h-11 inline-flex items-center rounded-xl bg-uqu-accent text-white font-bold hover:bg-uqu-accent/90"
+            className="px-5 h-11 inline-flex items-center rounded-control bg-brand text-on-brand font-bold hover:bg-brand-hover"
           >
             حاول مرة ثانية
-          </button>
-          <Link href="/dashboard" className="px-5 h-11 inline-flex items-center rounded-xl border border-border font-bold hover:bg-foreground/5">
+          </Button>
+          <Link href="/dashboard" className="px-5 h-11 inline-flex items-center rounded-control border border-line font-bold hover:bg-surface-sunken">
             افتح «اليوم»
           </Link>
         </div>

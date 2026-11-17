@@ -151,37 +151,37 @@ export function SlideViewer({
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-4xl w-[calc(100%-1rem)] p-4 gap-3" dir="rtl">
-        <DialogTitle className="text-base font-bold">
+        <DialogTitle className="text-body font-bold">
           الشريحة {page} من {lecture.pageCount}
         </DialogTitle>
         <DialogDescription className="sr-only">صفحة من ملف المحاضرة الأصلي</DialogDescription>
-        <div ref={boxRef} className="relative min-h-[240px] max-h-[70vh] overflow-auto rounded-xl border border-foreground/10 bg-white flex items-start justify-center">
+        <div ref={boxRef} className="relative min-h-[240px] max-h-[70vh] overflow-auto rounded-control border border-line bg-white flex items-start justify-center">
           {status === "loading" && (
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground" role="status">
+            <div className="absolute inset-0 flex items-center justify-center text-ink-muted" role="status">
               <Loader2 className="w-6 h-6 animate-spin" aria-hidden />
               <span className="sr-only">جاري تحميل الشريحة…</span>
             </div>
           )}
           {status === "missing" && (
-            <div className="p-6 text-center space-y-3 text-foreground bg-card w-full">
-              <p className="text-sm leading-7">
+            <div className="p-6 text-center space-y-3 text-ink bg-surface w-full">
+              <p className="text-small leading-7">
                 ملف المحاضرة الأصلي غير محفوظ على هذا الجهاز. أرفقه مرة واحدة لعرض الشرائح هنا (لن يُعاد تحليله ولن يُخصم رصيد).
               </p>
-              <label className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-uqu-accent text-white text-sm font-bold cursor-pointer">
+              <label className="inline-flex items-center gap-2 h-10 px-4 rounded-control bg-brand text-on-brand text-small font-bold cursor-pointer">
                 <FileUp className="w-4 h-4" aria-hidden /> إرفاق ملف المحاضرة
                 <input type="file" accept=".pdf,application/pdf" className="hidden" onChange={(e) => attach(e.target.files?.[0])} />
               </label>
-              {attachError && <p className="text-sm text-rose-500" role="alert">{attachError}</p>}
+              {attachError && <p className="text-small text-danger-ink" role="alert">{attachError}</p>}
             </div>
           )}
-          {status === "error" && <p className="p-6 text-sm text-rose-500">تعذّر عرض هذه الشريحة.</p>}
+          {status === "error" && <p className="p-6 text-small text-danger-ink">تعذّر عرض هذه الشريحة.</p>}
           <canvas ref={canvasRef} className={status === "ready" ? "block" : "hidden"} aria-label={`الشريحة ${page}`} />
         </div>
         <div className="flex items-center justify-between">
-          <Button variant="ghost" className="gap-1 rounded-xl" disabled={!page || page <= 1} onClick={() => page && onPageChange(page - 1)}>
+          <Button variant="ghost" className="gap-1 rounded-control" disabled={!page || page <= 1} onClick={() => page && onPageChange(page - 1)}>
             <ChevronRight className="w-4 h-4" aria-hidden /> السابقة
           </Button>
-          <Button variant="ghost" className="gap-1 rounded-xl" disabled={!page || page >= lecture.pageCount} onClick={() => page && onPageChange(page + 1)}>
+          <Button variant="ghost" className="gap-1 rounded-control" disabled={!page || page >= lecture.pageCount} onClick={() => page && onPageChange(page + 1)}>
             التالية <ChevronLeft className="w-4 h-4" aria-hidden />
           </Button>
         </div>

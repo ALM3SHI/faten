@@ -12,13 +12,14 @@
  *   Plan target  → usePlanHours() (profile, else transcript), .goals.targetGpa
  *
  * Layout:
- *   1. Three glass summary cards (cumulative, completed hours, required-to-graduate)
+ *   1. Three border border-line bg-surface shadow-card summary cards (cumulative, completed hours, required-to-graduate)
  *   2. Current Semester Simulator (only editable section on the page)
  *   3. "View Detailed Transcript" button → Dialog with a 2-col bento grid of
  *      past semesters. This keeps the planning view focused on the simulator.
  */
 
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ds/button";
 import { Calculator, TrendingUp, Target, Clock, Plus } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { SectionTabs } from "@/components/section-tabs";
@@ -167,7 +168,7 @@ export default function GPAPage() {
 
   // ── Render ───────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-24">
       <Navbar />
       <div className="aurora">
         <div className="aurora-blob blob-1 opacity-10" />
@@ -181,8 +182,8 @@ export default function GPAPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-              <h1 className="text-4xl font-black flex items-center gap-3">
-                <Calculator className="w-8 h-8 text-uqu-accent" />
+              <h1 className="text-title font-bold flex items-center gap-3">
+                <Calculator className="w-8 h-8 text-info-ink" />
                 حاسبة المعدل
               </h1>
             </div>
@@ -200,7 +201,7 @@ export default function GPAPage() {
                   secondaryLabel="بعد المحاكاة"
                   secondaryValue={projection.projectedGpa.toFixed(2)}
                   delta={projection.delta}
-                  icon={<TrendingUp className="w-6 h-6 text-emerald-400" />}
+                  icon={<TrendingUp className="w-6 h-6 text-success-ink" />}
                   accent="emerald"
                 />
                 <SummaryCard
@@ -216,7 +217,7 @@ export default function GPAPage() {
                       ? `${Math.round((historicalHours / totalPlanHours) * 100)}%`
                       : undefined
                   }
-                  icon={<Clock className="w-6 h-6 text-cyan-400" />}
+                  icon={<Clock className="w-6 h-6 text-info-ink" />}
                   accent="cyan"
                 />
                 <RequiredToGraduateCard
@@ -256,14 +257,14 @@ export default function GPAPage() {
                     ),
                   )}
 
-                  <button
+                  <Button variant="bare"
                     type="button"
                     onClick={addMockCourse}
-                    className="w-full p-3 rounded-xl border border-dashed border-foreground/10 text-muted hover:text-uqu-accent hover:border-uqu-accent/40 hover:bg-uqu-accent/[0.04] transition-all flex items-center justify-center gap-2 text-sm font-bold"
+                    className="w-full p-3 rounded-control border border-dashed border-line text-ink-muted hover:text-info-ink hover:border-info-line hover:bg-info-soft transition-all flex items-center justify-center gap-2 text-small font-bold"
                   >
                     <Plus className="w-4 h-4" />
                     إضافة مادة افتراضية (Mock)
-                  </button>
+                  </Button>
                 </div>
               </SimulatorSection>
 
@@ -271,8 +272,8 @@ export default function GPAPage() {
               <TranscriptDialog semesters={historicalSemesters} historicalHours={historicalHours} />
 
               {/* Scale footer */}
-              <div className="flex items-center gap-3 p-5 rounded-2xl bg-foreground/5 border border-foreground/10 text-xs text-muted leading-relaxed">
-                <Target className="w-4 h-4 text-uqu-accent shrink-0" />
+              <div className="flex items-center gap-3 p-5 rounded-card bg-surface-sunken border border-line text-caption text-ink-muted leading-relaxed">
+                <Target className="w-4 h-4 text-info-ink shrink-0" />
                 <span>
                   المقياس: نظام جامعة أم القرى (4.00). الأرقام: A+ = 4.00، A = 3.75،
                   B+ = 3.50، B = 3.00، C+ = 2.50، C = 2.00، D+ = 1.50، D = 1.00، F = 0.00.

@@ -22,8 +22,7 @@
  */
 
 import { clearLectureFiles } from "@/lib/lecture-files";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { loadFirebase, setSignedInHint } from "@/lib/firebase/lazy";
 import { useChatHistoryStore } from "@/store/chatHistoryStore";
 import { usePlanStore } from "@/store/planStore";
 import { useProfileStore } from "@/store/profileStore";
@@ -314,6 +313,8 @@ export async function logoutAndPurge(
   }
 
   try {
+    const [{ signOut }, { auth }] = await Promise.all([import("firebase/auth"), loadFirebase()]);
+    setSignedInHint(false);
     await signOut(auth);
   } catch (err) {
     console.error("[auth] Firebase signOut failed — continuing purge anyway:", err);

@@ -12,7 +12,7 @@ export async function signIn(page: Page, user = STUDENT, { tour = false }: { tou
   await page.addInitScript(
     ({ u, tour }) => {
       if (window.name.includes("e2e-auth")) return;
-      localStorage.setItem("__e2e_auth_user__", JSON.stringify(u));
+      localStorage.setItem("firebase:authUser:e2e:[DEFAULT]", JSON.stringify(u));
       if (!tour) localStorage.setItem("uqu_tour_done_v1", `${u.uid}:1`);
       window.name += " e2e-auth";
     },

@@ -13,7 +13,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <>
       {children}
       <div
-        className="pointer-events-none fixed bottom-6 left-1/2 z-[100] flex w-full max-w-md -translate-x-1/2 flex-col items-stretch gap-2 px-4"
+        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+1rem)] left-1/2 z-[100] flex w-full max-w-md -translate-x-1/2 flex-col items-stretch gap-2 px-4"
         aria-live="polite"
         aria-atomic="false"
       >
