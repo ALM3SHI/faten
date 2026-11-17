@@ -82,21 +82,21 @@ export function NotificationsCard() {
   const canToggle = state === "on" || state === "off";
 
   return (
-    <Card className="glass p-6 md:p-7 rounded-[32px] border-foreground/10 space-y-5 md:col-span-2">
+    <Card className="border border-line bg-surface shadow-card p-6 md:p-7 rounded-card space-y-5 md:col-span-2">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Bell className="w-5 h-5 text-uqu-accent" aria-hidden />
+          <h2 className="text-heading font-bold flex items-center gap-2">
+            <Bell className="w-5 h-5 text-info-ink" aria-hidden />
             الإشعارات على الجوال
           </h2>
-          <p className="text-sm text-muted-foreground leading-7 max-w-xl">{state ? STATE_TEXT[state] : "…"}</p>
+          <p className="text-small text-ink-muted leading-7 max-w-xl">{state ? STATE_TEXT[state] : "…"}</p>
         </div>
         {canToggle && (
           <Button
             onClick={toggle}
             disabled={busy}
             variant={state === "on" ? "outline" : "default"}
-            className={state === "on" ? "rounded-xl gap-2" : "rounded-xl gap-2 bg-uqu-accent hover:bg-uqu-accent/90 text-white"}
+            className={state === "on" ? "rounded-control gap-2" : "rounded-control gap-2 bg-brand hover:bg-brand-hover text-on-brand"}
           >
             {busy ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : state === "on" ? <BellOff className="w-4 h-4" aria-hidden /> : <Bell className="w-4 h-4" aria-hidden />}
             {state === "on" ? "إيقاف على هذا الجهاز" : "تفعيل الإشعارات"}
@@ -107,7 +107,7 @@ export function NotificationsCard() {
       <fieldset className="grid sm:grid-cols-3 gap-3" disabled={!prefs || busy}>
         <legend className="sr-only">ماذا تريد أن يصلك؟</legend>
         {PREF_LABELS.map(([key, label, hint]) => (
-          <label key={key} className="flex items-start gap-3 rounded-2xl border border-foreground/10 p-4 cursor-pointer has-[:checked]:border-uqu-accent/40">
+          <label key={key} className="flex items-start gap-3 rounded-card border border-line p-4 cursor-pointer has-[:checked]:border-info-line">
             <input
               type="checkbox"
               className="mt-1 accent-[var(--accent)] w-4 h-4"
@@ -115,15 +115,15 @@ export function NotificationsCard() {
               onChange={(e) => setPref(key, e.target.checked)}
             />
             <span>
-              <span className="block font-bold text-sm">{label}</span>
-              <span className="block text-xs text-muted-foreground mt-0.5">{hint}</span>
+              <span className="block font-bold text-small">{label}</span>
+              <span className="block text-caption text-ink-muted mt-0.5">{hint}</span>
             </span>
           </label>
         ))}
       </fieldset>
 
       {state === "on" && (
-        <Button variant="ghost" size="sm" disabled={busy} className="gap-2 rounded-xl" onClick={() => run(async () => {
+        <Button variant="ghost" size="sm" disabled={busy} className="gap-2 rounded-control" onClick={() => run(async () => {
           await sendTestPush();
           toast.success("أرسلنا إشعاراً تجريبياً — يوصلك خلال ثوانٍ.");
         })}>

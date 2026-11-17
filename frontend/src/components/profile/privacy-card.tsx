@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Button as DsButton } from "@/components/ds/button";
 import Link from "next/link";
 import { Brain, Loader2, ShieldCheck, Trash2, UserX, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -72,13 +73,13 @@ export function PrivacyCard() {
   };
 
   return (
-    <Card className="glass p-6 md:p-7 rounded-[32px] border-foreground/10 md:col-span-2 space-y-6">
+    <Card className="border border-line bg-surface shadow-card p-6 md:p-7 rounded-card md:col-span-2 space-y-6">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="text-xl font-black flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-uqu-accent" />
+        <h2 className="text-heading font-bold flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-info-ink" />
           الخصوصية وبياناتك
         </h2>
-        <Link href="/privacy" className="text-sm font-bold text-uqu-accent hover:underline">
+        <Link href="/privacy" className="text-small font-bold text-info-ink hover:underline">
           سياسة الخصوصية والشروط
         </Link>
       </div>
@@ -86,67 +87,67 @@ export function PrivacyCard() {
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           <h3 className="font-bold flex items-center gap-2">
-            <Brain className="w-4 h-4 text-uqu-cyan" />
+            <Brain className="w-4 h-4 text-info-ink" />
             ما يتذكره المساعد عنك
           </h3>
           {items && items.length > 0 && (
-            <Button variant="ghost" size="sm" className="rounded-xl text-rose-500" disabled={busy !== null} onClick={() => forget(null)}>
+            <Button variant="ghost" size="sm" className="rounded-control text-danger-ink" disabled={busy !== null} onClick={() => forget(null)}>
               {busy === "all" ? <Loader2 className="w-4 h-4 animate-spin" /> : "مسح الكل"}
             </Button>
           )}
         </div>
         {items === null ? (
-          <div className="h-12 rounded-2xl bg-foreground/5 animate-pulse" />
+          <div className="h-12 rounded-card bg-surface-sunken animate-pulse" />
         ) : items.length === 0 ? (
-          <p className="text-sm text-muted-foreground leading-7">
+          <p className="text-small text-ink-muted leading-7">
             لا شيء محفوظ. إذا ذكرت للمساعد هدفاً أو ظرفاً دائماً (مثل «أبي أرفع معدلي لـ 3.5» أو «أشتغل دوام جزئي») يحفظه هنا ليتذكره لاحقاً.
           </p>
         ) : (
           <ul className="space-y-2">
             {items.map((i) => (
-              <li key={i.id} className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl bg-foreground/5 border border-foreground/10 text-sm">
+              <li key={i.id} className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-card bg-surface-sunken border border-line text-small">
                 <span>{i.text}</span>
-                <button
+                <DsButton variant="bare"
                   type="button"
                   onClick={() => forget(i.id)}
                   disabled={busy !== null}
-                  className="p-1 rounded-lg text-muted-foreground hover:text-rose-500 shrink-0"
+                  className="p-1 rounded-control text-ink-muted hover:text-danger-ink shrink-0"
                   aria-label="احذف هذه المعلومة"
                 >
                   {busy === i.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-                </button>
+                </DsButton>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      <div className="pt-4 border-t border-foreground/10 flex items-center justify-between gap-3 flex-wrap">
-        <div className="text-sm">
+      <div className="pt-4 border-t border-line flex items-center justify-between gap-3 flex-wrap">
+        <div className="text-small">
           <div className="font-bold">حذف الحساب</div>
-          <div className="text-muted-foreground text-[13px]">يحذف حسابك وسجلك وجدولك ومحادثاتك وتقييماتك نهائياً.</div>
+          <div className="text-ink-muted text-small">يحذف حسابك وسجلك وجدولك ومحادثاتك وتقييماتك نهائياً.</div>
         </div>
-        <Button variant="outline" className="rounded-xl border-rose-500/30 text-rose-500 gap-2" onClick={() => setDeleteOpen(true)}>
+        <Button variant="outline" className="rounded-control border-danger-line text-danger-ink gap-2" onClick={() => setDeleteOpen(true)}>
           <UserX className="w-4 h-4" />
           حذف حسابي
         </Button>
       </div>
 
       <Dialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setConfirmText(""); }}>
-        <DialogContent dir="rtl" className="rounded-[24px] sm:max-w-md">
+        <DialogContent dir="rtl" className="rounded-card sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-rose-500">
+            <DialogTitle className="flex items-center gap-2 text-danger-ink">
               <Trash2 className="w-5 h-5" /> حذف الحساب نهائياً
             </DialogTitle>
             <DialogDescription className="leading-7">
               سيُحذف حسابك وكل بياناتك فوراً ولا يمكن استرجاعها. للتأكيد اكتب كلمة «{CONFIRM_WORD}».
             </DialogDescription>
           </DialogHeader>
-          <Input value={confirmText} onChange={(e) => setConfirmText(e.target.value)} placeholder={CONFIRM_WORD} className="rounded-xl" aria-label="اكتب كلمة التأكيد" />
+          <Input value={confirmText} onChange={(e) => setConfirmText(e.target.value)} placeholder={CONFIRM_WORD} className="rounded-control" aria-label="اكتب كلمة التأكيد" />
           <DialogFooter className="gap-2">
             <Button variant="ghost" onClick={() => setDeleteOpen(false)} disabled={deleting}>إلغاء</Button>
             <Button
-              className="bg-rose-500 hover:bg-rose-500/90 text-white gap-2"
+              className="border border-danger-line bg-danger-soft hover:border-danger-ink text-danger-ink gap-2"
               disabled={confirmText.trim() !== CONFIRM_WORD || deleting}
               onClick={deleteAccount}
             >

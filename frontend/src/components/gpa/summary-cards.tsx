@@ -28,43 +28,43 @@ export function SummaryCard({
   accent: "emerald" | "cyan" | "uqu";
 }) {
   const tone = {
-    emerald: "bg-emerald-500/10 border-emerald-500/20",
-    cyan: "bg-cyan-500/10 border-cyan-500/20",
-    uqu: "bg-uqu-accent/10 border-uqu-accent/20",
+    emerald: "bg-success-soft border-success-line",
+    cyan: "bg-info-soft border-info-line",
+    uqu: "bg-info-soft border-info-line",
   }[accent];
 
   const deltaSign = delta != null ? (delta > 0 ? "+" : delta < 0 ? "" : "±") : "";
   const deltaColor =
     delta == null || Math.abs(delta) < 0.005
-      ? "text-muted"
+      ? "text-ink-muted"
       : delta > 0
-        ? "text-emerald-400"
-        : "text-rose-400";
+        ? "text-success-ink"
+        : "text-danger-ink";
 
   return (
-    <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10 hover:border-foreground/10 transition-colors group">
+    <Card className="border border-line bg-surface shadow-card p-4 md:p-5 gap-0 rounded-card hover:border-line transition-colors group">
       <div className="flex items-start justify-between mb-3">
-        <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+        <h2 className="text-small font-bold tracking-wide text-ink-muted">
           {label}
         </h2>
-        <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center border", tone)}>
+        <div className={cn("w-9 h-9 rounded-control flex items-center justify-center border", tone)}>
           {icon}
         </div>
       </div>
       <div className="space-y-2">
-        <div className="text-3xl md:text-4xl leading-none font-black tracking-tighter font-mono">
+        <div className="text-title md:text-title leading-none font-bold tracking-tighter font-mono">
           {primary}
         </div>
-        <div className="flex items-baseline justify-between gap-2 text-xs">
-          <span className="text-muted font-semibold">{secondaryLabel}</span>
+        <div className="flex items-baseline justify-between gap-2 text-caption">
+          <span className="text-ink-muted font-semibold">{secondaryLabel}</span>
           {secondaryValue !== undefined && (
-            <span className="font-mono font-bold text-foreground">{secondaryValue}</span>
+            <span className="font-mono font-bold text-ink">{secondaryValue}</span>
           )}
         </div>
         {delta != null && (
           <div
             className={cn(
-              "text-xs font-semibold font-mono mt-1 pt-2 border-t border-foreground/10",
+              "text-caption font-semibold font-mono mt-1 pt-2 border-t border-line",
               deltaColor,
             )}
           >
@@ -90,19 +90,19 @@ export function RequiredToGraduateCard({
   // No target → CTA to /profile
   if (!required || required.status === "no_target" || targetGpa <= 0) {
     return (
-      <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10">
+      <Card className="border border-line bg-surface shadow-card p-4 md:p-5 gap-0 rounded-card">
         <div className="flex items-start justify-between mb-3">
-          <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+          <h2 className="text-small font-bold tracking-wide text-ink-muted">
             المعدل المطلوب للأترام المتبقية
           </h2>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-foreground/5 border-foreground/10">
-            <Target className="w-5 h-5 text-muted" />
+          <div className="w-9 h-9 rounded-control flex items-center justify-center border bg-surface-sunken border-line">
+            <Target className="w-5 h-5 text-ink-muted" />
           </div>
         </div>
-        <div className="text-3xl md:text-4xl leading-none font-black text-muted mb-2">—</div>
-        <p className="text-xs text-muted leading-relaxed">
+        <div className="text-title md:text-title leading-none font-bold text-ink-muted mb-2">—</div>
+        <p className="text-caption text-ink-muted leading-relaxed">
           حدّد معدلاً مستهدفاً من{" "}
-          <Link href="/profile" className="text-uqu-accent font-bold underline">
+          <Link href="/profile" className="text-info-ink font-bold underline">
             صفحة الملف الشخصي
           </Link>{" "}
           لرؤية المطلوب لتحقيقه.
@@ -114,19 +114,19 @@ export function RequiredToGraduateCard({
   // Target set but plan hours unknown → CTA to /profile
   if (required.status === "no_plan" || totalPlanHours <= 0) {
     return (
-      <Card className="glass p-4 md:p-5 gap-0 rounded-2xl border-foreground/10">
+      <Card className="border border-line bg-surface shadow-card p-4 md:p-5 gap-0 rounded-card">
         <div className="flex items-start justify-between mb-3">
-          <h2 className="text-sm font-extrabold tracking-wide text-muted-foreground">
+          <h2 className="text-small font-bold tracking-wide text-ink-muted">
             المعدل المطلوب للأترام المتبقية
           </h2>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center border bg-amber-500/10 border-amber-500/20">
-            <AlertCircle className="w-5 h-5 text-amber-400" />
+          <div className="w-9 h-9 rounded-control flex items-center justify-center border bg-warning-soft border-warning-line">
+            <AlertCircle className="w-5 h-5 text-warning-ink" />
           </div>
         </div>
-        <div className="text-3xl md:text-4xl leading-none font-black text-muted mb-2">—</div>
-        <p className="text-xs text-muted leading-relaxed">
+        <div className="text-title md:text-title leading-none font-bold text-ink-muted mb-2">—</div>
+        <p className="text-caption text-ink-muted leading-relaxed">
           أدخل عدد ساعات خطتك الأكاديمية في{" "}
-          <Link href="/profile" className="text-uqu-accent font-bold underline">
+          <Link href="/profile" className="text-info-ink font-bold underline">
             صفحة الملف الشخصي
           </Link>{" "}
           (مثلاً 132) لحساب المعدل المطلوب لتحقيق الهدف عند التخرج.
@@ -136,11 +136,11 @@ export function RequiredToGraduateCard({
   }
 
   const toneByStatus = {
-    achieved: "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
-    complete: "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
-    feasible: "bg-uqu-accent/10 border-uqu-accent/20 text-uqu-accent",
-    stretch: "bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300",
-    impossible: "bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300",
+    achieved: "bg-success-soft border-success-line text-success-ink ",
+    complete: "bg-success-soft border-success-line text-success-ink ",
+    feasible: "bg-info-soft border-info-line text-info-ink",
+    stretch: "bg-warning-soft border-warning-line text-warning-ink ",
+    impossible: "bg-danger-soft border-danger-line text-danger-ink ",
   } as const;
 
   const headlineByStatus = {
@@ -156,24 +156,24 @@ export function RequiredToGraduateCard({
   const remaining = required.remainingHours;
 
   return (
-    <Card className={cn("glass p-4 md:p-5 gap-0 rounded-2xl border", toneByStatus[status])}>
+    <Card className={cn("border border-line bg-surface shadow-card p-4 md:p-5 gap-0 rounded-card", toneByStatus[status])}>
       <div className="flex items-start justify-between mb-3">
-        <h2 className="text-sm font-extrabold tracking-wide opacity-90">
+        <h2 className="text-small font-bold tracking-wide opacity-90">
           المعدل المطلوب للأترام المتبقية
         </h2>
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center border border-foreground/10 bg-foreground/5 dark:bg-black/20">
+        <div className="w-9 h-9 rounded-control flex items-center justify-center border border-line bg-surface-sunken">
           <Target className="w-5 h-5" />
         </div>
       </div>
-      <div className="text-3xl md:text-4xl leading-none font-black tracking-tighter font-mono mb-1">
+      <div className="text-title md:text-title leading-none font-bold tracking-tighter font-mono mb-1">
         {display}
       </div>
-      <div className="text-xs font-semibold opacity-90">
+      <div className="text-caption font-semibold opacity-90">
         {remaining > 0
           ? `للوصول لمعدل ${targetGpa.toFixed(2)} عبر الـ${remaining} ساعة المتبقية`
           : "أكملت ساعات الخطة"}
       </div>
-      <div className="mt-3 pt-3 border-t border-foreground/10 text-xs leading-relaxed opacity-90">
+      <div className="mt-3 pt-3 border-t border-line text-caption leading-relaxed opacity-90">
         {headlineByStatus[status]}
       </div>
     </Card>

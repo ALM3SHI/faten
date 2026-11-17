@@ -12,6 +12,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ds/button";
 import { useRouter } from "next/navigation";
 import { BookOpenCheck, Brain, FileText, GraduationCap, Loader2, RefreshCw, Trash2, Upload, X } from "lucide-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -131,27 +132,27 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
   return (
     <div className="space-y-6">
       {dueToday.length > 0 && (
-        <section className="rounded-3xl border border-sky-500/30 bg-sky-500/[0.06] p-5 space-y-3" aria-label="مراجعة اليوم">
-          <div className="flex items-center gap-2 font-black">
-            <Brain className="w-5 h-5 text-sky-600" aria-hidden /> مراجعة اليوم
+        <section className="rounded-card border border-info-line bg-info-soft p-5 space-y-3" aria-label="مراجعة اليوم">
+          <div className="flex items-center gap-2 font-bold">
+            <Brain className="w-5 h-5 text-info-ink" aria-hidden /> مراجعة اليوم
           </div>
-          <p className="text-[13.5px] text-muted-foreground leading-7">
+          <p className="text-small text-ink-muted leading-7">
             موضوعات أتقنتها وحان موعد مراجعتها — سؤال واحد من كل موضوع يكفي.
           </p>
           <ul className="space-y-2">
             {dueToday.map((l) => (
               <li key={l.id} className="flex items-center gap-3">
                 <span className="flex-1 min-w-0">
-                  <span className="block font-bold text-[14px] truncate" dir="auto">{l.title}</span>
-                  <span className="block text-[12px] text-muted-foreground truncate" dir="auto">{(l.dueTopics ?? []).map((t) => t.title).join("، ")}</span>
+                  <span className="block font-bold text-body truncate" dir="auto">{l.title}</span>
+                  <span className="block text-small text-ink-muted truncate" dir="auto">{(l.dueTopics ?? []).map((t) => t.title).join("، ")}</span>
                 </span>
-                <button
+                <Button variant="bare"
                   type="button"
                   onClick={() => router.push(`/tutor?lecture=${encodeURIComponent(l.id)}&review=1`)}
-                  className="h-9 px-4 rounded-xl bg-sky-600 text-white text-[13px] font-bold shrink-0"
+                  className="h-9 px-4 rounded-control bg-brand text-on-brand text-small font-bold shrink-0"
                 >
                   راجع ({l.reviewDue})
-                </button>
+                </Button>
               </li>
             ))}
           </ul>
@@ -174,26 +175,26 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
               pick(e.dataTransfer.files?.[0]);
             }}
             className={cn(
-              "flex flex-col items-center justify-center gap-2 p-8 rounded-3xl border-2 border-dashed cursor-pointer transition-colors text-center",
-              drag ? "border-uqu-accent bg-uqu-accent/10" : "border-foreground/15 hover:border-uqu-accent/40",
+              "flex flex-col items-center justify-center gap-2 p-8 rounded-card border-2 border-dashed cursor-pointer transition-colors text-center",
+              drag ? "border-info-line bg-info-soft" : "border-line-strong hover:border-info-line",
             )}
           >
-            <Upload className="w-9 h-9 text-uqu-accent" aria-hidden />
-            <span className="font-black">اختر ملف المحاضرة (PDF)</span>
-            <span className="text-xs text-muted-foreground">أو اسحبه هنا · حتى {MAX_PDF_MB} ميجابايت · يقرأ العربي والإنجليزي والرسومات</span>
+            <Upload className="w-9 h-9 text-info-ink" aria-hidden />
+            <span className="font-bold">اختر ملف المحاضرة (PDF)</span>
+            <span className="text-caption text-ink-muted">أو اسحبه هنا · حتى {MAX_PDF_MB} ميجابايت · يقرأ العربي والإنجليزي والرسومات</span>
             <input id="study-file" type="file" accept=".pdf,application/pdf" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
           </label>
         ) : (
-          <div className="flex items-center gap-3 p-4 rounded-2xl border border-uqu-accent/30 bg-uqu-accent/[0.05]">
-            <FileText className="w-6 h-6 text-uqu-accent shrink-0" aria-hidden />
+          <div className="flex items-center gap-3 p-4 rounded-card border border-info-line bg-info-soft">
+            <FileText className="w-6 h-6 text-info-ink shrink-0" aria-hidden />
             {/* Without ".pdf": mixed Arabic/Latin names otherwise render as "pdf.4". */}
             <span className="flex-1 min-w-0 font-bold truncate" dir="auto" title={file.name}>
               {file.name.replace(/\.pdf$/i, "")}
             </span>
             {!busy && (
-              <button type="button" onClick={() => setFile(null)} className="p-2 rounded-lg text-muted-foreground hover:text-foreground" aria-label="اختر ملفاً آخر">
+              <Button variant="bare" type="button" onClick={() => setFile(null)} className="p-2 rounded-control text-ink-muted hover:text-ink" aria-label="اختر ملفاً آخر">
                 <X className="w-4 h-4" aria-hidden />
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -201,120 +202,120 @@ export function StudyHome({ onOpenPack }: { onOpenPack: (id: string) => void }) 
         {/* 2 · how to study it */}
         {file && (
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-3xl bg-foreground text-background p-5 flex flex-col gap-3">
+            <div className="rounded-card bg-brand text-on-brand shadow-card p-5 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <GraduationCap className="w-5 h-5" aria-hidden />
-                <span className="font-black">درّسني خطوة بخطوة</span>
+                <span className="font-bold">درّسني خطوة بخطوة</span>
               </div>
-              <p className="text-[13px] leading-6 opacity-80 flex-1">
+              <p className="text-small leading-6 text-white/90 flex-1">
                 موضوعاً موضوعاً: أشرح من الشرائح، أتأكد من فهمك بأسئلة، أعالج أخطاءك، وفي النهاية اختبار شامل وخطة مراجعة.
               </p>
-              <button
+              <Button variant="bare"
                 type="button"
                 onClick={teach}
                 disabled={!!busy}
                 aria-busy={busy === "tutor"}
-                className="h-11 rounded-xl bg-background text-foreground font-bold inline-flex items-center justify-center gap-2 disabled:opacity-70"
+                className="h-11 rounded-control bg-white text-brand font-bold hover:bg-white/90 inline-flex items-center justify-center gap-2 disabled:opacity-70"
               >
                 {busy === "tutor" && <Loader2 className="w-4 h-4 animate-spin" aria-hidden />}
                 <span aria-live="polite">{busy === "tutor" ? TUTOR_STEPS[stepIdx] : "ابدأ الدرس"}</span>
-              </button>
+              </Button>
             </div>
 
-            <div className="rounded-3xl border border-foreground/10 p-5 flex flex-col gap-3">
+            <div className="rounded-card border border-line p-5 flex flex-col gap-3">
               <div className="flex items-center gap-2">
-                <BookOpenCheck className="w-5 h-5 text-uqu-accent" aria-hidden />
-                <span className="font-black">مراجعة سريعة</span>
+                <BookOpenCheck className="w-5 h-5 text-info-ink" aria-hidden />
+                <span className="font-bold">مراجعة سريعة</span>
               </div>
-              <p className="text-[13px] leading-6 text-muted-foreground">ملخص · مصطلحات · بطاقات مراجعة · اختبار قصير.</p>
+              <p className="text-small leading-6 text-ink-muted">ملخص · مصطلحات · بطاقات مراجعة · اختبار قصير.</p>
               <div className="flex flex-wrap gap-3">
                 <Choice label="عدد الأسئلة" value={questions} options={[[5, "5"], [10, "10"], [15, "15"]]} onChange={setQuestions} />
                 <Choice label="اللغة" value={language} options={[["ar", "عربي"], ["en", "English"]]} onChange={setLanguage} />
               </div>
-              <button
+              <Button variant="bare"
                 type="button"
                 onClick={quick}
                 disabled={!!busy}
-                className="h-11 rounded-xl bg-uqu-accent text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-uqu-accent/90 disabled:opacity-70"
+                className="h-11 rounded-control bg-brand text-on-brand font-bold inline-flex items-center justify-center gap-2 hover:bg-brand-hover disabled:opacity-70"
               >
                 {busy === "quick" && <Loader2 className="w-4 h-4 animate-spin" aria-hidden />}
                 {busy === "quick" ? "أقرأ الملف وأجهّز المذاكرة…" : "جهّز لي المذاكرة"}
-              </button>
-              <span className="text-[11px] text-muted-foreground">يستهلك 5 من رصيدك اليومي{busy === "quick" ? " — قد يأخذ حتى دقيقة" : ""}</span>
+              </Button>
+              <span className="text-caption text-ink-muted">يستهلك 5 من رصيدك اليومي{busy === "quick" ? " — قد يأخذ حتى دقيقة" : ""}</span>
             </div>
           </div>
         )}
-        {error && <p className="text-sm text-rose-500 font-medium" role="alert">{error}</p>}
+        {error && <p className="text-small text-danger-ink font-medium" role="alert">{error}</p>}
       </section>
 
       {/* 3 · everything uploaded before */}
       <section aria-label="ملفاتك" className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-black">ملفاتك</h2>
+          <h2 className="font-bold">ملفاتك</h2>
           {listError && (
-            <button type="button" onClick={refresh} className="text-[13px] text-uqu-accent font-bold inline-flex items-center gap-1">
+            <Button variant="bare" type="button" onClick={refresh} className="text-small text-info-ink font-bold inline-flex items-center gap-1">
               <RefreshCw className="w-3.5 h-3.5" aria-hidden /> إعادة المحاولة
-            </button>
+            </Button>
           )}
         </div>
-        {listError && <p className="text-sm text-rose-500">{listError}</p>}
+        {listError && <p className="text-small text-danger-ink">{listError}</p>}
         {lectures === null && !listError && (
-          <div className="flex justify-center py-6 text-muted-foreground" role="status">
+          <div className="flex justify-center py-6 text-ink-muted" role="status">
             <Loader2 className="w-5 h-5 animate-spin" aria-hidden />
             <span className="sr-only">جاري التحميل…</span>
           </div>
         )}
-        {nothingYet && <p className="text-sm text-muted-foreground">لم ترفع محاضرة بعد. ابدأ بأقرب محاضرة عندك اختبار فيها.</p>}
+        {nothingYet && <p className="text-small text-ink-muted">لم ترفع محاضرة بعد. ابدأ بأقرب محاضرة عندك اختبار فيها.</p>}
 
         <ul className="space-y-2">
           {(lectures ?? []).map((l) => {
             const mastered = (l.counts.mastered ?? 0) + (l.counts.review_due ?? 0);
             const share = l.topics ? mastered / l.topics : 0;
             return (
-              <li key={`l-${l.id}`} className="flex items-center gap-3 p-4 rounded-2xl border border-foreground/10 bg-card">
-                <button type="button" onClick={() => router.push(`/tutor?lecture=${encodeURIComponent(l.id)}`)} className="flex-1 min-w-0 text-right">
+              <li key={`l-${l.id}`} className="flex items-center gap-3 p-4 rounded-card border border-line bg-surface">
+                <Button variant="bare" type="button" onClick={() => router.push(`/tutor?lecture=${encodeURIComponent(l.id)}`)} className="flex-1 min-w-0 text-right">
                   <span className="flex items-center gap-2">
                     <span className="font-bold truncate" dir="auto">{l.title}</span>
-                    <span className="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full bg-foreground/10">درس</span>
+                    <span className="shrink-0 text-caption font-bold px-2 py-0.5 rounded-full bg-surface-sunken">درس</span>
                   </span>
-                  <span className="block text-xs text-muted-foreground truncate mt-0.5">
+                  <span className="block text-caption text-ink-muted truncate mt-0.5">
                     {l.topics} موضوعات · {l.pageCount} صفحة
                     {l.finalScore !== null && l.finalScore !== undefined ? ` · الاختبار الشامل ${pct(l.finalScore)}` : ""}
                   </span>
                   <span className="flex items-center gap-2 mt-2">
-                    <span className="flex-1 h-1.5 rounded-full bg-foreground/10 overflow-hidden" aria-hidden>
-                      <span className="block h-full bg-emerald-500" style={{ width: `${Math.round(share * 100)}%` }} />
+                    <span className="flex-1 h-1.5 rounded-full bg-surface-sunken overflow-hidden" aria-hidden>
+                      <span className="block h-full bg-success-ink" style={{ width: `${Math.round(share * 100)}%` }} />
                     </span>
-                    <span className="text-[11px] text-muted-foreground whitespace-nowrap">{mastered}/{l.topics} متقن</span>
+                    <span className="text-caption text-ink-muted whitespace-nowrap">{mastered}/{l.topics} متقن</span>
                   </span>
-                </button>
-                <button type="button" onClick={() => setToDelete(l)} className="p-2 rounded-lg text-muted-foreground hover:text-rose-500" aria-label={`حذف ${l.title}`}>
+                </Button>
+                <Button variant="bare" type="button" onClick={() => setToDelete(l)} className="p-2 rounded-control text-ink-muted hover:text-danger-ink" aria-label={`حذف ${l.title}`}>
                   <Trash2 className="w-4 h-4" aria-hidden />
-                </button>
+                </Button>
               </li>
             );
           })}
           {mounted &&
             packs.map((p) => (
-              <li key={`p-${p.id}`} className="flex items-center gap-3 p-4 rounded-2xl border border-foreground/10 bg-card">
-                <button type="button" onClick={() => onOpenPack(p.id)} className="flex-1 min-w-0 text-right">
+              <li key={`p-${p.id}`} className="flex items-center gap-3 p-4 rounded-card border border-line bg-surface">
+                <Button variant="bare" type="button" onClick={() => onOpenPack(p.id)} className="flex-1 min-w-0 text-right">
                   <span className="flex items-center gap-2">
                     <span className="font-bold truncate" dir="auto">{p.title}</span>
                     {/* Cards saved from a lesson come without a quiz: label them as cards. */}
-                    <span className="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full bg-uqu-accent/10 text-uqu-accent">
+                    <span className="shrink-0 text-caption font-bold px-2 py-0.5 rounded-full bg-info-soft text-info-ink">
                       {p.quiz.length > 0 ? "مراجعة سريعة" : "بطاقات"}
                     </span>
                   </span>
-                  <span className="block text-xs text-muted-foreground truncate mt-0.5">
+                  <span className="block text-caption text-ink-muted truncate mt-0.5">
                     {[p.quiz.length > 0 ? `${p.quiz.length} سؤال` : null, new Date(p.createdAt).toLocaleDateString("ar-SA-u-ca-gregory-nu-latn")]
                       .filter(Boolean)
                       .join(" · ")}
                   </span>
-                  {dueLabel(p) && <span className="block text-xs font-bold text-uqu-accent mt-0.5">{dueLabel(p)}</span>}
-                </button>
-                <button type="button" onClick={() => removePack(p.id)} className="p-2 rounded-lg text-muted-foreground hover:text-rose-500" aria-label="حذف">
+                  {dueLabel(p) && <span className="block text-caption font-bold text-info-ink mt-0.5">{dueLabel(p)}</span>}
+                </Button>
+                <Button variant="bare" type="button" onClick={() => removePack(p.id)} className="p-2 rounded-control text-ink-muted hover:text-danger-ink" aria-label="حذف">
                   <Trash2 className="w-4 h-4" aria-hidden />
-                </button>
+                </Button>
               </li>
             ))}
         </ul>
@@ -346,19 +347,19 @@ function Choice<T extends string | number>({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-[11px] font-bold text-muted-foreground">{label}</div>
-      <div className="flex gap-1 p-1 rounded-xl bg-foreground/5 border border-foreground/10 w-fit" role="radiogroup" aria-label={label}>
+      <div className="text-caption font-bold text-ink-muted">{label}</div>
+      <div className="flex gap-1 p-1 rounded-control bg-surface-sunken border border-line w-fit" role="radiogroup" aria-label={label}>
         {options.map(([v, text]) => (
-          <button
+          <Button variant="bare"
             key={String(v)}
             type="button"
             role="radio"
             aria-checked={value === v}
             onClick={() => onChange(v)}
-            className={cn("px-3 py-1 rounded-lg text-[13px] font-bold transition-colors", value === v ? "bg-uqu-accent text-white" : "text-muted-foreground hover:text-foreground")}
+            className={cn("px-3 py-1 rounded-control text-small font-bold transition-colors", value === v ? "bg-brand text-on-brand" : "text-ink-muted hover:text-ink")}
           >
             {text}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

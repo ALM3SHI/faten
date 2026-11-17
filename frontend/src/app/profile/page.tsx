@@ -109,7 +109,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-20">
       <Navbar />
       <div className="aurora">
         <div className="aurora-blob blob-1 opacity-10" />
@@ -119,8 +119,8 @@ export default function ProfilePage() {
       <main className="container mx-auto pt-24 px-4 max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black mb-2">الملف الشخصي</h1>
-            <p className="text-muted-foreground">قم بإعداد بياناتك للحصول على أفضل تجربة</p>
+            <h1 className="text-title font-bold mb-2">الملف الشخصي</h1>
+            <p className="text-ink-muted">قم بإعداد بياناتك للحصول على أفضل تجربة</p>
           </div>
           <div className="flex gap-3">
             <Button
@@ -133,7 +133,7 @@ export default function ProfilePage() {
                 // this browser starts clean. See lib/auth-utils.ts.
                 await logoutAndPurge("/login");
               }}
-              className="rounded-2xl gap-2"
+              className="rounded-card gap-2"
             >
               <LogOut className="w-4 h-4" />
               خروج
@@ -153,20 +153,20 @@ export default function ProfilePage() {
             "محلل السجل" and "محلل الجدول" buttons. */}
         <Card
           className={cn(
-            "rounded-[32px] p-6 md:p-8 relative overflow-hidden",
+            "rounded-card p-6 md:p-8 relative overflow-hidden",
             hasTranscript && hasSchedule
-              ? "glass border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent"
-              : "glass border border-uqu-accent/30 bg-gradient-to-br from-uqu-accent/8 via-transparent to-cyan-500/5 shadow-[0_0_40px_hsla(245,78%,62%,0.12)]",
+              ? "border shadow-card border-success-line bg-info-soft border-info-line"
+              : "border shadow-card border-info-line bg-info-soft ",
           )}
         >
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex items-start gap-4">
               <div
                 className={cn(
-                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0",
+                  "w-14 h-14 rounded-card flex items-center justify-center shrink-0",
                   hasTranscript && hasSchedule
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "bg-uqu-accent text-white shadow-[0_0_18px_hsla(245,78%,62%,0.5)]",
+                    ? "bg-success-soft text-success-ink border border-success-line"
+                    : "bg-brand text-on-brand ",
                 )}
               >
                 {hasTranscript && hasSchedule ? (
@@ -176,10 +176,10 @@ export default function ProfilePage() {
                 )}
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-black tracking-tight mb-1">
+                <h2 className="text-heading md:text-heading font-bold tracking-tight mb-1">
                   تهيئة بياناتي الأكاديمية
                 </h2>
-                <p className="text-sm text-muted-foreground max-w-lg">
+                <p className="text-small text-ink-muted max-w-lg">
                   {hasTranscript && hasSchedule
                     ? "ملفك الأكاديمي مكتمل. يمكنك إعادة المعالج لتحديث البيانات في أي وقت."
                     : "ارفع سجلك الأكاديمي وجدولك الأسبوعي مرة واحدة، وسيشتغل المساعد بكامل قدراته."}
@@ -189,10 +189,10 @@ export default function ProfilePage() {
             <Button
               onClick={() => setIsWizardOpen(true)}
               className={cn(
-                "rounded-2xl gap-2 px-5 py-5 font-bold",
+                "rounded-card gap-2 px-5 py-5 font-bold",
                 hasTranscript && hasSchedule
-                  ? "bg-foreground/5 border border-foreground/10 hover:bg-foreground/5 text-foreground"
-                  : "bg-uqu-accent hover:bg-uqu-accent/90 text-white shadow-[0_0_24px_hsla(245,78%,62%,0.4)]",
+                  ? "bg-surface-sunken border border-line hover:bg-surface-sunken text-ink"
+                  : "bg-brand hover:bg-brand-hover text-on-brand ",
               )}
             >
               {hasTranscript && hasSchedule ? (
@@ -244,12 +244,12 @@ export default function ProfilePage() {
 
                   <div className="grid md:grid-cols-2 gap-6">
           {/* Basic Info */}
-          <Card className="glass p-8 rounded-[32px] border-foreground/10 space-y-6">
+          <Card className="border border-line bg-surface shadow-card p-8 rounded-card space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 flex items-center justify-center text-uqu-accent">
+              <div className="w-10 h-10 rounded-control bg-info-soft flex items-center justify-center text-info-ink">
                 <User className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-bold">البيانات الأساسية</h2>
+              <h2 className="text-heading font-bold">البيانات الأساسية</h2>
             </div>
 
             <div className="space-y-4">
@@ -266,7 +266,7 @@ export default function ProfilePage() {
                     setDirty(true);
                   }}
                   placeholder="أدخل اسمك..."
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
               </div>
               <div className="space-y-2">
@@ -282,7 +282,7 @@ export default function ProfilePage() {
                     setDirty(true);
                   }}
                   placeholder="مثال: هندسة حاسب"
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
               </div>
               <div className="space-y-2">
@@ -298,7 +298,7 @@ export default function ProfilePage() {
                     setDirty(true);
                   }}
                   placeholder="4xxxxxxxx"
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
               </div>
               <div className="space-y-2">
@@ -322,9 +322,9 @@ export default function ProfilePage() {
                     setDirty(true);
                   }}
                   placeholder="مثال: 132"
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-caption text-ink-muted leading-relaxed">
                   إجمالي الساعات في خطتك الأكاديمية — يُستخدم لحساب المعدل التراكمي.
                 </p>
               </div>
@@ -332,12 +332,12 @@ export default function ProfilePage() {
           </Card>
 
           {/* Academic Goals */}
-          <Card className="glass p-8 rounded-[32px] border-foreground/10 space-y-6">
+          <Card className="border border-line bg-surface shadow-card p-8 rounded-card space-y-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-uqu-cyan/10 flex items-center justify-center text-uqu-cyan">
+              <div className="w-10 h-10 rounded-control bg-info-soft flex items-center justify-center text-info-ink">
                 <Target className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-bold">الأهداف الأكاديمية</h2>
+              <h2 className="text-heading font-bold">الأهداف الأكاديمية</h2>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -358,7 +358,7 @@ export default function ProfilePage() {
                     }));
                     setDirty(true);
                   }}
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
               </div>
               <div className="space-y-2">
@@ -378,13 +378,13 @@ export default function ProfilePage() {
                     }));
                     setDirty(true);
                   }}
-                  className="rounded-xl glass border-foreground/10"
+                  className="rounded-control border border-line bg-surface shadow-card"
                 />
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-uqu-cyan/5 border border-uqu-cyan/10">
-              <p className="text-xs text-uqu-cyan font-medium leading-relaxed">
+            <div className="p-4 rounded-card bg-info-soft border border-brand">
+              <p className="text-caption text-info-ink font-medium leading-relaxed">
                 <Sparkles className="inline-block w-3 h-3 ml-1" />
                 سيستخدم المساعد هذه الأهداف لتقديم نصائح مخصصة لتحسين أدائك الأكاديمي.
               </p>
@@ -401,23 +401,23 @@ export default function ProfilePage() {
               content: (
                 <div className="grid gap-6">
           {/* Smart Preferences — compact summary; opens full hub in a modal */}
-          <Card className="glass p-6 md:p-7 rounded-[32px] border-foreground/10 relative overflow-hidden">
-            <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-uqu-accent/10 blur-3xl pointer-events-none" />
+          <Card className="border border-line bg-surface shadow-card p-6 md:p-7 rounded-card relative overflow-hidden">
+            <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-info-soft blur-3xl pointer-events-none" />
             <div className="relative flex items-start justify-between gap-4 flex-wrap">
               <div className="flex items-start gap-3 min-w-0">
-                <div className="w-11 h-11 rounded-xl bg-uqu-accent/10 flex items-center justify-center text-uqu-accent shrink-0">
+                <div className="w-11 h-11 rounded-control bg-info-soft flex items-center justify-center text-info-ink shrink-0">
                   <Settings2 className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h2 className="text-lg font-bold mb-1">تفضيلات المذاكرة</h2>
-                  <p className="text-xs text-muted-foreground">
+                  <h2 className="text-subheading font-bold mb-1">تفضيلات المذاكرة</h2>
+                  <p className="text-caption text-ink-muted">
                     اختياراتك الحالية — تُغذّي مولّد خطة الدراسة وجلسات التركيز.
                   </p>
                 </div>
               </div>
               <Button
                 onClick={() => setIsPrefsOpen(true)}
-                className="rounded-2xl bg-foreground/5 border border-foreground/10 hover:bg-foreground/5 text-foreground gap-2 font-bold"
+                className="rounded-card bg-surface-sunken border border-line hover:bg-surface-sunken text-ink gap-2 font-bold"
               >
                 <Settings2 className="w-4 h-4" />
                 تعديل التفضيلات
@@ -428,7 +428,7 @@ export default function ProfilePage() {
               {summaryChips.map((label) => (
                 <span
                   key={label}
-                  className="inline-flex items-center px-3 py-1.5 rounded-xl bg-foreground/5 border border-foreground/10 text-[13px] font-bold text-foreground"
+                  className="inline-flex items-center px-3 py-1.5 rounded-control bg-surface-sunken border border-line text-small font-bold text-ink"
                 >
                   {label}
                 </span>
@@ -458,9 +458,9 @@ export default function ProfilePage() {
         {/* Unsaved edits (basic info, goals, preferences) — one save bar for all tabs. */}
         {dirty && (
           <div className="app-fixed-x fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] lg:bottom-6 z-40 px-4 animate-in fade-in slide-in-from-bottom-2">
-            <div className="mx-auto max-w-4xl flex items-center justify-between gap-3 rounded-2xl border border-uqu-accent/30 bg-background/95 backdrop-blur-xl shadow-2xl px-4 py-3">
-              <span className="text-sm font-bold">عندك تغييرات غير محفوظة</span>
-              <Button onClick={handleSave} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 gap-2">
+            <div className="mx-auto max-w-4xl flex items-center justify-between gap-3 rounded-card border border-info-line bg-surface shadow-card px-4 py-3">
+              <span className="text-small font-bold">عندك تغييرات غير محفوظة</span>
+              <Button onClick={handleSave} className="rounded-control bg-brand hover:bg-brand-hover gap-2">
                 <Save className="w-4 h-4" />
                 حفظ التغييرات
               </Button>
@@ -494,32 +494,32 @@ function SetupSummaryCard({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-4 rounded-2xl border",
+        "flex items-center gap-3 p-4 rounded-card border",
         isReady
-          ? "bg-emerald-500/[0.07] border-emerald-500/20"
-          : "bg-foreground/5 border-foreground/10",
+          ? "bg-success-soft border-success-line"
+          : "bg-surface-sunken border-line",
       )}
     >
       <div
         className={cn(
-          "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
-          isReady ? "bg-emerald-500/15 text-emerald-400" : "bg-foreground/5 text-muted",
+          "w-9 h-9 rounded-control flex items-center justify-center shrink-0",
+          isReady ? "bg-success-soft text-success-ink" : "bg-surface-sunken text-ink-muted",
         )}
       >
         {isReady ? <CheckCircle2 className="w-4 h-4" /> : <CalendarDays className="w-4 h-4" />}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-bold">{title}</span>
+          <span className="text-small font-bold">{title}</span>
           {isReady && (
-            <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
+            <span className="text-caption px-1.5 py-0.5 rounded-full bg-success-soft text-success-ink border border-success-line">
               مُكتمل
             </span>
           )}
         </div>
-        <div className="text-xs text-muted-foreground truncate">{primaryLine}</div>
+        <div className="text-caption text-ink-muted truncate">{primaryLine}</div>
         {secondaryLine && (
-          <div className="text-xs text-muted-foreground truncate font-mono">{secondaryLine}</div>
+          <div className="text-caption text-ink-muted truncate font-mono">{secondaryLine}</div>
         )}
       </div>
     </div>

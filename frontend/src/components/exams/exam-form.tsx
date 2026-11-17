@@ -17,7 +17,7 @@ import { useTranscriptStore } from "@/store/transcriptStore";
 const OTHER = "__other__";
 const DURATIONS = [60, 90, 120, 150, 180];
 
-const FIELD = "h-11 rounded-xl bg-background border-border dark:bg-foreground/5 dark:border-foreground/10";
+const FIELD = "h-11 rounded-control bg-surface border-line";
 
 /** Add / edit one exam. Warns before saving when it clashes with another. */
 export function ExamFormDialog({
@@ -36,9 +36,9 @@ export function ExamFormDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="!bg-card border-border sm:max-w-lg rounded-[28px]" dir="rtl">
+      <DialogContent className="!bg-surface border-line sm:max-w-lg rounded-card" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-black">{initial ? "تعديل الاختبار" : "إضافة اختبار"}</DialogTitle>
+          <DialogTitle className="text-heading font-bold">{initial ? "تعديل الاختبار" : "إضافة اختبار"}</DialogTitle>
           <DialogDescription>أدخل الموعد كما في جدول الاختبارات الرسمي.</DialogDescription>
         </DialogHeader>
         {/* key: reset the fields whenever a different exam is opened */}
@@ -92,7 +92,7 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
   return (
     <form onSubmit={submit} className="space-y-4 pt-1">
       <label className="block space-y-1.5">
-        <span className="text-sm font-bold">المادة</span>
+        <span className="text-small font-bold">المادة</span>
         <select value={course} onChange={(e) => setCourse(e.target.value)} className={`w-full px-3 border ${FIELD}`}>
           {options.map((o) => (
             <option key={o.code} value={o.code}>{o.name} ({o.code})</option>
@@ -102,21 +102,21 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
       </label>
       {course === OTHER && (
         <label className="block space-y-1.5">
-          <span className="text-sm font-bold">اسم المادة</span>
+          <span className="text-small font-bold">اسم المادة</span>
           <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="مثال: الإحصاء" className={FIELD} />
         </label>
       )}
       <div className="grid grid-cols-2 gap-3">
         <label className="block space-y-1.5">
-          <span className="text-sm font-bold">التاريخ</span>
+          <span className="text-small font-bold">التاريخ</span>
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={FIELD} required />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-bold">الوقت</span>
+          <span className="text-small font-bold">الوقت</span>
           <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className={FIELD} />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-bold">المدة</span>
+          <span className="text-small font-bold">المدة</span>
           <select value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={`w-full px-3 border ${FIELD}`}>
             {DURATIONS.map((m) => (
               <option key={m} value={m}>{m === 60 ? "ساعة" : m === 120 ? "ساعتان" : m === 180 ? "3 ساعات" : `${m} دقيقة`}</option>
@@ -124,7 +124,7 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
           </select>
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-bold">النوع</span>
+          <span className="text-small font-bold">النوع</span>
           <select value={type} onChange={(e) => setType(e.target.value as ExamType)} className={`w-full px-3 border ${FIELD}`}>
             {(Object.keys(EXAM_TYPE_LABELS) as ExamType[]).map((t) => (
               <option key={t} value={t}>{EXAM_TYPE_LABELS[t]}</option>
@@ -133,7 +133,7 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
         </label>
       </div>
       <label className="block space-y-1.5">
-        <span className="text-sm font-bold">المكان (اختياري)</span>
+        <span className="text-small font-bold">المكان (اختياري)</span>
         <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="مثال: قاعة 105 — العابدية" className={FIELD} />
       </label>
 
@@ -142,8 +142,8 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
           role="alert"
           className={
             clash.kind === "overlap"
-              ? "text-sm font-bold text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/30 rounded-xl p-3"
-              : "text-sm font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3"
+              ? "text-small font-bold text-danger-ink bg-danger-soft border border-danger-line rounded-control p-3"
+              : "text-small font-bold text-warning-ink bg-warning-soft border border-warning-line rounded-control p-3"
           }
         >
           {clash.kind === "overlap"
@@ -151,9 +151,9 @@ function ExamFields({ initial, others, onSave }: { initial: Exam | null; others:
             : `في نفس اليوم اختبار ${clash.exams.find((e) => e.id !== (initial?.id ?? "draft"))?.subject} أيضاً.`}
         </p>
       )}
-      {error && <p role="alert" className="text-sm font-bold text-rose-600 dark:text-rose-400">{error}</p>}
+      {error && <p role="alert" className="text-small font-bold text-danger-ink">{error}</p>}
 
-      <Button type="submit" className="w-full h-11 rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white font-bold">
+      <Button type="submit" className="w-full h-11 rounded-control bg-brand hover:bg-brand-hover text-on-brand font-bold">
         {initial ? "حفظ التعديل" : "إضافة الاختبار"}
       </Button>
     </form>

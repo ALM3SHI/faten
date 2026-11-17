@@ -72,36 +72,36 @@ export default function ExamsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-28" dir="rtl">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-28" dir="rtl">
       <Navbar />
       <main className="container mx-auto pt-24 px-4 max-w-4xl space-y-6">
         <SectionTabs />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black flex items-center gap-3">
-              <CalendarClock className="w-8 h-8 text-uqu-accent" aria-hidden />
+            <h1 className="text-title font-bold flex items-center gap-3">
+              <CalendarClock className="w-8 h-8 text-info-ink" aria-hidden />
               جدول الاختبارات
             </h1>
-            <p className="text-muted-foreground text-sm mt-1">
+            <p className="text-ink-muted text-small mt-1">
               مواعيد اختباراتك، كم باقي لكل واحد، وخطة مذاكرة موزعة قبلها. تقدر تسأل فطن: «متى اختباري الجاي؟»
             </p>
           </div>
-          <Button onClick={openNew} className="rounded-2xl h-11 bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-2">
+          <Button onClick={openNew} className="rounded-card h-11 bg-brand hover:bg-brand-hover text-on-brand gap-2">
             <Plus className="w-4 h-4" aria-hidden />
             إضافة اختبار
           </Button>
         </div>
 
         {!mounted ? (
-          <div className="h-48 rounded-[32px] bg-foreground/5 animate-pulse" />
+          <div className="h-48 rounded-card bg-surface-sunken animate-pulse" />
         ) : upcoming.length === 0 ? (
-          <Card className="glass rounded-[32px] border-foreground/10 p-10 text-center space-y-4">
-            <CalendarClock className="w-12 h-12 mx-auto text-uqu-accent" aria-hidden />
-            <h2 className="text-xl font-black">ما في اختبارات قادمة</h2>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto leading-7">
+          <Card className="border border-line bg-surface shadow-card rounded-card p-10 text-center space-y-4">
+            <CalendarClock className="w-12 h-12 mx-auto text-info-ink" aria-hidden />
+            <h2 className="text-heading font-bold">ما في اختبارات قادمة</h2>
+            <p className="text-small text-ink-muted max-w-md mx-auto leading-7">
               أضف مواعيد اختباراتك من جدول الاختبارات الرسمي — أو قلها لفطن في الدردشة وبيسجّلها لك.
             </p>
-            <Button onClick={openNew} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-2">
+            <Button onClick={openNew} className="rounded-control bg-brand hover:bg-brand-hover text-on-brand gap-2">
               <Plus className="w-4 h-4" aria-hidden />
               أضف أول اختبار
             </Button>
@@ -117,8 +117,8 @@ export default function ExamsPage() {
                     key={c.exams.map((e) => e.id).join("|")}
                     className={
                       c.kind === "overlap"
-                        ? "flex items-start gap-2 text-sm font-bold text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/30 rounded-2xl p-3"
-                        : "flex items-start gap-2 text-sm font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3"
+                        ? "flex items-start gap-2 text-small font-bold text-danger-ink bg-danger-soft border border-danger-line rounded-card p-3"
+                        : "flex items-start gap-2 text-small font-bold text-warning-ink bg-warning-soft border border-warning-line rounded-card p-3"
                     }
                   >
                     <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" aria-hidden />
@@ -131,7 +131,7 @@ export default function ExamsPage() {
             )}
 
             <section aria-labelledby="upcoming-title" className="space-y-3">
-              <h2 id="upcoming-title" className="text-lg font-black">
+              <h2 id="upcoming-title" className="text-subheading font-bold">
                 القادمة ({upcoming.length})
               </h2>
               <ul className="space-y-3">
@@ -166,8 +166,8 @@ export default function ExamsPage() {
         )}
 
         {mounted && past.length > 0 && (
-          <details className="rounded-2xl border border-foreground/10 p-4">
-            <summary className="cursor-pointer font-bold text-sm">اختبارات سابقة ({past.length})</summary>
+          <details className="rounded-card border border-line p-4">
+            <summary className="cursor-pointer font-bold text-small">اختبارات سابقة ({past.length})</summary>
             <ul className="space-y-3 mt-3">
               {past.map((e) => (
                 <ExamCard

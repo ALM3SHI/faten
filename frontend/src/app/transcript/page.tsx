@@ -133,7 +133,7 @@ export default function TranscriptParserPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-20">
       <Navbar />
       <div className="aurora">
         <div className="aurora-blob blob-1 opacity-10" />
@@ -144,60 +144,60 @@ export default function TranscriptParserPage() {
 
         <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="رجوع" className="rounded-xl glass border-foreground/10">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="رجوع" className="rounded-control border border-line bg-surface shadow-card">
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-black flex items-center gap-3">
+            <h1 className="text-title font-bold flex items-center gap-3">
               محلل السجل الأكاديمي
             </h1>
-            <p className="text-muted-foreground text-sm">استخرج بياناتك الأكاديمية تلقائياً من ملف الـ PDF.</p>
+            <p className="text-ink-muted text-small">استخرج بياناتك الأكاديمية تلقائياً من ملف الـ PDF.</p>
           </div>
         </div>
 
         {!parsedData && !isParsing ? (
-          <Card className="glass border-dashed border-foreground/10 rounded-[40px] p-12 text-center flex flex-col items-center gap-6 group hover:border-uqu-accent/30 transition-all cursor-pointer relative overflow-hidden" onClick={() => document.getElementById('file-upload')?.click()}>
+          <Card className="border border-line bg-surface shadow-card border-dashed rounded-card p-12 text-center flex flex-col items-center gap-6 group hover:border-info-line transition-all cursor-pointer relative overflow-hidden" onClick={() => document.getElementById('file-upload')?.click()}>
             <div className="aurora-blob blob-1 opacity-5 scale-150" />
-            <div className="w-24 h-24 rounded-3xl bg-uqu-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Upload className="w-10 h-10 text-uqu-accent" />
+            <div className="w-24 h-24 rounded-card bg-info-soft flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Upload className="w-10 h-10 text-info-ink" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold mb-2">ارفع ملف الـ PDF</h2>
-              <p className="text-muted-foreground max-w-sm mx-auto">
+              <h2 className="text-heading font-bold mb-2">ارفع ملف الـ PDF</h2>
+              <p className="text-ink-muted max-w-sm mx-auto">
                 قم بسحب وإفلات ملف السجل الأكاديمي هنا أو انقر للاختيار من جهازك.
               </p>
             </div>
             <input type="file" id="file-upload" className="hidden" accept=".pdf" onChange={handleFileChange} />
             {file && (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-foreground/5 border border-foreground/10 animate-in zoom-in-95">
-                <FileText className="w-4 h-4 text-uqu-cyan" />
-                <span className="text-sm font-medium">{file.name}</span>
-                <Button onClick={(e) => { e.stopPropagation(); parseTranscript(); }} className="mr-4 rounded-lg bg-uqu-accent hover:bg-uqu-accent/90">تحليل الآن</Button>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-control bg-surface-sunken border border-line animate-in zoom-in-95">
+                <FileText className="w-4 h-4 text-info-ink" />
+                <span className="text-small font-medium">{file.name}</span>
+                <Button onClick={(e) => { e.stopPropagation(); parseTranscript(); }} className="mr-4 rounded-control bg-brand hover:bg-brand-hover">تحليل الآن</Button>
               </div>
             )}
           </Card>
         ) : isParsing ? (
-          <div className="glass border-foreground/10 rounded-[40px] p-20 text-center flex flex-col items-center gap-8">
+          <div className="border border-line bg-surface shadow-card rounded-card p-20 text-center flex flex-col items-center gap-8">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-uqu-accent/20 border-t-uqu-accent animate-spin" />
-              <Sparkles className="w-8 h-8 text-uqu-accent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+              <div className="w-24 h-24 rounded-full border-4 border-info-line border-t-brand animate-spin" />
+              <Sparkles className="w-8 h-8 text-info-ink absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold">جاري التحليل الذكي...</h2>
-              <p className="text-muted-foreground">نقوم الآن بقراءة وتدقيق بياناتك الأكاديمية بدقة عالية.</p>
+              <h2 className="text-heading font-bold">جاري التحليل الذكي...</h2>
+              <p className="text-ink-muted">نقوم الآن بقراءة وتدقيق بياناتك الأكاديمية بدقة عالية.</p>
             </div>
           </div>
         ) : (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8">
             {/* Local-parse failure */}
             {parsedData && "error" in parsedData && (
-              <Card className="p-6 border-rose-500/50 bg-rose-500/10 text-rose-500 rounded-[32px] flex items-center gap-4">
+              <Card className="p-6 border-danger-line bg-danger-soft text-danger-ink rounded-card flex items-center gap-4">
                 <AlertCircle className="w-8 h-8 shrink-0" />
                 <div>
                   <h4 className="font-bold">فشل التحليل</h4>
-                  <p className="text-sm opacity-90">{parsedData.error}</p>
+                  <p className="text-small opacity-90">{parsedData.error}</p>
                 </div>
-                <Button onClick={() => setParsedData(null)} variant="outline" className="mr-auto rounded-xl border-rose-500/20 text-rose-500">إعادة المحاولة</Button>
+                <Button onClick={() => setParsedData(null)} variant="outline" className="mr-auto rounded-control border-danger-line text-danger-ink">إعادة المحاولة</Button>
               </Card>
             )}
 
@@ -206,46 +206,46 @@ export default function TranscriptParserPage() {
               <>
                 <RecordStatusNote assessment={assessRecord(parsedData)} />
                 <div className="grid md:grid-cols-4 gap-4">
-                  <div className="glass p-6 rounded-3xl border-foreground/10">
-                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">المعدل التراكمي</div>
-                    <div className="text-3xl font-black text-uqu-accent">{parsedData.gpa?.toFixed(2) || "0.00"}</div>
+                  <div className="border border-line bg-surface shadow-card p-6 rounded-card">
+                    <div className="text-caption text-ink-muted uppercase font-bold mb-1">المعدل التراكمي</div>
+                    <div className="text-title font-bold text-info-ink">{parsedData.gpa?.toFixed(2) || "0.00"}</div>
                   </div>
-                  <div className="glass p-6 rounded-3xl border-foreground/10">
-                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">الساعات المكتسبة</div>
-                    <div className="text-3xl font-black text-uqu-cyan">{parsedData.earnedHours ?? "0"}</div>
+                  <div className="border border-line bg-surface shadow-card p-6 rounded-card">
+                    <div className="text-caption text-ink-muted uppercase font-bold mb-1">الساعات المكتسبة</div>
+                    <div className="text-title font-bold text-info-ink">{parsedData.earnedHours ?? "0"}</div>
                   </div>
-                  <div className="glass p-6 rounded-3xl border-foreground/10">
-                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">الساعات المعتمدة (المسجلة)</div>
-                    <div className="text-3xl font-black text-foreground">{parsedData.attemptedHours ?? "---"}</div>
+                  <div className="border border-line bg-surface shadow-card p-6 rounded-card">
+                    <div className="text-caption text-ink-muted uppercase font-bold mb-1">الساعات المعتمدة (المسجلة)</div>
+                    <div className="text-title font-bold text-ink">{parsedData.attemptedHours ?? "---"}</div>
                   </div>
-                  <div className="glass p-6 rounded-3xl border-foreground/10">
-                    <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">عدد المواد</div>
-                    <div className="text-3xl font-black text-emerald-400">{parsedData.completedCourses?.length || 0}</div>
+                  <div className="border border-line bg-surface shadow-card p-6 rounded-card">
+                    <div className="text-caption text-ink-muted uppercase font-bold mb-1">عدد المواد</div>
+                    <div className="text-title font-bold text-success-ink">{parsedData.completedCourses?.length || 0}</div>
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                  <Card className="glass p-8 rounded-[40px] border-uqu-accent/20 bg-uqu-accent/5">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-uqu-accent" />
+                  <Card className="border shadow-card p-8 rounded-card border-info-line bg-info-soft">
+                    <h3 className="text-heading font-bold mb-4 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-info-ink" />
                       التحليل الذكي للسجل
                       {parsedData.isAnalyzing && (
-                        <Loader2 className="w-4 h-4 text-uqu-accent animate-spin mr-auto" />
+                        <Loader2 className="w-4 h-4 text-info-ink animate-spin mr-auto" />
                       )}
                     </h3>
 
                     {parsedData.isAnalyzing ? (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-small text-ink-muted leading-relaxed">
                         جاري إعداد التحليل الأكاديمي... ({parsedData.completedCourses.length} مادة تم استخراجها بدقة 100%).
                       </p>
                     ) : parsedData.analysisError ? (
                       <div className="space-y-3">
                         <p
                           className={
-                            "text-sm leading-relaxed " +
+                            "text-small leading-relaxed " +
                             (parsedData.analysisQuotaHit
-                              ? "text-amber-700 dark:text-amber-300"
-                              : "text-rose-400")
+                              ? "text-warning-ink "
+                              : "text-danger-ink")
                           }
                         >
                           {parsedData.analysisError}
@@ -257,7 +257,7 @@ export default function TranscriptParserPage() {
                           <Button
                             onClick={() => router.push("/gpa")}
                             variant="outline"
-                            className="rounded-xl glass border-amber-500/30 text-amber-700 dark:text-amber-200 hover:bg-amber-500/10 gap-2"
+                            className="rounded-control border border-line bg-surface shadow-card border-warning-line text-warning-ink hover:bg-warning-soft gap-2"
                           >
                             <ArrowLeft className="w-4 h-4" />
                             متابعة بالإدخال اليدوي
@@ -267,18 +267,18 @@ export default function TranscriptParserPage() {
                     ) : (
                       <div className="space-y-4">
                         <div className="space-y-2">
-                          <span className="text-xs font-bold text-uqu-accent">💪 نقاط القوة:</span>
+                          <span className="text-caption font-bold text-info-ink">💪 نقاط القوة:</span>
                           <div className="flex flex-wrap gap-2">
                             {parsedData.analysis?.strengths?.map((s, i) => (
-                              <Badge key={`strength-${i}`} variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">{s}</Badge>
+                              <Badge key={`strength-${i}`} variant="outline" className="bg-success-soft text-success-ink border-success-line">{s}</Badge>
                             ))}
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <span className="text-xs font-bold text-rose-500">⚠️ تحتاج تركيز:</span>
+                          <span className="text-caption font-bold text-danger-ink">⚠️ تحتاج تركيز:</span>
                           <div className="flex flex-wrap gap-2">
                             {parsedData.analysis?.needs_focus?.map((w, i) => (
-                              <Badge key={`focus-${i}`} variant="outline" className="bg-rose-500/10 text-rose-500 border-rose-500/20">{w}</Badge>
+                              <Badge key={`focus-${i}`} variant="outline" className="bg-danger-soft text-danger-ink border-danger-line">{w}</Badge>
                             ))}
                           </div>
                         </div>
@@ -286,23 +286,23 @@ export default function TranscriptParserPage() {
                     )}
                   </Card>
 
-                  <Card className="glass p-8 rounded-[40px] border-foreground/10">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  <Card className="border border-line bg-surface shadow-card p-8 rounded-card">
+                    <h3 className="text-heading font-bold mb-4 flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-success-ink" />
                       توصيات الأكاديمي
                       {parsedData.isAnalyzing && (
-                        <Loader2 className="w-4 h-4 text-emerald-500 animate-spin mr-auto" />
+                        <Loader2 className="w-4 h-4 text-success-ink animate-spin mr-auto" />
                       )}
                     </h3>
                     {parsedData.isAnalyzing ? (
-                      <p className="text-sm text-muted-foreground">جاري إعداد التوصيات...</p>
+                      <p className="text-small text-ink-muted">جاري إعداد التوصيات...</p>
                     ) : parsedData.analysisError ? (
-                      <p className="text-sm text-rose-400">—</p>
+                      <p className="text-small text-danger-ink">—</p>
                     ) : (
                       <ul className="space-y-3">
                         {parsedData.analysis?.recommendations?.map((r, i) => (
-                          <li key={`rec-${i}`} className="text-sm flex items-start gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-uqu-accent mt-1.5 shrink-0" />
+                          <li key={`rec-${i}`} className="text-small flex items-start gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0" />
                             {r}
                           </li>
                         ))}
@@ -311,18 +311,18 @@ export default function TranscriptParserPage() {
                   </Card>
                 </div>
 
-                <Card className="glass border-foreground/10 rounded-[40px] overflow-hidden">
-                  <div className="p-8 border-b border-foreground/10 flex items-center justify-between bg-foreground/5">
+                <Card className="border border-line bg-surface shadow-card rounded-card overflow-hidden">
+                  <div className="p-8 border-b border-line flex items-center justify-between bg-surface-sunken">
                     <h3 className="font-bold flex items-center gap-2">
-                      <BarChart3 className="w-5 h-5 text-uqu-accent" />
+                      <BarChart3 className="w-5 h-5 text-info-ink" />
                       المواد المكتشفة
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 mr-2">
+                      <Badge variant="outline" className="bg-success-soft text-success-ink border-success-line mr-2">
                         دقة {parsedData.confidence}%
                       </Badge>
                     </h3>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => setParsedData(null)} className="rounded-xl glass border-foreground/10">إلغاء</Button>
-                      <Button onClick={saveAndContinue} size="sm" className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 shadow-lg">حفظ ومتابعة</Button>
+                      <Button variant="outline" size="sm" onClick={() => setParsedData(null)} className="rounded-control border border-line bg-surface shadow-card">إلغاء</Button>
+                      <Button onClick={saveAndContinue} size="sm" className="rounded-control bg-brand hover:bg-brand-hover">حفظ ومتابعة</Button>
                     </div>
                   </div>
                   <div className="p-8">
@@ -330,29 +330,29 @@ export default function TranscriptParserPage() {
                       {/* A retaken course appears once per attempt (same code, other term):
                           the key needs the position, not only the code. */}
                       {parsedData.completedCourses.slice(0, 10).map((c, i) => (
-                        <div key={`${c.code}-${c.semester ?? ""}-${i}`} className="flex items-center justify-between p-4 rounded-2xl bg-foreground/5 border border-foreground/10">
+                        <div key={`${c.code}-${c.semester ?? ""}-${i}`} className="flex items-center justify-between p-4 rounded-card bg-surface-sunken border border-line">
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-foreground/5 flex items-center justify-center font-bold text-xs">
+                            <div className="w-10 h-10 rounded-control bg-surface-sunken flex items-center justify-center font-bold text-caption">
                               {c.code}
                             </div>
                             <div>
-                              <h4 className="text-sm font-bold">{c.nameAr || c.nameEn || c.name}</h4>
-                              <p className="text-[10px] text-muted-foreground">{c.semester || "مكتملة"}</p>
+                              <h4 className="text-small font-bold">{c.nameAr || c.nameEn || c.name}</h4>
+                              <p className="text-caption text-ink-muted">{c.semester || "مكتملة"}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-6">
                             <div className="text-center">
-                              <div className="text-[9px] text-muted-foreground font-bold">الساعات</div>
-                              <div className="text-xs font-bold">{c.creditHours}</div>
+                              <div className="text-caption text-ink-muted font-bold">الساعات</div>
+                              <div className="text-caption font-bold">{c.creditHours}</div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-uqu-accent/10 border border-uqu-accent/20 flex items-center justify-center text-uqu-accent font-black">
+                            <div className="w-10 h-10 rounded-control bg-info-soft border border-info-line flex items-center justify-center text-info-ink font-bold">
                               {c.grade || "—"}
                             </div>
                           </div>
                         </div>
                       ))}
                       {parsedData.completedCourses.length > 10 && (
-                        <p className="text-center text-xs text-muted-foreground pt-4">+ {parsedData.completedCourses.length - 10} مواد أخرى تم تحليلها بنجاح</p>
+                        <p className="text-center text-caption text-ink-muted pt-4">+ {parsedData.completedCourses.length - 10} مواد أخرى تم تحليلها بنجاح</p>
                       )}
                     </div>
                   </div>

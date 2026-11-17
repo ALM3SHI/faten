@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { SectionTabs } from "@/components/section-tabs";
-import { Button } from "@/components/ui/button";
+import { Button as UiButton } from "@/components/ui/button";
+import { Button } from "@/components/ds/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -249,19 +250,19 @@ export default function PomodoroPage() {
   const isLongBreak = mode === "longBreak";
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-20">
       <Navbar />
       <div className="aurora">
         <div
           className={cn(
             "aurora-blob blob-1 opacity-20 transition-colors duration-1000",
-            isBreak ? "bg-emerald-500/20" : "bg-uqu-accent/20",
+            isBreak ? "bg-success-soft" : "bg-info-soft",
           )}
         />
         <div
           className={cn(
             "aurora-blob blob-2 opacity-20 transition-colors duration-1000",
-            isBreak ? "bg-teal-500/20" : "bg-uqu-cyan/20",
+            isBreak ? "bg-success-soft" : "bg-info-soft",
           )}
         />
       </div>
@@ -270,8 +271,8 @@ export default function PomodoroPage() {
 
         <SectionTabs className="mb-6 self-stretch" />
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black mb-4">بومودورو</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-title font-bold mb-4">بومودورو</h1>
+          <p className="text-ink-muted">
             استخدم تقنية البومودورو لزيادة تركيزك وإنجاز مهامك الأكاديمية.
           </p>
         </div>
@@ -287,41 +288,41 @@ export default function PomodoroPage() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
               >
-                <Card className="glass rounded-2xl border-uqu-accent/30 bg-uqu-accent/[0.05] p-4 relative overflow-hidden">
-                  <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-uqu-accent/20 blur-3xl pointer-events-none" />
+                <Card className="border shadow-card rounded-card border-info-line bg-info-soft p-4 relative overflow-hidden">
+                  <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-info-soft blur-3xl pointer-events-none" />
                   <div className="relative flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-uqu-accent/15 border border-uqu-accent/30 flex items-center justify-center text-uqu-accent shrink-0">
+                    <div className="w-10 h-10 rounded-control bg-info-soft border border-info-line flex items-center justify-center text-info-ink shrink-0">
                       <BookOpen className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-uqu-accent">
+                        <span className="text-caption font-bold uppercase tracking-wider text-info-ink">
                           مهمة نشطة
                         </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-uqu-accent/15 text-uqu-accent border border-uqu-accent/30 font-mono">
+                        <span className="text-caption font-bold px-2 py-0.5 rounded-full bg-info-soft text-info-ink border border-info-line font-mono">
                           {activeTask.courseCode}
                         </span>
                         {activeTask.courseName && (
-                          <span className="text-[10px] text-muted truncate">
+                          <span className="text-caption text-ink-muted truncate">
                             · {activeTask.courseName}
                           </span>
                         )}
                       </div>
-                      <h2 className="font-bold text-[15px] leading-snug truncate">
+                      <h2 className="font-bold text-body leading-snug truncate">
                         {activeTask.title}
                       </h2>
-                      <p className="text-[11px] text-muted mt-0.5 font-mono">
+                      <p className="text-caption text-ink-muted mt-0.5 font-mono">
                         {activeTask.durationMinutes} دقيقة · جلسة بومودورو واحدة
                       </p>
                     </div>
-                    <button
+                    <Button variant="bare"
                       onClick={clearActiveTask}
-                      className="text-muted hover:text-foreground text-[11px] font-bold inline-flex items-center gap-1 shrink-0 px-2 py-1 rounded-lg hover:bg-foreground/5 transition-colors"
+                      className="text-ink-muted hover:text-ink text-caption font-bold inline-flex items-center gap-1 shrink-0 px-2 py-1 rounded-control hover:bg-surface-sunken transition-colors"
                       aria-label="إلغاء الارتباط بالمهمة"
                     >
                       <X className="w-3 h-3" />
                       إلغاء الارتباط
-                    </button>
+                    </Button>
                   </div>
                 </Card>
               </motion.div>
@@ -332,7 +333,7 @@ export default function PomodoroPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center justify-center gap-2 text-muted text-sm font-bold"
+                className="flex items-center justify-center gap-2 text-ink-muted text-small font-bold"
               >
                 <Sparkles className="w-4 h-4" />
                 جلسة تركيز
@@ -344,7 +345,7 @@ export default function PomodoroPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center justify-center gap-2 text-emerald-400 text-sm font-bold"
+                className="flex items-center justify-center gap-2 text-success-ink text-small font-bold"
               >
                 <Coffee className="w-4 h-4" />
                 {isLongBreak ? "وقت استراحة طويلة" : "وقت استراحة"}
@@ -354,9 +355,9 @@ export default function PomodoroPage() {
         </div>
 
         {/* ── Timer card ─────────────────────────────────────────── */}
-        <Card className="glass p-12 rounded-[48px] border-foreground/10 flex flex-col items-center gap-10 w-full max-w-xl shadow-2xl relative overflow-hidden">
+        <Card className="border border-line bg-surface shadow-card p-12 rounded-card flex flex-col items-center gap-10 w-full max-w-xl relative overflow-hidden">
           {/* Mode switcher */}
-          <div className="flex bg-foreground/5 p-1.5 rounded-2xl relative z-10">
+          <div className="flex bg-surface-sunken p-1.5 rounded-card relative z-10">
             <ModeBtn label="تركيز" active={mode === "focus"} accent="uqu" onClick={() => switchMode("focus")} />
             <ModeBtn
               label="استراحة"
@@ -376,14 +377,14 @@ export default function PomodoroPage() {
           <div className="relative flex flex-col items-center gap-3">
             <div
               className={cn(
-                "text-[clamp(4.5rem,22vw,7.5rem)] font-black tracking-tighter leading-none select-none font-mono tabular-nums transition-colors",
-                isBreak ? "text-emerald-400" : "text-foreground",
+                "text-[clamp(4.5rem,22vw,7.5rem)] font-bold tracking-tighter leading-none select-none font-mono tabular-nums transition-colors",
+                isBreak ? "text-success-ink" : "text-ink",
               )}
             >
               {hydrated ? formatTime(timeLeft) : "--:--"}
             </div>
             {hydrated && canEditDuration && (
-              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+              <div className="flex items-center gap-2 text-small font-bold text-ink-muted">
                 <label htmlFor="pomodoro-duration-minutes" className="sr-only">
                   المدة بالدقائق
                 </label>
@@ -409,7 +410,7 @@ export default function PomodoroPage() {
                     }
                     commitDurationMinutes(minutesDraft);
                   }}
-                  className="w-16 rounded-xl border border-foreground/10 bg-foreground/5 px-2 py-1 text-center font-mono text-foreground outline-none focus:border-uqu-accent/40"
+                  className="w-16 rounded-control border border-line bg-surface-sunken px-2 py-1 text-center font-mono text-ink outline-none focus:border-info-line"
                   aria-label="المدة بالدقائق"
                 />
                 <span>دقيقة</span>
@@ -419,14 +420,14 @@ export default function PomodoroPage() {
               {mode === "focus" ? (
                 <Brain
                   className={cn(
-                    "w-8 h-8 text-uqu-accent",
+                    "w-8 h-8 text-info-ink",
                     isRunning && "animate-pulse",
                   )}
                 />
               ) : (
                 <Coffee
                   className={cn(
-                    "w-8 h-8 text-emerald-500",
+                    "w-8 h-8 text-success-ink",
                     isRunning && "animate-bounce",
                   )}
                 />
@@ -436,51 +437,51 @@ export default function PomodoroPage() {
 
           {/* Controls */}
           <div className="flex items-center gap-6">
-            <Button
+            <UiButton
               onClick={resetTimer}
               variant="outline"
-              className="w-16 h-16 rounded-3xl border-foreground/10 glass text-muted-foreground hover:text-foreground"
+              className="w-16 h-16 rounded-card border-line border bg-surface shadow-card text-ink-muted hover:text-ink"
               aria-label="إعادة الضبط"
             >
               <RotateCcw className="w-6 h-6" />
-            </Button>
+            </UiButton>
 
-            <Button
+            <UiButton
               onClick={toggleTimer}
               className={cn(
-                "w-24 h-24 rounded-[32px] shadow-2xl transition-all scale-110",
+                "w-24 h-24 rounded-card shadow-card transition-all scale-110",
                 isBreak
-                  ? "bg-emerald-500 hover:bg-emerald-500/90 shadow-emerald-500/20"
-                  : "bg-uqu-accent hover:bg-uqu-accent/90 shadow-uqu-accent/20",
+                  ? "border border-success-line bg-success-soft text-success-ink hover:border-success-ink"
+                  : "bg-brand text-on-brand hover:bg-brand-hover",
               )}
               aria-label={isRunning ? "إيقاف مؤقت" : "تشغيل"}
             >
               {isRunning ? (
-                <Pause className="w-10 h-10 fill-white" />
+                <Pause className="w-10 h-10 fill-current" />
               ) : (
-                <Play className="w-10 h-10 fill-white ml-1" />
+                <Play className="w-10 h-10 fill-current ml-1" />
               )}
-            </Button>
+            </UiButton>
 
-            <Button
+            <UiButton
               onClick={() => setMuted(!muted)}
               variant="outline"
-              className="w-16 h-16 rounded-3xl border-foreground/10 glass text-muted-foreground hover:text-foreground"
+              className="w-16 h-16 rounded-card border-line border bg-surface shadow-card text-ink-muted hover:text-ink"
               aria-label={muted ? "تشغيل الصوت" : "كتم الصوت"}
             >
               {muted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-            </Button>
+            </UiButton>
           </div>
 
           {/* Session counter */}
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/5 border border-foreground/10 text-xs font-bold text-muted-foreground">
-            <Zap className="w-3 h-3 text-amber-500" />
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-sunken border border-line text-caption font-bold text-ink-muted">
+            <Zap className="w-3 h-3 text-warning-ink" />
             <span>
               أكملت {completedSessions}{" "}
               {completedSessions === 1 ? "جلسة تركيز" : "جلسات تركيز"} اليوم!
             </span>
             {completedSessions >= 4 && (
-              <span className="text-emerald-400 mr-1">
+              <span className="text-success-ink mr-1">
                 · 🏆 استحقيت {Math.floor(completedSessions / 4)} استراحة طويلة
               </span>
             )}
@@ -567,29 +568,29 @@ function ModeBtn({
 }) {
   const accentClass =
     accent === "uqu"
-      ? "bg-uqu-accent text-white shadow-lg shadow-uqu-accent/20"
+      ? "bg-brand text-on-brand"
       : accent === "emerald"
-        ? "bg-emerald-500 text-foreground shadow-lg shadow-emerald-500/20"
-        : "bg-teal-500 text-foreground shadow-lg shadow-teal-500/20";
+        ? "border border-success-line bg-success-soft text-success-ink "
+        : "border border-success-line bg-success-soft text-success-ink ";
 
   return (
-    <button
+    <Button variant="bare"
       onClick={onClick}
       className={cn(
-        "px-5 py-2 rounded-xl text-[12px] font-bold transition-all whitespace-nowrap",
-        active ? accentClass : "text-muted-foreground hover:text-foreground",
+        "px-5 py-2 rounded-control text-small font-bold transition-all whitespace-nowrap",
+        active ? accentClass : "text-ink-muted hover:text-ink",
       )}
     >
       {label}
-    </button>
+    </Button>
   );
 }
 
 function TipCard({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="glass p-6 rounded-[28px] border-foreground/10 space-y-2">
-      <h4 className="font-bold text-sm text-uqu-accent">{title}</h4>
-      <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+    <div className="border border-line bg-surface shadow-card p-6 rounded-card space-y-2">
+      <h4 className="font-bold text-small text-info-ink">{title}</h4>
+      <p className="text-caption text-ink-muted leading-relaxed">{desc}</p>
     </div>
   );
 }

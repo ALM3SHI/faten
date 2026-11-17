@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin } from "lucide-react";
+import { Button } from "@/components/ds/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Room, RoomGroup } from "@/data/mapData";
@@ -39,17 +40,17 @@ export function GroupedList({
         return (
           <section key={g}>
             <div className="flex items-baseline justify-between mb-2 px-1">
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted">
+              <h2 className="text-caption font-bold uppercase tracking-wider text-ink-muted">
                 {g}
-                <span className="font-mono text-muted mr-1.5">· {items.length}</span>
+                <span className="font-mono text-ink-muted mr-1.5">· {items.length}</span>
               </h2>
               {items.length > GROUP_LIMIT_DEFAULT && (
-                <button
+                <Button variant="bare"
                   onClick={() => onToggleGroup(g)}
-                  className="text-[11px] text-uqu-accent hover:text-uqu-accent/80 font-bold"
+                  className="text-caption text-info-ink hover:text-info-ink font-bold"
                 >
                   {isOpen ? "إخفاء" : `عرض الكل (${items.length})`}
-                </button>
+                </Button>
               )}
             </div>
             <div className="space-y-1.5">
@@ -81,16 +82,16 @@ export function SearchResults({
 }) {
   if (results.length === 0) {
     return (
-      <Card className="rounded-xl border-foreground/10 bg-foreground/5 p-6 text-center">
-        <p className="text-sm text-muted-foreground">لا توجد نتائج مطابقة.</p>
+      <Card className="rounded-control border-line bg-surface-sunken p-6 text-center">
+        <p className="text-small text-ink-muted">لا توجد نتائج مطابقة.</p>
       </Card>
     );
   }
   return (
     <div className="space-y-1.5">
-      <div className="text-[11px] font-bold uppercase tracking-wider text-muted px-1 mb-1">
+      <div className="text-caption font-bold uppercase tracking-wider text-ink-muted px-1 mb-1">
         نتائج البحث
-        <span className="font-mono text-muted mr-1.5">· {results.length}</span>
+        <span className="font-mono text-ink-muted mr-1.5">· {results.length}</span>
       </div>
       {results.map((r) => (
         <RoomRow
@@ -115,28 +116,28 @@ function RoomRow({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button variant="bare"
       onClick={onClick}
       className={cn(
-        "w-full text-right p-3 rounded-xl border transition-all group",
+        "w-full text-right p-3 rounded-control border transition-all group",
         selected
-          ? "bg-uqu-accent/15 border-uqu-accent/50 shadow-[0_0_18px_-6px_hsla(245,78%,62%,0.6)]"
-          : "bg-background border-border hover:border-foreground/20",
+          ? "bg-info-soft border-info-line "
+          : "bg-surface border-line hover:border-line-strong",
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-1">
-        <span className="text-[13px] font-bold truncate text-foreground">
+        <span className="text-small font-bold truncate text-ink">
           {room.label}
         </span>
-        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-foreground/5 text-muted shrink-0">
+        <span className="text-caption font-bold px-1.5 py-0.5 rounded-md bg-surface-sunken text-ink-muted shrink-0">
           {roomTypeAr(room.type)}
         </span>
       </div>
-      <div className="text-[11px] text-muted flex items-center gap-1">
+      <div className="text-caption text-ink-muted flex items-center gap-1">
         <MapPin className="w-3 h-3" />
         الدور الأرضي
       </div>
-    </button>
+    </Button>
   );
 }
 

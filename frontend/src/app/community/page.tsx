@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button as DsButton } from "@/components/ds/button";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -113,9 +114,9 @@ export default function CommunityPage() {
   if (!authLoading && !user) {
     return (
       <Shell onBack={() => router.back()}>
-        <Card className="glass border-foreground/10 rounded-3xl p-10 text-center space-y-4">
-          <p className="text-lg font-bold">سجّل دخولك لتشاهد تقييمات الطلاب وتشارك تجربتك.</p>
-          <Button onClick={() => router.push("/login")} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90">
+        <Card className="border border-line bg-surface shadow-card rounded-card p-10 text-center space-y-4">
+          <p className="text-subheading font-bold">سجّل دخولك لتشاهد تقييمات الطلاب وتشارك تجربتك.</p>
+          <Button onClick={() => router.push("/login")} className="rounded-control bg-brand hover:bg-brand-hover">
             تسجيل الدخول
           </Button>
         </Card>
@@ -138,39 +139,39 @@ export default function CommunityPage() {
         <div className="space-y-8">
           {myCourses.length > 0 && (
             <section className="space-y-3">
-              <h2 className="text-sm font-bold text-muted-foreground">موادك — قيّمها لتفيد زملاءك</h2>
+              <h2 className="text-small font-bold text-ink-muted">موادك — قيّمها لتفيد زملاءك</h2>
               <div className="flex flex-wrap gap-2">
                 {myCourses.map((c) => (
-                  <button
+                  <DsButton variant="bare"
                     key={c.code}
                     onClick={() => openCourse(c.code)}
-                    className="px-3 py-1.5 rounded-xl glass border border-foreground/10 text-sm hover:border-uqu-accent/40 transition-colors flex items-center gap-2"
+                    className="px-3 py-1.5 rounded-control border border-line bg-surface shadow-card text-small hover:border-info-line transition-colors flex items-center gap-2"
                   >
                     {loadingCourse === c.code && <Loader2 className="w-3 h-3 animate-spin" />}
-                    <span className="font-mono text-xs text-uqu-accent">{c.code}</span>
+                    <span className="font-mono text-caption text-info-ink">{c.code}</span>
                     <span>{c.name}</span>
-                  </button>
+                  </DsButton>
                 ))}
               </div>
             </section>
           )}
 
           <div className="relative">
-            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="ابحث برمز المادة أو اسمها…"
-              className="h-11 pr-9 rounded-xl"
+              className="h-11 pr-9 rounded-control"
             />
           </div>
 
           {courses === null ? (
             <div className="flex justify-center py-16">
-              <Loader2 className="w-6 h-6 animate-spin text-uqu-accent" />
+              <Loader2 className="w-6 h-6 animate-spin text-info-ink" />
             </div>
           ) : courses.length === 0 ? (
-            <Card className="glass border-dashed border-foreground/10 rounded-3xl p-10 text-center text-muted-foreground">
+            <Card className="border border-line bg-surface shadow-card border-dashed rounded-card p-10 text-center text-ink-muted">
               {query ? "لا توجد تقييمات لهذه المادة بعد." : "لا توجد تقييمات بعد — كن أول من يقيّم مادة من موادك."}
             </Card>
           ) : (
@@ -179,19 +180,19 @@ export default function CommunityPage() {
                 <Card
                   key={c.code}
                   onClick={() => openCourse(c.code)}
-                  className="glass border-foreground/10 rounded-2xl p-5 cursor-pointer hover:border-uqu-accent/40 transition-colors space-y-4"
+                  className="border border-line bg-surface shadow-card rounded-card p-5 cursor-pointer hover:border-info-line transition-colors space-y-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-mono text-xs text-uqu-accent">{c.code}</p>
+                      <p className="font-mono text-caption text-info-ink">{c.code}</p>
                       <h3 className="font-bold">{c.name || c.code}</h3>
                     </div>
                     <Badge variant="outline" className="shrink-0">{c.count} تقييم</Badge>
                   </div>
                   <RatingBars averages={c.averages} />
                   {c.recommend_pct !== null && (
-                    <p className="text-xs text-muted-foreground">
-                      <ThumbsUp className="w-3 h-3 inline ml-1 text-emerald-500" />
+                    <p className="text-caption text-ink-muted">
+                      <ThumbsUp className="w-3 h-3 inline ml-1 text-success-ink" />
                       {c.recommend_pct}% ينصحون بها
                     </p>
                   )}
@@ -208,20 +209,20 @@ export default function CommunityPage() {
 // ── Layout shell ──────────────────────────────────────────────────────
 function Shell({ children, onBack }: { children: React.ReactNode; onBack: () => void }) {
   return (
-    <div className="min-h-screen bg-background pb-20" dir="rtl">
+    <div className="ds-page min-h-screen bg-canvas text-ink pb-20" dir="rtl">
       <Navbar />
       <main className="container mx-auto pt-24 px-4 max-w-5xl">
         <SectionTabs className="mb-6" />
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={onBack} aria-label="رجوع" className="rounded-xl glass border-foreground/10">
+          <Button variant="ghost" size="icon" onClick={onBack} aria-label="رجوع" className="rounded-control border border-line bg-surface shadow-card">
             <ArrowRight className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-black flex items-center gap-3">
-              <Users className="w-7 h-7 text-uqu-accent" />
+            <h1 className="text-title font-bold flex items-center gap-3">
+              <Users className="w-7 h-7 text-info-ink" />
               مجتمع فطن
             </h1>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-ink-muted text-small">
               تقييمات ونصائح من طلاب درسوا المادة فعلًا — قبل ما تسجّل، اعرف وش ينتظرك.
             </p>
           </div>
@@ -238,10 +239,10 @@ function RatingBars({ averages }: { averages: Averages }) {
       {(Object.keys(RATING_LABELS) as RatingKey[]).map((k) => {
         const v = averages[k];
         return (
-          <div key={k} className="flex items-center gap-3 text-xs">
-            <span className="w-28 text-muted-foreground">{RATING_LABELS[k].label}</span>
-            <div className="flex-1 h-2 rounded-full bg-foreground/5 overflow-hidden">
-              <div className="h-full rounded-full bg-uqu-accent" style={{ width: `${((v ?? 0) / 5) * 100}%` }} />
+          <div key={k} className="flex items-center gap-3 text-caption">
+            <span className="w-28 text-ink-muted">{RATING_LABELS[k].label}</span>
+            <div className="flex-1 h-2 rounded-full bg-surface-sunken overflow-hidden">
+              <div className="h-full rounded-full bg-brand" style={{ width: `${((v ?? 0) / 5) * 100}%` }} />
             </div>
             <span className="w-8 text-left font-mono">{v ?? "—"}</span>
           </div>
@@ -264,14 +265,14 @@ function CourseView({
   const others = course.reviews.filter((r) => !r.mine);
   return (
     <div className="space-y-6 animate-in fade-in">
-      <button onClick={onBack} className="text-sm text-muted-foreground hover:text-foreground">
+      <DsButton variant="bare" onClick={onBack} className="text-small text-ink-muted hover:text-ink">
         → كل المواد
-      </button>
-      <Card className="glass border-foreground/10 rounded-3xl p-6 space-y-5">
+      </DsButton>
+      <Card className="border border-line bg-surface shadow-card rounded-card p-6 space-y-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-mono text-sm text-uqu-accent">{course.code}</p>
-            <h2 className="text-2xl font-black">{course.name || course.my_course_name || course.code}</h2>
+            <p className="font-mono text-small text-info-ink">{course.code}</p>
+            <h2 className="text-heading font-bold">{course.name || course.my_course_name || course.code}</h2>
           </div>
           <Badge variant="outline">{course.count} تقييم</Badge>
         </div>
@@ -279,32 +280,32 @@ function CourseView({
           <>
             <RatingBars averages={course.averages} />
             {course.recommend_pct !== null && (
-              <p className="text-sm">
-                <ThumbsUp className="w-4 h-4 inline ml-1 text-emerald-500" />
+              <p className="text-small">
+                <ThumbsUp className="w-4 h-4 inline ml-1 text-success-ink" />
                 {course.recommend_pct}% من الطلاب ينصحون بها
               </p>
             )}
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">لا توجد تقييمات بعد.</p>
+          <p className="text-small text-ink-muted">لا توجد تقييمات بعد.</p>
         )}
       </Card>
 
       {course.can_review ? (
         <ReviewForm course={course} onChanged={onChanged} />
       ) : (
-        <Card className="glass border-foreground/10 rounded-2xl p-4 text-sm text-muted-foreground">
+        <Card className="border border-line bg-surface shadow-card rounded-card p-4 text-small text-ink-muted">
           تقدر تقيّم هذه المادة بعد ما تكون في سجلك الأكاديمي — ارفع سجلك من صفحة السجل.
         </Card>
       )}
 
       <section className="space-y-3">
         <h3 className="font-bold flex items-center gap-2">
-          <MessageSquareQuote className="w-5 h-5 text-uqu-cyan" />
+          <MessageSquareQuote className="w-5 h-5 text-info-ink" />
           نصائح الطلاب
         </h3>
         {others.filter((r) => r.tip).length === 0 && (
-          <p className="text-sm text-muted-foreground">لا توجد نصائح مكتوبة بعد.</p>
+          <p className="text-small text-ink-muted">لا توجد نصائح مكتوبة بعد.</p>
         )}
         {others
           .filter((r) => r.tip)
@@ -328,28 +329,28 @@ function ReviewCard({ review, code }: { review: Review; code: string }) {
     }
   };
   return (
-    <Card className="glass border-foreground/10 rounded-2xl p-4 space-y-2">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Badge variant="outline" className="text-[10px]">
+    <Card className="border border-line bg-surface shadow-card rounded-card p-4 space-y-2">
+      <div className="flex items-center gap-2 text-caption text-ink-muted">
+        <Badge variant="outline" className="text-caption">
           {review.status === "completed" ? "درس المادة" : "يدرسها حاليًا"}
         </Badge>
         {review.semester && <span>{review.semester}</span>}
         {review.recommend ? (
-          <ThumbsUp className="w-3 h-3 text-emerald-500" />
+          <ThumbsUp className="w-3 h-3 text-success-ink" />
         ) : (
-          <ThumbsDown className="w-3 h-3 text-rose-500" />
+          <ThumbsDown className="w-3 h-3 text-danger-ink" />
         )}
-        <button
+        <DsButton variant="bare"
           onClick={report}
           disabled={reported}
-          className="mr-auto flex items-center gap-1 hover:text-rose-500 disabled:opacity-50"
+          className="mr-auto flex items-center gap-1 hover:text-danger-ink disabled:opacity-50"
           title="إبلاغ عن محتوى غير لائق"
         >
           <Flag className="w-3 h-3" />
           {reported ? "تم الإبلاغ" : "إبلاغ"}
-        </button>
+        </DsButton>
       </div>
-      <p className="text-sm leading-relaxed whitespace-pre-line">{review.tip}</p>
+      <p className="text-small leading-relaxed whitespace-pre-line">{review.tip}</p>
     </Card>
   );
 }
@@ -358,11 +359,11 @@ function StarInput({ value, onChange }: { value: number; onChange: (v: number) =
   return (
     <div className="flex gap-1" dir="ltr">
       {[1, 2, 3, 4, 5].map((n) => (
-        <button key={n} type="button" onClick={() => onChange(n)} aria-label={`${n} من 5`}>
+        <DsButton variant="bare" key={n} type="button" onClick={() => onChange(n)} aria-label={`${n} من 5`}>
           <Star
-            className={cn("w-6 h-6 transition-colors", n <= value ? "fill-uqu-accent text-uqu-accent" : "text-foreground/20")}
+            className={cn("w-6 h-6 transition-colors", n <= value ? "fill-brand text-info-ink" : "text-ink")}
           />
-        </button>
+        </DsButton>
       ))}
     </div>
   );
@@ -411,13 +412,13 @@ function ReviewForm({ course, onChanged }: { course: CourseDetail; onChanged: (c
   };
 
   return (
-    <Card className="glass border-uqu-accent/20 rounded-3xl p-6 space-y-5">
+    <Card className="border border-line bg-surface shadow-card border-info-line rounded-card p-6 space-y-5">
       <h3 className="font-bold">{mine ? "تقييمك" : "قيّم المادة"}</h3>
       {(Object.keys(RATING_LABELS) as RatingKey[]).map((k) => (
         <div key={k} className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold">{RATING_LABELS[k].label}</p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-small font-semibold">{RATING_LABELS[k].label}</p>
+            <p className="text-caption text-ink-muted">
               1 = {RATING_LABELS[k].low} · 5 = {RATING_LABELS[k].high}
             </p>
           </div>
@@ -425,13 +426,13 @@ function ReviewForm({ course, onChanged }: { course: CourseDetail; onChanged: (c
         </div>
       ))}
       <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold ml-2">تنصح فيها؟</span>
+        <span className="text-small font-semibold ml-2">تنصح فيها؟</span>
         <Button
           type="button"
           variant="outline"
           size="sm"
           onClick={() => setRecommend(true)}
-          className={cn("rounded-xl gap-1", recommend === true && "border-emerald-500 text-emerald-500")}
+          className={cn("rounded-control gap-1", recommend === true && "border-success-line text-success-ink")}
         >
           <ThumbsUp className="w-4 h-4" /> نعم
         </Button>
@@ -440,7 +441,7 @@ function ReviewForm({ course, onChanged }: { course: CourseDetail; onChanged: (c
           variant="outline"
           size="sm"
           onClick={() => setRecommend(false)}
-          className={cn("rounded-xl gap-1", recommend === false && "border-rose-500 text-rose-500")}
+          className={cn("rounded-control gap-1", recommend === false && "border-danger-line text-danger-ink")}
         >
           <ThumbsDown className="w-4 h-4" /> لا
         </Button>
@@ -450,7 +451,7 @@ function ReviewForm({ course, onChanged }: { course: CourseDetail; onChanged: (c
         onChange={(e) => setSemester(e.target.value)}
         placeholder="الفصل الذي درستها فيه (اختياري) — مثال: الأول 1447"
         maxLength={40}
-        className="h-10 rounded-xl"
+        className="h-10 rounded-control"
       />
       <div className="space-y-1">
         <textarea
@@ -459,20 +460,20 @@ function ReviewForm({ course, onChanged }: { course: CourseDetail; onChanged: (c
           maxLength={600}
           rows={4}
           placeholder="نصيحة لمن سيدرسها: كيف تذاكرها؟ وش أهم شي فيها؟ (بدون أسماء أو روابط)"
-          className="w-full rounded-xl border border-input bg-transparent p-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+          className="w-full rounded-control border border-line bg-transparent p-3 text-small outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
-        <p className="text-[11px] text-muted-foreground text-left">{tip.length}/600</p>
+        <p className="text-caption text-ink-muted text-left">{tip.length}/600</p>
       </div>
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-caption text-ink-muted">
         يظهر تقييمك بدون اسمك. التقييم الذي يُبلَّغ عنه من 3 طلاب يُخفى تلقائيًا.
       </p>
       <div className="flex gap-2">
-        <Button onClick={save} disabled={!complete || saving} className="rounded-xl bg-uqu-accent hover:bg-uqu-accent/90">
+        <Button onClick={save} disabled={!complete || saving} className="rounded-control bg-brand hover:bg-brand-hover">
           {saving && <Loader2 className="w-4 h-4 animate-spin ml-1" />}
           {mine ? "تحديث التقييم" : "نشر التقييم"}
         </Button>
         {mine && (
-          <Button variant="outline" onClick={remove} disabled={saving} className="rounded-xl text-rose-500 gap-1">
+          <Button variant="outline" onClick={remove} disabled={saving} className="rounded-control text-danger-ink gap-1">
             <Trash2 className="w-4 h-4" /> حذف
           </Button>
         )}

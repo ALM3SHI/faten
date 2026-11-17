@@ -26,7 +26,7 @@ import { toast } from "@/lib/toast";
 import { ProfileCard, ProgramInstructorMap } from "@/components/advisor/instructor-profiles";
 
 const errorText = (e: unknown) => (e instanceof ApiError ? e.message : "تعذّر إكمال الطلب. حاول مرة أخرى.");
-const PRIMARY = "rounded-xl bg-uqu-accent hover:bg-uqu-accent/90 text-white gap-2";
+const PRIMARY = "rounded-control bg-brand hover:bg-brand-hover text-on-brand gap-2";
 
 export function ScheduleChecker() {
   const [text, setText] = useState("");
@@ -46,14 +46,14 @@ export function ScheduleChecker() {
   };
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground leading-7">
+      <p className="text-small text-ink-muted leading-7">
         اكتب المقررات التي تنوي تسجيلها، ونفحصها مقابل المتطلبات السابقة وقواعد العبء في اللائحة قبل أن تعتمد التسجيل.
       </p>
       <div className="space-y-2">
         <Label htmlFor="sched-codes">رموز المقررات</Label>
-        <Input id="sched-codes" dir="ltr" placeholder="CS2105, MTH1441, CEN2011" value={text} onChange={(e) => setText(e.target.value)} className="h-11 rounded-xl" />
+        <Input id="sched-codes" dir="ltr" placeholder="CS2105, MTH1441, CEN2011" value={text} onChange={(e) => setText(e.target.value)} className="h-11 rounded-control" />
       </div>
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-small">
         <input type="checkbox" checked={summer} onChange={(e) => setSummer(e.target.checked)} className="size-4" />
         هذا جدول فصل صيفي
       </label>
@@ -63,25 +63,25 @@ export function ScheduleChecker() {
       </Button>
       {result && (
         <div className="space-y-3" role="status">
-          <p className={`font-black flex items-center gap-2 ${result.valid ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}`}>
+          <p className={`font-bold flex items-center gap-2 ${result.valid ? "text-success-ink " : "text-danger-ink "}`}>
             {result.valid ? <CheckCircle2 className="w-5 h-5" aria-hidden /> : <XCircle className="w-5 h-5" aria-hidden />}
             {result.valid ? `الجدول سليم (${result.credits} ساعة)` : `الجدول يخالف قواعد التسجيل (${result.credits} ساعة)`}
           </p>
-          <ul className="space-y-2 text-sm">
+          <ul className="space-y-2 text-small">
             {result.courses.map((c) => (
-              <li key={c.input} className={`rounded-xl border p-3 ${c.ok ? "border-foreground/10" : "border-rose-500/30 bg-rose-500/5"}`}>
+              <li key={c.input} className={`rounded-control border p-3 ${c.ok ? "border-line" : "border-danger-line bg-danger-soft"}`}>
                 <span dir="ltr" className="font-bold">{c.code || c.input}</span>
                 {c.problems.length ? ` — ${c.problems.join(" ")}` : " — مستوفٍ لمتطلباته."}
               </li>
             ))}
           </ul>
           {(result.notes ?? []).length > 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-small text-ink-muted">
               مقررات السنة التأهيلية تُسجَّل حسب المستوى دون النظر للمتطلبات السابقة (اللائحة).
             </p>
           )}
           {[...result.violations, ...result.warnings].map((v) => (
-            <p key={v.rule + v.message} className="text-sm text-amber-800 dark:text-amber-300">
+            <p key={v.rule + v.message} className="text-small text-warning-ink">
               {v.message}
             </p>
           ))}
@@ -106,7 +106,7 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
   };
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground leading-7">
+      <p className="text-small text-ink-muted leading-7">
         نقارن الخطط المنشورة بسجلك: ما اجتزته منها، ودرجاتك في مجالاتها الرئيسية، وأسرع مدة ممكنة لإكمالها.
         {interests.length === 0 && " أضف اهتماماتك من «بياناتك وأهدافك» لتحسين المقارنة."}
       </p>
@@ -118,17 +118,17 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
         <div className="space-y-3">
           <ul className="grid gap-3 md:grid-cols-2">
             {data.programs.map((p) => (
-              <li key={p.program_id} className="rounded-2xl border border-foreground/10 p-4 space-y-2 text-sm">
-                <p className="font-black">{p.name}</p>
-                <p className="text-xs text-muted-foreground">
+              <li key={p.program_id} className="rounded-card border border-line p-4 space-y-2 text-small">
+                <p className="font-bold">{p.name}</p>
+                <p className="text-caption text-ink-muted">
                   {p.department} · {p.stated_total_hours ?? "؟"} ساعة · خطة {VERIFICATION_LABEL[p.curriculum_verification]}
                 </p>
                 <dl className="grid grid-cols-2 gap-x-3 gap-y-1">
-                  <dt className="text-muted-foreground">اجتزت منها</dt>
+                  <dt className="text-ink-muted">اجتزت منها</dt>
                   <dd className="font-bold">{p.overlap_hours} ساعة</dd>
-                  <dt className="text-muted-foreground">أداؤك في مجالاتها</dt>
+                  <dt className="text-ink-muted">أداؤك في مجالاتها</dt>
                   <dd className="font-bold">{p.related_performance !== null ? `${p.related_performance.toFixed(2)} / 4` : "غير معروف"}</dd>
-                  <dt className="text-muted-foreground">أسرع إكمال</dt>
+                  <dt className="text-ink-muted">أسرع إكمال</dt>
                   <dd className="font-bold">{p.fastest_terms ? `${p.fastest_terms} فصول (${p.fastest_graduation})` : "—"}</dd>
                 </dl>
                 <ul className="list-disc ps-5 leading-6">
@@ -136,7 +136,7 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
                     <li key={e}>{e}</li>
                   ))}
                   {p.missing.map((m) => (
-                    <li key={m} className="text-muted-foreground">
+                    <li key={m} className="text-ink-muted">
                       {m}
                     </li>
                   ))}
@@ -144,7 +144,7 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
               </li>
             ))}
           </ul>
-          <details className="text-sm rounded-2xl border border-foreground/10 p-4">
+          <details className="text-small rounded-card border border-line p-4">
             <summary className="cursor-pointer font-bold">شروط التحويل في اللائحة</summary>
             <ul className="mt-2 list-disc ps-5 space-y-1 leading-7">
               {data.transfer_rules.map((r) => (
@@ -152,7 +152,7 @@ export function MajorsCompare({ interests }: { interests: string[] }) {
               ))}
             </ul>
           </details>
-          <p className="text-xs text-muted-foreground leading-6">
+          <p className="text-caption text-ink-muted leading-6">
             {data.disclaimer} {data.coverage_note}
           </p>
         </div>
@@ -210,7 +210,7 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground leading-7">
+      <p className="text-small text-ink-muted leading-7">
         نعرض أدلة تقييم المحاضرين فقط حين تكفي: تقييمات موثقة من طلاب درسوا المقرر، مع مراعاة قلة العدد وقِدَم التقييم وتباين الآراء. لا نرشّح أحداً بلا أدلة كافية.
       </p>
       {map && (
@@ -225,7 +225,7 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
       <div className="flex flex-wrap gap-2 items-end">
         <div className="space-y-2">
           <Label htmlFor="inst-code">رمز المقرر</Label>
-          <Input id="inst-code" dir="ltr" value={code} onChange={(e) => setCode(e.target.value)} className="h-11 rounded-xl w-40" />
+          <Input id="inst-code" dir="ltr" value={code} onChange={(e) => setCode(e.target.value)} className="h-11 rounded-control w-40" />
         </div>
         <Button onClick={() => load()} disabled={busy || !normalized} className={PRIMARY}>
           <UserRound className="w-4 h-4" aria-hidden />
@@ -234,14 +234,14 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
       </div>
       {data?.imported && data.imported.profiles.length > 0 && (
         <section aria-labelledby="profiles-title" className="space-y-3">
-          <h3 id="profiles-title" className="font-black">
+          <h3 id="profiles-title" className="font-bold">
             تحليل المحاضرين في <bdi dir="ltr">{data.imported.course_code}</bdi>
           </h3>
-          <p className="text-xs text-muted-foreground leading-6">{data.imported.source.description}</p>
+          <p className="text-caption text-ink-muted leading-6">{data.imported.source.description}</p>
           {data.imported.profiles.map((p) => (
             <ProfileCard key={p.id} p={p} />
           ))}
-          <ul className="text-xs text-muted-foreground list-disc ps-5 leading-6">
+          <ul className="text-caption text-ink-muted list-disc ps-5 leading-6">
             {data.imported.caveats.map((c) => (
               <li key={c}>{c}</li>
             ))}
@@ -249,20 +249,20 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
         </section>
       )}
       {data && (
-        <div className="space-y-3 text-sm">
+        <div className="space-y-3 text-small">
           <p className="font-bold" role="status">{data.message}</p>
           {data.instructors.length > 0 && (
             <ul className="space-y-2">
               {data.instructors.map((i) => (
-                <li key={i.instructor} className="rounded-xl border border-foreground/10 p-3">
+                <li key={i.instructor} className="rounded-control border border-line p-3">
                   <p className="font-bold">{i.instructor}</p>
-                  <p className="text-muted-foreground">
+                  <p className="text-ink-muted">
                     {i.reviews} تقييم · ثقة {i.confidence === "insufficient" ? "غير كافية" : CONFIDENCE_LABEL[i.confidence]}
                     {i.quality_adjusted !== null && ` · تقييم معدَّل ${i.quality_adjusted}/5`}
                     {i.workload !== null && ` · العبء ${i.workload}/5`}
                   </p>
                   {i.notes.map((n) => (
-                    <p key={n} className="text-amber-800 dark:text-amber-300">
+                    <p key={n} className="text-warning-ink">
                       {n}
                     </p>
                   ))}
@@ -270,7 +270,7 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
               ))}
             </ul>
           )}
-          <ul className="text-xs text-muted-foreground list-disc ps-5 leading-6">
+          <ul className="text-caption text-ink-muted list-disc ps-5 leading-6">
             {data.caveats.map((c) => (
               <li key={c}>{c}</li>
             ))}
@@ -279,32 +279,32 @@ export function InstructorsPanel({ suggested, programId }: { suggested: string[]
             ))}
           </ul>
 
-          <details className="rounded-2xl border border-foreground/10 p-4">
+          <details className="rounded-card border border-line p-4">
             <summary className="cursor-pointer font-bold">قيّم محاضراً درّسك هذا المقرر</summary>
             <form onSubmit={submit} className="mt-3 space-y-3">
               <div className="space-y-2">
                 <Label htmlFor="inst-name">اسم المحاضر</Label>
-                <Input id="inst-name" value={form.instructor} onChange={(e) => setForm({ ...form, instructor: e.target.value })} className="h-11 rounded-xl" />
+                <Input id="inst-name" value={form.instructor} onChange={(e) => setForm({ ...form, instructor: e.target.value })} className="h-11 rounded-control" />
               </div>
               {ratingFields.map(([k, label]) => (
                 <fieldset key={k} className="flex flex-wrap items-center gap-2">
-                  <legend className="text-sm w-40">{label}</legend>
+                  <legend className="text-small w-40">{label}</legend>
                   {[1, 2, 3, 4, 5].map((n) => (
-                    <label key={n} className={`size-9 rounded-lg border inline-flex items-center justify-center cursor-pointer text-sm font-bold ${form[k] === n ? "bg-uqu-accent text-white border-uqu-accent" : "border-foreground/15"}`}>
+                    <label key={n} className={`size-9 rounded-control border inline-flex items-center justify-center cursor-pointer text-small font-bold ${form[k] === n ? "bg-brand text-on-brand border-info-line" : "border-line-strong"}`}>
                       <input type="radio" name={k} className="sr-only" checked={form[k] === n} onChange={() => setForm({ ...form, [k]: n })} />
                       {n}
                     </label>
                   ))}
                 </fieldset>
               ))}
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-2 text-small">
                 <input type="checkbox" checked={form.recommend} onChange={(e) => setForm({ ...form, recommend: e.target.checked })} className="size-4" />
                 أنصح به
               </label>
               <Button type="submit" disabled={!ready} className={PRIMARY}>
                 أرسل التقييم
               </Button>
-              <p className="text-xs text-muted-foreground">يُقبل فقط إذا كان المقرر في سجلك الأكاديمي، ولا يظهر اسمك لأحد.</p>
+              <p className="text-caption text-ink-muted">يُقبل فقط إذا كان المقرر في سجلك الأكاديمي، ولا يظهر اسمك لأحد.</p>
             </form>
           </details>
         </div>
@@ -340,15 +340,15 @@ export function AskAdvisor({ runId }: { runId: string }) {
   };
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground leading-7">
+      <p className="text-small text-ink-muted leading-7">
         اسأل عن خطتك («ليش هذا المقرر أولاً؟»، «وش يصير لو أجّلت الصيفي؟»). الإجابة مقيّدة بنتائج التحليل؛ وإن خرجت عنها نعرض لك الملخص المحسوب بدلها.
       </p>
       <ul className="space-y-3">
         {turns.map((t, i) => (
           <li key={i} className="space-y-2">
-            <p className="text-sm font-bold">س: {t.q}</p>
+            <p className="text-small font-bold">س: {t.q}</p>
             {t.a.source === "llm_validated" ? (
-              <div className="rounded-2xl border border-foreground/10 p-3 text-sm leading-7 space-y-1">
+              <div className="rounded-card border border-line p-3 text-small leading-7 space-y-1">
                 <p>{t.a.answer}</p>
                 {t.a.points.length > 0 && (
                   <ul className="list-disc ps-5">
@@ -360,8 +360,8 @@ export function AskAdvisor({ runId }: { runId: string }) {
                 {t.a.next_step && <p className="font-bold">الخطوة التالية: {t.a.next_step}</p>}
               </div>
             ) : (
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 text-sm leading-7 space-y-1">
-                <p className="text-xs font-bold">{t.a.reason} — هذا الملخص المحسوب:</p>
+              <div className="rounded-card border border-warning-line bg-warning-soft p-3 text-small leading-7 space-y-1">
+                <p className="text-caption font-bold">{t.a.reason} — هذا الملخص المحسوب:</p>
                 <p>{t.a.summary.what}</p>
                 <ul className="list-disc ps-5">
                   {t.a.summary.why.map((w) => (
@@ -377,7 +377,7 @@ export function AskAdvisor({ runId }: { runId: string }) {
         <label htmlFor="adv-q" className="sr-only">
           سؤالك
         </label>
-        <Input id="adv-q" value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="اكتب سؤالك عن خطتك…" className="h-11 rounded-xl" maxLength={800} />
+        <Input id="adv-q" value={question} onChange={(e) => setQuestion(e.target.value)} placeholder="اكتب سؤالك عن خطتك…" className="h-11 rounded-control" maxLength={800} />
         <Button type="submit" disabled={busy || question.trim().length < 2} className={PRIMARY} aria-label="أرسل السؤال">
           {busy ? <MessageCircleQuestion className="w-4 h-4 animate-pulse" aria-hidden /> : <Send className="w-4 h-4" aria-hidden />}
         </Button>
