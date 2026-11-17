@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconButton } from "@/components/ds/button";
 import { AIService } from "@/lib/ai";
 
 // Minimal typings for the browser Web Speech API (not in lib.dom for all browsers).
@@ -226,48 +227,40 @@ export function ChatInput({ value, onChange, onSend, isLoading }: ChatInputProps
         : "إدخال صوتي";
 
   return (
-    <div className="bg-card/80 backdrop-blur-xl border border-foreground/10 rounded-[32px] p-2 flex items-center gap-2 shadow-2xl">
-      <button
+    <div className="mx-auto flex max-w-4xl items-center gap-1.5 rounded-full border border-line-strong bg-surface-raised p-1.5 shadow-menu motion-fast transition-colors focus-within:border-brand">
+      <IconButton
+        label={micTitle}
         onClick={toggleRecording}
         disabled={micState === "transcribing"}
-        title={micTitle}
-        aria-label={micTitle}
         aria-pressed={micState === "recording"}
         className={cn(
-          "w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0 disabled:opacity-60 disabled:cursor-not-allowed",
+          "shrink-0 rounded-full",
           micState === "recording"
-            ? "text-red-400 bg-red-500/10 hover:bg-red-500/15 animate-pulse"
+            ? "bg-danger-soft text-danger-ink hover:bg-danger-soft motion-safe:animate-pulse"
             : micState === "transcribing"
-              ? "text-amber-700 dark:text-amber-300 bg-amber-500/10"
-              : "text-muted hover:text-foreground hover:bg-foreground/5"
+              ? "bg-warning-soft text-warning-ink"
+              : "text-ink-muted hover:text-ink",
         )}
       >
-        {micState === "transcribing" ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <Mic className="w-4 h-4" />
-        )}
-      </button>
+        {micState === "transcribing" ? <Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden /> : <Mic aria-hidden />}
+      </IconButton>
 
       <input
         placeholder={placeholder}
+        aria-label={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") onSend();
         }}
-        className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted px-2 text-[15px]"
+        className="min-w-0 flex-1 border-none bg-transparent px-2 text-body text-ink outline-none placeholder:text-ink-muted"
         dir="rtl"
+        enterKeyHint="send"
       />
 
-      <button
-        onClick={onSend}
-        disabled={!value.trim() || isLoading}
-        aria-label="إرسال"
-        className="w-10 h-10 rounded-full bg-uqu-accent flex items-center justify-center text-white shrink-0 disabled:opacity-50 transition-all active:scale-95 hover:bg-uqu-accent/90 shadow-lg shadow-uqu-accent/20"
-      >
-        <Send className="w-4 h-4 rotate-180" />
-      </button>
+      <IconButton label="إرسال" variant="primary" onClick={onSend} disabled={!value.trim() || isLoading} className="shrink-0 rounded-full">
+        <Send className="rotate-180" aria-hidden />
+      </IconButton>
     </div>
   );
 }

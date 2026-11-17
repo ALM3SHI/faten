@@ -12,10 +12,8 @@ export function SmartLoadingIndicator() {
   return (
     <div
       className="
-        relative inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full
-        bg-card border border-foreground/10
-        shadow-[0_0_24px_-8px_hsla(245,78%,62%,0.35)]
-        overflow-hidden
+        relative inline-flex items-center gap-2.5 overflow-hidden rounded-full
+        border border-line bg-surface px-4 py-2.5 shadow-card
       "
       role="status"
       aria-live="polite"
@@ -27,7 +25,7 @@ export function SmartLoadingIndicator() {
         aria-hidden
         className="
           absolute inset-y-0 -inset-x-1 pointer-events-none
-          bg-[linear-gradient(110deg,transparent_30%,hsla(245,78%,62%,0.18)_50%,transparent_70%)]
+          bg-gradient-to-l from-transparent via-info-soft to-transparent motion-reduce:hidden
         "
         style={{
           backgroundSize: "200% 100%",
@@ -37,9 +35,9 @@ export function SmartLoadingIndicator() {
 
       {/* Three bouncing dots — the only visible loading signal. */}
       <span className="relative inline-flex items-center gap-1 shrink-0">
-        <span className="w-1.5 h-1.5 bg-uqu-accent rounded-full animate-bounce [animation-delay:-0.3s]" />
-        <span className="w-1.5 h-1.5 bg-uqu-accent rounded-full animate-bounce [animation-delay:-0.15s]" />
-        <span className="w-1.5 h-1.5 bg-uqu-accent rounded-full animate-bounce" />
+        <span className="size-1.5 rounded-full bg-brand motion-safe:animate-bounce motion-safe:[animation-delay:-0.3s]" />
+        <span className="size-1.5 rounded-full bg-brand motion-safe:animate-bounce motion-safe:[animation-delay:-0.15s]" />
+        <span className="size-1.5 rounded-full bg-brand motion-safe:animate-bounce" />
       </span>
     </div>
   );
