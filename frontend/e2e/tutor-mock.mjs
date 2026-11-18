@@ -35,6 +35,22 @@ const QUESTION = {
 };
 const RIGHT = 1;
 
+// The new formats (questions.py): shown as the backend's public_question shows them.
+const QUIZ = [
+  { q: { id: "t1-order", topic_id: "t1", format: "order", skill: "apply", skill_label: "تطبيق", difficulty: 2, prompt: "رتّب العمليات لتبقى `2` في القمة:", pages: [2], has_hint: false, items: ["pop()", "push(1)", "push(2)"] },
+    right: (p) => JSON.stringify(p.order) === JSON.stringify([1, 2, 0]),
+    reveal: { correctOrder: ["push(1)", "push(2)", "pop()"] },
+    text: (p) => p.order.map((i) => ["pop()", "push(1)", "push(2)"][i]).join(" ← ") },
+  { q: { id: "t1-match", topic_id: "t1", format: "match", skill: "recall", skill_label: "تذكّر", difficulty: 1, prompt: "وصّل كل عملية بما تفعله:", pages: [2], has_hint: false, lefts: ["push", "pop"], rights: ["يسحب من القمة", "يضيف للقمة"] },
+    right: (p) => JSON.stringify(p.matches) === JSON.stringify([1, 0]),
+    reveal: { correctPairs: [{ left: "push", right: "يضيف للقمة" }, { left: "pop", right: "يسحب من القمة" }] },
+    text: (p) => p.matches.map((j, i) => `${["push", "pop"][i]} ← ${["يسحب من القمة", "يضيف للقمة"][j]}`).join("؛ ") },
+  { q: { id: "t1-fill", topic_id: "t1", format: "fill", skill: "recall", skill_label: "تذكّر", difficulty: 1, prompt: "البنية التي تعمل بمبدأ LIFO اسمها ____", pages: [1], has_hint: false },
+    right: (p) => /^(ال)?مكدس$|^stack$/i.test(String(p.text || "").trim()),
+    reveal: { modelAnswer: "المكدس" },
+    text: (p) => p.text },
+];
+
 const progress = (status) => ({ status, score: status === "mastered" ? 0.9 : null, confidence: status === "mastered" ? 0.8 : 0, mastered: status === "mastered", missing: [], met: [], attempts: 0, correct: 0, reviewDue: null, lastReviewedAt: null, activeMinutes: 0 });
 
 function newSession() {
@@ -100,6 +116,24 @@ function step(s, action, payload) {
     ];
     out.push(say(s, "tutor", [{ type: "lesson", topicId: "t1", segment: 0, total: 2, title: "الفكرة", md: parts.map((p) => p.md).join("\n\n"), parts, reviewed: true, pages: [2], visual: DIAGRAM }]));
     out.push(say(s, "tutor", [{ type: "question", context: "check", question: QUESTION }], [{ id: "hint", label: "تلميح" }, { id: "reexplain", label: "اشرحه بطريقة ثانية" }]));
+  } else if (action === "test_out" && st.stage === "goal") {
+    // "I know this, test me": the mastery quiz, one question of each new format
+    st.stage = "quiz";
+    s.quiz = 0;
+    st.pending = { type: "question", context: "quiz", question: QUIZ[0].q, index: 1, total: QUIZ.length, attempts: 0, hints: 0 };
+    out.push(say(s, "tutor", [{ type: "question", context: "quiz", index: 1, total: QUIZ.length, question: QUIZ[0].q }]));
+  } else if (action === "answer" && st.stage === "quiz") {
+    const item = QUIZ[s.quiz];
+    if (!st.pending || payload.questionId !== item.q.id) return { error: [409, "هذا السؤال لم يعد مفتوحاً."] };
+    const ok = item.right(payload);
+    st.pending = null;
+    out.push(say(s, "student", [{ type: "answer", questionId: item.q.id, text: item.text(payload), confidence: payload.confidence ?? null }]));
+    out.push(say(s, "tutor", [{ type: "feedback", questionId: item.q.id, correct: ok, verdict: ok ? "correct" : "incorrect", md: "", misconception: "", explanation: "", ...item.reveal }], [{ id: "next", label: "السؤال التالي" }]));
+  } else if (action === "next" && st.stage === "quiz" && !st.pending && s.quiz < QUIZ.length - 1) {
+    s.quiz += 1;
+    const q = QUIZ[s.quiz].q;
+    st.pending = { type: "question", context: "quiz", question: q, index: s.quiz + 1, total: QUIZ.length, attempts: 0, hints: 0 };
+    out.push(say(s, "tutor", [{ type: "question", context: "quiz", index: s.quiz + 1, total: QUIZ.length, question: q }]));
   } else if (action === "answer") {
     if (!st.pending || payload.questionId !== QUESTION.id) return { error: [409, "هذا السؤال لم يعد مفتوحاً."] };
     out.push(say(s, "student", [{ type: "answer", questionId: QUESTION.id, text: QUESTION.options[payload.choice], choice: payload.choice, confidence: payload.confidence ?? null }]));

@@ -48,7 +48,7 @@ export interface Lecture {
 export interface PublicQuestion {
   id: string;
   topic_id: string;
-  format: "choice" | "text" | "code";
+  format: "choice" | "text" | "code" | "order" | "match" | "fill";
   skill: string;
   skill_label: string;
   difficulty: number;
@@ -56,9 +56,25 @@ export interface PublicQuestion {
   pages: number[];
   has_hint: boolean;
   options?: string[];
+  /** order: the steps, shuffled */
+  items?: string[];
+  /** match: the left items in order, and the right items shuffled */
+  lefts?: string[];
+  rights?: string[];
 }
 
 export type Confidence = "sure" | "think" | "guess";
+
+/** What a student sends for one question, by format. */
+export interface AnswerPayload {
+  choice?: number;
+  text?: string;
+  /** order: the shown items' positions, in the order the student put them */
+  order?: number[];
+  /** match: for each left item, the position of the right item paired with it */
+  matches?: number[];
+  confidence?: Confidence;
+}
 export type ReportReason = "wrong_key" | "unclear" | "off_lecture";
 
 export interface QuestionBlock {

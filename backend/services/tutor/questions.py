@@ -19,10 +19,15 @@ A question (stored server-side, never sent with its answer):
 from __future__ import annotations
 
 import hashlib
+import random
 import re
 from typing import Any
 
-FORMATS = ("choice", "text", "code")
+FORMATS = ("choice", "text", "code", "order", "match", "fill")
+# Formats graded in code from a fixed key — and solved by a second model call
+# before a question is used (engine.review_lesson).
+OBJECTIVE = ("choice", "order", "match", "fill")
+BLANK = "____"
 SKILLS = ("recall", "explain", "predict", "apply", "debug", "compare", "write_code")
 BLOOMS = ("remember", "understand", "apply", "analyze")
 POOLS = ("check", "quiz", "final")
@@ -138,6 +143,33 @@ def normalize_question(raw: Any, topic_id: str, pool: str, concept_ids: set[str]
         q["option_feedback"] = (fb + [""] * len(opts))[: len(opts)]
         q["misconceptions"] = (mis + [""] * len(opts))[: len(opts)]
         q["misconceptions"][ans] = ""
+    elif fmt == "order":
+        # the steps in the right order; the student sees them shuffled
+        steps = [clip(x, 300) for x in (raw.get("steps") or []) if clip(x, 300)]
+        if not 3 <= len(steps) <= 7 or len(set(steps)) != len(steps):
+            return None
+        q["steps"] = steps
+    elif fmt == "match":
+        # pairs "left => right"; the right-hand side is shown shuffled
+        pairs = []
+        for x in raw.get("pairs") or []:
+            left, sep, right = str(x or "").partition("=>")
+            if sep and clip(left, 200) and clip(right, 200):
+                pairs.append({"left": clip(left, 200), "right": clip(right, 200)})
+        lefts, rights = [p["left"] for p in pairs], [p["right"] for p in pairs]
+        if not 2 <= len(pairs) <= 6 or len(set(lefts)) != len(lefts) or len(set(rights)) != len(rights):
+            return None
+        q["pairs"] = pairs
+    elif fmt == "fill":
+        # one blank, answered with a word or a short phrase from the lecture
+        accepted = [clip(a, 120) for a in (raw.get("accepted_answers") or []) if clip(a, 120)][:8]
+        if not accepted:
+            return None
+        if BLANK not in q["prompt"]:
+            q["prompt"] = q["prompt"].rstrip() + f" {BLANK}"
+        q["accepted_answers"] = accepted
+        q["model_answer"] = clip(raw.get("model_answer"), 300) or accepted[0]
+        q["rubric"] = ""
     else:
         model = clip(raw.get("model_answer"), 3000)
         if not model:
@@ -150,7 +182,21 @@ def normalize_question(raw: Any, topic_id: str, pool: str, concept_ids: set[str]
     if not q["concept_ids"] and concept_ids:
         q["concept_ids"] = []
     q["id"] = question_id(topic_id, q["prompt"], pool)
+    if fmt == "order":
+        q["shown"] = _shuffle(len(q["steps"]), q["id"])
+    elif fmt == "match":
+        q["shown"] = _shuffle(len(q["pairs"]), q["id"])
     return q
+
+
+def _shuffle(n: int, seed: str) -> list[int]:
+    """The order a list is shown in: fixed per question (a reload shows the
+    same order), and never already in the right order."""
+    order = list(range(n))
+    rnd = random.Random(seed)
+    while order == sorted(order):
+        rnd.shuffle(order)
+    return order
 
 
 def public_question(q: dict) -> dict:
@@ -168,6 +214,11 @@ def public_question(q: dict) -> dict:
     }
     if q["format"] == "choice":
         out["options"] = q["options"]
+    elif q["format"] == "order":
+        out["items"] = [q["steps"][i] for i in q["shown"]]
+    elif q["format"] == "match":
+        out["lefts"] = [p["left"] for p in q["pairs"]]
+        out["rights"] = [q["pairs"][i]["right"] for i in q["shown"]]
     return out
 
 
@@ -202,6 +253,57 @@ def grade_choice(q: dict, choice: Any) -> dict:
         "misconception": "" if correct else (q.get("misconceptions") or [""] * 9)[idx],
         "note": "" if correct else (q.get("option_feedback") or [""] * 9)[idx],
     }
+
+
+def _indices(v: Any, n: int) -> list[int] | None:
+    try:
+        out = [int(x) for x in v or []]
+    except (TypeError, ValueError):
+        return None
+    return out if len(out) == n and all(0 <= x < n for x in out) else None
+
+
+def grade_order(q: dict, order: Any) -> dict:
+    """`order`: the shown items' positions, in the order the student put them."""
+    n = len(q["steps"])
+    picked = _indices(order, n)
+    if picked is None or len(set(picked)) != n:
+        return {"valid": False}
+    got = [q["shown"][i] for i in picked]  # the steps' true positions, as placed
+    right = sum(1 for k, x in enumerate(got) if x == k)
+    correct = right == n
+    return {
+        "valid": True, "correct": correct, "credit": 1.0 if correct else 0.0, "picked": picked,
+        "misconception": "" if correct else "ترتيب الخطوات",
+        "note": "" if correct else f"وضعت {right} من {n} خطوات في مكانها الصحيح.",
+        "answer_text": " ← ".join(q["steps"][x] for x in got),
+    }
+
+
+def grade_match(q: dict, matches: Any) -> dict:
+    """`matches[i]`: the position of the shown right-hand item paired with left item i."""
+    n = len(q["pairs"])
+    picked = _indices(matches, n)
+    if picked is None or len(set(picked)) != n:
+        return {"valid": False}
+    right = sum(1 for i, j in enumerate(picked) if q["shown"][j] == i)
+    correct = right == n
+    return {
+        "valid": True, "correct": correct, "credit": 1.0 if correct else 0.0, "picked": picked,
+        "misconception": "" if correct else "الربط بين المفاهيم",
+        "note": "" if correct else f"وصّلت {right} من {n} بشكل صحيح.",
+        "answer_text": "؛ ".join(f"{q['pairs'][i]['left']} ← {q['pairs'][q['shown'][j]]['right']}" for i, j in enumerate(picked)),
+    }
+
+
+def match_fill(q: dict, answer: str) -> bool:
+    """A blank is right when it equals an accepted answer, ignoring case,
+    spacing and the Arabic article «ال»."""
+    def norm(x: str) -> str:
+        x = " ".join(str(x or "").casefold().split()).strip(" .،,;")
+        return x[2:] if x.startswith("ال") and len(x) > 3 else x
+    a = norm(answer)
+    return bool(a) and any(a == norm(x) for x in q.get("accepted_answers") or [])
 
 
 # ── Adaptive selection ─────────────────────────────────────────────
