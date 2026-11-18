@@ -155,6 +155,9 @@ test("a new lecture is prepared in the background with live progress, then opens
   await expect(card.getByText("تقدر تطلع من الصفحة")).toBeVisible();
   // the stages move on as the server reports them
   await expect(card.getByText("نرتّب المحاضرة في وحدات (الجزء 1 من 2)")).toBeVisible({ timeout: 8000 });
+  // the first unit's lesson is written before the course opens
+  await expect(card.getByRole("listitem").filter({ hasText: "نكتب درس الوحدة الأولى لتبدأ فوراً" })).toContainText("الآن", { timeout: 8000 });
+  await expect(card.getByText("والوحدات التالية تُجهَّز وأنت تذاكر", { exact: false })).toBeVisible();
 
   // ready → the course opens without another click
   await expect(page).toHaveURL(/\/tutor\/\?lecture=/, { timeout: 15000 });

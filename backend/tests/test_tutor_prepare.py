@@ -197,3 +197,86 @@ def test_scanned_pages_are_read_in_small_batches_and_a_failed_batch_loses_only_i
     assert report["failed"] == list(range(7, 13))
     assert report["read"] == [1, 2, 3, 4, 5, 6, 13, 14]
     assert stages == [("vision", 0, 14), ("vision", 6, 14), ("vision", 12, 14)]
+
+
+def test_the_first_unit_is_written_during_preparation_and_opens_ready(api, captured):
+    """The course opens on a ready lesson: unit 1 is written while preparing
+    (part of what the student paid for), not when they press start."""
+    http, db, fake, _ = api
+    lid = upload(http).json()["job"]["id"]
+    seen = []
+    original = prepare.store.save_job
+
+    def spy(db_, uid, lid_, fields, merge=True):
+        if "stage" in fields:
+            seen.append(fields["stage"])
+        return original(db_, uid, lid_, fields, merge)
+
+    prepare.store.save_job = spy
+    try:
+        asyncio.run(captured.pop(next(k for k in captured if k.startswith("ingest:"))))
+    finally:
+        prepare.store.save_job = original
+    assert seen.index("lesson") < seen.index("saving")
+    assert fake.calls["lesson"] == 1
+    lecture = http.get(f"/api/tutor/lectures/{lid}").json()["lecture"]
+    digest = lecture["fileHash"]
+    assert ("tutor_cache", digest, "lessons", "t1") in db.store
+    assert ("tutor_cache", digest, "prep", "main") not in db.store  # the work-in-progress is tidied away
+
+    # the student starts: the lesson is already there — no wait, no model call, no charge
+    before = credits(db)
+    body = http.post(f"/api/tutor/lectures/{lid}/step", json={"action": "next", "payload": {}, "version": 1}).json()
+    body = http.post(f"/api/tutor/lectures/{lid}/step", json={"action": "next", "payload": {}, "version": body["state"]["version"]}).json()
+    assert any(b["type"] == "lesson" for m in body["messages"] for b in m["blocks"])
+    assert fake.calls["lesson"] == 1 and credits(db) == before
+
+
+def test_a_failed_first_lesson_does_not_hold_the_lecture_back(api, captured, monkeypatch):
+    http, db, fake, _ = api
+
+    async def busy(ctx, tid):
+        raise RuntimeError("model busy")
+
+    monkeypatch.setattr(prepare.engine, "ensure_lesson", busy)
+    lid = upload(http).json()["job"]["id"]
+    asyncio.run(captured.popitem()[1])
+    assert http.get(f"/api/tutor/lectures/{lid}/job").json()["job"]["status"] == "ready"
+    monkeypatch.undo()
+
+
+def test_a_restart_while_writing_the_first_lesson_resumes_without_reorganising(api, captured, monkeypatch):
+    http, db, fake, _ = api
+    real = prepare.engine.ensure_lesson
+    state = {"killed": False}
+
+    async def dies_once(ctx, tid):
+        if not state["killed"]:
+            state["killed"] = True
+            raise asyncio.CancelledError()  # the process stops: nothing catches this
+        return await real(ctx, tid)
+
+    monkeypatch.setattr(prepare.engine, "ensure_lesson", dies_once)
+    lid = upload(http).json()["job"]["id"]
+    charged = credits(db)
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(captured.popitem()[1])
+    assert fake.calls["structure"] == 1
+    old = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=5)).isoformat()
+    db.store[("users", UID, "tutor_jobs", lid)]["updatedAt"] = old
+    assert http.get(f"/api/tutor/lectures/{lid}/job").json()["job"]["stalled"] is True
+
+    assert upload(http).status_code == 202  # the page sends the file again
+    asyncio.run(captured.popitem()[1])
+    assert fake.calls["structure"] == 1, "the lecture was organised a second time"
+    assert fake.calls["lesson"] == 1 and credits(db) == charged
+    assert http.get(f"/api/tutor/lectures/{lid}/job").json()["job"]["status"] == "ready"
+
+
+def test_a_job_left_behind_after_the_lecture_was_saved_is_tidied(api, captured):
+    http, db, _, _ = api
+    lid = upload(http).json()["job"]["id"]
+    asyncio.run(captured.popitem()[1])
+    db.store[("users", UID, "tutor_jobs", lid)] = {"id": lid, "status": "working", "stage": "saving", "updatedAt": "2020-01-01T00:00:00+00:00"}
+    assert http.get(f"/api/tutor/lectures/{lid}/job").json()["job"]["status"] == "ready"
+    assert http.get("/api/tutor/lectures").json()["preparing"] == []

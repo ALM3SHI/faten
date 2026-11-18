@@ -135,6 +135,8 @@ async def upload_lecture(file: UploadFile = File(...), background: bool = Form(F
     lecture = store.get_lecture(db, user_id, lid)
     if lecture:
         lecture = _fresh_estimates(db, user_id, lecture)
+        if store.get_job(db, user_id, lid):
+            store.delete_job(db, user_id, lid)  # a preparation that ended without tidying up
     reused = "mine" if lecture else None
     if not lecture:
         if len(store.list_lectures(db, user_id)) >= store.MAX_LECTURES:
@@ -216,10 +218,12 @@ async def get_job(lid: str, user_id: str = Depends(get_current_user)):
     db = dbmod.get_db()
     lid = _id_ok(lid)
     job = store.get_job(db, user_id, lid)
+    if store.get_lecture(db, user_id, lid):
+        if job:  # saved, but the server stopped before tidying up
+            store.delete_job(db, user_id, lid)
+        return {"job": {"id": lid, "status": "ready", "stalled": False}}
     if job:
         return {"job": prepare.public_job(job, user_id)}
-    if store.get_lecture(db, user_id, lid):
-        return {"job": {"id": lid, "status": "ready", "stalled": False}}
     raise HTTPException(status_code=404, detail="ما لقيت محاضرة قيد التجهيز بهذا الرقم.")
 
 

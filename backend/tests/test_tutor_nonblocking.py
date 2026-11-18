@@ -6,10 +6,11 @@ the middle of the upload and the browser saw a CORS error from the proxy.
 """
 
 import asyncio
+import dataclasses
 import time
 
 from pdf_factory import make_pdf
-from services.tutor import extract, ingest
+from services.tutor import extract, ingest, source
 from tests_helpers import fake_ai
 
 
@@ -21,7 +22,7 @@ def test_pdf_reading_runs_off_the_event_loop(monkeypatch):
         time.sleep(0.6)  # a heavy lecture on a slow CPU
         return real(pdf)
 
-    monkeypatch.setattr(ingest, "extract_pages", slow_extract)
+    monkeypatch.setattr(source, "EXTRACTORS", (dataclasses.replace(source.PDF, extract=slow_extract),))
     pdf = make_pdf([["Stacks", "A stack is a LIFO structure used for calls and undo history."]])
 
     async def scenario():
