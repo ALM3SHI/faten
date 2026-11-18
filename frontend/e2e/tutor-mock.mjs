@@ -34,6 +34,7 @@ const QUESTION = {
   options: ["2", "1", "المكدس فارغ", "خطأ"],
 };
 const RIGHT = 1;
+const FINAL_Q = { id: "t1-final1", topic_id: "t1", format: "choice", skill: "apply", skill_label: "تطبيق", difficulty: 2, prompt: "ما الذي يُرجعه `pop()` بعد `push(4)`؟", pages: [2], has_hint: false, options: ["لا شيء", "4", "خطأ", "0"] };
 
 // The new formats (questions.py): shown as the backend's public_question shows them.
 const QUIZ = [
@@ -59,6 +60,7 @@ function newSession() {
     focus: { mode: "idle", startedAt: null, durationSec: 0, pausedAt: null, pausedTotalSec: 0, focusMin: 25, breakMin: 5, completedFocus: 0 },
     state: { phase: "overview", currentTopicId: null, stage: null, segment: null, segments: 2, pending: null, topics: { t1: progress("not_started"), t2: progress("not_started") }, reviewDue: [], points: 0, final: null, version: 1 },
     messages: [],
+    mistakes: [],
     seq: 0,
   };
 }
@@ -139,10 +141,25 @@ function step(s, action, payload) {
     const q = QUIZ[s.quiz].q;
     st.pending = { type: "question", context: "quiz", question: q, index: s.quiz + 1, total: QUIZ.length, attempts: 0, hints: 0 };
     out.push(say(s, "tutor", [{ type: "question", context: "quiz", index: s.quiz + 1, total: QUIZ.length, question: q }]));
+  } else if (action === "answer" && st.phase === "final") {
+    // the final exam: one question here, then the report
+    out.push(say(s, "student", [{ type: "answer", questionId: FINAL_Q.id, text: FINAL_Q.options[payload.choice], confidence: payload.confidence ?? null }]));
+    finishFinal(s, out, payload.choice === RIGHT ? 1 : 0);
+  } else if (action === "answer" && st.phase === "review") {
+    // practising a mistake: a right answer closes it in the notebook
+    out.push(say(s, "student", [{ type: "answer", questionId: QUESTION.id, text: QUESTION.options[payload.choice], confidence: payload.confidence ?? null }]));
+    const ok = payload.choice === RIGHT;
+    if (ok) s.mistakes.forEach((m) => (m.fixed = true));
+    st.pending = null;
+    st.phase = "topic";
+    out.push(say(s, "tutor", [{ type: "feedback", questionId: QUESTION.id, correct: ok, verdict: ok ? "correct" : "incorrect", md: "", misconception: "", correctIndex: RIGHT, correctText: QUESTION.options[RIGHT] }], [{ id: "next", label: "التالي" }]));
   } else if (action === "answer") {
     if (!st.pending || payload.questionId !== QUESTION.id) return { error: [409, "هذا السؤال لم يعد مفتوحاً."] };
     out.push(say(s, "student", [{ type: "answer", questionId: QUESTION.id, text: QUESTION.options[payload.choice], choice: payload.choice, confidence: payload.confidence ?? null }]));
     st.pending.attempts += 1;
+    if (st.pending.attempts === 1 && payload.choice !== RIGHT) {
+      s.mistakes.push({ qid: QUESTION.id, topicId: "t1", topicTitle: "المكدس (Stack)", kind: "check", prompt: QUESTION.prompt, format: "choice", answer: QUESTION.options[payload.choice], misconception: "خلط المكدس بالطابور", concepts: ["مبدأ LIFO"], ts: new Date().toISOString(), fixed: false, correctIndex: RIGHT, correctText: QUESTION.options[RIGHT], explanation: "آخر عنصر دخل هو أول من يخرج [ص 2]." });
+    }
     if (payload.choice === RIGHT) {
       st.pending = null;
       out.push(say(s, "tutor", [{ type: "feedback", questionId: QUESTION.id, correct: true, verdict: "correct", md: "لأن آخر عنصر دخل هو أول من يخرج [ص 2].", misconception: "" }], [{ id: "next", label: "التالي" }]));
@@ -161,7 +178,7 @@ function step(s, action, payload) {
   } else if (action === "next" && st.stage === "check" && !st.pending) {
     st.stage = "closed";
     st.topics.t1 = { ...progress("mastered"), attempts: 4, correct: 4, reviewDue: "2026-10-15" };
-    out.push(say(s, "tutor", [{ type: "topic_summary", topicId: "t1", title: "المكدس (Stack)", mastered: true, score: 0.9, confidence: 0.8, met: [], missing: [], strengths: ["push", "pop"], toReview: [], reviewDue: "2026-10-15", note: "", keyTerms: LECTURE.topics[0].key_terms }], [{ id: "next", label: "الموضوع التالي" }, { id: "save_cards", label: "أضف مصطلحاته لبطاقات المراجعة" }]));
+    out.push(say(s, "tutor", [{ type: "topic_summary", topicId: "t1", title: "المكدس (Stack)", mastered: true, score: 0.9, confidence: 0.8, met: [], missing: [], strengths: ["push", "pop"], toReview: [], reviewDue: "2026-10-15", note: "", keyTerms: LECTURE.topics[0].key_terms }], [{ id: "next", label: "الموضوع التالي" }, { id: "save_cards", label: "أضف مصطلحاته لبطاقات المراجعة" }, { id: "final", label: "ابدأ الاختبار الشامل" }, { id: "final", label: "محاكاة اختبار حقيقي بوقت محدد", payload: { timed: true } }]));
   } else if (action === "goto" && payload.topicId === "t2") {
     // the move happens first, so the request is filed with the topic it opens
     st.phase = "topic";
@@ -187,6 +204,25 @@ function step(s, action, payload) {
       reviewed: true,
       related: [{ id: "t1c2", name: "عمليتا push و pop" }],
     }]));
+  } else if (action === "practice_mistakes") {
+    if (!s.mistakes.some((m) => !m.fixed)) return { error: [400, "ما عندك أخطاء مفتوحة الآن — كل ما أخطأت فيه صحّحته بعدها."] };
+    out.push(say(s, "student", [{ type: "request", text: "تدرّب على أخطائي" }]));
+    s.returnPending = st.pending;
+    st.phase = "review";
+    st.pending = { type: "question", context: "review", question: QUESTION, index: null, total: null, attempts: 0, hints: 0 };
+    out.push(say(s, "tutor", [{ type: "text", md: "**تدريب على أخطائك (1)**" }, { type: "question", context: "review", question: QUESTION }]));
+  } else if (action === "final") {
+    // the timed exam ends in 3 seconds here, so the time running out can be seen
+    out.push(say(s, "student", [{ type: "request", text: payload.timed ? "ابدأ محاكاة اختبار بوقت" : "ابدأ الاختبار الشامل" }]));
+    st.phase = "final";
+    st.currentTopicId = null;
+    st.final = { status: "running", index: 0, total: 2, attempt: 1, timed: !!payload.timed, minutes: payload.timed ? 10 : undefined, deadline: payload.timed ? new Date(Date.now() + 3000).toISOString() : null };
+    st.pending = { type: "question", context: "final", question: FINAL_Q, index: 1, total: 2, attempts: 0, hints: 0 };
+    out.push(say(s, "tutor", [{ type: "text", md: payload.timed ? "**محاكاة اختبار حقيقي** · سؤالان في 10 دقائق." : "**الاختبار الشامل** · سؤالان." }, { type: "question", context: "final", index: 1, total: 2, question: FINAL_Q }]));
+  } else if (action === "finish_final") {
+    if (st.phase !== "final" || !st.final?.deadline || Date.parse(st.final.deadline) > Date.now()) return { error: [400, "ما زال في وقت الاختبار بقية — أكمل الإجابة."] };
+    out.push(say(s, "tutor", [{ type: "notice", tone: "warn", md: "انتهى وقت الاختبار. 2 سؤال لم تُجب عنه يُحسب بدون درجة — مثل الاختبار الحقيقي." }]));
+    finishFinal(s, out, 0);
   } else if (action === "ask") {
     // engine.handle_ask: the passages the student selected travel with the question
     const quotes = Array.isArray(payload.quotes) ? payload.quotes : [];
@@ -202,7 +238,16 @@ function step(s, action, payload) {
   }
   st.version += 1;
   st.section = sectionOf(st);
+  st.mistakesOpen = s.mistakes.filter((m) => !m.fixed).length;
   return { state: st, messages: out };
+}
+
+function finishFinal(s, out, right) {
+  const st = s.state;
+  st.phase = "done";
+  st.pending = null;
+  st.final = { ...st.final, status: "done", index: 2, result: { score: right / 2 } };
+  out.push(say(s, "tutor", [{ type: "final_report", score: right / 2, attempt: 1, topics: [{ topicId: "t1", title: "المكدس (Stack)", score: right / 2, questions: 2, correct: right, why: [], missedConcepts: [], misconceptions: [] }], plan: [], blooms: {} }], [{ id: "final", label: "اختبار شامل جديد" }]));
 }
 
 function publicSession(s) {
@@ -272,6 +317,11 @@ export function handleTutor(req, p, body, send, res, raw) {
     const r = step(s, body.action, body.payload ?? {});
     if (r.error) send(res, r.error[0], { detail: r.error[1] });
     else send(res, 200, r);
+    return true;
+  }
+  if (p.endsWith("/mistakes") && req.method === "GET") {
+    const open = s.mistakes.filter((m) => !m.fixed);
+    send(res, 200, { mistakes: [...open, ...s.mistakes.filter((m) => m.fixed)], open: open.length });
     return true;
   }
   if (p.endsWith("/visual") && req.method === "GET") {

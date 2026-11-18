@@ -15,6 +15,7 @@ import { Button } from "@/components/ds/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   BookOpenCheck,
+  NotebookPen,
   Loader2,
   PauseCircle,
   PlayCircle,
@@ -69,6 +70,8 @@ import { useStudyStore } from "@/store/studyStore";
 const SlideViewer = dynamic(() => import("@/components/tutor/slide-viewer").then((m) => m.SlideViewer), { ssr: false });
 const TopicPanel = dynamic(() => import("@/components/tutor/topic-panel").then((m) => m.TopicPanel), { ssr: false });
 const ConfirmDialog = dynamic(() => import("@/components/confirm-dialog").then((m) => m.ConfirmDialog), { ssr: false });
+const MistakesDialog = dynamic(() => import("@/components/tutor/mistakes-dialog").then((m) => m.MistakesDialog), { ssr: false });
+const ExamClock = dynamic(() => import("@/components/tutor/exam-clock").then((m) => m.ExamClock), { ssr: false });
 
 export default function TutorPage() {
   return (
@@ -109,6 +112,8 @@ const BUSY_LABEL: Record<string, string> = {
   report: "أستبعد السؤال…",
   goto: "أنقلك للموضوع…",
   deep_dive: "أجهّز صفحة التعمّق في المفهوم…",
+  practice_mistakes: "أجهّز أسئلة على أخطائك…",
+  finish_final: "انتهى الوقت — أجهّز النتيجة…",
 };
 
 /** Actions that stay usable while a question is open. */
@@ -126,6 +131,7 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
   const [slide, setSlide] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [notebookOpen, setNotebookOpen] = useState(false);
   const [skew, setSkew] = useState(() => (tutorHandoff.session && tutorHandoff.session.lecture.id === id ? clockSkew(tutorHandoff.session.focus?.serverNow) : 0));
   const prefs = useProfileStore((s) => s.preferences);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -348,9 +354,27 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
         : state.phase === "done"
           ? "أنهيت المحاضرة"
           : "خريطة المحاضرة";
+  // a timed final exam: its clock takes the study timer's place
+  const examDeadline = state.phase === "final" && state.final?.status === "running" && state.final.deadline ? state.final.deadline : null;
+  const openMistakes = state.mistakesOpen ?? 0;
   const sessionTools = (
     <>
-      <FocusTimer focus={focus} skewMs={skew} onChange={changeFocus} onFocusCompleted={focusDone} />
+      {examDeadline ? (
+        <ExamClock deadline={examDeadline} skewMs={skew} onTimeUp={() => void act("finish_final")} />
+      ) : (
+        <FocusTimer focus={focus} skewMs={skew} onChange={changeFocus} onFocusCompleted={focusDone} />
+      )}
+      {state.phase !== "final" && (
+        <Button variant="quiet" size="sm" onClick={() => setNotebookOpen(true)} className="relative px-2 sm:px-3">
+          <NotebookPen aria-hidden /> <span className="hidden sm:inline">أخطائي</span>
+          <span className="sr-only">{`دفتر أخطائي${openMistakes ? ` — ${openMistakes} مفتوحة` : ""}`}</span>
+          {openMistakes > 0 && (
+            <span className="nums absolute -top-1 -end-1 min-w-4 rounded-full bg-warning-ink px-1 text-center text-caption leading-4 font-bold text-surface" aria-hidden>
+              {openMistakes}
+            </span>
+          )}
+        </Button>
+      )}
       <Button
         variant="quiet"
         size="sm"
@@ -502,6 +526,9 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
           }}
           tools={drawerTools}
         />
+      )}
+      {notebookOpen && (
+        <MistakesDialog lectureId={id} open={notebookOpen} busy={!!busy} onClose={() => setNotebookOpen(false)} onPractice={() => void act("practice_mistakes")} onSlide={setSlide} />
       )}
       {slide !== null && <SlideViewer lecture={lecture} page={slide} onPageChange={setSlide} onClose={() => setSlide(null)} />}
       {paused && (

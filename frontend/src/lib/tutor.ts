@@ -113,8 +113,44 @@ export interface TutorState {
   topics: Record<string, TopicProgress>;
   reviewDue: string[];
   points: number;
-  final: { status: string; index: number; total: number; attempt: number; result?: { score: number } } | null;
+  final: {
+    status: string;
+    index: number;
+    total: number;
+    attempt: number;
+    result?: { score: number };
+    /** a timed exam: when it ends (server time) and how long it is */
+    timed?: boolean;
+    deadline?: string | null;
+    minutes?: number;
+  } | null;
+  /** mistakes not yet overcome (the mistakes notebook) */
+  mistakesOpen?: number;
   version: number;
+}
+
+/** One question missed on the first try (backend: engine.mistakes). */
+export interface Mistake {
+  qid: string;
+  topicId: string;
+  topicTitle: string;
+  kind: string;
+  prompt: string;
+  format: string;
+  answer: string;
+  misconception: string;
+  concepts: string[];
+  ts: string | null;
+  fixed: boolean;
+  explanation?: string;
+  correctText?: string;
+  correctOrder?: string[];
+  correctPairs?: { left: string; right: string }[];
+  modelAnswer?: string;
+}
+
+export async function loadMistakes(id: string): Promise<{ mistakes: Mistake[]; open: number }> {
+  return (await fetchWithAuth(`/api/tutor/lectures/${encodeURIComponent(id)}/mistakes`, { method: "GET" })) as { mistakes: Mistake[]; open: number };
 }
 
 // ── Lesson pictures (backend: services/tutor/visuals.py) ──
