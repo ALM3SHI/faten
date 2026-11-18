@@ -324,3 +324,42 @@ test("ask about several selected passages together; with a question open, the tu
   await expect(page.getByText("ما راح أعطيك الجواب عشان تجرّبه بنفسك")).toBeVisible();
   await expect(page.getByRole("radio", { name: "1", exact: true })).toBeVisible();
 });
+
+test("new question types: put steps in order, match pairs, fill the blank — each graded with its answer shown", async ({ page }) => {
+  await asNewStudent(page, "formats");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await page.getByRole("button", { name: "أعرف هذا الموضوع — اختبرني مباشرة" }).click();
+
+  // order: shown shuffled; moved with buttons (fingers, mouse, keyboard, screen readers alike)
+  const steps = page.getByRole("list", { name: "رتّب الخطوات من الأولى إلى الأخيرة" });
+  await expect(steps.getByRole("listitem")).toHaveCount(3);
+  await expect(steps.getByRole("listitem").first()).toContainText("pop()");
+  await steps.getByRole("button", { name: "انقل «pop()» لأسفل" }).click();
+  await steps.getByRole("button", { name: "انقل «pop()» لأسفل" }).click();
+  await expect(steps.getByRole("listitem").nth(2)).toContainText("pop()");
+  await expect(steps.getByRole("button", { name: "انقل «pop()» لأسفل" })).toBeDisabled(); // already last
+  await page.getByRole("button", { name: "متأكد", exact: true }).click();
+  await expect(page.getByText("push(1) ← push(2) ← pop()")).toBeVisible();
+  await expect(page.getByText("إجابة صحيحة")).toBeVisible();
+
+  // match: every item paired, each answer used once, before it can be sent
+  await page.getByRole("button", { name: "السؤال التالي" }).click();
+  const send = page.getByRole("button", { name: "متأكد", exact: true });
+  await page.getByRole("combobox", { name: "ما يناسب «push»" }).selectOption({ label: "يسحب من القمة" });
+  await expect(send).toBeDisabled();
+  await page.getByRole("combobox", { name: "ما يناسب «pop»" }).selectOption({ label: "يسحب من القمة" });
+  await expect(send).toBeDisabled(); // the same answer twice
+  await page.getByRole("combobox", { name: "ما يناسب «pop»" }).selectOption({ label: "يضيف للقمة" });
+  await send.click();
+  await expect(page.getByText("إجابة غير صحيحة")).toBeVisible();
+  await expect(page.getByText("التوصيل الصحيح:")).toBeVisible();
+
+  // fill the blank
+  await page.getByRole("button", { name: "السؤال التالي" }).click();
+  await page.getByRole("textbox", { name: "الكلمة الناقصة" }).fill("المكدس");
+  await page.getByRole("textbox", { name: "الكلمة الناقصة" }).press("Enter");
+  await expect(page.getByText("إجابة صحيحة").last()).toBeVisible();
+});

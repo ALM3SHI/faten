@@ -23,7 +23,8 @@ import { BotMarkdown } from "@/components/bot-markdown";
 import { LessonVisual } from "@/components/tutor/lesson-visual";
 import { LessonParts } from "@/components/tutor/lesson-parts";
 import { cn } from "@/lib/utils";
-import { CONTEXT_LABEL, pct, type Block, type Confidence, type QuestionBlock, type ReportReason } from "@/lib/tutor";
+import { CONTEXT_LABEL, pct, type AnswerPayload, type Block, type Confidence, type QuestionBlock, type ReportReason } from "@/lib/tutor";
+import { MatchInput, OrderInput } from "@/components/tutor/question-inputs";
 
 interface Common {
   onSlide: (page: number) => void;
@@ -203,7 +204,7 @@ export interface QuestionProps {
   busy?: boolean;
   /** attempts already made on the open question */
   attempt?: number;
-  onAnswer?: (questionId: string, answer: { choice?: number; text?: string; confidence?: Confidence }) => void;
+  onAnswer?: (questionId: string, answer: AnswerPayload) => void;
   /** flag a question shown to the student (wrong key, unclear, not from the lecture) */
   onReport?: (questionId: string, reason: ReportReason) => void;
 }
@@ -260,10 +261,21 @@ function QuestionCard({ block, pendingId, busy, onAnswer, onReport, onSlide }: {
   const live = pendingId === q.id && !!onAnswer;
   const [choice, setChoice] = useState<number | null>(null);
   const [text, setText] = useState("");
-  const ready = q.format === "choice" ? choice !== null : !!text.trim();
+  const [order, setOrder] = useState<number[]>(() => (q.items ?? []).map((_, i) => i));
+  const [matches, setMatches] = useState<(number | null)[]>(() => (q.lefts ?? []).map(() => null));
+  const ready =
+    q.format === "choice"
+      ? choice !== null
+      : q.format === "order"
+        ? order.length > 1
+        : q.format === "match"
+          ? matches.every((m) => m !== null) && new Set(matches).size === matches.length
+          : !!text.trim();
   const submit = (confidence: Confidence) => {
     if (!live || busy || !ready) return;
     if (q.format === "choice") onAnswer!(q.id, { choice: choice!, confidence });
+    else if (q.format === "order") onAnswer!(q.id, { order, confidence });
+    else if (q.format === "match") onAnswer!(q.id, { matches: matches as number[], confidence });
     else onAnswer!(q.id, { text, confidence });
   };
   return (
@@ -297,6 +309,25 @@ function QuestionCard({ block, pendingId, busy, onAnswer, onReport, onSlide }: {
             </Button>
           ))}
         </div>
+      ) : q.format === "order" ? (
+        <OrderInput items={q.items ?? []} order={order} onChange={setOrder} disabled={!live || busy} />
+      ) : q.format === "match" ? (
+        <MatchInput lefts={q.lefts ?? []} rights={q.rights ?? []} matches={matches} onChange={setMatches} disabled={!live || busy} />
+      ) : q.format === "fill" ? (
+        live && (
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit("think");
+            }}
+            maxLength={200}
+            dir="auto"
+            placeholder="الكلمة الناقصة…"
+            aria-label="الكلمة الناقصة"
+            className="mt-3 h-11 w-full max-w-sm rounded-control border border-line-strong bg-surface px-3 text-body focus:outline-none focus:border-info-line"
+          />
+        )
       ) : (
         live && (
           <textarea
@@ -350,7 +381,8 @@ function QuestionCard({ block, pendingId, busy, onAnswer, onReport, onSlide }: {
               </Button>
             ))}
           </div>
-          {q.format !== "choice" && <span className="block text-caption text-ink-muted">Ctrl+Enter = «أظن»</span>}
+          {(q.format === "text" || q.format === "code") && <span className="block text-caption text-ink-muted">Ctrl+Enter = «أظن»</span>}
+          {q.format === "fill" && <span className="block text-caption text-ink-muted">Enter = «أظن»</span>}
         </div>
       )}
       {!live && <PageChips pages={q.pages} onSlide={onSlide} />}
@@ -385,6 +417,26 @@ function FeedbackCard({ block, onSlide, onReport, busy }: { block: Block } & Com
       {block.md && <BotMarkdown content={block.md} onSlide={onSlide} />}
       {block.correctText !== undefined && !ok && (
         <p className="mt-2 text-body"><span className="font-bold">الإجابة الصحيحة: </span><span dir="auto">{block.correctText}</span></p>
+      )}
+      {Array.isArray(block.correctOrder) && !ok && (
+        <div className="mt-2 text-body">
+          <span className="font-bold">الترتيب الصحيح:</span>
+          <ol className="mt-1 list-decimal space-y-0.5 pe-5">
+            {(block.correctOrder as string[]).map((s) => (
+              <li key={s}><span dir="auto">{s}</span></li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {Array.isArray(block.correctPairs) && !ok && (
+        <div className="mt-2 text-body">
+          <span className="font-bold">التوصيل الصحيح:</span>
+          <ul className="mt-1 space-y-0.5">
+            {(block.correctPairs as { left: string; right: string }[]).map((p) => (
+              <li key={p.left}><bdi className="font-bold">{p.left}</bdi> ← <bdi>{p.right}</bdi></li>
+            ))}
+          </ul>
+        </div>
       )}
       {block.modelAnswer && !ok && (
         <div className="mt-2 text-body"><span className="font-bold">إجابة نموذجية:</span><BotMarkdown content={block.modelAnswer} onSlide={onSlide} /></div>

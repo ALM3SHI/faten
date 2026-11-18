@@ -74,11 +74,18 @@ class FakeTutorAI:
             return {"title": "هياكل البيانات", "overview": "محاضرة عن المكدس", "topics": topics, "unclear_pages": []}
         if "You check a lesson against the lecture" in prompt:
             self.calls["review"] += 1
-            items = re.split(r"^\[(\d+)\]\n", user, flags=re.M)[1:]
-            return {"parts": [
-                {"index": int(items[i]), "supported": "ادعاء غير موجود" not in items[i + 1], "unsupported": "حساب عناوين الذاكرة"}
-                for i in range(0, len(items), 2)
-            ]}
+            parts_text, _, questions_text = user.partition("QUESTIONS TO SOLVE:")
+            items = re.split(r"^\[(\d+)\]\n", parts_text, flags=re.M)[1:]
+            # it solves the questions too: the fake's keys are always option 1,
+            # except a question written with a wrong key
+            solved = re.findall(r"^\(Q(\d+)\) \[(\w+)\] (.*)$", questions_text, flags=re.M)
+            return {
+                "parts": [
+                    {"index": int(items[i]), "supported": "ادعاء غير موجود" not in items[i + 1], "unsupported": "حساب عناوين الذاكرة"}
+                    for i in range(0, len(items), 2)
+                ],
+                "answers": [{"index": int(k), "choice": 0 if "مفتاح خاطئ" in text else 1} for k, fmt, text in solved if fmt == "choice"],
+            }
         if "Teach ONE topic" in prompt:
             self.calls["lesson"] += 1
             cids = re.findall(r"- (t\d+c\d+):", prompt)
@@ -93,6 +100,9 @@ class FakeTutorAI:
                 self._q("quiz", c2, "apply", 2, fmt="text", skill="explain"),
             ]
             qs += [self._q("final", c1, "apply", 2), self._q("final", c2, "analyze", 3, skill="compare")]
+            wrong_key = self._q("quiz", c2, "apply", 2)
+            wrong_key["prompt"] += " — مفتاح خاطئ"  # the review solves it to another option: never used
+            qs.append(wrong_key)
             return {"segments": [
                 # a lesson part in teaching roles, each saying where it comes from
                 {"title": "الفكرة", "pages": [1], "concept_ids": [c1], "parts": [

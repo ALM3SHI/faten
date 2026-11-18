@@ -142,16 +142,23 @@ pages do not contain is NOT supported (even if it is true in general).
 Lecture pages:
 {pages}
 
+Then SOLVE each numbered question below yourself, from the lecture pages, as a careful
+student would (you are not shown the answer key). Choice: the option's position (0-based).
+Order: the items' positions (0-based, as listed) in the right order. Match: for each left item
+in turn, the position (0-based) of the right item that goes with it. Fill: the missing word.
+
 Return ONE JSON object: {{"parts": [{{"index": 1, "supported": true}},
-  {{"index": 2, "supported": false, "unsupported": "the claim that is not in the pages, in Arabic"}}]}}
-One entry for every part, in order.
+  {{"index": 2, "supported": false, "unsupported": "the claim that is not in the pages, in Arabic"}}],
+  "answers": [{{"index": 1, "choice": 2}}, {{"index": 2, "order": [1, 0, 2]}},
+              {{"index": 3, "matches": [2, 0, 1]}}, {{"index": 4, "text": "..."}}]}}
+One entry for every part and for every question, in order.
 """
 
 QUESTION_SPEC = """QUESTION format:
 {{
   "pool": "check" | "quiz" | "final",
   "segment": 0,
-  "format": "choice" | "text" | "code",
+  "format": "choice" | "text" | "code" | "order" | "match" | "fill",
   "skill": "recall" | "explain" | "predict" | "apply" | "debug" | "compare" | "write_code",
   "bloom": "remember" | "understand" | "apply" | "analyze",
   "difficulty": 1 | 2 | 3,
@@ -167,12 +174,21 @@ QUESTION_SPEC = """QUESTION format:
   "rubric": "for text/code: what must be present to be fully correct",
   "accepted_answers": ["for SHORT command/code answers only: every exact answer that is fully
     correct (equivalent commands/spellings), e.g. ["ls -la", "ls -al"]; [] for explanations"],
+  "steps": ["for order: the steps of a process IN THE RIGHT ORDER, 3-7 short items"],
+  "pairs": ["for match: 'left => right' lines, 2-6 of them, e.g. 'push => يضيف عنصراً للقمة'"],
   "hints": ["a first nudge that does not give the answer", "a stronger hint"],
   "explanation": "why the answer is right, citing [ص N]",
   "pages": [page numbers]
 }}
-Most questions should be "choice" (cheap to grade); at most 2 text/code per topic.
-Spread the right option position. Distractors must be plausible misunderstandings."""
+Formats: choice (4 options) · order (put the steps of a process the lecture describes in
+order) · match (pair terms with meanings, commands with effects, causes with results) · fill
+(one blank written ____ in the prompt; "accepted_answers" = the word and its spellings) ·
+text / code (written answer, graded against "model_answer" and "rubric").
+Most questions should be choice, order, match or fill (graded in code, cheap); at most 2
+text/code per topic. Use order/match/fill only when the lecture really has a process, pairs or
+a key term to recall — never force them. Spread the right option position. Distractors must be
+plausible misunderstandings. Every question must have ONE right answer that follows from the
+lecture pages: each one is solved independently before it is used, and dropped if it is not."""
 
 TEACH_AGAIN = """You are «فطن», a private tutor. The student is studying "{title}" from the
 lecture "{lecture}" and needs help. Use ONLY the lecture pages below.

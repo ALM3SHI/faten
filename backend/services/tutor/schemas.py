@@ -18,7 +18,7 @@ QUESTION = {
     "properties": {
         "pool": {"type": "string", "enum": ["check", "quiz", "final"]},
         "segment": _INT,
-        "format": {"type": "string", "enum": ["choice", "text", "code"]},
+        "format": {"type": "string", "enum": ["choice", "text", "code", "order", "match", "fill"]},
         "skill": {"type": "string", "enum": ["recall", "explain", "predict", "apply", "debug", "compare", "write_code"]},
         "bloom": {"type": "string", "enum": ["remember", "understand", "apply", "analyze"]},
         "difficulty": _INT,
@@ -30,6 +30,8 @@ QUESTION = {
         "misconceptions": _STRS,
         "model_answer": _STR,
         "accepted_answers": _STRS,
+        "steps": _STRS,
+        "pairs": _STRS,
         "rubric": _STR,
         "hints": _STRS,
         "explanation": _STR,
@@ -96,7 +98,16 @@ REVIEW = {
                 "properties": {"index": _INT, "supported": {"type": "boolean"}, "unsupported": _STR},
                 "required": ["index", "supported"],
             },
-        }
+        },
+        # the reviewer's own answers to the lesson's objective questions
+        "answers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"index": _INT, "choice": _INT, "order": _INTS, "matches": _INTS, "text": _STR},
+                "required": ["index"],
+            },
+        },
     },
     "required": ["parts"],
 }

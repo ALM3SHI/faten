@@ -107,6 +107,22 @@ async def evaluate(pdf_path: Path, judge: bool, max_topics: int) -> dict:
         cites = [p for s in segs for p in cited_pages(s["markdown"])]
         row["citations"] = len(cites)
         row["bad_citations"] = sum(1 for p in cites if p not in allowed)
+        # phase 3: pieces with a teaching role and an origin, checked by the review
+        pieces = [p for s in segs for p in s.get("parts") or []]
+        row["pieces"] = len(pieces)
+        row["roles"] = [p["role"] for p in pieces]
+        row["from_file"] = sum(1 for p in pieces if p["origin"] == "lecture")
+        row["added"] = sum(1 for p in pieces if p["origin"] == "added")
+        review = lesson.get("review") or {}
+        row["review_checked"] = review.get("checked", 0)
+        row["review_relabelled"] = review.get("relabelled", 0)
+        row["review_skipped"] = bool(review.get("skipped"))
+        # coverage: the topic's readable pages the lesson draws on
+        a, b = topic["pages"]
+        readable = {n for n in range(a, b + 1) if 0 < n <= len(pages) and pages[n - 1].readable}
+        used = {n for s in segs for n in (s.get("pages") or []) + cited_pages(s["markdown"])} | {n for p in pieces for n in p.get("pages") or []}
+        row["pages_readable"] = len(readable)
+        row["pages_used"] = len(readable & used)
         row["visuals"] = [((s.get("visual") or {}).get("kind") or "none") for s in segs]
 
         t2 = time.perf_counter()
@@ -122,12 +138,18 @@ async def evaluate(pdf_path: Path, judge: bool, max_topics: int) -> dict:
 
         if judge:
             text = "\n\n".join(page_block(pages[n - 1], 4000) for n in range(topic["pages"][0], topic["pages"][1] + 1) if 0 < n <= len(pages))
+            # What the student is told comes from their file: after the review,
+            # only the pieces still labelled «من ملفك» (the whole text for a
+            # lesson written the old way).
             claims: list[str] = []
             for s in segs:
+                own = [p["markdown"] for p in s.get("parts") or [] if p["origin"] == "lecture"] if s.get("parts") else [s["markdown"]]
+                if not own:
+                    continue
                 try:
-                    claims += await judge_segment(text, s["markdown"])
+                    claims += await judge_segment(text, "\n\n".join(own))
                 except Exception as exc:
-                    out["failures"].append(f"judge «{topic['title']}»: {exc}")
+                    out["failures"].append(f"judge «{topic['title']}»: {getattr(exc, 'detail', exc)}")
             row["unsupported_claims"] = claims
         out["topics"].append(row)
 
@@ -160,6 +182,28 @@ def report_md(results: list[dict], judge: bool) -> str:
             row.append(str(sum(len(t.get("unsupported_claims") or []) for t in ts)))
         row.append(str(len(r.get("failures") or [])))
         lines.append("| " + " | ".join(row) + " |")
+    lines.append("")
+    lines.append("## Lessons in pieces (phase 3)")
+    lines.append("")
+    lines.append("| File | Pieces | «من ملفك» | «إضافة» | Reviewed | Relabelled by review | Review skipped | Pages used / readable" + (" | Unsupported claims left in «من ملفك»" if judge else "") + " |")
+    lines.append("|---" * (8 + (1 if judge else 0)) + "|")
+    for r in results:
+        ts = r.get("topics") or []
+        s = lambda k: sum(t.get(k, 0) for t in ts)  # noqa: E731
+        row = [
+            r["file"][:40], str(s("pieces")), str(s("from_file")), str(s("added")), str(s("review_checked")),
+            str(s("review_relabelled")), str(sum(1 for t in ts if t.get("review_skipped"))), f"{s('pages_used')}/{s('pages_readable')}",
+        ]
+        if judge:
+            row.append(str(sum(len(t.get("unsupported_claims") or []) for t in ts)))
+        lines.append("| " + " | ".join(row) + " |")
+    roles: dict[str, int] = {}
+    for r in results:
+        for t in r.get("topics") or []:
+            for x in t.get("roles") or []:
+                roles[x] = roles.get(x, 0) + 1
+    lines.append("")
+    lines.append("Roles used: " + ", ".join(f"{k} {v}" for k, v in sorted(roles.items(), key=lambda kv: -kv[1])))
     lines.append("")
     for r in results:
         if r.get("failures") or any(t.get("unsupported_claims") for t in r.get("topics") or []):

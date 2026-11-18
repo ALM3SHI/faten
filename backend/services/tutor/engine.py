@@ -36,7 +36,11 @@ from services.tutor.questions import (
     cited_pages,
     diagnose,
     exam_blueprint,
+    OBJECTIVE,
     grade_choice,
+    grade_match,
+    grade_order,
+    match_fill,
     match_accepted,
     next_difficulty,
     normalize_question,
@@ -398,17 +402,54 @@ def _normalize_parts(raw_parts: Any, allowed: set[int], seg_pages: list[int]) ->
     return out
 
 
-async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict]) -> dict:
-    """Quality review before a lesson is shown: a second model call, which did
-    not write the lesson, checks every part labelled "from your file" against
-    the topic's pages. A part with a claim the pages do not support is
-    relabelled as an addition, so the label the student sees stays true. The
-    review never blocks a lesson: if it cannot run, the lesson keeps the
-    writer's labels and says the review did not run."""
+def _question_for_solving(k: int, q: dict) -> str:
+    """An objective question as the reviewer sees it: like the student, no key."""
+    pub = public_question(q)
+    lines = [f"(Q{k}) [{q['format']}] {pub['prompt']}"]
+    if q["format"] == "choice":
+        lines += [f"  {i}) {o}" for i, o in enumerate(pub["options"])]
+    elif q["format"] == "order":
+        lines += [f"  {i}) {o}" for i, o in enumerate(pub["items"])]
+    elif q["format"] == "match":
+        lines += ["  left:"] + [f"    {i}) {o}" for i, o in enumerate(pub["lefts"])]
+        lines += ["  right:"] + [f"    {i}) {o}" for i, o in enumerate(pub["rights"])]
+    return "\n".join(lines)
+
+
+def _solved_right(q: dict, a: dict) -> bool:
+    """Did the reviewer, solving it on its own, reach the question's key?"""
+    if q["format"] == "choice":
+        return grade_choice(q, a.get("choice")).get("correct") is True
+    if q["format"] == "order":
+        return grade_order(q, a.get("order")).get("correct") is True
+    if q["format"] == "match":
+        return grade_match(q, a.get("matches")).get("correct") is True
+    if q["format"] == "fill":
+        return match_fill(q, a.get("text") or "")
+    return True
+
+
+async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict], questions: list[dict] | None = None) -> dict:
+    """Quality review before a lesson is shown — one more model call, which did
+    not write the lesson:
+
+      • every piece labelled "from your file" is checked against the topic's
+        pages; one with a claim the pages do not support is relabelled as an
+        addition, so the label the student sees stays true;
+      • every objective question (choice, order, match, fill) is solved without
+        its key; one whose key the reviewer does not reach is disabled — a
+        question with a wrong key or two right answers never reaches a student.
+
+    The review never blocks a lesson: if it cannot run, the lesson keeps the
+    writer's labels and questions, and says the review did not run."""
+    questions = questions or []
     items = [(si, pi) for si, s in enumerate(segments) for pi, p in enumerate(s.get("parts") or []) if p["origin"] == "lecture"]
-    if not items:
-        return {"checked": 0, "relabelled": 0, "at": ctx.iso}
-    listing = "\n\n".join(f"[{k + 1}]\n{segments[si]['parts'][pi]['markdown']}" for k, (si, pi) in enumerate(items))
+    objective = [q for q in questions if q["format"] in OBJECTIVE and not q.get("disabled")]
+    if not items and not objective:
+        return {"checked": 0, "relabelled": 0, "solved": 0, "disabled": 0, "at": ctx.iso}
+    listing = "\n\n".join(f"[{k + 1}]\n{segments[si]['parts'][pi]['markdown']}" for k, (si, pi) in enumerate(items)) or "(no parts)"
+    if objective:
+        listing += "\n\nQUESTIONS TO SOLVE:\n\n" + "\n\n".join(_question_for_solving(k + 1, q) for k, q in enumerate(objective))
     try:
         raw = await ai.ask_json(
             prompts.REVIEW.format(pages=ctx.topic_pages_text(topic)),
@@ -416,14 +457,15 @@ async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict]) -> dict:
             schema=schemas.REVIEW,
             kind="review",
             temperature=0.0,
-            max_tokens=8000,
-            timeout=90.0,
+            max_tokens=12000,
+            timeout=120.0,
         )
     except Exception as exc:  # the lesson is still worth showing
         logger.warning("[tutor] review of %s skipped: %s", topic.get("id"), getattr(exc, "detail", exc))
-        return {"checked": 0, "relabelled": 0, "skipped": True, "at": ctx.iso}
+        return {"checked": 0, "relabelled": 0, "solved": 0, "disabled": 0, "skipped": True, "at": ctx.iso}
+    raw = raw if isinstance(raw, dict) else {}
     relabelled = 0
-    for e in (raw.get("parts") if isinstance(raw, dict) else None) or []:
+    for e in raw.get("parts") or []:
         if not isinstance(e, dict) or e.get("supported") is not False:
             continue
         try:
@@ -439,7 +481,24 @@ async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict]) -> dict:
             part["pages"] = []
             part["unsupported"] = clip(e.get("unsupported"), 300)
             relabelled += 1
-    return {"checked": len(items), "relabelled": relabelled, "at": ctx.iso}
+
+    answers: dict[int, dict] = {}
+    for a in raw.get("answers") or []:
+        try:
+            answers[int(a.get("index")) - 1] = a
+        except (TypeError, ValueError, AttributeError):
+            continue
+    solved = disabled = 0
+    for k, q in enumerate(objective):
+        a = answers.get(k)
+        if a is None:
+            continue  # not answered: no evidence either way, keep it
+        solved += 1
+        if not _solved_right(q, a):
+            q["disabled"] = True
+            q["disabledReason"] = "review"
+            disabled += 1
+    return {"checked": len(items), "relabelled": relabelled, "solved": solved, "disabled": disabled, "at": ctx.iso}
 
 
 async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
@@ -505,7 +564,7 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
             q["pool"] = "quiz"
             q["segment"] = None
     lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso}
-    lesson["review"] = await review_lesson(ctx, topic, segments)
+    lesson["review"] = await review_lesson(ctx, topic, segments, questions)
     store.save_lesson(ctx.db, ctx.lecture["fileHash"], tid, lesson)
     ctx._lessons[tid] = lesson
     visuals.schedule_photos(ctx.db, ctx.lecture["fileHash"], tid, lesson)
@@ -962,6 +1021,19 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
         if not g.get("valid"):
             raise TutorError("اختر إجابة من الخيارات.")
         ctx.student({"type": "answer", "questionId": qid, "text": q["options"][g["picked"]], "choice": g["picked"], "confidence": confidence})
+    elif q["format"] in ("order", "match"):
+        g = grade_order(q, payload.get("order")) if q["format"] == "order" else grade_match(q, payload.get("matches"))
+        if not g.get("valid"):
+            raise TutorError("رتّب كل الخطوات أولاً." if q["format"] == "order" else "وصّل كل عنصر بما يناسبه أولاً.")
+        ctx.student({"type": "answer", "questionId": qid, "text": g["answer_text"], "confidence": confidence})
+    elif q["format"] == "fill":
+        text = " ".join(str(payload.get("text") or "").split())[:200]
+        if not text:
+            raise TutorError("اكتب الكلمة الناقصة أولاً.")
+        ctx.student({"type": "answer", "questionId": qid, "text": text, "confidence": confidence})
+        ok = match_fill(q, text)
+        g = {"valid": True, "correct": ok, "credit": 1.0 if ok else 0.0, "verdict": "correct" if ok else "incorrect",
+             "misconception": "", "note": "" if ok else "ليست الكلمة المطلوبة.", "exact": True}
     else:
         text = str(payload.get("text") or "").strip()
         if len(text) < 2:
@@ -1076,6 +1148,10 @@ def _reveal(q: dict) -> dict:
     if q["format"] == "choice":
         out["correctIndex"] = q["answer_index"]
         out["correctText"] = q["options"][q["answer_index"]]
+    elif q["format"] == "order":
+        out["correctOrder"] = list(q["steps"])
+    elif q["format"] == "match":
+        out["correctPairs"] = [{"left": p["left"], "right": p["right"]} for p in q["pairs"]]
     else:
         out["modelAnswer"] = q.get("model_answer", "")
     return out

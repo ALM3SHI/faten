@@ -28,15 +28,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useBoardMode } from "@/lib/use-board-mode";
 import { useOutlineOpen } from "@/lib/use-outline-open";
 import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
-import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
 import dynamic from "next/dynamic";
-// the original-slide dialog loads when a slide is first opened
-const SlideViewer = dynamic(() => import("@/components/tutor/slide-viewer").then((m) => m.SlideViewer), { ssr: false });
 import { CourseOutline } from "@/components/tutor/course-outline";
 import { LectureRef } from "@/components/tutor/lesson-visual";
 import { AskBar } from "@/components/tutor/ask-bar";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ApiError } from "@/lib/api";
 import { logPomodoroSession, todayYmd } from "@/lib/pomodoro";
 import { toast } from "@/lib/toast";
@@ -59,7 +55,7 @@ import {
   sendStep,
   tutorHandoff,
   type Action,
-  type Confidence,
+  type AnswerPayload,
   type FocusState,
   type ReportReason,
   type Session,
@@ -67,6 +63,12 @@ import {
 } from "@/lib/tutor";
 import { useProfileStore } from "@/store/profileStore";
 import { useStudyStore } from "@/store/studyStore";
+
+// Loaded when first needed, so the lesson opens with less to download: the
+// original-slide dialog, the phone's course drawer and the restart dialog.
+const SlideViewer = dynamic(() => import("@/components/tutor/slide-viewer").then((m) => m.SlideViewer), { ssr: false });
+const TopicPanel = dynamic(() => import("@/components/tutor/topic-panel").then((m) => m.TopicPanel), { ssr: false });
+const ConfirmDialog = dynamic(() => import("@/components/confirm-dialog").then((m) => m.ConfirmDialog), { ssr: false });
 
 export default function TutorPage() {
   return (
@@ -481,22 +483,24 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
         </LectureRef.Provider>
       </div>
 
-      <TopicPanel
-        open={topicsOpen}
-        onClose={() => setTopicsOpen(false)}
-        lecture={lecture}
-        state={state}
-        busy={!!busy}
-        onGoto={(tid) => {
-          setTopicsOpen(false);
-          void act("goto", { topicId: tid });
-        }}
-        onReview={() => {
-          setTopicsOpen(false);
-          void act("review");
-        }}
-        tools={drawerTools}
-      />
+      {topicsOpen && (
+        <TopicPanel
+          open={topicsOpen}
+          onClose={() => setTopicsOpen(false)}
+          lecture={lecture}
+          state={state}
+          busy={!!busy}
+          onGoto={(tid) => {
+            setTopicsOpen(false);
+            void act("goto", { topicId: tid });
+          }}
+          onReview={() => {
+            setTopicsOpen(false);
+            void act("review");
+          }}
+          tools={drawerTools}
+        />
+      )}
       {slide !== null && <SlideViewer lecture={lecture} page={slide} onPageChange={setSlide} onClose={() => setSlide(null)} />}
       {paused && (
         <div className="fixed inset-0 z-50 bg-surface flex items-center justify-center p-6" role="dialog" aria-modal="true" aria-label="الجلسة متوقفة">
@@ -523,22 +527,24 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
         </div>
       )}
       <PauseTimerWhenPaused paused={paused} focus={focus} skew={skew} onChange={changeFocus} />
-      <ConfirmDialog
-        open={resetOpen}
-        onOpenChange={setResetOpen}
-        title="البدء من جديد"
-        description="سيُمسح تقدّمك في هذه المحاضرة (الإتقان والاختبارات) ونبدأ من خريطة المحاضرة. تحليل الملف يبقى ولا يُخصم رصيد."
-        confirmLabel="ابدأ من جديد"
-        destructive
-        onConfirm={async () => {
-          try {
-            const s = await resetLecture(id);
-            setSession(s);
-          } catch (e) {
-            toast.error(e instanceof Error ? e.message : "تعذّر البدء من جديد.");
-          }
-        }}
-      />
+      {resetOpen && (
+        <ConfirmDialog
+          open={resetOpen}
+          onOpenChange={setResetOpen}
+          title="البدء من جديد"
+          description="سيُمسح تقدّمك في هذه المحاضرة (الإتقان والاختبارات) ونبدأ من خريطة المحاضرة. تحليل الملف يبقى ولا يُخصم رصيد."
+          confirmLabel="ابدأ من جديد"
+          destructive
+          onConfirm={async () => {
+            try {
+              const s = await resetLecture(id);
+              setSession(s);
+            } catch (e) {
+              toast.error(e instanceof Error ? e.message : "تعذّر البدء من جديد.");
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -577,7 +583,7 @@ function MessageRow({
   attempt: number;
   busy: boolean;
   onSlide: (p: number) => void;
-  onAnswer: (qid: string, a: { choice?: number; text?: string; confidence?: Confidence }) => void;
+  onAnswer: (qid: string, a: AnswerPayload) => void;
   onReport: (qid: string, reason: ReportReason) => void;
 }) {
   if (m.role === "student") {
