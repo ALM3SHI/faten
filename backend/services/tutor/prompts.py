@@ -262,11 +262,11 @@ Lecture outline: {outline}
 Lecture pages:
 {pages}
 
-Student's question:
+{quotes}Student's question:
 <<<
 {question}
 >>>
-
+{open_question}
 Return ONE JSON object:
 {{"markdown": "answer in clear Arabic, short (≤ 200 words), cite pages like [ص 12]",
   "pages": [pages used], "in_lecture": true/false}}

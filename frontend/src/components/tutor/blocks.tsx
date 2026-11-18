@@ -535,5 +535,19 @@ export function StudentBlock({ block }: { block: Block }) {
     );
   }
   const text = block.text ?? block.md ?? "";
-  return <div className={cn("px-4 py-2.5 rounded-card rounded-tr-sm text-body whitespace-pre-wrap", block.type === "request" ? "bg-info-soft text-info-ink font-bold" : "bg-brand text-on-brand")} dir="auto">{text}</div>;
+  const quotes: string[] = Array.isArray(block.quotes) ? block.quotes : [];
+  return (
+    <div className={cn("px-4 py-2.5 rounded-card rounded-tr-sm text-body whitespace-pre-wrap", block.type === "request" ? "bg-info-soft text-info-ink font-bold" : "bg-brand text-on-brand")} dir="auto">
+      {quotes.length > 0 && (
+        <ul className="mb-1.5 space-y-1" aria-label="عن هذه المقاطع">
+          {quotes.map((q) => (
+            <li key={q} className="border-s-2 border-current/50 ps-2 text-small opacity-90">
+              «{q}»
+            </li>
+          ))}
+        </ul>
+      )}
+      {text}
+    </div>
+  );
 }

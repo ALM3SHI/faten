@@ -4,7 +4,6 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ExternalLink, FileText, ImageIcon, Loader2, Shapes } from "lucide-react";
 import { Button } from "@/components/ds/button";
 import { Diagram } from "@/components/tutor/diagram";
-import { renderLecturePage } from "@/components/tutor/slide-viewer";
 import { loadVisual, type Visual } from "@/lib/tutor";
 
 /**
@@ -138,6 +137,8 @@ function SlideThumb({ fileHash, page, caption, onSlide }: { fileHash: string; pa
       if (!el) return;
       try {
         const width = Math.min(560, (box.current?.clientWidth || 480) - 4);
+        // the slide renderer (pdf.js glue) loads only when a slide is shown
+        const { renderLecturePage } = await import("@/components/tutor/slide-viewer");
         const ok = await renderLecturePage(fileHash, page, el, width);
         if (!cancelled) setState(ok ? "ready" : "missing");
       } catch {

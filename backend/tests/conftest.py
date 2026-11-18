@@ -31,6 +31,9 @@ os.environ.setdefault("AI_MAX_PER_DAY", "0")
 # No background lesson prefetch / photo lookup (it would reach the network);
 # test_tutor_visuals.py drives that code directly.
 os.environ.setdefault("COURSE_BACKGROUND", "false")
+# No search by meaning (it would reach the embedding API): the tutor falls back
+# to matching words. test_tutor_retrieval.py turns it on with a fake model.
+os.environ.setdefault("GEMINI_EMBED_MODEL", "")
 
 
 @pytest.fixture(autouse=True)

@@ -20,7 +20,6 @@ import {
   PlayCircle,
   Presentation,
   RotateCcw,
-  Send,
   Sparkles,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
@@ -31,9 +30,12 @@ import { useOutlineOpen } from "@/lib/use-outline-open";
 import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
 import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
-import { SlideViewer } from "@/components/tutor/slide-viewer";
+import dynamic from "next/dynamic";
+// the original-slide dialog loads when a slide is first opened
+const SlideViewer = dynamic(() => import("@/components/tutor/slide-viewer").then((m) => m.SlideViewer), { ssr: false });
 import { CourseOutline } from "@/components/tutor/course-outline";
 import { LectureRef } from "@/components/tutor/lesson-visual";
+import { AskBar } from "@/components/tutor/ask-bar";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ApiError } from "@/lib/api";
 import { logPomodoroSession, todayYmd } from "@/lib/pomodoro";
@@ -114,7 +116,6 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [failed, setFailed] = useState<{ message: string; retry: { action: string; payload: Record<string, unknown> } | null } | null>(null);
-  const [question, setQuestion] = useState("");
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [board, setBoard] = useBoardMode();
   const [outlineOpen, setOutlineOpen] = useOutlineOpen();
@@ -468,29 +469,12 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
               <RotateCcw className="w-3.5 h-3.5" aria-hidden /> ابدأ المحاضرة من جديد
             </Button>
           )}
-          <form
-            className="flex items-center gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!question.trim() || busy) return;
-              const q = question;
-              setQuestion("");
-              void act("ask", { text: q });
-            }}
-          >
-            <input
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              maxLength={1500}
-              disabled={state.phase === "final"}
-              placeholder={state.phase === "final" ? "الأسئلة معطّلة أثناء الاختبار الشامل" : "اسأل عن أي شيء في المحاضرة…"}
-              aria-label="اسأل المعلم"
-              className="flex-1 h-11 px-4 rounded-control border border-line-strong bg-surface text-body focus:outline-none focus:border-info-line disabled:opacity-60"
-            />
-            <Button variant="bare" type="submit" disabled={!question.trim() || !!busy} className="h-11 w-11 rounded-control bg-brand text-on-brand flex items-center justify-center disabled:opacity-50" aria-label="إرسال السؤال">
-              <Send className="w-4 h-4" />
-            </Button>
-          </form>
+          <AskBar
+            scope={scrollRef}
+            disabled={state.phase === "final"}
+            busy={!!busy}
+            onAsk={(text, quotes) => void act("ask", quotes.length ? { text, quotes } : { text })}
+          />
         </div>
         </div>
         </main>
@@ -513,7 +497,7 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
         }}
         tools={drawerTools}
       />
-      <SlideViewer lecture={lecture} page={slide} onPageChange={setSlide} onClose={() => setSlide(null)} />
+      {slide !== null && <SlideViewer lecture={lecture} page={slide} onPageChange={setSlide} onClose={() => setSlide(null)} />}
       {paused && (
         <div className="fixed inset-0 z-50 bg-surface flex items-center justify-center p-6" role="dialog" aria-modal="true" aria-label="الجلسة متوقفة">
           <div className="max-w-sm text-center space-y-4">
