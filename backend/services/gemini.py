@@ -255,6 +255,43 @@ async def call_gemini(
         raise HTTPException(status_code=502, detail=AI_BAD_REPLY_MESSAGE)
 
 
+EMBED_DIM = 256  # enough to tell passages of one lecture apart; small to store
+EMBED_BATCH = 100  # batchEmbedContents' limit per request
+
+
+async def embed_texts(texts: list[str], task_type: str = "RETRIEVAL_DOCUMENT", timeout_seconds: float = 60.0) -> list[list[float]]:
+    """Embedding vectors for `texts`, in order (batchEmbedContents).
+
+    task_type: RETRIEVAL_DOCUMENT for the passages that are searched,
+    RETRIEVAL_QUERY for the student's question. Raises like call_gemini."""
+    settings = get_settings()
+    model = settings.GEMINI_EMBED_MODEL
+    if not settings.GEMINI_API_KEY or not model:
+        raise HTTPException(status_code=503, detail=AI_KEY_MISSING_MESSAGE)
+    out: list[list[float]] = []
+    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        for start in range(0, len(texts), EMBED_BATCH):
+            batch = texts[start : start + EMBED_BATCH]
+            payload = {
+                "requests": [
+                    {"model": f"models/{model}", "content": {"parts": [{"text": t[:8000]}]}, "taskType": task_type, "outputDimensionality": EMBED_DIM}
+                    for t in batch
+                ]
+            }
+            try:
+                r = await client.post(f"{GEMINI_BASE}/{model}:batchEmbedContents", json=payload, headers={"x-goog-api-key": settings.GEMINI_API_KEY})
+            except httpx.HTTPError as exc:
+                raise UpstreamAIError(upstream_status=503, status_code=502) from exc
+            if r.status_code != 200:
+                logger.warning("Gemini embeddings HTTP %s: %s", r.status_code, r.text[:300])
+                raise UpstreamAIError(upstream_status=r.status_code, status_code=429 if r.status_code == 429 else 502)
+            vectors = [e.get("values") or [] for e in (r.json().get("embeddings") or [])]
+            if len(vectors) != len(batch):
+                raise HTTPException(status_code=502, detail=AI_EMPTY_REPLY_MESSAGE)
+            out += vectors
+    return out
+
+
 async def call_gemini_chat_text(
     messages: list[dict],
     system_prompt: str,

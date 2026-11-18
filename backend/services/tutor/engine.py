@@ -28,7 +28,7 @@ from typing import Any, Callable
 from fastapi import HTTPException
 
 from services.quota import COST_TUTOR_LESSON, COST_TUTOR_SMALL
-from services.tutor import ai, analytics, mastery, prompts, schemas, store, visuals
+from services.tutor import ai, analytics, mastery, prompts, retrieval, schemas, store, visuals
 from services.tutor.extract import PageContent, page_block
 from services.tutor.questions import (
     SKILL_AR,
@@ -1261,27 +1261,76 @@ async def handle_reexplain(ctx: Ctx) -> None:
             ctx.say({"type": "text", "md": "الآن جرّب السؤال مرة ثانية 👇"}, question_block(q, p["pending"]["context"]))
 
 
+MAX_QUOTES = 4
+
+
+def _quotes(raw: Any) -> list[str]:
+    """Passages the student selected in the lesson to ask about (up to 4)."""
+    out: list[str] = []
+    for q in raw if isinstance(raw, list) else []:
+        q = clip(" ".join(str(q or "").split()), 600)
+        if len(q) >= 3 and q not in out:
+            out.append(q)
+    return out[:MAX_QUOTES]
+
+
+def _open_question_note(ctx: Ctx) -> str:
+    """While a question is waiting for the student's answer, the chat must not
+    answer it for them: it guides with a hint or a question instead."""
+    pending = ctx.progress.get("pending")
+    q = ctx.question(pending["qid"]) if pending else None
+    if not q:
+        return ""
+    return (
+        "\nIMPORTANT — the student has an open question they must answer themselves:\n"
+        f"<<< {clip(q.get('prompt'), 800)} >>>\n"
+        "If their message is about it, do NOT give its answer, the correct option or the final result. "
+        "Guide them instead: point to the idea or the page that helps, or ask a small question that leads "
+        "them there. Say that you will not give the answer so they can try. Other questions: answer normally.\n"
+    )
+
+
 async def handle_ask(ctx: Ctx, payload: dict) -> None:
     text = str(payload.get("text") or "").strip()
     if len(text) < 2:
         raise TutorError("اكتب سؤالك.")
     text = text[:1500]
+    quotes = _quotes(payload.get("quotes"))
     topic = ctx.topic(ctx.progress.get("currentTopicId")) or ctx.lecture["topics"][0]
-    ctx.student({"type": "text", "md": text})
+    ctx.student({"type": "text", "md": text, **({"quotes": quotes} if quotes else {})})
     ctx.charge(COST_SMALL)
     outline = "؛ ".join(f"{t['title']} (ص {t['pages'][0]}–{t['pages'][1]})" for t in ctx.lecture["topics"])
-    # The current topic's pages plus any page whose text shares words with the question.
-    words = {w for w in text.replace("؟", " ").split() if len(w) > 3}
-    related = []
-    for pg in ctx.pages():
-        if pg.n < topic["pages"][0] or pg.n > topic["pages"][1]:
-            hits = sum(1 for w in words if w in (pg.text or ""))
-            if hits >= 2:
-                related.append((hits, pg.n))
-    extra = [ctx.pages()[n - 1] for _, n in sorted(related, reverse=True)[:3]]
+    # The current topic's pages, plus the pages elsewhere in the lecture that
+    # are closest in meaning to the question and the passages it quotes.
+    a, b = topic["pages"]
+    found = await retrieval.search(ctx.db, ctx.lecture["fileHash"], ctx.pages(), "\n".join([text, *quotes]), k=8)
+    extra_ns = list(dict.fromkeys(p.page for p, _ in found if not a <= p.page <= b))[:3]
+    if not found:  # search by meaning unavailable: pages sharing words with the question
+        words = {w for w in " ".join([text, *quotes]).replace("؟", " ").split() if len(w) > 3}
+        related = []
+        for pg in ctx.pages():
+            if pg.n < a or pg.n > b:
+                hits = sum(1 for w in words if w in (pg.text or ""))
+                if hits >= 2:
+                    related.append((hits, pg.n))
+        extra_ns = [n for _, n in sorted(related, reverse=True)[:3]]
+    extra = [ctx.pages()[n - 1] for n in extra_ns if 0 < n <= len(ctx.pages())]
     pages_text = ctx.topic_pages_text(topic) + ("\n\n" + "\n\n".join(page_block(pg, 3000) for pg in extra) if extra else "")
+    quotes_text = (
+        "The student selected these passages of the lesson and asks about them:\n"
+        + "\n".join(f"<<< {q} >>>" for q in quotes)
+        + "\n\n"
+    ) if quotes else ""
     raw = await ai.ask_json(
-        prompts.ASK.format(lecture=ctx.lecture.get("title", ""), title=topic["title"], outline=outline, pages=pages_text, question=text),
+        prompts.ASK.format(
+            lecture=ctx.lecture.get("title", ""),
+            title=topic["title"],
+            outline=outline,
+            pages=pages_text,
+            question=text,
+            quotes=quotes_text,
+            open_question=_open_question_note(ctx),
+        ),
         "Answer the student's question.",
         schema=schemas.ASK,
         kind="ask",

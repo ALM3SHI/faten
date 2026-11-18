@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     GEMINI_MODEL: str = "gemini-3.6-flash"
     # Cheaper/faster model for intent classification & simple answers.
     GEMINI_FAST_MODEL: str = "gemini-3.5-flash-lite"
+    # Text embeddings for the tutor's search by meaning (services/tutor/retrieval.py).
+    # Separate free quota from generation; empty turns the search by meaning off.
+    GEMINI_EMBED_MODEL: str = "gemini-embedding-001"
     # Gemini 3 always reasons; "low" keeps chat replies fast.
     GEMINI_REASONING_EFFORT: str = "low"
 

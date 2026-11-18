@@ -272,3 +272,55 @@ test("each lesson has its own link: the address follows the topic and opens it",
   await expect(page.getByText("الموضوع 2 من 2")).toBeVisible();
   await expect(page).toHaveURL(/[?&]topic=t2(&|$)/);
 });
+
+/** Selects the first occurrence of `text` inside the lesson, as a student would with the mouse or a long press. */
+async function selectInLesson(page: Page, text: string) {
+  await page.evaluate((t) => {
+    const walker = document.createTreeWalker(document.querySelector("main") ?? document.body, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const i = n.textContent?.indexOf(t) ?? -1;
+      if (i >= 0) {
+        const r = document.createRange();
+        r.setStart(n, i);
+        r.setEnd(n, i + t.length);
+        const sel = window.getSelection()!;
+        sel.removeAllRanges();
+        sel.addRange(r);
+        return;
+      }
+    }
+    throw new Error("text not found: " + t);
+  }, text);
+}
+
+test("ask about several selected passages together; with a question open, the tutor guides instead of answering", async ({ page }) => {
+  await asNewStudent(page, "ask");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+  await expect(page.getByText("آخر داخل أول خارج")).toBeVisible();
+
+  await selectInLesson(page, "آخر داخل أول خارج");
+  await page.getByRole("button", { name: /أضف «آخر داخل أول خارج» لسؤالك/ }).click();
+  await selectInLesson(page, "مثل كومة الأطباق");
+  await page.getByRole("button", { name: /أضف «مثل كومة الأطباق» لسؤالك/ }).click();
+  const chips = page.getByRole("list", { name: "المقاطع التي تسأل عنها" });
+  await expect(chips.getByRole("listitem")).toHaveCount(2);
+  // a chip can be taken back
+  await selectInLesson(page, "آخر عنصر يدخل");
+  await page.getByRole("button", { name: /أضف «آخر عنصر يدخل» لسؤالك/ }).click();
+  await chips.getByRole("button", { name: /احذف «آخر عنصر يدخل»/ }).click();
+  await expect(chips.getByRole("listitem")).toHaveCount(2);
+
+  await page.getByRole("textbox", { name: "اسأل المعلم" }).fill("وش العلاقة بينهم؟");
+  await page.getByRole("button", { name: "إرسال السؤال" }).click();
+  const asked = page.getByRole("list", { name: "عن هذه المقاطع" });
+  await expect(asked.getByRole("listitem")).toHaveText(["«آخر داخل أول خارج»", "«مثل كومة الأطباق»"]);
+  await expect(page.getByText("وش العلاقة بينهم؟")).toBeVisible();
+  await expect(chips).toHaveCount(0); // sent: the chips are cleared
+  // the check question is still open: no answer given away
+  await expect(page.getByText("ما راح أعطيك الجواب عشان تجرّبه بنفسك")).toBeVisible();
+  await expect(page.getByRole("radio", { name: "1", exact: true })).toBeVisible();
+});

@@ -133,6 +133,14 @@ function step(s, action, payload) {
     st.topics.t2 = progress("in_progress");
     out.push(say(s, "student", [{ type: "request", text: "انتقل إلى «الطابور (Queue)»" }]));
     out.push(say(s, "tutor", [{ type: "goal", topicId: "t2", index: 2, total: 2, title: "الطابور (Queue)", why: "يرتّب المهام بالدور.", objectives: ["يميّز بين الطابور والمكدس"], prerequisites: "المكدس", weakPrerequisites: [], pages: [4, 6], estMinutes: 15 }], [{ id: "next", label: "ابدأ الشرح" }]));
+  } else if (action === "ask") {
+    // engine.handle_ask: the passages the student selected travel with the question
+    const quotes = Array.isArray(payload.quotes) ? payload.quotes : [];
+    out.push(say(s, "student", [{ type: "text", md: payload.text, ...(quotes.length ? { quotes } : {}) }]));
+    const md = st.pending
+      ? "ما راح أعطيك الجواب عشان تجرّبه بنفسك — ركّز على أي عنصر دخل آخراً [ص 2]."
+      : `سألت عن ${quotes.length} مقطع من الدرس: المكدس يُخرج آخر عنصر دخل [ص 2].`;
+    out.push(say(s, "tutor", [{ type: "answer_text", md, pages: [2], inLecture: true }]));
   } else if (action === "next" && st.pending) {
     return { error: [400, "أجب عن السؤال أولاً، أو اطلب تلميحاً."] };
   } else {
