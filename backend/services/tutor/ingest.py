@@ -20,15 +20,14 @@ import asyncio
 import hashlib
 import logging
 import re
-from typing import Any, Callable
+from typing import Any, Callable, Protocol
 
 from fastapi import HTTPException
 
-from services.tutor import ai, prompts, schemas
+from services.tutor import ai, prompts, schemas, source
 from services.tutor.extract import (
     ExtractError,
     PageContent,
-    extract_pages,
     letter_count,
     page_block,
     sub_pdf,
@@ -66,27 +65,46 @@ def lecture_id_for(digest: str) -> str:
 VISION_BATCH = 6
 
 
-async def read_visual_pages(pdf: bytes, pages: list[PageContent], progress: Callable[[str, int, int], None] | None = None) -> dict[str, Any]:
+async def read_visual_pages(
+    pdf: bytes,
+    pages: list[PageContent],
+    progress: Callable[[str, int, int], None] | None = None,
+    *,
+    tried: set[int] | None = None,
+    on_batch: Callable[[list[int]], None] | None = None,
+    subset: Callable[[bytes, list[int]], bytes] = sub_pdf,
+) -> dict[str, Any]:
+    """Read the pages without a usable text layer, a few at a time.
+
+    `tried`: pages already sent in an earlier run of this preparation (a
+    resumed job) — they are not sent again. `on_batch(batch)` is told after
+    each batch so the work done so far can be saved."""
+    tried = set(tried or ())
     wanted = [p.n for p in pages if p.needs_vision]
     report = {"requested": len(wanted), "read": [], "failed": [], "skipped": []}
     if not wanted:
         return report
     todo, skipped = wanted[:VISION_MAX_PAGES], wanted[VISION_MAX_PAGES:]
     report["skipped"] = skipped
-    for start in range(0, len(todo), VISION_BATCH):
+    already = [n for n in todo if n in tried]
+    rest = [n for n in todo if n not in tried]
+    for start in range(0, len(rest), VISION_BATCH):
+        batch = rest[start : start + VISION_BATCH]
         if progress:
-            progress("vision", start, len(todo))
-        got = await _read_vision_batch(pdf, pages, todo[start : start + VISION_BATCH])
-        report["read"] += got
-        report["failed"] += [n for n in todo[start : start + VISION_BATCH] if n not in got]
-    report["read"] = sorted(report["read"])
+            progress("vision", len(already) + start, len(todo))
+        await _read_vision_batch(pdf, pages, batch, subset)
+        if on_batch:
+            on_batch(batch)
+    by_n = {p.n: p for p in pages}
+    report["read"] = sorted(n for n in todo if by_n[n].source == "vision")
+    report["failed"] = [n for n in todo if by_n[n].source != "vision"]
     return report
 
 
-async def _read_vision_batch(pdf: bytes, pages: list[PageContent], batch: list[int]) -> list[int]:
+async def _read_vision_batch(pdf: bytes, pages: list[PageContent], batch: list[int], subset: Callable[[bytes, list[int]], bytes] = sub_pdf) -> list[int]:
     """Read one small batch of scanned pages; returns the pages it could read."""
     try:
-        small = await asyncio.to_thread(sub_pdf, pdf, batch)
+        small = await asyncio.to_thread(subset, pdf, batch)
         raw = await ai.ask_json(
             prompts.VISION.format(pages=", ".join(f"صفحة {n}" for n in batch)),
             "Read the attached pages.",
@@ -139,31 +157,30 @@ def _batches(pages: list[PageContent]) -> list[list[PageContent]]:
     return [pages[i : i + BATCH_PAGES] for i in range(0, len(pages), BATCH_PAGES)]
 
 
-async def structure(pages: list[PageContent], progress: "Progress | None" = None) -> dict[str, Any]:
+async def structure(
+    pages: list[PageContent],
+    progress: "Progress | None" = None,
+    *,
+    done_parts: list[dict] | None = None,
+    on_part: Callable[[list[dict]], None] | None = None,
+) -> dict[str, Any]:
+    """Organise the lecture into topics, one model call per part of a long
+    lecture. `done_parts`: the model's answers for the first parts from an
+    earlier run (a resumed job) — not asked again. `on_part(parts)` is told
+    after each new answer so it can be saved."""
     batches = _batches(pages)
+    parts: list[dict] = list(done_parts or [])[: len(batches)]
     title, overview, raw_topics, unclear = "", "", [], []
     for k, batch in enumerate(batches):
-        if progress:
-            progress("structure", k, len(batches))
-        note = ""
-        if len(batches) > 1:
-            earlier = "، ".join(t.get("title", "") for t in raw_topics) or "—"
-            note = (
-                f"This is part {k + 1} of {len(batches)} of a long lecture "
-                f"(pages {batch[0].n}-{batch[-1].n}). Topics already found in earlier parts: {earlier}. "
-                "Return only the topics of THIS part; prerequisites may only point to topics of this part."
-            )
-        n_pages = sum(1 for p in batch if p.readable)
-        lo = max(1, min(3, n_pages // 4 or 1))
-        hi = max(lo, min(8 if len(batches) == 1 else 5, n_pages // 2 or 1))
-        raw = await ai.ask_json(
-            prompts.STRUCTURE.format(batch_note=note, topic_range=f"{lo}-{hi}"),
-            _pages_text(batch, STRUCTURE_CHAR_BUDGET // len(batches)),
-            schema=schemas.STRUCTURE,
-            kind="structure",
-            temperature=0.2,
-            max_tokens=24000,
-        )
+        if k < len(parts):
+            raw = parts[k]
+        else:
+            if progress:
+                progress("structure", k, len(batches))
+            raw = await _structure_part(batch, k, batches, raw_topics)
+            parts.append(raw if isinstance(raw, dict) else {})
+            if on_part:
+                on_part(parts)
         if not isinstance(raw, dict):
             continue
         title = title or clip(raw.get("title"), 160)
@@ -178,6 +195,28 @@ async def structure(pages: list[PageContent], progress: "Progress | None" = None
                 raw_topics.append(t)
         unclear += [u for u in raw.get("unclear_pages") or [] if isinstance(u, int)]
     return {"title": title, "overview": overview, "topics": raw_topics, "unclear_pages": unclear}
+
+
+async def _structure_part(batch: list[PageContent], k: int, batches: list[list[PageContent]], raw_topics: list[dict]) -> Any:
+    note = ""
+    if len(batches) > 1:
+        earlier = "، ".join(t.get("title", "") for t in raw_topics) or "—"
+        note = (
+            f"This is part {k + 1} of {len(batches)} of a long lecture "
+            f"(pages {batch[0].n}-{batch[-1].n}). Topics already found in earlier parts: {earlier}. "
+            "Return only the topics of THIS part; prerequisites may only point to topics of this part."
+        )
+    n_pages = sum(1 for p in batch if p.readable)
+    lo = max(1, min(3, n_pages // 4 or 1))
+    hi = max(lo, min(8 if len(batches) == 1 else 5, n_pages // 2 or 1))
+    return await ai.ask_json(
+        prompts.STRUCTURE.format(batch_note=note, topic_range=f"{lo}-{hi}"),
+        _pages_text(batch, STRUCTURE_CHAR_BUDGET // len(batches)),
+        schema=schemas.STRUCTURE,
+        kind="structure",
+        temperature=0.2,
+        max_tokens=24000,
+    )
 
 
 # ── 4. validation ─────────────────────────────────────────────────
@@ -340,31 +379,82 @@ def _quiet(_stage: str, _done: int, _total: int) -> None:
     return None
 
 
-async def build_lecture(pdf: bytes, file_name: str, progress: Progress | None = None) -> tuple[dict, list[PageContent]]:
+class Checkpoint(Protocol):
+    """Where a preparation keeps the work it has finished, so a restarted
+    server picks up from there instead of starting over (services/tutor/prepare.py)."""
+
+    def load(self) -> dict: ...  # {} when nothing was saved yet
+    def load_pages(self, count: int) -> list[PageContent]: ...
+    def save_pages(self, pages: list[PageContent]) -> None: ...
+    def save(self, fields: dict) -> None: ...
+
+
+class _NoCheckpoint:
+    def load(self) -> dict:
+        return {}
+
+    def load_pages(self, count: int) -> list[PageContent]:
+        return []
+
+    def save_pages(self, pages: list[PageContent]) -> None:
+        return None
+
+    def save(self, fields: dict) -> None:
+        return None
+
+
+async def build_lecture(pdf: bytes, file_name: str, progress: Progress | None = None, checkpoint: Checkpoint | None = None) -> tuple[dict, list[PageContent]]:
     """Run the pipeline. Returns (lecture document, pages).
 
     `progress(stage, done, total)` is told where it is — stages: "reading",
     "vision" (pages read by the model), "structure" (parts of the lecture
-    organised) — so a background preparation can show live progress."""
-    progress = progress or _quiet
-    progress("reading", 0, 1)
-    try:
-        # pdfplumber is CPU-heavy and synchronous. Run it in a worker thread so
-        # the event loop keeps answering (/health included): on Render's single
-        # small instance, blocking here made the health check time out and the
-        # platform restart the server in the middle of the upload.
-        pages = await asyncio.to_thread(extract_pages, pdf)
-    except ExtractError as exc:
-        raise IngestError(str(exc)) from exc
+    organised) — so a background preparation can show live progress.
 
-    vision = await read_visual_pages(pdf, pages, progress)
+    With a `checkpoint`, every finished step is saved as it ends (the pages
+    once read, each batch of scanned pages, each part of the structure); a
+    second run with the same checkpoint skips what is already done."""
+    progress = progress or _quiet
+    cp: Checkpoint = checkpoint or _NoCheckpoint()
+    src = source.detect(pdf, file_name)
+    if src is None:
+        raise IngestError("broken")
+    saved = cp.load() or {}
+
+    pages = cp.load_pages(int(saved.get("pageCount") or 0)) if saved.get("read") else []
+    if not pages or len(pages) != int(saved.get("pageCount") or 0):
+        progress("reading", 0, 1)
+        try:
+            # Extraction is CPU-heavy and synchronous. Run it in a worker thread so
+            # the event loop keeps answering (/health included): on Render's single
+            # small instance, blocking here made the health check time out and the
+            # platform restart the server in the middle of the upload.
+            pages = await asyncio.to_thread(src.extract, pdf)
+        except ExtractError as exc:
+            raise IngestError(str(exc)) from exc
+        cp.save_pages(pages)
+        saved = {"read": True, "pageCount": len(pages), "visionTried": [], "structureParts": []}
+        cp.save(saved)
+
+    tried = set(saved.get("visionTried") or [])
+
+    def vision_batch_done(batch: list[int]) -> None:
+        tried.update(batch)
+        cp.save_pages(pages)
+        cp.save({"visionTried": sorted(tried)})
+
+    vision = await read_visual_pages(pdf, pages, progress, tried=tried, on_batch=vision_batch_done, subset=src.subset)
     for p in pages:
         if p.needs_vision and p.source != "vision" and letter_count(p.text) == 0 and not p.tables:
             p.source = "none"
     if not any(p.readable for p in pages):
         raise IngestError("unreadable")
 
-    raw = await structure(pages, progress)
+    raw = await structure(
+        pages,
+        progress,
+        done_parts=saved.get("structureParts") or [],
+        on_part=lambda parts: cp.save({"structureParts": parts}),
+    )
     topics = normalize_topics(raw.get("topics") or [], pages)
     if not topics:
         raise IngestError("unreadable")
@@ -375,6 +465,7 @@ async def build_lecture(pdf: bytes, file_name: str, progress: Progress | None = 
         "id": lecture_id_for(digest),
         "fileHash": digest,
         "fileName": clip(file_name, 200) or "lecture.pdf",
+        "source": src.kind,
         "title": raw.get("title") or _first_line(next(p for p in pages if p.readable)),
         "overview": raw.get("overview") or "",
         "pageCount": len(pages),

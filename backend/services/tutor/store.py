@@ -54,14 +54,42 @@ def get_cached_lecture(db, file_hash: str) -> dict | None:
     return d if d and d.get("topics") else None
 
 
-def save_cache(db, lecture: dict, pages: list[PageContent]) -> None:
-    ref = cache_ref(db, lecture["fileHash"])
+def save_pages(db, file_hash: str, pages: list[PageContent]) -> None:
+    ref = cache_ref(db, file_hash)
     for k in range(0, len(pages), PAGES_PER_DOC):
         ref.collection("content").document(str(k // PAGES_PER_DOC)).set(
             {"pages": [p.to_dict() for p in pages[k : k + PAGES_PER_DOC]]}
         )
+
+
+def save_cache(db, lecture: dict, pages: list[PageContent]) -> None:
+    ref = cache_ref(db, lecture["fileHash"])
+    save_pages(db, lecture["fileHash"], pages)
     shared = {k: v for k, v in lecture.items() if k not in ("fileName", "createdAt", "updatedAt")}
     ref.set(shared)  # last, so a half-written cache is never treated as complete
+
+
+# ── work saved while a lecture is being prepared ──────────────────
+#   tutor_cache/{fileHash}/prep/main   read, pageCount, visionTried, structureParts
+#   (the pages themselves go to content/{k} as they are read). Deleted once
+#   the lecture is ready; course material only, like the rest of the cache.
+
+
+def _prep_ref(db, file_hash: str):
+    return cache_ref(db, file_hash).collection("prep").document("main")
+
+
+def get_prep(db, file_hash: str) -> dict:
+    snap = _prep_ref(db, file_hash).get()
+    return (snap.to_dict() or {}) if snap.exists else {}
+
+
+def save_prep(db, file_hash: str, fields: dict) -> None:
+    _prep_ref(db, file_hash).set(fields, merge=True)
+
+
+def delete_prep(db, file_hash: str) -> None:
+    _prep_ref(db, file_hash).delete()
 
 
 def load_pages(db, file_hash: str, page_count: int) -> list[PageContent]:

@@ -232,7 +232,7 @@ export interface PrepJob {
   id: string;
   fileName?: string;
   status: "working" | "ready" | "failed";
-  stage?: "reading" | "vision" | "structure" | "saving";
+  stage?: "reading" | "vision" | "structure" | "lesson" | "saving";
   done?: number;
   total?: number;
   error?: string | null;

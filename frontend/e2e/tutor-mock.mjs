@@ -166,7 +166,7 @@ export function handleTutor(req, p, body, send, res, raw) {
       }
       send(res, 200, { job: { id: LECTURE.id, status: "ready", stalled: false } });
     } else {
-      const stage = job.polls === 1 ? "structure" : "saving";
+      const stage = job.polls === 1 ? "structure" : "lesson";
       send(res, 200, { job: { id: LECTURE.id, fileName: "new-lecture.pdf", status: "working", stage, done: 0, total: 2, error: null, stalled: false } });
     }
     return true;
