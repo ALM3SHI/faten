@@ -72,11 +72,7 @@ Return ONE JSON object:
   "segments": [
     {{
       "title": "short title of this part",
-      "markdown": "the explanation in clear Arabic (Modern Standard, simple). Build up step by
-        step: idea → why → example from the lecture → (counter-example when it helps) → link to
-        what came before. Keep technical terms in English in parentheses. Copy code from the
-        slides EXACTLY inside ``` fences with the language name. Cite pages like [ص 12].
-        150-350 words. Do not put the check question here.",
+      "parts": [ PART, ... ],
       "pages": [pages this part explains],
       "concept_ids": ["c1"],
       "visual": VISUAL
@@ -84,6 +80,26 @@ Return ONE JSON object:
   ],
   "questions": [ QUESTION, ... ]
 }}
+
+PART — one piece of the explanation with ONE teaching role, in clear Arabic (Modern Standard,
+simple). Keep technical terms in English in parentheses. Copy code from the slides EXACTLY
+inside ``` fences with the language name. Do not put the check question here.
+  {{"role": "idea" | "why" | "how" | "example" | "real_world" | "code" | "mistake" | "compare" | "summary",
+    "origin": "lecture" | "added",
+    "markdown": "...",
+    "pages": [the lecture pages this part comes from — empty for "added"]}}
+  roles: idea = what it is · why = why it matters / what problem it solves · how = how it
+  works, step by step · example = a worked example from the lecture · real_world = where the
+  student meets it in real life · code = code from the slides explained line by line ·
+  mistake = a common mistake or misconception and how to avoid it · compare = how it differs
+  from a nearby idea · summary = the one or two sentences to remember.
+  origin — be honest, the student sees it:
+    "lecture" = what the pages say. Cite them like [ص 12]. Rephrasing is fine; adding is not.
+    "added"   = your own help that is NOT in the pages: an everyday analogy, a real-life
+                example, a common mistake, a comparison. Only well-established knowledge that
+                agrees with the lecture; never a new fact the exam could depend on.
+  Order the parts to build understanding (usually idea → why → how → example → …). Each
+  segment: 3-6 parts, 150-400 words in all, at least one "lecture" part, and a "summary" last.
 
 VISUAL — the ONE picture that best helps a student understand this part, or none.
 You never draw: you describe, and the app draws or finds it.
@@ -116,6 +132,19 @@ Required questions:
   New situations — do NOT reuse the examples of the explanation word for word.
 - 2 questions with "pool": "final" for the end-of-lecture exam (different from the others).
 2-4 segments. Total explanation must fit the topic: do not over-shorten it.
+"""
+
+REVIEW = """You check a lesson against the lecture it was written from. You did not write it.
+For each numbered part below, decide if EVERYTHING it states is supported by the lecture pages:
+rephrasing, simplifying and reordering are fine; a fact, number, step, rule or claim that the
+pages do not contain is NOT supported (even if it is true in general).
+
+Lecture pages:
+{pages}
+
+Return ONE JSON object: {{"parts": [{{"index": 1, "supported": true}},
+  {{"index": 2, "supported": false, "unsupported": "the claim that is not in the pages, in Arabic"}}]}}
+One entry for every part, in order.
 """
 
 QUESTION_SPEC = """QUESTION format:

@@ -233,3 +233,42 @@ test("the slides get pdf.js's character maps and standard fonts, so Arabic and s
     expect((await r.body()).length, path).toBeGreaterThan(100);
   }
 });
+
+test("a lesson says what each piece is for and whether it comes from the student's file", async ({ page }) => {
+  await asNewStudent(page, "parts");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+
+  const idea = page.getByRole("region", { name: "الفكرة" }).last();
+  await expect(idea).toContainText("آخر داخل أول خارج");
+  await expect(idea).toContainText("من ملفك");
+  await expect(idea.getByRole("button", { name: "افتح الشريحة 2" })).toBeVisible();
+  const life = page.getByRole("region", { name: "من الواقع" });
+  await expect(life).toContainText("إضافة توضيحية");
+  await expect(life).not.toContainText("من ملفك");
+  await expect(page.getByRole("region", { name: "الكود خطوة بخطوة" }).locator("pre code")).toContainText("stack.append(1)");
+  await expect(page.getByRole("region", { name: "الخلاصة" })).toBeVisible();
+  await expect(page.getByText("راجعنا كل ما وُسم «من ملفك» مقابل صفحاتك.")).toBeVisible();
+
+  // the page chip opens that slide
+  await idea.getByRole("button", { name: "افتح الشريحة 2" }).click();
+  await expect(page.getByRole("dialog").getByText("الشريحة 2 من 6")).toBeVisible();
+});
+
+test("each lesson has its own link: the address follows the topic and opens it", async ({ page }) => {
+  await asNewStudent(page, "link");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await expect(page).toHaveURL(/[?&]topic=t1(&|$)/);
+  const id = new URL(page.url()).searchParams.get("lecture");
+
+  // a link to the second topic opens it
+  await page.goto(`/tutor/?lecture=${id}&topic=t2`);
+  await expect(page.getByText("الموضوع 2 من 2")).toBeVisible();
+  await expect(page).toHaveURL(/[?&]topic=t2(&|$)/);
+});

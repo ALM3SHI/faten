@@ -290,6 +290,55 @@ def test_full_study_journey(api):
     assert stats["students"] == 1 and stats["topics"] and "uid" not in str(stats) and UID not in str(stats)
 
 
+def test_a_lesson_is_written_in_teaching_roles_and_says_what_comes_from_the_file(api):
+    """Each piece of a lesson part has a role (idea, why, real-life example…)
+    and an origin: the student's file (with its pages) or an addition. A second
+    model call checks every "from your file" piece against the pages; one the
+    pages do not support is relabelled as an addition, so the label stays true."""
+    http, db, fake, _ = api
+    s = Session(http, db, upload(http).json())
+    s.step("next")
+    s.step("next")
+    block = s.blocks("lesson")[-1]
+    parts = block["parts"]
+    assert [p["role"] for p in parts] == ["idea", "real_world", "why", "summary"]  # the 5-letter scrap is dropped
+    assert parts[0] == {"role": "idea", "origin": "lecture", "md": parts[0]["md"], "pages": [1]}
+    assert parts[1]["origin"] == "added" and parts[1]["pages"] == []
+    # the claim the slide does not make was caught by the review
+    assert parts[2]["origin"] == "added" and parts[2]["pages"] == []
+    assert parts[3]["origin"] == "lecture"
+    assert block["reviewed"] is True and fake.calls["review"] == 1
+    # the whole text is still there for questions and «ask»
+    assert "[ص 1]" in block["md"] and "كومة الأطباق" in block["md"]
+
+    lesson = db.store[("tutor_cache", s.hash, "lessons", block["topicId"])]
+    assert lesson["review"]["checked"] == 3 and lesson["review"]["relabelled"] == 1
+    assert lesson["segments"][0]["parts"][2]["unsupported"]
+    # a part written the old way (one text) still shows as before
+    s.answer(right=True)
+    s.step("next")
+    assert "parts" not in s.blocks("lesson")[-1]
+
+
+def test_the_lesson_shows_even_when_the_review_cannot_run(api, monkeypatch):
+    http, db, fake, _ = api
+    real = fake.__call__
+
+    async def review_down(prompt, user, **kw):
+        if "You check a lesson against the lecture" in prompt:
+            raise RuntimeError("model busy")
+        return await real(prompt, user, **kw)
+
+    monkeypatch.setattr("services.tutor.ai.ask_json", review_down)
+    s = Session(http, db, upload(http).json())
+    s.step("next")
+    s.step("next")
+    block = s.blocks("lesson")[-1]
+    assert block["reviewed"] is False
+    assert [p["origin"] for p in block["parts"]] == ["lecture", "added", "lecture", "lecture"]  # the writer's labels
+    assert db.store[("tutor_cache", s.hash, "lessons", block["topicId"])]["review"]["skipped"] is True
+
+
 def test_each_message_is_filed_under_its_part_of_the_lecture(api):
     """The page shows one part at a time, so a topic's lesson never runs on into
     the next one's: every message says which part it was said in."""

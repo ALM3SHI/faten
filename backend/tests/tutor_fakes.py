@@ -72,6 +72,13 @@ class FakeTutorAI:
                     "key_terms": [{"term": f"Term{chunk[0]}", "definition": "معنى"}],
                 })
             return {"title": "هياكل البيانات", "overview": "محاضرة عن المكدس", "topics": topics, "unclear_pages": []}
+        if "You check a lesson against the lecture" in prompt:
+            self.calls["review"] += 1
+            items = re.split(r"^\[(\d+)\]\n", user, flags=re.M)[1:]
+            return {"parts": [
+                {"index": int(items[i]), "supported": "ادعاء غير موجود" not in items[i + 1], "unsupported": "حساب عناوين الذاكرة"}
+                for i in range(0, len(items), 2)
+            ]}
         if "Teach ONE topic" in prompt:
             self.calls["lesson"] += 1
             cids = re.findall(r"- (t\d+c\d+):", prompt)
@@ -87,7 +94,14 @@ class FakeTutorAI:
             ]
             qs += [self._q("final", c1, "apply", 2), self._q("final", c2, "analyze", 3, skill="compare")]
             return {"segments": [
-                {"title": "الفكرة", "markdown": "المكدس بنية بيانات تعمل بمبدأ آخر داخل أول خارج [ص 1]. " * 3, "pages": [1], "concept_ids": [c1],
+                # a lesson part in teaching roles, each saying where it comes from
+                {"title": "الفكرة", "pages": [1], "concept_ids": [c1], "parts": [
+                    {"role": "idea", "origin": "lecture", "markdown": "المكدس بنية بيانات تعمل بمبدأ آخر داخل أول خارج [ص 1].", "pages": [1]},
+                    {"role": "real_world", "origin": "added", "markdown": "مثل كومة الأطباق في المطبخ: آخر طبق تضعه هو أول طبق تأخذه.", "pages": []},
+                    {"role": "why", "origin": "lecture", "markdown": "يستخدمه المترجم لحساب عناوين الذاكرة، وهذا ادعاء غير موجود في الشريحة.", "pages": [1]},
+                    {"role": "summary", "origin": "lecture", "markdown": "الخلاصة: آخر عنصر يدخل هو أول عنصر يخرج [ص 1].", "pages": [1]},
+                    {"role": "nonsense", "origin": "weird", "markdown": "قصير", "pages": [1]},
+                ],
                  "visual": {"kind": "diagram", "caption": "الدفع والسحب", "diagram_type": "flow", "direction": "lr",
                             "nodes": ["push | push", "s | المكدس | db", "pop | pop"], "edges": ["push -> s | يضيف للأعلى", "s -> pop | يسحب الأعلى"]}},
                 {"title": "مثال", "markdown": "```python\nstack.append(1)\n```\nمثال من الشريحة [ص 2] وصفحة غير موجودة [ص 999]. " * 2, "pages": [2, 999], "concept_ids": [c2],
