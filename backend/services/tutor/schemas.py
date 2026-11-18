@@ -56,6 +56,19 @@ VISUAL = {
     "required": ["kind"],
 }
 
+PART_ROLES = ["idea", "why", "how", "example", "real_world", "code", "mistake", "compare", "summary"]
+
+PART = {
+    "type": "object",
+    "properties": {
+        "role": {"type": "string", "enum": PART_ROLES},
+        "origin": {"type": "string", "enum": ["lecture", "added"]},
+        "markdown": _STR,
+        "pages": _INTS,
+    },
+    "required": ["role", "origin", "markdown"],
+}
+
 LESSON = {
     "type": "object",
     "properties": {
@@ -63,13 +76,29 @@ LESSON = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {"title": _STR, "markdown": _STR, "pages": _INTS, "concept_ids": _STRS, "visual": VISUAL},
-                "required": ["title", "markdown", "pages"],
+                "properties": {"title": _STR, "parts": {"type": "array", "items": PART}, "markdown": _STR, "pages": _INTS, "concept_ids": _STRS, "visual": VISUAL},
+                "required": ["title", "parts", "pages"],
             },
         },
         "questions": {"type": "array", "items": QUESTION},
     },
     "required": ["segments", "questions"],
+}
+
+# The quality review: for each numbered "from the lecture" part, is it supported by the pages?
+REVIEW = {
+    "type": "object",
+    "properties": {
+        "parts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"index": _INT, "supported": {"type": "boolean"}, "unsupported": _STR},
+                "required": ["index", "supported"],
+            },
+        }
+    },
+    "required": ["parts"],
 }
 
 QUESTIONS = {"type": "object", "properties": {"questions": {"type": "array", "items": QUESTION}}, "required": ["questions"]}

@@ -377,6 +377,71 @@ def _normalize_questions(raw_list: Any, topic: dict, allowed: set[int], default_
     return out
 
 
+PART_ROLES = set(schemas.PART_ROLES)
+MAX_PARTS = 8
+
+
+def _normalize_parts(raw_parts: Any, allowed: set[int], seg_pages: list[int]) -> list[dict]:
+    """A lesson part's pieces, each with its teaching role and where it comes
+    from: "lecture" (the student's file, with its pages) or "added" (help the
+    file does not contain — an analogy, a real-life example, a common mistake)."""
+    out: list[dict] = []
+    for raw in (raw_parts or [])[:MAX_PARTS] if isinstance(raw_parts, list) else []:
+        if not isinstance(raw, dict):
+            continue
+        md = strip_bad_refs(clip(raw.get("markdown"), 3000), allowed)
+        if len(md.strip()) < 15:
+            continue
+        origin = "added" if raw.get("origin") == "added" else "lecture"
+        pages = (valid_pages(raw.get("pages"), allowed) or cited_pages(md)[:6] or seg_pages) if origin == "lecture" else []
+        out.append({"role": raw.get("role") if raw.get("role") in PART_ROLES else "idea", "origin": origin, "markdown": md, "pages": pages})
+    return out
+
+
+async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict]) -> dict:
+    """Quality review before a lesson is shown: a second model call, which did
+    not write the lesson, checks every part labelled "from your file" against
+    the topic's pages. A part with a claim the pages do not support is
+    relabelled as an addition, so the label the student sees stays true. The
+    review never blocks a lesson: if it cannot run, the lesson keeps the
+    writer's labels and says the review did not run."""
+    items = [(si, pi) for si, s in enumerate(segments) for pi, p in enumerate(s.get("parts") or []) if p["origin"] == "lecture"]
+    if not items:
+        return {"checked": 0, "relabelled": 0, "at": ctx.iso}
+    listing = "\n\n".join(f"[{k + 1}]\n{segments[si]['parts'][pi]['markdown']}" for k, (si, pi) in enumerate(items))
+    try:
+        raw = await ai.ask_json(
+            prompts.REVIEW.format(pages=ctx.topic_pages_text(topic)),
+            listing,
+            schema=schemas.REVIEW,
+            kind="review",
+            temperature=0.0,
+            max_tokens=8000,
+            timeout=90.0,
+        )
+    except Exception as exc:  # the lesson is still worth showing
+        logger.warning("[tutor] review of %s skipped: %s", topic.get("id"), getattr(exc, "detail", exc))
+        return {"checked": 0, "relabelled": 0, "skipped": True, "at": ctx.iso}
+    relabelled = 0
+    for e in (raw.get("parts") if isinstance(raw, dict) else None) or []:
+        if not isinstance(e, dict) or e.get("supported") is not False:
+            continue
+        try:
+            k = int(e.get("index")) - 1
+        except (TypeError, ValueError):
+            continue
+        if not 0 <= k < len(items):
+            continue
+        si, pi = items[k]
+        part = segments[si]["parts"][pi]
+        if part["origin"] == "lecture":
+            part["origin"] = "added"
+            part["pages"] = []
+            part["unsupported"] = clip(e.get("unsupported"), 300)
+            relabelled += 1
+    return {"checked": len(items), "relabelled": relabelled, "at": ctx.iso}
+
+
 async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
     got = ctx.lesson(tid)
     if got and got.get("segments"):
@@ -411,15 +476,21 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
     for s in (raw.get("segments") if isinstance(raw, dict) else None) or []:
         if not isinstance(s, dict):
             continue
-        md = strip_bad_refs(clip(s.get("markdown"), 6000), allowed)
+        seg_pages = valid_pages(s.get("pages"), allowed)
+        parts = _normalize_parts(s.get("parts"), allowed, seg_pages)
+        # `markdown` stays the whole part as one text: questions, «ask» and the
+        # re-explanations read it; the screen shows the parts.
+        md = "\n\n".join(p["markdown"] for p in parts) if parts else strip_bad_refs(clip(s.get("markdown"), 6000), allowed)
         if len(md) < 40:
             continue
         seg = {
             "title": clip(s.get("title"), 140) or f"الجزء {len(segments) + 1}",
             "markdown": md,
-            "pages": valid_pages(s.get("pages"), allowed) or cited_pages(md)[:6],
+            "pages": seg_pages or cited_pages(md)[:6],
             "concept_ids": [c for c in s.get("concept_ids") or [] if any(c == k["id"] for k in topic.get("concepts") or [])],
         }
+        if parts:
+            seg["parts"] = parts
         visual = visuals.normalize_visual(s.get("visual"), allowed, photos_left)
         if visual:
             seg["visual"] = visual
@@ -434,6 +505,7 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
             q["pool"] = "quiz"
             q["segment"] = None
     lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso}
+    lesson["review"] = await review_lesson(ctx, topic, segments)
     store.save_lesson(ctx.db, ctx.lecture["fileHash"], tid, lesson)
     ctx._lessons[tid] = lesson
     visuals.schedule_photos(ctx.db, ctx.lecture["fileHash"], tid, lesson)
@@ -588,6 +660,9 @@ async def show_segment(ctx: Ctx, seg: int) -> None:
     step["segment"] = seg
     s = segs[seg]
     block = {"type": "lesson", "topicId": tid, "segment": seg, "total": len(segs), "title": s["title"], "md": s["markdown"], "pages": s["pages"]}
+    if s.get("parts"):
+        block["parts"] = [{"role": p["role"], "origin": p["origin"], "md": p["markdown"], "pages": p.get("pages") or []} for p in s["parts"]]
+        block["reviewed"] = bool((lesson.get("review") or {}).get("checked"))
     visual = visuals.public_visual(s, lesson.get("photos") or {}, seg)
     if visual:
         block["visual"] = visual

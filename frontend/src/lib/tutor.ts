@@ -144,6 +144,16 @@ export async function loadVisual(id: string, topicId: string, segment: number): 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Block = { type: string } & Record<string, any>;
 
+export type PartRole = "idea" | "why" | "how" | "example" | "real_world" | "code" | "mistake" | "compare" | "summary";
+
+/** One teaching piece of a lesson part; `origin` says if it comes from the student's file. */
+export interface LessonPart {
+  role: PartRole;
+  origin: "lecture" | "added";
+  md: string;
+  pages: number[];
+}
+
 export interface Action {
   id: string;
   label: string;

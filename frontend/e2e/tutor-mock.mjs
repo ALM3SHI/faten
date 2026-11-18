@@ -91,7 +91,14 @@ function step(s, action, payload) {
     st.stage = "check";
     st.segment = 0;
     st.pending = { type: "question", context: "check", question: QUESTION, index: null, total: null, attempts: 0, hints: 0 };
-    out.push(say(s, "tutor", [{ type: "lesson", topicId: "t1", segment: 0, total: 2, title: "الفكرة", md: "المكدس يعمل بمبدأ **آخر داخل أول خارج** [ص 2].\n\n```python\nstack.append(1)\n```", pages: [2], visual: DIAGRAM }]));
+    // a lesson part in teaching pieces, each saying where it comes from (engine.show_segment)
+    const parts = [
+      { role: "idea", origin: "lecture", md: "المكدس يعمل بمبدأ **آخر داخل أول خارج** [ص 2].", pages: [2] },
+      { role: "code", origin: "lecture", md: "```python\nstack.append(1)\n```", pages: [2] },
+      { role: "real_world", origin: "added", md: "مثل كومة الأطباق: آخر طبق يوضع هو أول طبق يُرفع.", pages: [] },
+      { role: "summary", origin: "lecture", md: "آخر عنصر يدخل هو أول عنصر يخرج.", pages: [2] },
+    ];
+    out.push(say(s, "tutor", [{ type: "lesson", topicId: "t1", segment: 0, total: 2, title: "الفكرة", md: parts.map((p) => p.md).join("\n\n"), parts, reviewed: true, pages: [2], visual: DIAGRAM }]));
     out.push(say(s, "tutor", [{ type: "question", context: "check", question: QUESTION }], [{ id: "hint", label: "تلميح" }, { id: "reexplain", label: "اشرحه بطريقة ثانية" }]));
   } else if (action === "answer") {
     if (!st.pending || payload.questionId !== QUESTION.id) return { error: [409, "هذا السؤال لم يعد مفتوحاً."] };

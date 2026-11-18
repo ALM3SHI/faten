@@ -84,7 +84,7 @@ function TutorContent() {
     if (!id) router.replace("/study");
   }, [id, router]);
   return id ? (
-    <StudySession key={id} id={id} startReview={params.get("review") === "1"} onExit={() => router.push("/study")} />
+    <StudySession key={id} id={id} startReview={params.get("review") === "1"} linkTopic={params.get("topic")} onExit={() => router.push("/study")} />
   ) : (
     <div className="ds-page min-h-screen bg-canvas text-ink" aria-busy="true" />
   );
@@ -109,7 +109,7 @@ const BUSY_LABEL: Record<string, string> = {
 /** Actions that stay usable while a question is open. */
 const WHILE_PENDING = new Set(["hint", "reexplain", "reveal", "save_cards"]);
 
-function StudySession({ id, startReview, onExit }: { id: string; startReview?: boolean; onExit: () => void }) {
+function StudySession({ id, startReview, linkTopic, onExit }: { id: string; startReview?: boolean; linkTopic?: string | null; onExit: () => void }) {
   const [session, setSession] = useState<Session | null>(() => (tutorHandoff.session && tutorHandoff.session.lecture.id === id ? tutorHandoff.session : null));
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -209,6 +209,33 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
     }, 0);
     return () => window.clearTimeout(t);
   }, [startReview, session, busy, act]);
+
+  // ── a link per lesson: the address names the topic on screen ──
+  // Opened with ?topic=t3 (a bookmark, a link from another device): go there
+  // once, unless that would interrupt a test in progress.
+  const linkHandled = useRef(!linkTopic);
+  useEffect(() => {
+    if (linkHandled.current || !session || busy) return;
+    const st = session.state;
+    const known = session.lecture.topics.some((t) => t.id === linkTopic);
+    const inTest = st.phase === "final" || st.phase === "review" || (st.pending && st.pending.context !== "check");
+    const t = window.setTimeout(() => {
+      linkHandled.current = true;
+      if (known && !inTest && !(st.phase === "topic" && st.currentTopicId === linkTopic)) void act("goto", { topicId: linkTopic });
+    }, 0);
+    return () => window.clearTimeout(t);
+  }, [linkTopic, session, busy, act]);
+  // …and follows the student: moving to another topic updates the address.
+  const topicOnScreen = session?.state.phase === "topic" ? session.state.currentTopicId : null;
+  useEffect(() => {
+    if (!session || !linkHandled.current) return;
+    const url = new URL(window.location.href);
+    if ((url.searchParams.get("topic") ?? null) === topicOnScreen) return;
+    if (topicOnScreen) url.searchParams.set("topic", topicOnScreen);
+    else url.searchParams.delete("topic");
+    url.searchParams.delete("review");
+    window.history.replaceState(window.history.state, "", url);
+  }, [session, topicOnScreen, busy]);
 
   // ── review cards (existing flashcards with spaced repetition) ──
   const addPack = useStudyStore((s) => s.addPack);
