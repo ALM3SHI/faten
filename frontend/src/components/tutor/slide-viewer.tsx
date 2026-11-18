@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, FileUp, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { getLectureFile, saveLectureFile, sha256Hex } from "@/lib/lecture-files";
+import { PDF_ASSET_OPTIONS } from "@/lib/pdf-assets";
 import type { Lecture } from "@/lib/tutor";
 import type { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 
@@ -67,7 +68,7 @@ async function openDoc(hash: string, blob: Blob): Promise<PDFDocumentProxy> {
       hash,
       (async () => {
         const pdfjs = await getPdfjs();
-        return pdfjs.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+        return pdfjs.getDocument({ data: new Uint8Array(await blob.arrayBuffer()), ...PDF_ASSET_OPTIONS }).promise;
       })(),
     );
   }

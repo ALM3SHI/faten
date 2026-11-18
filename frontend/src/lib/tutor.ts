@@ -88,6 +88,8 @@ export interface TopicProgress {
 export interface TutorState {
   phase: "overview" | "topic" | "review" | "final_ready" | "final" | "done";
   currentTopicId: string | null;
+  /** The part of the lecture on screen: "overview", "topic:<id>", "review" or "final". */
+  section?: string;
   stage: "warmup" | "goal" | "explain" | "check" | "quiz" | "remediate" | "closed" | null;
   segment: number | null;
   segments: number;
@@ -152,8 +154,30 @@ export interface TutorMessage {
   seq: number;
   role: "tutor" | "student";
   ts: string;
+  /** The part of the lecture it was said in (see TutorState.section); absent on older messages. */
+  section?: string;
   blocks: Block[];
   actions?: Action[];
+}
+
+/** Where a state is, as a section key — the server sends it; older servers did not. */
+export function sectionOf(state: Pick<TutorState, "phase" | "currentTopicId" | "section">): string {
+  if (state.section) return state.section;
+  if (state.phase === "topic" && state.currentTopicId) return `topic:${state.currentTopicId}`;
+  if (state.phase === "final_ready" || state.phase === "final" || state.phase === "done") return "final";
+  return state.phase;
+}
+
+/**
+ * The messages of one part of the lecture, so a topic's lesson never runs on
+ * into the next one's. Messages saved before sections existed carry no tag:
+ * they show only while the part on screen has nothing tagged yet, so an older
+ * session looks as it did until the student moves on.
+ */
+export function messagesOfSection(messages: TutorMessage[], section: string): TutorMessage[] {
+  const tagged = messages.filter((m) => m.section === section);
+  if (tagged.length) return tagged;
+  return messages.filter((m) => !m.section);
 }
 
 export interface FocusState {

@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-pdfjs-assets.mjs",
     "dev": "node --max-old-space-size=4096 node_modules/next/dist/bin/next dev",
+    "prebuild": "node scripts/copy-pdfjs-assets.mjs",
     "build": "next build",
     "postbuild": "node scripts/stamp-sw.mjs out",
     "start": "next start",

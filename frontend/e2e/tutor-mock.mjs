@@ -47,8 +47,11 @@ function newSession() {
   };
 }
 
+// Which part of the lecture a message belongs to (engine.section_of).
+const sectionOf = (st) => (st.phase === "topic" && st.currentTopicId ? `topic:${st.currentTopicId}` : ["final_ready", "final", "done"].includes(st.phase) ? "final" : st.phase);
+
 function say(s, role, blocks, actions) {
-  const m = { seq: ++s.seq, role, ts: new Date().toISOString(), blocks };
+  const m = { seq: ++s.seq, role, ts: new Date().toISOString(), section: sectionOf(s.state), blocks };
   if (actions) m.actions = actions;
   s.messages.push(m);
   return m;
@@ -113,17 +116,28 @@ function step(s, action, payload) {
     st.stage = "closed";
     st.topics.t1 = { ...progress("mastered"), attempts: 4, correct: 4, reviewDue: "2026-10-15" };
     out.push(say(s, "tutor", [{ type: "topic_summary", topicId: "t1", title: "المكدس (Stack)", mastered: true, score: 0.9, confidence: 0.8, met: [], missing: [], strengths: ["push", "pop"], toReview: [], reviewDue: "2026-10-15", note: "", keyTerms: LECTURE.topics[0].key_terms }], [{ id: "next", label: "الموضوع التالي" }, { id: "save_cards", label: "أضف مصطلحاته لبطاقات المراجعة" }]));
+  } else if (action === "goto" && payload.topicId === "t2") {
+    // the move happens first, so the request is filed with the topic it opens
+    st.phase = "topic";
+    st.currentTopicId = "t2";
+    st.stage = "goal";
+    st.segment = null;
+    st.pending = null;
+    st.topics.t2 = progress("in_progress");
+    out.push(say(s, "student", [{ type: "request", text: "انتقل إلى «الطابور (Queue)»" }]));
+    out.push(say(s, "tutor", [{ type: "goal", topicId: "t2", index: 2, total: 2, title: "الطابور (Queue)", why: "يرتّب المهام بالدور.", objectives: ["يميّز بين الطابور والمكدس"], prerequisites: "المكدس", weakPrerequisites: [], pages: [4, 6], estMinutes: 15 }], [{ id: "next", label: "ابدأ الشرح" }]));
   } else if (action === "next" && st.pending) {
     return { error: [400, "أجب عن السؤال أولاً، أو اطلب تلميحاً."] };
   } else {
     return { error: [400, "إجراء غير مدعوم في الخادم الوهمي."] };
   }
   st.version += 1;
+  st.section = sectionOf(st);
   return { state: st, messages: out };
 }
 
 function publicSession(s) {
-  return { lecture: s.lecture, state: s.state, messages: s.messages, focus: { ...s.focus, serverNow: new Date().toISOString() } };
+  return { lecture: s.lecture, state: { ...s.state, section: sectionOf(s.state) }, messages: s.messages, focus: { ...s.focus, serverNow: new Date().toISOString() } };
 }
 
 /** Returns true when the request was handled. */

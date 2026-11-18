@@ -9,5 +9,7 @@ const env = {
   NEXT_PUBLIC_AGENT_BASE_URL: `http://localhost:${process.env.MOCK_PORT || 8787}`,
   NEXT_TELEMETRY_DISABLED: "1",
 };
+const assets = spawnSync(process.execPath, ["scripts/copy-pdfjs-assets.mjs"], { stdio: "inherit" });
+if (assets.status !== 0) process.exit(assets.status ?? 1);
 const r = spawnSync("npx", ["next", "build"], { stdio: "inherit", env, shell: process.platform === "win32" });
 process.exit(r.status ?? 1);
