@@ -1,4 +1,4 @@
-﻿import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { STUDENT, TINY_PDF, signIn } from "./helpers";
 
 // Each test is its own student so the scripted tutor sessions never collide.
@@ -188,4 +188,45 @@ test("a student can report a wrong question and it is skipped", async ({ page })
   await page.getByRole("button", { name: "الإجابة المعتمدة خاطئة" }).click();
   await expect(page.getByText("شكراً — استبعدت هذا السؤال.")).toBeVisible();
   await expect(page.locator('[role="radiogroup"] button:not([disabled])')).toHaveCount(0);
+});
+
+test("each topic opens on its own page: the last topic's lesson does not run on into the next", async ({ page }) => {
+  await asNewStudent(page, "sections");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toBeVisible();
+
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  // the lecture map belongs to the overview, not to the first topic
+  await expect(page.getByText("الموضوع 1 من 2")).toBeVisible();
+  await expect(page.getByText("خريطة المحاضرة: هياكل البيانات: المكدس والطابور")).toHaveCount(0);
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+  await expect(page.getByText("آخر داخل أول خارج")).toBeVisible();
+
+  // jump to the second topic before finishing the first
+  if (test.info().project.name.includes("mobile")) {
+    await page.getByRole("button", { name: "محتوى الدورة والإتقان" }).click();
+    await page.getByRole("dialog", { name: "موضوعات المحاضرة" }).getByRole("button", { name: "ابدأه" }).click();
+  } else {
+    await page.getByRole("complementary", { name: "محتوى الدورة" }).getByRole("button", { name: /الطابور/ }).click();
+  }
+  await expect(page.getByText("الموضوع 2 من 2")).toBeVisible();
+  await expect(page.getByText("يرتّب المهام بالدور.")).toBeVisible();
+  // nothing of topic 1 is left on the page
+  await expect(page.getByText("آخر داخل أول خارج")).toHaveCount(0);
+  await expect(page.getByText("الموضوع 1 من 2")).toHaveCount(0);
+
+  // the same after a reload
+  await page.reload();
+  await expect(page.getByText("الموضوع 2 من 2")).toBeVisible();
+  await expect(page.getByText("آخر داخل أول خارج")).toHaveCount(0);
+});
+
+test("the slides get pdf.js's character maps and standard fonts, so Arabic and symbols draw right", async ({ page }) => {
+  for (const path of ["/pdfjs/cmaps/UniJIS-UCS2-H.bcmap", "/pdfjs/cmaps/Adobe-Japan1-UCS2.bcmap", "/pdfjs/standard_fonts/LiberationSans-Regular.ttf", "/pdfjs/wasm/openjpeg.wasm"]) {
+    const r = await page.request.get(path);
+    expect(r.status(), path).toBe(200);
+    expect((await r.body()).length, path).toBeGreaterThan(100);
+  }
 });

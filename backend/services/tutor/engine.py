@@ -99,7 +99,7 @@ class Ctx:
     # ── messages ──
     def _push(self, role: str, blocks: list[dict], actions: list[dict] | None = None) -> None:
         self.progress["seq"] = int(self.progress.get("seq") or 0) + 1
-        msg = {"seq": self.progress["seq"], "role": role, "ts": self.iso, "blocks": blocks}
+        msg = {"seq": self.progress["seq"], "role": role, "ts": self.iso, "section": section_of(self.progress), "blocks": blocks}
         if actions:
             msg["actions"] = actions
         self.messages.append(msg)
@@ -335,6 +335,7 @@ def public_state(ctx: Ctx) -> dict:
     return {
         "phase": p.get("phase"),
         "currentTopicId": p.get("currentTopicId"),
+        "section": section_of(p),
         "stage": step.get("stage"),
         "segment": step.get("segment"),
         "segments": len((lesson or {}).get("segments") or []),
@@ -1536,7 +1537,36 @@ def final_report(ctx: Ctx) -> dict:
 ACTIONS = ("begin", "next", "answer", "hint", "reveal", "reexplain", "ask", "goto", "test_out", "review", "final", "abort_final", "save_cards", "report")
 
 
+def section_of(progress: dict) -> str:
+    """Which part of the lecture a message belongs to. The page shows one part
+    at a time, so a topic's lesson never runs on into the next one's."""
+    phase = progress.get("phase") or "overview"
+    if phase == "topic" and progress.get("currentTopicId"):
+        return f"topic:{progress['currentTopicId']}"
+    if phase in ("final_ready", "final", "done"):
+        return "final"
+    return phase  # "overview" | "review"
+
+
+def _settle_sections(messages: list[dict]) -> None:
+    """A student's request ("go to X", "start the review") is written before the
+    move happens; file it with the reply it got, in the part it opened."""
+    reply: str | None = None
+    for m in reversed(messages):
+        if m.get("role") == "tutor":
+            reply = m.get("section")
+        elif reply:
+            m["section"] = reply
+
+
 async def run_action(ctx: Ctx, action: str, payload: dict) -> None:
+    try:
+        await _run_action(ctx, action, payload)
+    finally:
+        _settle_sections(ctx.messages)
+
+
+async def _run_action(ctx: Ctx, action: str, payload: dict) -> None:
     if action not in ACTIONS:
         raise TutorError("إجراء غير معروف.")
     _track_time(ctx)

@@ -52,6 +52,8 @@ import {
   resetLecture,
   resumeFocus,
   saveFocus,
+  messagesOfSection,
+  sectionOf,
   sendStep,
   tutorHandoff,
   type Action,
@@ -153,11 +155,22 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
     };
   }, [id]);
 
-  const messages = session?.messages ?? [];
+  const messages = useMemo(() => session?.messages ?? [], [session?.messages]);
+  // One part of the lecture at a time: moving to another topic opens its own
+  // page instead of piling its lesson under the last one's.
+  const section = session ? sectionOf(session.state) : "";
+  const shown = useMemo(() => messagesOfSection(messages, section), [messages, section]);
+  const shownSection = useRef(section);
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-  }, [messages.length, busy]);
+    if (!el) return;
+    if (shownSection.current !== section) {
+      shownSection.current = section;
+      el.scrollTo({ top: 0 });
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [shown.length, busy, section]);
 
   const act = useCallback(
     async (action: string, payload: Record<string, unknown> = {}) => {
@@ -372,7 +385,7 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
             board && "dark board-mode my-3 rounded-card border-4 border-board-frame bg-canvas sm:my-6",
           )}
         >
-          {messages.map((m) => (
+          {shown.map((m) => (
             <MessageRow
               key={m.seq}
               m={m}

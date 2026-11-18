@@ -290,6 +290,34 @@ def test_full_study_journey(api):
     assert stats["students"] == 1 and stats["topics"] and "uid" not in str(stats) and UID not in str(stats)
 
 
+def test_each_message_is_filed_under_its_part_of_the_lecture(api):
+    """The page shows one part at a time, so a topic's lesson never runs on into
+    the next one's: every message says which part it was said in."""
+    http, db, fake, _ = api
+    s = Session(http, db, upload(http).json())
+    assert {m["section"] for m in s.messages} == {"overview"}
+    assert s.state["section"] == "overview"
+
+    s.step("next")
+    s.step("next")
+    assert s.state["section"] == "topic:t1"
+    t1 = [m for m in s.messages if m["section"] == "topic:t1"]
+    assert any(b["type"] == "lesson" for m in t1 for b in m["blocks"])
+
+    # jumping to another topic: the request and the reply belong to that topic
+    body = s.step("goto", topicId="t2")
+    assert s.state["section"] == "topic:t2"
+    assert body["messages"] and {m["section"] for m in body["messages"]} == {"topic:t2"}
+    assert body["messages"][0]["role"] == "student"
+    # nothing of topic 2 was filed under topic 1, and the reverse
+    assert not any(b.get("topicId") == "t2" for m in t1 for b in m["blocks"])
+
+    # a reopened lecture keeps the parts
+    g = http.get(f"/api/tutor/lectures/{s.lid}").json()
+    assert [m["section"] for m in g["messages"]] == [m["section"] for m in s.messages]
+    assert g["state"]["section"] == "topic:t2"
+
+
 def test_free_question_and_review_and_concurrency(api):
     http, db, fake, _ = api
     s = Session(http, db, upload(http).json())

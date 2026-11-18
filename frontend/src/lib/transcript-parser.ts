@@ -17,6 +17,7 @@ import type {
   TextItem,
 } from "pdfjs-dist/types/src/display/api";
 import { GRADE_POINTS, normalizeGrade } from "@/lib/grade-scale";
+import { PDF_ASSET_OPTIONS } from "@/lib/pdf-assets";
 
 // ──────────────────────────────────────────────────────────────────────
 // Constants — ported verbatim from the legacy parser
@@ -171,7 +172,7 @@ function arNum(s: string | undefined | null): string {
 async function extractPages(file: File): Promise<PageData[]> {
   const pdfjs = await getPdfjs();
   const buf = await file.arrayBuffer();
-  const pdf: PDFDocumentProxy = await pdfjs.getDocument({ data: buf }).promise;
+  const pdf: PDFDocumentProxy = await pdfjs.getDocument({ data: buf, ...PDF_ASSET_OPTIONS }).promise;
   const pages: PageData[] = [];
   for (let p = 1; p <= pdf.numPages; p++) {
     const page = await pdf.getPage(p);
