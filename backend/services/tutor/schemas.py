@@ -87,6 +87,12 @@ LESSON = {
     "required": ["segments", "questions"],
 }
 
+DEEP_DIVE = {
+    "type": "object",
+    "properties": {"parts": {"type": "array", "items": PART}, "related": _STRS},
+    "required": ["parts"],
+}
+
 # The quality review: for each numbered "from the lecture" part, is it supported by the pages?
 REVIEW = {
     "type": "object",

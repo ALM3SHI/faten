@@ -363,3 +363,24 @@ test("new question types: put steps in order, match pairs, fill the blank — ea
   await page.getByRole("textbox", { name: "الكلمة الناقصة" }).press("Enter");
   await expect(page.getByText("إجابة صحيحة").last()).toBeVisible();
 });
+
+test("a topic's concepts each open a deep-dive page, and lead to related concepts", async ({ page }) => {
+  await asNewStudent(page, "deep");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+
+  const concepts = page.getByRole("list", { name: "مفاهيم الموضوع — اضغط أي مفهوم لتتعمّق فيه" });
+  await expect(concepts.getByRole("listitem")).toHaveCount(2);
+  await concepts.getByRole("button", { name: /تعمّق في «مبدأ LIFO» — لم يُقَس بعد/ }).click();
+
+  await expect(page.getByText("تعمّق في: مبدأ LIFO")).toBeVisible();
+  const how = page.getByRole("region", { name: "كيف يعمل؟" });
+  await expect(how).toContainText("كل push يضع عنصراً في القمة");
+  await expect(how).toContainText("من ملفك");
+  await expect(page.getByRole("region", { name: "من الواقع" })).toContainText("إضافة توضيحية");
+  // a related concept opens its own page
+  await page.getByRole("list", { name: "مفاهيم مرتبطة به" }).getByRole("button", { name: /عمليتا push و pop/ }).click();
+  await expect(page.getByText("تعمّق في: عمليتا push و pop")).toBeVisible();
+});

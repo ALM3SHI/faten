@@ -134,6 +134,28 @@ Required questions:
 2-4 segments. Total explanation must fit the topic: do not over-shorten it.
 """
 
+DEEP_DIVE = """You are «فطن», a patient private tutor. A student wants to go DEEPER into ONE concept
+of the lecture "{lecture}" (topic: "{title}"). Build a short page that makes this concept
+click: what it is, why it exists, how it works step by step, a worked example, where it is met
+in real life, the mistake students usually make with it, and how it differs from the nearby
+concepts listed below. Use the lecture pages first; added help must be well-established and
+labelled "added".
+
+Concept: {name} — {definition}
+Other concepts in the lecture (id: name): {others}
+
+Lecture pages:
+{pages}
+
+Return ONE JSON object:
+{{"parts": [ PART, ... ], "related": ["ids of the other concepts this one connects to, most important first"]}}
+5-8 parts, 250-500 words in all, with a "summary" last.
+
+PART — {{"role": "idea" | "why" | "how" | "example" | "real_world" | "code" | "mistake" | "compare" | "summary",
+  "origin": "lecture" | "added", "markdown": "clear Arabic, technical terms in English in
+  parentheses, cite pages like [ص 12] for lecture parts", "pages": [pages, empty for added]}}
+"""
+
 REVIEW = """You check a lesson against the lecture it was written from. You did not write it.
 For each numbered part below, decide if EVERYTHING it states is supported by the lecture pages:
 rephrasing, simplifying and reordering are fine; a fact, number, step, rule or claim that the

@@ -72,6 +72,15 @@ class FakeTutorAI:
                     "key_terms": [{"term": f"Term{chunk[0]}", "definition": "معنى"}],
                 })
             return {"title": "هياكل البيانات", "overview": "محاضرة عن المكدس", "topics": topics, "unclear_pages": []}
+        if "go DEEPER into ONE concept" in prompt:
+            self.calls["deep_dive"] += 1
+            others = re.findall(r"(t\d+c\d+): ", prompt)
+            return {"parts": [
+                {"role": "idea", "origin": "lecture", "markdown": "المفهوم كما في الشريحة: آخر عنصر يدخل أول عنصر يخرج [ص 1].", "pages": [1]},
+                {"role": "how", "origin": "lecture", "markdown": "خطوة بخطوة: push يضع العنصر في القمة و pop يأخذه منها [ص 1].", "pages": [1]},
+                {"role": "real_world", "origin": "added", "markdown": "مثل زر التراجع في محرر النصوص: آخر تعديل يُلغى أولاً.", "pages": []},
+                {"role": "summary", "origin": "lecture", "markdown": "الخلاصة: القمة هي مكان الإضافة والسحب [ص 1].", "pages": [1]},
+            ], "related": others[:2] + ["t99c9"]}
         if "You check a lesson against the lecture" in prompt:
             self.calls["review"] += 1
             parts_text, _, questions_text = user.partition("QUESTIONS TO SOLVE:")

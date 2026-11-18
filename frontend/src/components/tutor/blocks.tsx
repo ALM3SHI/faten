@@ -22,12 +22,15 @@ import {
 import { BotMarkdown } from "@/components/bot-markdown";
 import { LessonVisual } from "@/components/tutor/lesson-visual";
 import { LessonParts } from "@/components/tutor/lesson-parts";
+import { ConceptChips } from "@/components/tutor/concept-chips";
 import { cn } from "@/lib/utils";
 import { CONTEXT_LABEL, pct, type AnswerPayload, type Block, type Confidence, type QuestionBlock, type ReportReason } from "@/lib/tutor";
 import { MatchInput, OrderInput } from "@/components/tutor/question-inputs";
 
 interface Common {
   onSlide: (page: number) => void;
+  /** open a concept's deep-dive page */
+  onDeepDive?: (conceptId: string) => void;
 }
 
 function Card({ className, children }: { className?: string; children: React.ReactNode }) {
@@ -126,7 +129,17 @@ export function TutorBlock({ block, ...c }: { block: Block } & Common & Question
         </Card>
       );
     case "diagnosis":
-      return <DiagnosisCard block={block} />;
+      return <DiagnosisCard block={block} {...c} />;
+    case "deep_dive":
+      return (
+        <Card className="border-info-line">
+          <div className="mb-1 text-caption font-bold text-info-ink">تعمّق · {block.topicTitle}</div>
+          <h3 className="mb-1 text-subheading font-bold" dir="auto">{block.name}</h3>
+          {block.definition && <p className="mb-3 text-small leading-7 text-ink-muted" dir="auto">{block.definition}</p>}
+          <LessonParts parts={block.parts ?? []} reviewed={block.reviewed} onSlide={c.onSlide} />
+          <ConceptChips concepts={(block.related ?? []).map((r: { id: string; name: string }) => ({ ...r, level: "unknown" as const }))} label="مفاهيم مرتبطة به" busy={c.busy} onDeepDive={c.onDeepDive} />
+        </Card>
+      );
     case "topic_summary":
       return <TopicSummaryCard block={block} {...c} />;
     case "final_report":
@@ -168,7 +181,7 @@ function MapCard({ block, onSlide }: { block: Block } & Common) {
   );
 }
 
-function GoalCard({ block, onSlide }: { block: Block } & Common) {
+function GoalCard({ block, onSlide, onDeepDive, busy }: { block: Block } & Common & QuestionProps) {
   return (
     <Card className="border-info-line bg-info-soft">
       <div className="text-caption font-bold text-info-ink mb-1">الموضوع {block.index} من {block.total}</div>
@@ -192,6 +205,7 @@ function GoalCard({ block, onSlide }: { block: Block } & Common) {
         <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" aria-hidden /> ~{block.estMinutes} دقيقة</span>
         <Button variant="bare" type="button" onClick={() => onSlide(block.pages[0])} className="hover:text-info-ink font-bold">الشرائح {block.pages[0]}–{block.pages[1]}</Button>
       </div>
+      <ConceptChips concepts={block.concepts ?? []} label="مفاهيم الموضوع — اضغط أي مفهوم لتتعمّق فيه" busy={busy} onDeepDive={onDeepDive} />
     </Card>
   );
 }
@@ -449,7 +463,7 @@ function FeedbackCard({ block, onSlide, onReport, busy }: { block: Block } & Com
   );
 }
 
-function DiagnosisCard({ block }: { block: Block }) {
+function DiagnosisCard({ block, onDeepDive, busy }: { block: Block } & Common & QuestionProps) {
   return (
     <Card className="border-warning-line">
       <div className="flex items-center gap-2 font-bold mb-2"><Stethoscope className="w-4 h-4 text-warning-ink" aria-hidden /> ما لاحظته من إجاباتك</div>
@@ -460,11 +474,12 @@ function DiagnosisCard({ block }: { block: Block }) {
         {(block.reasons as string[] | undefined)?.map((r) => <li key={r} className="text-ink-muted">• {r}</li>)}
         <li><span className="font-bold">الخطة: </span>{block.strategy}</li>
       </ul>
+      <ConceptChips concepts={block.weakConcepts ?? []} label="تعمّق في مفهوم منها" busy={busy} onDeepDive={onDeepDive} />
     </Card>
   );
 }
 
-function TopicSummaryCard({ block }: { block: Block } & Common) {
+function TopicSummaryCard({ block, onDeepDive, busy }: { block: Block } & Common & QuestionProps) {
   return (
     <Card className={block.mastered ? "border-success-line" : "border-warning-line"}>
       <div className="flex items-center gap-2 font-bold mb-3">
@@ -483,6 +498,7 @@ function TopicSummaryCard({ block }: { block: Block } & Common) {
       </div>
       {block.strengths?.length > 0 && <p className="text-small"><span className="font-bold text-success-ink">ثبّتّ: </span>{(block.strengths as string[]).join("، ")}</p>}
       {block.toReview?.length > 0 && <p className="text-small mt-1"><span className="font-bold text-warning-ink">راجع: </span>{(block.toReview as string[]).join("، ")}</p>}
+      <ConceptChips concepts={block.toReviewConcepts ?? []} label="تعمّق فيما تحتاج مراجعته" busy={busy} onDeepDive={onDeepDive} />
       {block.missing?.length > 0 && (
         <details className="mt-2 text-small">
           <summary className="cursor-pointer font-bold text-ink-muted">لماذا لم يُحسب متقناً؟</summary>

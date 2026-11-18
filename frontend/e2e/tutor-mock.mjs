@@ -102,7 +102,12 @@ function step(s, action, payload) {
     st.currentTopicId = "t1";
     st.stage = "goal";
     st.topics.t1 = progress("in_progress");
-    out.push(say(s, "tutor", [{ type: "goal", topicId: "t1", index: 1, total: 2, title: "المكدس (Stack)", why: "أساس لفهم استدعاء الدوال.", objectives: ["يطبّق عمليات push و pop"], prerequisites: "لا يحتاج إلى معرفة سابقة من هذه المحاضرة", weakPrerequisites: [], pages: [1, 3], estMinutes: 15 }], [{ id: "next", label: "ابدأ الشرح" }, { id: "test_out", label: "أعرف هذا الموضوع — اختبرني مباشرة" }]));
+    // concepts with how the student does on each and when its memory is due (engine._concept_chips)
+    const concepts = [
+      { id: "t1c1", name: "مبدأ LIFO", level: "unknown", attempts: 0, due: null, recall: null },
+      { id: "t1c2", name: "عمليتا push و pop", level: "unknown", attempts: 0, due: null, recall: null },
+    ];
+    out.push(say(s, "tutor", [{ type: "goal", topicId: "t1", index: 1, total: 2, title: "المكدس (Stack)", why: "أساس لفهم استدعاء الدوال.", objectives: ["يطبّق عمليات push و pop"], prerequisites: "لا يحتاج إلى معرفة سابقة من هذه المحاضرة", weakPrerequisites: [], pages: [1, 3], estMinutes: 15, concepts }], [{ id: "next", label: "ابدأ الشرح" }, { id: "test_out", label: "أعرف هذا الموضوع — اختبرني مباشرة" }]));
   } else if (action === "next" && st.stage === "goal") {
     st.stage = "check";
     st.segment = 0;
@@ -167,6 +172,21 @@ function step(s, action, payload) {
     st.topics.t2 = progress("in_progress");
     out.push(say(s, "student", [{ type: "request", text: "انتقل إلى «الطابور (Queue)»" }]));
     out.push(say(s, "tutor", [{ type: "goal", topicId: "t2", index: 2, total: 2, title: "الطابور (Queue)", why: "يرتّب المهام بالدور.", objectives: ["يميّز بين الطابور والمكدس"], prerequisites: "المكدس", weakPrerequisites: [], pages: [4, 6], estMinutes: 15 }], [{ id: "next", label: "ابدأ الشرح" }]));
+  } else if (action === "deep_dive") {
+    // engine.handle_deep_dive: one concept, its own page in teaching pieces
+    if (st.pending && st.pending.context !== "check") return { error: [400, "أكمل السؤال الحالي أولاً، ثم تعمّق في المفهوم."] };
+    const name = payload.conceptId === "t1c1" ? "مبدأ LIFO" : "عمليتا push و pop";
+    out.push(say(s, "student", [{ type: "request", text: `تعمّق في: ${name}` }]));
+    out.push(say(s, "tutor", [{
+      type: "deep_dive", conceptId: payload.conceptId, topicId: "t1", topicTitle: "المكدس (Stack)", name, definition: "آخر عنصر يدخل هو أول عنصر يخرج.",
+      parts: [
+        { role: "how", origin: "lecture", md: "كل push يضع عنصراً في القمة، وكل pop يأخذ من القمة [ص 2].", pages: [2] },
+        { role: "real_world", origin: "added", md: "زر التراجع في المحرر: آخر تعديل يُلغى أولاً.", pages: [] },
+        { role: "summary", origin: "lecture", md: "القمة مكان الإضافة والسحب.", pages: [2] },
+      ],
+      reviewed: true,
+      related: [{ id: "t1c2", name: "عمليتا push و pop" }],
+    }]));
   } else if (action === "ask") {
     // engine.handle_ask: the passages the student selected travel with the question
     const quotes = Array.isArray(payload.quotes) ? payload.quotes : [];

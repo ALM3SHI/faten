@@ -111,6 +111,33 @@ def save_lesson(db, file_hash: str, tid: str, lesson: dict) -> None:
     cache_ref(db, file_hash).collection("lessons").document(tid).set(lesson)
 
 
+# Measured difficulty of each shared question (Elo, mastery.elo_update):
+#   tutor_cache/{fileHash}/ratings/{topicId}   {questionId: {"b": rating, "n": answers}}
+# Anonymous — counts and a number per question, no student data.
+
+
+def get_ratings(db, file_hash: str, tid: str) -> dict:
+    snap = cache_ref(db, file_hash).collection("ratings").document(tid).get()
+    return dict(snap.to_dict() or {}) if snap.exists else {}
+
+
+def save_ratings(db, file_hash: str, tid: str, changed: dict) -> None:
+    cache_ref(db, file_hash).collection("ratings").document(tid).set(changed, merge=True)
+
+
+# Deep-dive pages, one per concept, shared like the lessons:
+#   tutor_cache/{fileHash}/concepts/{conceptId}
+
+
+def get_deep_dive(db, file_hash: str, cid: str) -> dict | None:
+    snap = cache_ref(db, file_hash).collection("concepts").document(cid).get()
+    return snap.to_dict() if snap.exists else None
+
+
+def save_deep_dive(db, file_hash: str, cid: str, page: dict) -> None:
+    cache_ref(db, file_hash).collection("concepts").document(cid).set(page)
+
+
 # ── per student ───────────────────────────────────────────────────
 
 

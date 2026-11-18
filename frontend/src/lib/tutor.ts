@@ -160,6 +160,16 @@ export async function loadVisual(id: string, topicId: string, segment: number): 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Block = { type: string } & Record<string, any>;
 
+/** One concept of a topic: how the student answers on it, and when its memory needs a review (FSRS). */
+export interface ConceptChip {
+  id: string;
+  name: string;
+  level: "strong" | "developing" | "weak" | "unknown";
+  attempts?: number;
+  due?: string | null;
+  recall?: number | null;
+}
+
 export type PartRole = "idea" | "why" | "how" | "example" | "real_world" | "code" | "mistake" | "compare" | "summary";
 
 /** One teaching piece of a lesson part; `origin` says if it comes from the student's file. */

@@ -108,6 +108,7 @@ const BUSY_LABEL: Record<string, string> = {
   review: "أجهّز المراجعة…",
   report: "أستبعد السؤال…",
   goto: "أنقلك للموضوع…",
+  deep_dive: "أجهّز صفحة التعمّق في المفهوم…",
 };
 
 /** Actions that stay usable while a question is open. */
@@ -425,6 +426,7 @@ function StudySession({ id, startReview, linkTopic, onExit }: { id: string; star
               onSlide={setSlide}
               onAnswer={(qid, ans) => void act("answer", { questionId: qid, ...ans })}
               onReport={(qid, reason) => void act("report", { questionId: qid, reason })}
+              onDeepDive={(conceptId) => void act("deep_dive", { conceptId })}
             />
           ))}
           {busy && (
@@ -577,6 +579,7 @@ function MessageRow({
   onSlide,
   onAnswer,
   onReport,
+  onDeepDive,
 }: {
   m: TutorMessage;
   pendingId: string | null;
@@ -585,6 +588,7 @@ function MessageRow({
   onSlide: (p: number) => void;
   onAnswer: (qid: string, a: AnswerPayload) => void;
   onReport: (qid: string, reason: ReportReason) => void;
+  onDeepDive: (conceptId: string) => void;
 }) {
   if (m.role === "student") {
     return (
@@ -600,7 +604,7 @@ function MessageRow({
       </span>
       <div className="flex-1 min-w-0 space-y-2.5">
         {m.blocks.map((b, i) => (
-          <TutorBlock key={i} block={b} onSlide={onSlide} pendingId={pendingId} attempt={attempt} busy={busy} onAnswer={onAnswer} onReport={onReport} />
+          <TutorBlock key={i} block={b} onSlide={onSlide} pendingId={pendingId} attempt={attempt} busy={busy} onAnswer={onAnswer} onReport={onReport} onDeepDive={onDeepDive} />
         ))}
       </div>
     </div>

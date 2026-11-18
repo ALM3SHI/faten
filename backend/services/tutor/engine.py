@@ -90,6 +90,8 @@ class Ctx:
     _lessons: dict[str, dict] = field(default_factory=dict)
     _extras: dict[str, list[dict]] = field(default_factory=dict)
     _extras_dirty: set[str] = field(default_factory=set)
+    _ratings: dict[str, dict] = field(default_factory=dict)
+    _ratings_dirty: dict[str, dict] = field(default_factory=dict)
     learner_style: str | None = None
 
     @property
@@ -166,7 +168,31 @@ class Ctx:
         reported = set(self.progress.get("reported") or [])
         qs = [q for q in lesson.get("questions") or [] if q.get("pool") in pools]
         qs += [q for q in self.extras(tid) if q.get("pool") in pools]
-        return [q for q in qs if not q.get("disabled") and q["id"] not in reported]
+        ratings = self.ratings(tid)
+        # once enough students answered it, a question's measured difficulty
+        # replaces the model's guess (mastery.measured_difficulty)
+        return [
+            {**q, "difficulty": mastery.measured_difficulty(ratings.get(q["id"]), q["difficulty"])} if q["id"] in ratings else q
+            for q in qs
+            if not q.get("disabled") and q["id"] not in reported
+        ]
+
+    def ratings(self, tid: str) -> dict:
+        if tid not in self._ratings:
+            self._ratings[tid] = store.get_ratings(self.db, self.lecture["fileHash"], tid)
+        return self._ratings[tid]
+
+    def rate(self, q: dict, correct: bool) -> None:
+        """A first answer moves the student's ability on this topic and the
+        question's measured difficulty (Elo). Only shared questions are rated."""
+        tid = q["topic_id"]
+        if not self.is_shared(q["id"]):
+            return
+        ts = self.tstate(tid)
+        theta, rating = mastery.elo_update(float(ts.get("theta") or 0.0), self.ratings(tid).get(q["id"]), q["difficulty"], correct)
+        ts["theta"] = theta
+        self.ratings(tid)[q["id"]] = rating
+        self._ratings_dirty.setdefault(tid, {})[q["id"]] = rating
 
     def question(self, qid: str) -> dict | None:
         tid = qid.split("-")[0]
@@ -195,6 +221,8 @@ class Ctx:
     def flush(self) -> None:
         for tid in self._extras_dirty:
             store.save_extras(self.db, self.uid, self.lecture["id"], tid, self._extras[tid])
+        for tid, changed in self._ratings_dirty.items():
+            store.save_ratings(self.db, self.lecture["fileHash"], tid, changed)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -705,6 +733,7 @@ def show_goal(ctx: Ctx, tid: str) -> None:
         "weakPrerequisites": weak_prereq,
         "pages": topic["pages"],
         "estMinutes": topic["est_minutes"],
+        "concepts": _concept_chips(ctx, topic),
     }
     actions = [_act("next", "ابدأ الشرح"), _act("test_out", "أعرف هذا الموضوع — اختبرني مباشرة")]
     ctx.say(goal, actions=actions)
@@ -835,6 +864,7 @@ def close_topic(ctx: Ctx, mastered: bool, note: str = "") -> None:
             "missing": a["missing"],
             "strengths": strong[:5],
             "toReview": weak[:5],
+            "toReviewConcepts": _concept_chips(ctx, topic, mastery.weak_concepts(ev)[:5]),
             "reviewDue": ts.get("reviewDue"),
             "note": note,
             "keyTerms": topic.get("key_terms") or [],
@@ -890,6 +920,8 @@ async def remediate(ctx: Ctx) -> None:
         "strategy": diag["label"],
         "reasons": reason[:3],
         "prerequisites": [ctx.topic(p)["title"] for p in prereq_gap if ctx.topic(p)],
+        # the concepts that went wrong, each with a way to go deeper
+        "weakConcepts": _concept_chips(ctx, topic, weak),
     })
     md, pages, qs = await teach_again(ctx, topic, diag["strategy"], weak, diag["misconceptions"], prereq_topics=[ctx.topic(p) for p in prereq_gap if ctx.topic(p)], n_questions=3)
     ctx.add_extras(tid, qs)
@@ -1061,7 +1093,8 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
     if first:
         kind = {"check": "check", "quiz": "quiz", "review": "review", "warmup": "review"}[context]
         ev = _evidence(q, g, kind, hints, ctx.iso, confidence)
-        mastery.add_evidence(ctx.tstate(tid), ev)
+        mastery.add_evidence(ctx.tstate(tid), ev, ctx.today)
+        ctx.rate(q, g["correct"])
         p["points"] = int(p.get("points") or 0) + mastery.points_for(g["correct"], q["difficulty"], hints, kind)
         names = {c["id"]: c["name"] for c in topic.get("concepts") or []}
         ctx.events.append({
@@ -1431,6 +1464,103 @@ async def handle_ask(ctx: Ctx, payload: dict) -> None:
             ctx.say({"type": "text", "md": "نرجع للسؤال المفتوح 👇"}, question_block(q, pending["context"], pending.get("index"), pending.get("total")))
 
 
+# ══════════════════════════════════════════════════════════════════
+#  Deep dive: one concept, its own page
+# ══════════════════════════════════════════════════════════════════
+
+
+def _concept(ctx: Ctx, cid: str) -> tuple[dict, dict] | None:
+    for t in ctx.lecture["topics"]:
+        for c in t.get("concepts") or []:
+            if c["id"] == cid:
+                return t, c
+    return None
+
+
+async def write_deep_dive(ctx: Ctx, topic: dict, concept: dict) -> dict:
+    """A page that goes deeper into one concept, in the same teaching pieces as
+    a lesson, labelled by origin and checked against the pages by the review.
+    Written once per file and concept, shared like the lessons."""
+    allowed = ctx.all_page_numbers()
+    others = [c for t in ctx.lecture["topics"] for c in t.get("concepts") or [] if c["id"] != concept["id"]]
+    raw = await ai.ask_json(
+        prompts.DEEP_DIVE.format(
+            lecture=ctx.lecture.get("title", ""),
+            title=topic["title"],
+            name=concept["name"],
+            definition=concept.get("definition") or "—",
+            others="؛ ".join(f"{c['id']}: {c['name']}" for c in others[:30]) or "—",
+            pages=ctx.topic_pages_text(topic),
+        ),
+        "Write the deep-dive page.",
+        schema=schemas.DEEP_DIVE,
+        kind="deep_dive",
+        temperature=0.4,
+        max_tokens=12000,
+        timeout=150.0,
+    )
+    raw = raw if isinstance(raw, dict) else {}
+    a, b = topic["pages"]
+    parts = _normalize_parts(raw.get("parts"), allowed, [n for n in range(a, b + 1) if n in allowed][:6])
+    if len(parts) < 2:
+        raise TutorError("تعذّر تجهيز صفحة التعمّق الآن. حاول مرة أخرى بعد قليل.", 502)
+    known = {c["id"] for c in others}
+    page = {
+        "conceptId": concept["id"],
+        "topicId": topic["id"],
+        "parts": parts,
+        "related": [r for r in dict.fromkeys(raw.get("related") or []) if r in known][:4],
+        "generatedAt": ctx.iso,
+    }
+    page["review"] = await review_lesson(ctx, topic, [page])
+    store.save_deep_dive(ctx.db, ctx.lecture["fileHash"], concept["id"], page)
+    return page
+
+
+async def handle_deep_dive(ctx: Ctx, payload: dict) -> None:
+    cid = str(payload.get("conceptId") or "")
+    found = _concept(ctx, cid)
+    if not found:
+        raise TutorError("المفهوم غير موجود.")
+    topic, concept = found
+    p = ctx.progress
+    pending = p.get("pending")
+    if p.get("phase") == "final" or (pending and pending["context"] in ("quiz", "review", "final", "warmup")):
+        raise TutorError("أكمل السؤال الحالي أولاً، ثم تعمّق في المفهوم.")
+    ctx.student({"type": "request", "text": f"تعمّق في: {concept['name']}"})
+    page = store.get_deep_dive(ctx.db, ctx.lecture["fileHash"], cid)
+    if not page or not page.get("parts"):
+        ctx.charge(COST_SMALL)  # only when it is written; reading a written page is free
+        page = await write_deep_dive(ctx, topic, concept)
+    names = {c["id"]: c["name"] for t in ctx.lecture["topics"] for c in t.get("concepts") or []}
+    ts = ctx.tstate(topic["id"])
+    ts["deepDives"] = sorted(set(ts.get("deepDives") or []) | {cid})
+    ctx.say({
+        "type": "deep_dive",
+        "conceptId": cid,
+        "topicId": topic["id"],
+        "topicTitle": topic["title"],
+        "name": concept["name"],
+        "definition": concept.get("definition") or "",
+        "parts": [{"role": x["role"], "origin": x["origin"], "md": x["markdown"], "pages": x.get("pages") or []} for x in page["parts"]],
+        "reviewed": bool((page.get("review") or {}).get("checked")),
+        "related": [{"id": r, "name": names[r]} for r in page.get("related") or [] if r in names],
+    })
+    if pending:
+        q = ctx.question(pending["qid"])
+        if q:
+            ctx.say({"type": "text", "md": "نرجع للسؤال المفتوح 👇"}, question_block(q, pending["context"], pending.get("index"), pending.get("total")))
+
+
+def _concept_chips(ctx: Ctx, topic: dict, ids: list[str] | None = None) -> list[dict]:
+    """Concepts as the student sees them: name, how they answer on it, when its
+    memory needs a review — each one opens its deep dive."""
+    concepts = topic.get("concepts") or []
+    wanted = [c for c in concepts if ids is None or c["id"] in ids]
+    states = mastery.concept_states(ctx.progress["topics"].get(topic["id"]) or {}, [c["id"] for c in wanted], ctx.today)
+    return [{"id": c["id"], "name": c["name"], **states[c["id"]]} for c in wanted]
+
+
 REPORT_REASONS = {
     "wrong_key": "الإجابة المعتمدة خاطئة",
     "unclear": "السؤال غير واضح",
@@ -1545,9 +1675,12 @@ async def continue_review(ctx: Ctx) -> None:
         if not ctx.lesson(tid):
             continue
         pool = ctx.bank(tid, ("quiz",))
-        q = select_next(pool, ctx.asked, 2, need_higher_order=True)
+        # ask about the concepts whose memory is due, the most faded first (FSRS)
+        due = mastery.concepts_due(ctx.tstate(tid), ctx.today)
+        q = select_next(pool, ctx.asked, 2, due or None, need_higher_order=True)
         if q is None:
             used = [x for x in pool if x["id"] in ctx.asked]
+            used.sort(key=lambda x: not (set(x.get("concept_ids") or []) & set(due)))
             q = used[0] if used else None  # retrieval practice may reuse an old question
         if q is None:
             continue
@@ -1626,7 +1759,8 @@ async def _final_answer(ctx: Ctx, q: dict, g: dict) -> None:
     f["answers"][q["id"]] = {"correct": bool(g["correct"]), "credit": float(g.get("credit", 1.0 if g["correct"] else 0.0)), "misconception": g.get("misconception") or "", "note": g.get("note") or "", "picked": g.get("picked"), "confidence": g.get("confidence")}
     tid = q["topic_id"]
     topic = ctx.topic(tid)
-    mastery.add_evidence(ctx.tstate(tid), _evidence(q, g, "final", 0, ctx.iso, g.get("confidence")))
+    mastery.add_evidence(ctx.tstate(tid), _evidence(q, g, "final", 0, ctx.iso, g.get("confidence")), ctx.today)
+    ctx.rate(q, g["correct"])
     p["points"] = int(p.get("points") or 0) + mastery.points_for(g["correct"], q["difficulty"], 0, "final")
     names = {c["id"]: c["name"] for c in topic.get("concepts") or []}
     ctx.events.append({"type": "answer", "topic": topic["title"], "concepts": [names.get(c, c) for c in q.get("concept_ids") or []], "qid": q["id"], "shared": ctx.is_shared(q["id"]), "skill": q["skill"], "difficulty": q["difficulty"], "prompt": q["prompt"], "correct": g["correct"], "kind": "final"})
@@ -1734,7 +1868,7 @@ def final_report(ctx: Ctx) -> dict:
 #  Entry point
 # ══════════════════════════════════════════════════════════════════
 
-ACTIONS = ("begin", "next", "answer", "hint", "reveal", "reexplain", "ask", "goto", "test_out", "review", "final", "abort_final", "save_cards", "report")
+ACTIONS = ("begin", "next", "answer", "hint", "reveal", "reexplain", "ask", "goto", "test_out", "review", "final", "abort_final", "save_cards", "report", "deep_dive")
 
 
 def section_of(progress: dict) -> str:
@@ -1794,6 +1928,8 @@ async def _run_action(ctx: Ctx, action: str, payload: dict) -> None:
         handle_goto(ctx, payload)
     elif action == "report":
         handle_report(ctx, payload)
+    elif action == "deep_dive":
+        await handle_deep_dive(ctx, payload)
     elif action == "test_out":
         await handle_test_out(ctx)
     elif action == "review":

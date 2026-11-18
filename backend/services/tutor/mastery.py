@@ -35,6 +35,7 @@ Points (XP) for motivation are computed separately and never feed mastery.
 from __future__ import annotations
 
 import datetime as dt
+import math
 from typing import Any, Iterable
 
 KIND_WEIGHT = {"check": 0.6, "quiz": 1.0, "review": 1.0, "final": 1.2}
@@ -211,7 +212,10 @@ def weak_concepts(evidence: list[dict], threshold: float = 0.6) -> list[str]:
     return [c for _, c in sorted(rows)]
 
 
-def add_evidence(topic: dict, item: dict) -> dict:
+def add_evidence(topic: dict, item: dict, today: str | None = None) -> dict:
+    """Keep one graded answer; with `today`, it also reviews the concepts it tests (FSRS)."""
+    if today:
+        review_concepts(topic, item, today)
     ev = list(topic.get("evidence") or [])
     ev.append(item)
     topic["evidence"] = ev[-MAX_EVIDENCE:]
@@ -239,14 +243,15 @@ def schedule_after_review(topic: dict, correct: bool, today: str) -> dict:
     box = int(topic.get("reviewBox") or 0)
     box = min(len(REVIEW_INTERVALS), box + 1) if correct else 1
     topic["reviewBox"] = box
-    topic["reviewDue"] = add_days(today, REVIEW_INTERVALS[box - 1])
+    # its concepts' memory decides when, when we know it (FSRS, below)
+    topic["reviewDue"] = _concept_review_day(topic, today) or add_days(today, REVIEW_INTERVALS[box - 1])
     topic["lastReviewedAt"] = today
     return topic
 
 
 def start_review_schedule(topic: dict, today: str) -> dict:
     topic["reviewBox"] = 1
-    topic["reviewDue"] = add_days(today, REVIEW_INTERVALS[0])
+    topic["reviewDue"] = _concept_review_day(topic, today) or add_days(today, REVIEW_INTERVALS[0])
     topic["lastReviewedAt"] = today
     return topic
 
@@ -269,6 +274,148 @@ def due_reviews(topics: dict[str, dict], today: str) -> list[str]:
     """Topic ids whose spaced review is due, most overdue first."""
     due = [(t.get("reviewDue") or "", tid) for tid, t in topics.items() if status_of(t, today) == "review_due"]
     return [tid for _, tid in sorted(due)]
+
+
+# ── Memory per concept: FSRS ───────────────────────────────────────
+# FSRS (Free Spaced Repetition Scheduler, Ye et al. 2022; version 4.5 with its
+# published default weights) models each concept's memory with two numbers:
+#   stability S   days until recall probability falls to 90%
+#   difficulty D  1..10, how hard this concept is for this student
+# Every assessed answer (quiz, review, final — not the in-lesson checks) is a
+# review of the concepts it tests. The next review of a concept is due when
+# its recall would drop to DESIRED_RETENTION; a topic's review is due when its
+# first concept is. Topics whose questions name no concepts keep the
+# Leitner ladder above.
+
+FSRS_W = (0.4872, 1.4003, 3.7145, 13.8206, 5.1618, 1.2298, 0.8975, 0.031, 1.6474, 0.1367, 1.0461, 2.1072, 0.0793, 0.3246, 1.587, 0.2272, 2.8755)
+FSRS_DECAY = -0.5
+FSRS_FACTOR = 19 / 81  # with DECAY, R(S days) = 0.9
+DESIRED_RETENTION = 0.9
+MAX_INTERVAL = 180
+
+
+def fsrs_grade(correct: bool, hints: int = 0, confidence: str | None = None, difficulty: int = 2) -> int:
+    """1 again · 2 hard · 3 good · 4 easy — from what the answer shows."""
+    if not correct:
+        return 1
+    if hints or confidence == "guess":
+        return 2
+    if confidence == "sure" and difficulty >= 3:
+        return 4
+    return 3
+
+
+def _clamp_d(d: float) -> float:
+    return min(10.0, max(1.0, d))
+
+
+def retrievability(mem: dict, today: str) -> float:
+    """Probability of recalling the concept today."""
+    try:
+        t = max(0, (dt.date.fromisoformat(today) - dt.date.fromisoformat(mem["last"])).days)
+        return (1 + FSRS_FACTOR * t / float(mem["S"])) ** FSRS_DECAY
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return 1.0
+
+
+def fsrs_review(mem: dict | None, grade: int, today: str) -> dict:
+    """The concept's memory after one review on `today`."""
+    w = FSRS_W
+    g = min(4, max(1, int(grade)))
+    if not mem or not mem.get("S"):
+        s = w[g - 1]
+        d = _clamp_d(w[4] - (g - 3) * w[5])
+        reps, lapses = 1, 0 if g > 1 else 1
+    else:
+        s0, d0 = float(mem["S"]), float(mem["D"])
+        r = retrievability(mem, today)
+        d = _clamp_d(w[7] * w[4] + (1 - w[7]) * (d0 - w[6] * (g - 3)))
+        if g == 1:
+            s = w[11] * d0 ** (-w[12]) * ((s0 + 1) ** w[13] - 1) * math.exp(w[14] * (1 - r))
+            s = min(s, s0)
+        else:
+            bonus = (w[15] if g == 2 else 1.0) * (w[16] if g == 4 else 1.0)
+            s = s0 * (1 + math.exp(w[8]) * (11 - d0) * s0 ** (-w[9]) * (math.exp(w[10] * (1 - r)) - 1) * bonus)
+        reps = int(mem.get("reps") or 0) + 1
+        lapses = int(mem.get("lapses") or 0) + (1 if g == 1 else 0)
+    interval = s / FSRS_FACTOR * (DESIRED_RETENTION ** (1 / FSRS_DECAY) - 1)
+    days = int(min(MAX_INTERVAL, max(1, round(interval))))
+    return {"S": round(s, 4), "D": round(d, 4), "last": today, "due": add_days(today, days), "reps": reps, "lapses": lapses}
+
+
+def review_concepts(topic: dict, item: dict, today: str) -> None:
+    """An assessed answer reviews each concept it tests."""
+    if item.get("kind") == "check" or not item.get("concept_ids"):
+        return
+    grade = fsrs_grade(bool(item.get("correct")), int(item.get("hints") or 0), item.get("confidence"), int(item.get("difficulty") or 2))
+    mems = dict(topic.get("concepts") or {})
+    for cid in item["concept_ids"]:
+        mems[cid] = fsrs_review(mems.get(cid), grade, today)
+    topic["concepts"] = mems
+
+
+def concepts_due(topic: dict, today: str) -> list[str]:
+    """This topic's concepts due for review, least likely to be recalled first."""
+    mems = topic.get("concepts") or {}
+    due = [(retrievability(m, today), cid) for cid, m in mems.items() if (m.get("due") or "") <= today]
+    return [cid for _, cid in sorted(due)]
+
+
+def _concept_review_day(topic: dict, today: str) -> str | None:
+    dues = [m.get("due") for m in (topic.get("concepts") or {}).values() if m.get("due")]
+    return max(add_days(today, 1), min(dues)) if dues else None
+
+
+def concept_states(topic: dict, concept_ids: list[str], today: str) -> dict[str, dict]:
+    """What the student shows for each concept: level from the answers, and
+    when its memory needs a review."""
+    ev = [e for e in topic.get("evidence") or [] if e.get("kind") != "check"] or list(topic.get("evidence") or [])
+    rows = concept_breakdown(ev)
+    mems = topic.get("concepts") or {}
+    out = {}
+    for cid in concept_ids:
+        row = rows.get(cid) or {}
+        mem = mems.get(cid) or {}
+        out[cid] = {
+            "level": level_of(row.get("score")),
+            "attempts": row.get("attempts", 0),
+            "due": mem.get("due"),
+            "recall": round(retrievability(mem, today), 2) if mem else None,
+        }
+    return out
+
+
+# ── Question difficulty from answers: Elo ──────────────────────────
+# A question's written difficulty (1-3) is the model's guess. Every first
+# answer moves the question's rating b and the student's ability θ (per
+# topic) the way chess ratings move: an expected answer changes little, a
+# surprise changes more. Once a question has ELO_TRUSTED answers, its
+# measured difficulty replaces the guess when questions are picked.
+
+ELO_K_STUDENT = 0.4
+ELO_K_ITEM = 0.3
+ELO_TRUSTED = 5
+_B_OF = {1: -0.8, 2: 0.0, 3: 0.8}
+
+
+def elo_expected(theta: float, b: float) -> float:
+    return 1 / (1 + math.exp(-(theta - b)))
+
+
+def elo_update(theta: float, rating: dict | None, written_difficulty: int, correct: bool) -> tuple[float, dict]:
+    b = float((rating or {}).get("b", _B_OF.get(int(written_difficulty or 2), 0.0)))
+    n = int((rating or {}).get("n") or 0)
+    p = elo_expected(theta, b)
+    k_item = ELO_K_ITEM / (1 + n / 20)  # settles as answers add up
+    hit = 1.0 if correct else 0.0
+    return round(theta + ELO_K_STUDENT * (hit - p), 4), {"b": round(b - k_item * (hit - p), 4), "n": n + 1}
+
+
+def measured_difficulty(rating: dict | None, written: int) -> int:
+    if not rating or int(rating.get("n") or 0) < ELO_TRUSTED:
+        return written
+    b = float(rating["b"])
+    return 1 if b < -0.4 else 3 if b > 0.4 else 2
 
 
 # ── Points (motivation only — never used for mastery) ─────────────
