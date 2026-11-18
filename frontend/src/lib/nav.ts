@@ -86,6 +86,18 @@ export const ACCOUNT_LINKS: AccountLink[] = [
 /** Pages with their own full-screen layout and no app navigation bar. */
 export const NO_APP_NAV = new Set(["/", "/login"]);
 
+/**
+ * Focus pages: a lecture being studied gets the whole screen. The app's own
+ * navigation (desktop sidebar, top bar, phone bottom bar) steps aside and the
+ * page brings a slim bar of its own with the way back — one level of
+ * navigation at a time, never a nav inside a nav.
+ */
+export const FOCUS_PATHS = new Set(["/tutor"]);
+
+export function isFocusPath(path: string): boolean {
+  return FOCUS_PATHS.has(path.replace(/\/+$/, "") || "/");
+}
+
 function pageMatches(path: string, href: string): boolean {
   return path === href || path.startsWith(href + "/");
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * «المذاكرة الذكية الديناميكية» — a private tutor that runs one lecture:
@@ -14,9 +14,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { Button } from "@/components/ds/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ArrowRight,
   BookOpenCheck,
-  ListTree,
   Loader2,
   PauseCircle,
   PlayCircle,
@@ -26,7 +24,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
+import { CourseBar, useFocusPage } from "@/components/tutor/course-bar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useBoardMode } from "@/lib/use-board-mode";
+import { useOutlineOpen } from "@/lib/use-outline-open";
 import { StudentBlock, TutorBlock } from "@/components/tutor/blocks";
 import { TopicPanel } from "@/components/tutor/topic-panel";
 import { FocusTimer } from "@/components/tutor/focus-timer";
@@ -114,6 +115,8 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   const [question, setQuestion] = useState("");
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [board, setBoard] = useBoardMode();
+  const [outlineOpen, setOutlineOpen] = useOutlineOpen();
+  useFocusPage();
   const [slide, setSlide] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
@@ -293,73 +296,81 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
   const lastPendingSeq = pendingId ? lastSeqWithQuestion(messages, pendingId) : -1;
   const lectureRef = { id: lecture.id, fileHash: lecture.fileHash };
 
-  return (
-    <div className="h-[calc(100dvh-var(--bottom-nav-h))] flex flex-col bg-surface" dir="rtl">
-      <Navbar />
-      <main className="flex-1 flex gap-6 overflow-hidden w-full max-w-4xl lg:max-w-6xl mx-auto px-3 sm:px-4 pt-20">
-        {/* The lecture as a course, beside the lesson on wide screens */}
-        <CourseOutline
-          className="hidden lg:flex"
-          lecture={lecture}
-          state={state}
-          busy={!!busy}
-          onGoto={(tid) => void act("goto", { topicId: tid })}
-        />
-        <LectureRef.Provider value={lectureRef}>
-        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
-        {/* Header: what matters now; details on demand */}
-        <div className="shrink-0 space-y-2 pb-2 border-b border-line">
-          <div className="flex items-center gap-2">
-            <Button variant="bare" type="button" onClick={onExit} className="p-2 rounded-control hover:bg-surface-sunken" aria-label="محاضراتي">
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-            <div className="flex-1 min-w-0">
-              <h1 className="font-bold text-body sm:text-body truncate" dir="auto">{lecture.title}</h1>
-              <p className="text-small text-ink-muted truncate">
-                {state.phase === "final" && state.final
-                  ? `الاختبار الشامل · ${state.final.index + 1} من ${state.final.total}`
-                  : current
-                    ? `${current.title} · ${STATUS_LABEL[state.topics[current.id]?.status ?? "in_progress"]}`
-                    : state.phase === "done"
-                      ? "أنهيت المحاضرة"
-                      : "خريطة المحاضرة"}
-              </p>
-            </div>
-            <FocusTimer focus={focus} skewMs={skew} onChange={changeFocus} onFocusCompleted={focusDone} />
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="bare" type="button" onClick={() => setTopicsOpen(true)} className="flex-1 flex items-center gap-2 h-9 px-3 rounded-control border border-line hover:bg-surface-sunken text-small font-bold" aria-label="الموضوعات والإتقان">
-              <ListTree className="w-4 h-4 text-info-ink" aria-hidden />
-              <span className="whitespace-nowrap">{mastered}/{total} متقن</span>
-              <span className="flex-1 h-1.5 rounded-full bg-surface-sunken overflow-hidden" aria-hidden>
-                <span className="block h-full bg-success-ink transition-all" style={{ width: `${total ? (mastered / total) * 100 : 0}%` }} />
-              </span>
-              {state.reviewDue.length > 0 && <span className="text-info-ink whitespace-nowrap">· {state.reviewDue.length} للمراجعة</span>}
-            </Button>
-            <Button
-              variant="bare"
-              type="button"
-              aria-pressed={board}
-              onClick={() => setBoard(!board)}
-              className="h-9 px-3 rounded-control border border-line hover:bg-surface-sunken aria-pressed:border-brand aria-pressed:bg-info-soft aria-pressed:text-info-ink text-small font-bold inline-flex items-center gap-1.5"
-            >
-              <Presentation className="w-4 h-4" aria-hidden /> <span className="hidden sm:inline">السبورة</span>
-              <span className="sr-only sm:hidden">وضع السبورة</span>
-            </Button>
-            <Button variant="bare" type="button" onClick={() => setPaused(true)} className="h-9 px-3 rounded-control border border-line hover:bg-surface-sunken text-small font-bold inline-flex items-center gap-1.5" aria-label="إيقاف مؤقت">
-              <PauseCircle className="w-4 h-4" aria-hidden /> <span className="hidden sm:inline">إيقاف مؤقت</span>
-            </Button>
-          </div>
-        </div>
+  const subtitle =
+    state.phase === "final" && state.final
+      ? `الاختبار الشامل · السؤال ${state.final.index + 1} من ${state.final.total}`
+      : current
+        ? `${current.title} · ${STATUS_LABEL[state.topics[current.id]?.status ?? "in_progress"]}`
+        : state.phase === "done"
+          ? "أنهيت المحاضرة"
+          : "خريطة المحاضرة";
+  const sessionTools = (
+    <>
+      <FocusTimer focus={focus} skewMs={skew} onChange={changeFocus} onFocusCompleted={focusDone} />
+      <Button
+        variant="quiet"
+        size="sm"
+        aria-pressed={board}
+        onClick={() => setBoard(!board)}
+        className="px-2 aria-pressed:bg-info-soft aria-pressed:text-info-ink sm:px-3"
+      >
+        <Presentation aria-hidden /> <span className="hidden sm:inline">السبورة</span>
+        <span className="sr-only sm:hidden">وضع السبورة</span>
+      </Button>
+      <Button variant="quiet" size="sm" onClick={() => setPaused(true)} className="hidden sm:inline-flex">
+        <PauseCircle aria-hidden /> إيقاف مؤقت
+      </Button>
+    </>
+  );
+  // phones: what the course bar has no room for lives in the course drawer
+  const drawerTools = (
+    <div className="flex flex-wrap items-center gap-2 sm:hidden">
+      <Button variant="secondary" size="sm" onClick={() => { setTopicsOpen(false); setPaused(true); }}>
+        <PauseCircle aria-hidden /> إيقاف مؤقت
+      </Button>
+      <ThemeToggle />
+    </div>
+  );
 
-        {/* Conversation */}
+  return (
+    // Focus mode: this page is the whole screen — no app sidebar, top bar or
+    // tab bar (lib/nav.ts FOCUS_PATHS). One bar, the course menu, the lesson.
+    <div className="h-[100dvh] flex flex-col bg-canvas" dir="rtl">
+      <CourseBar
+        title={lecture.title}
+        subtitle={subtitle}
+        progress={total ? mastered / total : 0}
+        progressLabel={`أتقنت ${mastered} من ${total}`}
+        onExit={onExit}
+        outlineOpen={outlineOpen}
+        onToggleOutline={() => setOutlineOpen(!outlineOpen)}
+        onOpenTopics={() => setTopicsOpen(true)}
+        tools={sessionTools}
+      />
+      <div className="flex flex-1 min-h-0">
+        {outlineOpen && (
+          <CourseOutline
+            className="hidden lg:flex"
+            lecture={lecture}
+            state={state}
+            busy={!!busy}
+            onGoto={(tid) => void act("goto", { topicId: tid })}
+            onFinal={() => void act("final")}
+          />
+        )}
+        <LectureRef.Provider value={lectureRef}>
+        <main className="flex-1 min-w-0 flex flex-col bg-surface">
+        {/* Conversation: one comfortable reading column, centred */}
         <div
           ref={scrollRef}
-          className={cn(
-            "flex-1 overflow-y-auto py-4 space-y-4 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-surface-sunken",
-            board && "dark board-mode -mx-2 rounded-card border-4 border-board-frame px-3 sm:-mx-4 sm:px-5",
-          )}
+          className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-line"
           aria-live="polite"
+        >
+        <div
+          className={cn(
+            "mx-auto w-full max-w-3xl px-3 py-6 space-y-4 sm:px-6",
+            board && "dark board-mode my-3 rounded-card border-4 border-board-frame bg-canvas sm:my-6",
+          )}
         >
           {messages.map((m) => (
             <MessageRow
@@ -390,9 +401,11 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
             </div>
           )}
         </div>
+        </div>
 
-        {/* Next steps + ask anything */}
-        <div className="shrink-0 pb-4 pt-2 space-y-2 border-t border-line">
+        {/* Next steps + ask anything — aligned with the lesson column */}
+        <div className="shrink-0 border-t border-line bg-surface">
+        <div className="mx-auto w-full max-w-3xl px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 space-y-2 sm:px-6">
           {actions.length > 0 && !busy && (
             <div className="flex flex-wrap gap-2">
               {actions.map((a, i) => (
@@ -440,8 +453,9 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
           </form>
         </div>
         </div>
+        </main>
         </LectureRef.Provider>
-      </main>
+      </div>
 
       <TopicPanel
         open={topicsOpen}
@@ -457,6 +471,7 @@ function StudySession({ id, startReview, onExit }: { id: string; startReview?: b
           setTopicsOpen(false);
           void act("review");
         }}
+        tools={drawerTools}
       />
       <SlideViewer lecture={lecture} page={slide} onPageChange={setSlide} onClose={() => setSlide(null)} />
       {paused && (

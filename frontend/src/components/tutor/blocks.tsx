@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { SketchCheck, SketchCircle } from "@/components/sketch";
@@ -451,7 +451,7 @@ function FinalReport({ block, onSlide }: { block: Block } & Common) {
           <div key={t.topicId} className="rounded-control border border-line p-3">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <span className="font-bold text-body" dir="auto">{t.title}</span>
-              <span className="text-small text-ink-muted whitespace-nowrap">{t.correct}/{t.questions}</span>
+              <span className="nums text-small text-ink-muted whitespace-nowrap">{t.correct} من {t.questions}</span>
             </div>
             <Meter value={t.score} label="" />
             {t.why.length > 0 && <ul className="mt-1.5 text-small text-ink-muted space-y-0.5">{t.why.map((w) => <li key={w}>• {w}</li>)}</ul>}
@@ -462,7 +462,7 @@ function FinalReport({ block, onSlide }: { block: Block } & Common) {
       {block.byLevel && (
         <div className="flex flex-wrap gap-2 mb-3 text-small">
           {Object.entries(block.byLevel as Record<string, { label: string; total: number; correct: number }>).map(([k, v]) => (
-            <span key={k} className="px-2 py-1 rounded-control bg-surface-sunken">{v.label}: {v.correct}/{v.total}</span>
+            <span key={k} className="nums px-2 py-1 rounded-control bg-surface-sunken">{v.label}: {v.correct} من {v.total}</span>
           ))}
         </div>
       )}

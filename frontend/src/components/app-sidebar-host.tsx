@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
-import { NO_APP_NAV } from "@/lib/nav";
+import { NO_APP_NAV, isFocusPath } from "@/lib/nav";
 import { normalizePath } from "@/lib/routes";
 
 // Downloaded only for signed-in students on app pages, so the landing page,
@@ -20,7 +20,8 @@ const AppSidebar = dynamic(() => import("@/components/app-sidebar"), { ssr: fals
 export function AppSidebarHost() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const visible = !!user && !NO_APP_NAV.has(normalizePath(pathname));
+  const path = normalizePath(pathname);
+  const visible = !!user && !NO_APP_NAV.has(path) && !isFocusPath(path);
 
   useEffect(() => {
     if (!visible) return;
