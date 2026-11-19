@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ExternalLink, FileText, ImageIcon, Loader2, Shapes } from "lucide-react";
 import { Button } from "@/components/ds/button";
 import { Diagram } from "@/components/tutor/diagram";
+import { StepsSim } from "@/components/tutor/steps-sim";
 import { loadVisual, type Visual } from "@/lib/tutor";
 
 /**
@@ -74,6 +75,7 @@ export function LessonVisual({
     <figure className="mt-4">
       <div className="overflow-hidden rounded-control border border-line bg-canvas p-3">
         {visual.kind === "diagram" && <Diagram diagram={visual.diagram} caption={visual.caption} />}
+        {visual.kind === "steps" && <StepsSim visual={visual} />}
         {visual.kind === "slide" && <SlideThumb fileHash={fileHash} page={visual.page} caption={visual.caption} onSlide={onSlide} />}
         {visual.kind === "photo" && visual.status === "ready" && (
           // eslint-disable-next-line @next/next/no-img-element -- a remote Commons thumbnail; the site is a static export
@@ -113,6 +115,8 @@ function SourceTag({ visual }: { visual: Visual }) {
   const [Icon, text] =
     visual.kind === "diagram"
       ? [Shapes, "مخطط من محاضرتك"]
+      : visual.kind === "steps"
+        ? [Shapes, "محاكاة من محاضرتك"]
       : visual.kind === "slide"
         ? [FileText, `من شرائحك · صفحة ${visual.page}`]
         : [ImageIcon, "صورة بترخيص مفتوح"];

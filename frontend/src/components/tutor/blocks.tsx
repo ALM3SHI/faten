@@ -22,6 +22,7 @@ import {
 import { BotMarkdown } from "@/components/bot-markdown";
 import { LessonVisual } from "@/components/tutor/lesson-visual";
 import { LessonParts } from "@/components/tutor/lesson-parts";
+import { LessonVideo } from "@/components/tutor/lesson-video";
 import { ConceptChips } from "@/components/tutor/concept-chips";
 import { cn } from "@/lib/utils";
 import { CONTEXT_LABEL, pct, type AnswerPayload, type Block, type Confidence, type QuestionBlock, type ReportReason } from "@/lib/tutor";
@@ -102,6 +103,7 @@ export function TutorBlock({ block, ...c }: { block: Block } & Common & Question
             <BotMarkdown content={block.md} onSlide={c.onSlide} />
           )}
           {block.visual && <LessonVisual visual={block.visual} topicId={block.topicId} segment={block.segment} onSlide={c.onSlide} />}
+          {block.video && <LessonVideo video={block.video} />}
           <PageChips pages={block.pages} onSlide={c.onSlide} />
         </Card>
       );

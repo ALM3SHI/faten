@@ -253,7 +253,8 @@ def test_lesson_json_schema_stays_small_and_flat():
     from services.tutor import schemas
 
     v = schemas.VISUAL
-    assert set(v["properties"]) == {"kind", "caption", "diagram_type", "direction", "nodes", "edges", "queries", "page"}
+    assert set(v["properties"]) == {"kind", "caption", "diagram_type", "direction", "nodes", "edges", "queries", "page", "steps", "layout"}
+    assert v["properties"]["steps"]["items"] == {"type": "string"}
     # nodes/edges are plain strings (the API rejects deeply nested schemas)
     assert v["properties"]["nodes"]["items"] == {"type": "string"}
     assert len(json.dumps(schemas.LESSON)) < 4000

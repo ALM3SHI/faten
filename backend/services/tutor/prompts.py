@@ -78,7 +78,9 @@ Return ONE JSON object:
       "visual": VISUAL
     }}
   ],
-  "questions": [ QUESTION, ... ]
+  "questions": [ QUESTION, ... ],
+  "video": {{"queries": ["a short YouTube search in English for a video that explains exactly this
+    topic", "the same search in Arabic"]}}
 }}
 
 PART — one piece of the explanation with ONE teaching role, in clear Arabic (Modern Standard,
@@ -111,6 +113,13 @@ You never draw: you describe, and the app draws or finds it.
      (sequence: nodes are the actors, edges are the messages in order; "-->" is a reply),
      or a repeating cycle. 2-8 nodes, labels of at most 5 words (Arabic, English terms kept).
      Only what the lecture says — never invent steps.
+  {{"kind": "steps", "caption": "one Arabic line", "layout": "row" | "stack",
+    "steps": ["what happens | the state after it, as items: a, b, c", "push(5) | 3, 5", "pop() | 3"]}}
+     a small simulation the student plays step by step, for a process whose STATE changes:
+     a stack or queue after each operation, an array during a sort, a variable through a loop,
+     packets through layers. 2-8 steps, at most 8 short items each ("stack" draws them bottom
+     to top, "row" left to right). Only states the lecture's content implies — never invent.
+     Prefer it over "diagram" when the point is how something CHANGES over time.
   {{"kind": "slide", "caption": "...", "page": N}}
      when a figure, table or code on that lecture page already shows it best.
   {{"kind": "photo", "caption": "...", "queries": ["short English search", "another"]}}

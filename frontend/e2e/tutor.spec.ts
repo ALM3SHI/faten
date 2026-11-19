@@ -432,3 +432,37 @@ test("a timed final exam shows its clock and ends by itself when the time runs o
   await expect(page.getByText(/نتيجة الاختبار الشامل/)).toBeVisible();
   await expect(page.getByRole("timer", { name: /الوقت المتبقي في الاختبار/ })).toHaveCount(0);
 });
+
+test("a process plays step by step, and the lesson's video loads only when played", async ({ page }) => {
+  await asNewStudent(page, "media");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  if (test.info().project.name.includes("mobile")) {
+    await page.getByRole("button", { name: "محتوى الدورة والإتقان" }).click();
+    await page.getByRole("dialog", { name: "موضوعات المحاضرة" }).getByRole("button", { name: "ابدأه" }).click();
+  } else {
+    await page.getByRole("complementary", { name: "محتوى الدورة" }).getByRole("button", { name: /الطابور/ }).click();
+  }
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+
+  const sim = page.getByRole("group", { name: "محاكاة: الطابور بعد كل عملية" });
+  await expect(sim.getByText("الخطوة 1 من 3:")).toBeVisible();
+  await expect(sim.getByRole("button", { name: "الخطوة السابقة" })).toBeDisabled();
+  await sim.getByRole("button", { name: "الخطوة التالية" }).click();
+  await expect(sim.getByText("الخطوة 2 من 3:")).toBeVisible();
+  await expect(sim.getByText("2 (جديد)")).toBeVisible(); // what this step added is marked
+  await sim.getByRole("button", { name: "الخطوة التالية" }).click();
+  await expect(sim.getByText("dequeue()")).toBeVisible();
+  await expect(sim.getByRole("button", { name: "من البداية" })).toBeVisible();
+  await expect(page.getByText("محاكاة من محاضرتك")).toBeVisible();
+
+  // the video: a thumbnail first, no YouTube player until it is played
+  await expect(page.getByText("من يوتيوب — ليس من ملفك")).toBeVisible();
+  await expect(page.locator("iframe")).toHaveCount(0);
+  await page.route("https://www.youtube-nocookie.com/**", (r) => r.fulfill({ status: 200, body: "<html></html>", contentType: "text/html" }));
+  await page.route("https://i.ytimg.com/**", (r) => r.fulfill({ status: 200, body: "", contentType: "image/jpeg" }));
+  await page.getByRole("button", { name: "شغّل الفيديو: شرح الطابور Queue" }).click();
+  await expect(page.locator('iframe[src^="https://www.youtube-nocookie.com/embed/abc123XYZ00"]')).toHaveCount(1);
+});
