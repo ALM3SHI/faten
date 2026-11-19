@@ -132,7 +132,32 @@ def normalize_visual(raw: Any, allowed_pages: set[int], photos_left: list[int]) 
             return None
         photos_left[0] -= 1
         return {"kind": "photo", "caption": caption, "queries": queries, "status": "pending"}
+    if kind == "steps":
+        steps = parse_steps(raw.get("steps"))
+        if len(steps) < 2:
+            return None
+        return {"kind": "steps", "caption": caption, "layout": "stack" if raw.get("layout") == "stack" else "row", "steps": steps}
     return None
+
+
+MAX_STEPS = 8
+MAX_ITEMS = 8
+
+
+def parse_steps(lines: Any) -> list[dict]:
+    """A process played step by step: each line is "what happens | item, item, …"
+    — the state after that step (an empty state is allowed: "pop | ")."""
+    steps: list[dict] = []
+    for line in (lines if isinstance(lines, list) else [])[: MAX_STEPS * 2]:
+        caption, sep, rest = str(line).partition("|")
+        caption = clip(re.sub(r"\s+", " ", caption).strip(), 90)
+        if not caption or not sep:
+            continue
+        items = [_label(x) for x in rest.split(",") if _label(x)][:MAX_ITEMS]
+        steps.append({"caption": caption, "items": items})
+        if len(steps) == MAX_STEPS:
+            break
+    return steps
 
 
 # ── Wikimedia Commons ─────────────────────────────────────────────
@@ -313,6 +338,130 @@ def schedule_prefetch(tid: str, prepare: Callable[[], Awaitable[None]], file_has
     if not get_settings().COURSE_BACKGROUND:
         return False
     return _spawn(f"lesson:{file_hash}:{tid}", prepare())
+
+
+# ── A YouTube video per lesson ─────────────────────────────────────
+# With the lesson, the model suggests what to search for. In the background,
+# YouTube Data API v3 finds public, embeddable videos of a sensible length;
+# the model picks the one that best explains the topic from their titles,
+# channels and descriptions — or none. The screen shows a thumbnail and loads
+# the player (youtube-nocookie.com) only when the student presses play.
+
+YOUTUBE_API = "https://www.googleapis.com/youtube/v3"
+VIDEO_MIN_SECONDS, VIDEO_MAX_SECONDS = 90, 20 * 60
+VIDEOS_PER_QUERY = 6
+_video_day = {"day": "", "count": 0}
+_DURATION = re.compile(r"^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$")
+
+
+def iso_seconds(text: str) -> int:
+    m = _DURATION.match(str(text or ""))
+    if not m:
+        return 0
+    h, mi, se = (int(x or 0) for x in m.groups())
+    return h * 3600 + mi * 60 + se
+
+
+async def youtube_candidates(client: httpx.AsyncClient, query: str, key: str) -> list[dict]:
+    """Embeddable public videos of a useful length for a search."""
+    arabic = bool(re.search(r"[؀-ۿ]", query))
+    r = await client.get(f"{YOUTUBE_API}/search", params={
+        "part": "id", "type": "video", "q": query, "maxResults": VIDEOS_PER_QUERY, "safeSearch": "strict",
+        "videoEmbeddable": "true", "relevanceLanguage": "ar" if arabic else "en", "key": key,
+    })
+    r.raise_for_status()
+    ids = [i["id"]["videoId"] for i in r.json().get("items") or [] if (i.get("id") or {}).get("videoId")]
+    if not ids:
+        return []
+    r = await client.get(f"{YOUTUBE_API}/videos", params={"part": "snippet,contentDetails,status", "id": ",".join(ids), "key": key})
+    r.raise_for_status()
+    out = []
+    for v in r.json().get("items") or []:
+        st, sn = v.get("status") or {}, v.get("snippet") or {}
+        secs = iso_seconds((v.get("contentDetails") or {}).get("duration"))
+        if not st.get("embeddable") or st.get("privacyStatus") != "public" or st.get("madeForKids"):
+            continue
+        if not VIDEO_MIN_SECONDS <= secs <= VIDEO_MAX_SECONDS:
+            continue
+        out.append({
+            "id": v["id"], "title": clip(sn.get("title"), 160), "channel": clip(sn.get("channelTitle"), 80),
+            "description": clip(sn.get("description"), 300), "seconds": secs,
+        })
+    return out
+
+
+RANK_VIDEO = """A university student is studying: «{heading}».
+Candidate YouTube videos (title — channel — length — description):
+{lines}
+Return {{"pick": the index of the ONE video that best explains exactly this topic to a university
+student, or -1 when none clearly fits}}. Prefer a clear explanation from a teaching channel;
+reject entertainment, unrelated topics, clickbait and anything inappropriate. No video is better
+than a wrong one."""
+
+
+async def find_video(heading: str, queries: list[str], *, ask: Callable[..., Awaitable[Any]] | None = None, client: httpx.AsyncClient | None = None, key: str | None = None) -> dict | None:
+    ask = ask or ai.ask_json
+    key = key if key is not None else get_settings().YOUTUBE_API_KEY
+    if not key:
+        return None
+    own = client is None
+    client = client or httpx.AsyncClient(timeout=20.0)
+    try:
+        cands: list[dict] = []
+        for q in queries[:2]:
+            for c in await youtube_candidates(client, q, key):
+                if all(c["id"] != x["id"] for x in cands):
+                    cands.append(c)
+        if not cands:
+            return None
+        lines = "\n".join(f"{i}. {c['title']} — {c['channel']} — {c['seconds'] // 60} min — {c['description'][:160]}" for i, c in enumerate(cands))
+        got = await ask(RANK_VIDEO.format(heading=heading, lines=lines), "Pick the video.", kind="video_rank", temperature=0.0, max_tokens=256, timeout=40.0)
+        pick = (got or {}).get("pick") if isinstance(got, dict) else None
+        if isinstance(pick, int) and 0 <= pick < len(cands):
+            c = cands[pick]
+            return {k: c[k] for k in ("id", "title", "channel", "seconds")}
+        return None
+    finally:
+        if own:
+            await client.aclose()
+
+
+async def resolve_video(db, file_hash: str, tid: str, lesson: dict, heading: str, *, finder=find_video) -> dict:
+    try:
+        video = await finder(heading, (lesson.get("video") or {}).get("queries") or [])
+    except Exception as exc:  # a failed lookup is retried another day, not recorded
+        logger.warning("[visuals] video lookup failed (%s/%s): %s", file_hash[:8], tid, exc)
+        return {}
+    result = {"status": "ready", "video": video} if video else {"status": "none"}
+    store.cache_ref(db, file_hash).collection("lessons").document(tid).set({"videoResult": result}, merge=True)
+    lesson["videoResult"] = result
+    return result
+
+
+def _video_budget_ok() -> bool:
+    limit = get_settings().COURSE_VIDEO_LOOKUPS_PER_DAY
+    today = dt.date.today().isoformat()
+    if _video_day["day"] != today:
+        _video_day.update(day=today, count=0)
+    if limit <= 0 or _video_day["count"] >= limit:
+        return False
+    _video_day["count"] += 1
+    return True
+
+
+def schedule_video(db, file_hash: str, tid: str, lesson: dict, heading: str) -> bool:
+    s = get_settings()
+    if not s.COURSE_BACKGROUND or not s.YOUTUBE_API_KEY or lesson.get("videoResult") or not (lesson.get("video") or {}).get("queries"):
+        return False
+    if not _video_budget_ok():
+        return False
+    return _spawn(f"video:{file_hash}:{tid}", resolve_video(db, file_hash, tid, lesson, heading))
+
+
+def public_video(lesson: dict) -> dict | None:
+    got = lesson.get("videoResult") or {}
+    v = got.get("video") if got.get("status") == "ready" else None
+    return {k: v.get(k) for k in ("id", "title", "channel", "seconds")} if v else None
 
 
 def public_visual(segment: dict, photos: dict, index: int) -> dict | None:

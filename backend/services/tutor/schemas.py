@@ -46,7 +46,9 @@ QUESTION = {
 VISUAL = {
     "type": "object",
     "properties": {
-        "kind": {"type": "string", "enum": ["diagram", "photo", "slide", "none"]},
+        "kind": {"type": "string", "enum": ["diagram", "photo", "slide", "steps", "none"]},
+        "steps": _STRS,
+        "layout": {"type": "string", "enum": ["row", "stack"]},
         "caption": _STR,
         "diagram_type": {"type": "string", "enum": ["flow", "sequence", "cycle"]},
         "direction": {"type": "string", "enum": ["lr", "tb"]},
@@ -83,6 +85,7 @@ LESSON = {
             },
         },
         "questions": {"type": "array", "items": QUESTION},
+        "video": {"type": "object", "properties": {"queries": _STRS}},
     },
     "required": ["segments", "questions"],
 }

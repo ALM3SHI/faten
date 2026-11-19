@@ -95,6 +95,11 @@ class Settings(BaseSettings):
     # Lessons per day whose photos may be looked up and checked (each costs
     # 1-3 small model calls). 0 turns photo lookup off.
     COURSE_PHOTO_LESSONS_PER_DAY: int = 80
+    # A YouTube video per lesson (services/tutor/visuals.py find_video), looked
+    # up with the YouTube Data API v3. Empty key = no videos. Each lookup costs
+    # ~200 of the API's 10,000 free daily units, so it is capped per day.
+    YOUTUBE_API_KEY: str = ""
+    COURSE_VIDEO_LOOKUPS_PER_DAY: int = 40
 
     # ── Admin dashboard (/admin) ──
     # Comma-separated emails allowed to open it. The email must be verified

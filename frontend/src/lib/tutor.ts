@@ -180,7 +180,24 @@ export interface CommonsPhoto {
   license?: string;
   artist?: string;
 }
+/** A process played step by step: the state after each step (backend: visuals.parse_steps). */
+export interface StepsVisual {
+  kind: "steps";
+  caption: string;
+  layout: "row" | "stack";
+  steps: { caption: string; items: string[] }[];
+}
+
+/** The lesson's YouTube video (backend: visuals.public_video). */
+export interface LessonVideo {
+  id: string;
+  title: string;
+  channel: string;
+  seconds: number;
+}
+
 export type Visual =
+  | StepsVisual
   | { kind: "diagram"; caption: string; diagram: Diagram }
   | { kind: "slide"; caption: string; page: number }
   | { kind: "photo"; caption: string; status: "pending" }

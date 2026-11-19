@@ -110,6 +110,17 @@ function step(s, action, payload) {
       { id: "t1c2", name: "عمليتا push و pop", level: "unknown", attempts: 0, due: null, recall: null },
     ];
     out.push(say(s, "tutor", [{ type: "goal", topicId: "t1", index: 1, total: 2, title: "المكدس (Stack)", why: "أساس لفهم استدعاء الدوال.", objectives: ["يطبّق عمليات push و pop"], prerequisites: "لا يحتاج إلى معرفة سابقة من هذه المحاضرة", weakPrerequisites: [], pages: [1, 3], estMinutes: 15, concepts }], [{ id: "next", label: "ابدأ الشرح" }, { id: "test_out", label: "أعرف هذا الموضوع — اختبرني مباشرة" }]));
+  } else if (action === "next" && st.stage === "goal" && st.currentTopicId === "t2") {
+    // a one-part lesson with a step-by-step simulation and the lesson's video (visuals.py)
+    st.stage = "explain";
+    st.segment = 0;
+    const steps = { kind: "steps", caption: "الطابور بعد كل عملية", layout: "row", steps: [
+      { caption: "enqueue(1)", items: ["1"] },
+      { caption: "enqueue(2)", items: ["1", "2"] },
+      { caption: "dequeue()", items: ["2"] },
+    ] };
+    out.push(say(s, "tutor", [{ type: "lesson", topicId: "t2", segment: 0, total: 1, title: "الطابور", md: "يدخل العنصر من الخلف ويخرج من الأمام [ص 4].", pages: [4], visual: steps,
+      video: { id: "abc123XYZ00", title: "شرح الطابور Queue", channel: "قناة تعليمية", seconds: 420 } }], [{ id: "next", label: "التالي" }]));
   } else if (action === "next" && st.stage === "goal") {
     st.stage = "check";
     st.segment = 0;

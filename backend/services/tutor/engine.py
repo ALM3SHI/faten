@@ -593,6 +593,9 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
             q["pool"] = "quiz"
             q["segment"] = None
     lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso}
+    video_queries = [clip(q, 100) for q in ((raw.get("video") or {}).get("queries") or []) if clip(q, 100)][:2] if isinstance(raw.get("video"), dict) else []
+    if video_queries:
+        lesson["video"] = {"queries": video_queries}  # looked up in the background (visuals.schedule_video)
     lesson["review"] = await review_lesson(ctx, topic, segments, questions)
     store.save_lesson(ctx.db, ctx.lecture["fileHash"], tid, lesson)
     ctx._lessons[tid] = lesson
@@ -755,10 +758,16 @@ async def show_segment(ctx: Ctx, seg: int) -> None:
     visual = visuals.public_visual(s, lesson.get("photos") or {}, seg)
     if visual:
         block["visual"] = visual
+    if seg == len(segs) - 1:
+        # the lesson's video comes with its last part, once it was found
+        video = visuals.public_video(lesson)
+        if video:
+            block["video"] = video
     ctx.say(block)
     if seg == 0:
         # photos lost to a restart are looked up again; the next topic gets ready
         visuals.schedule_photos(ctx.db, ctx.lecture["fileHash"], tid, lesson)
+        visuals.schedule_video(ctx.db, ctx.lecture["fileHash"], tid, lesson, f"{ctx.topic(tid)['title']} — {ctx.lecture.get('title', '')}")
         prefetch_next(ctx, tid)
     check = next(
         (q for q in lesson["questions"] if q["pool"] == "check" and str(q.get("segment")) == str(seg) and q["id"] not in ctx.asked and not q.get("disabled")),

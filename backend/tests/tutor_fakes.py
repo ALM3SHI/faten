@@ -125,7 +125,7 @@ class FakeTutorAI:
                             "nodes": ["push | push", "s | المكدس | db", "pop | pop"], "edges": ["push -> s | يضيف للأعلى", "s -> pop | يسحب الأعلى"]}},
                 {"title": "مثال", "markdown": "```python\nstack.append(1)\n```\nمثال من الشريحة [ص 2] وصفحة غير موجودة [ص 999]. " * 2, "pages": [2, 999], "concept_ids": [c2],
                  "visual": {"kind": "photo", "caption": "كومة أطباق", "queries": ["stack of plates"]}},
-            ], "questions": qs}
+            ], "questions": qs, "video": {"queries": ["stack data structure explained", "شرح المكدس هياكل البيانات"]}}
         if "needs help" in prompt:
             self.calls["teach_again"] += 1
             cids = re.findall(r"(t\d+c\d+) \(", prompt) or ["t1c1"]
