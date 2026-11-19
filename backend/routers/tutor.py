@@ -6,6 +6,7 @@ Dynamic study mode — «المذاكرة الذكية الديناميكية».
   GET    /api/tutor/lectures/{id}            full session: lecture, state, messages, timer
   POST   /api/tutor/lectures/{id}/step       one tutor step {action, payload, version}
   GET    /api/tutor/lectures/{id}/visual     one lesson part's picture (photo looked up in the background)
+  GET    /api/tutor/lectures/{id}/mistakes   the mistakes notebook (questions missed on the first try)
   GET    /api/tutor/lectures/{id}/job        progress of a lecture being prepared in the background
   PUT    /api/tutor/lectures/{id}/focus      save the study timer
   POST   /api/tutor/lectures/{id}/reset      start the lecture over (keeps the analysis)
@@ -259,6 +260,18 @@ async def get_visual(lid: str, topic: str, segment: int, user_id: str = Depends(
     lecture = _load(db, user_id, lid)
     ctx = _ctx(db, user_id, lecture, {})
     return {"visual": engine.visual_of(ctx, topic[:40], segment)}
+
+
+@router.get("/lectures/{lid}/mistakes")
+async def get_mistakes(lid: str, user_id: str = Depends(get_current_user)):
+    """The student's mistakes notebook for this lecture: every question missed
+    on the first try, open ones first, with the right answer. No credits."""
+    db = dbmod.get_db()
+    lecture = _load(db, user_id, _id_ok(lid))
+    progress = store.load_progress(db, user_id, lecture["id"]) or {}
+    ctx = _ctx(db, user_id, lecture, progress)
+    items = engine.mistakes(ctx)
+    return {"mistakes": items, "open": sum(1 for m in items if not m["fixed"])}
 
 
 @router.put("/lectures/{lid}/focus")

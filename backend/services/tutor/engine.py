@@ -90,6 +90,8 @@ class Ctx:
     _lessons: dict[str, dict] = field(default_factory=dict)
     _extras: dict[str, list[dict]] = field(default_factory=dict)
     _extras_dirty: set[str] = field(default_factory=set)
+    _ratings: dict[str, dict] = field(default_factory=dict)
+    _ratings_dirty: dict[str, dict] = field(default_factory=dict)
     learner_style: str | None = None
 
     @property
@@ -166,7 +168,31 @@ class Ctx:
         reported = set(self.progress.get("reported") or [])
         qs = [q for q in lesson.get("questions") or [] if q.get("pool") in pools]
         qs += [q for q in self.extras(tid) if q.get("pool") in pools]
-        return [q for q in qs if not q.get("disabled") and q["id"] not in reported]
+        ratings = self.ratings(tid)
+        # once enough students answered it, a question's measured difficulty
+        # replaces the model's guess (mastery.measured_difficulty)
+        return [
+            {**q, "difficulty": mastery.measured_difficulty(ratings.get(q["id"]), q["difficulty"])} if q["id"] in ratings else q
+            for q in qs
+            if not q.get("disabled") and q["id"] not in reported
+        ]
+
+    def ratings(self, tid: str) -> dict:
+        if tid not in self._ratings:
+            self._ratings[tid] = store.get_ratings(self.db, self.lecture["fileHash"], tid)
+        return self._ratings[tid]
+
+    def rate(self, q: dict, correct: bool) -> None:
+        """A first answer moves the student's ability on this topic and the
+        question's measured difficulty (Elo). Only shared questions are rated."""
+        tid = q["topic_id"]
+        if not self.is_shared(q["id"]):
+            return
+        ts = self.tstate(tid)
+        theta, rating = mastery.elo_update(float(ts.get("theta") or 0.0), self.ratings(tid).get(q["id"]), q["difficulty"], correct)
+        ts["theta"] = theta
+        self.ratings(tid)[q["id"]] = rating
+        self._ratings_dirty.setdefault(tid, {})[q["id"]] = rating
 
     def question(self, qid: str) -> dict | None:
         tid = qid.split("-")[0]
@@ -195,6 +221,8 @@ class Ctx:
     def flush(self) -> None:
         for tid in self._extras_dirty:
             store.save_extras(self.db, self.uid, self.lecture["id"], tid, self._extras[tid])
+        for tid, changed in self._ratings_dirty.items():
+            store.save_ratings(self.db, self.lecture["fileHash"], tid, changed)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -347,7 +375,8 @@ def public_state(ctx: Ctx) -> dict:
         "topics": progress_view(ctx),
         "reviewDue": mastery.due_reviews(p.get("topics") or {}, ctx.today),
         "points": int(p.get("points") or 0),
-        "final": None if not final else {k: final.get(k) for k in ("status", "index", "total", "attempt", "result")},
+        "final": None if not final else {k: final.get(k) for k in ("status", "index", "total", "attempt", "result", "timed", "deadline", "minutes")},
+        "mistakesOpen": sum(1 for m in mistakes(ctx) if not m["fixed"]),
         "version": int(p.get("version") or 0),
     }
 
@@ -705,6 +734,7 @@ def show_goal(ctx: Ctx, tid: str) -> None:
         "weakPrerequisites": weak_prereq,
         "pages": topic["pages"],
         "estMinutes": topic["est_minutes"],
+        "concepts": _concept_chips(ctx, topic),
     }
     actions = [_act("next", "ابدأ الشرح"), _act("test_out", "أعرف هذا الموضوع — اختبرني مباشرة")]
     ctx.say(goal, actions=actions)
@@ -835,6 +865,7 @@ def close_topic(ctx: Ctx, mastered: bool, note: str = "") -> None:
             "missing": a["missing"],
             "strengths": strong[:5],
             "toReview": weak[:5],
+            "toReviewConcepts": _concept_chips(ctx, topic, mastery.weak_concepts(ev)[:5]),
             "reviewDue": ts.get("reviewDue"),
             "note": note,
             "keyTerms": topic.get("key_terms") or [],
@@ -890,6 +921,8 @@ async def remediate(ctx: Ctx) -> None:
         "strategy": diag["label"],
         "reasons": reason[:3],
         "prerequisites": [ctx.topic(p)["title"] for p in prereq_gap if ctx.topic(p)],
+        # the concepts that went wrong, each with a way to go deeper
+        "weakConcepts": _concept_chips(ctx, topic, weak),
     })
     md, pages, qs = await teach_again(ctx, topic, diag["strategy"], weak, diag["misconceptions"], prereq_topics=[ctx.topic(p) for p in prereq_gap if ctx.topic(p)], n_questions=3)
     ctx.add_extras(tid, qs)
@@ -997,6 +1030,7 @@ def _evidence(q: dict, g: dict, kind: str, hints: int, now: str, confidence: str
         "hints": hints,
         "misconception": g.get("misconception") or "",
         "confidence": confidence,
+        "answer": clip(g.get("answer"), 300),
         "ts": now,
     }
 
@@ -1021,11 +1055,13 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
         if not g.get("valid"):
             raise TutorError("اختر إجابة من الخيارات.")
         ctx.student({"type": "answer", "questionId": qid, "text": q["options"][g["picked"]], "choice": g["picked"], "confidence": confidence})
+        g["answer"] = q["options"][g["picked"]]
     elif q["format"] in ("order", "match"):
         g = grade_order(q, payload.get("order")) if q["format"] == "order" else grade_match(q, payload.get("matches"))
         if not g.get("valid"):
             raise TutorError("رتّب كل الخطوات أولاً." if q["format"] == "order" else "وصّل كل عنصر بما يناسبه أولاً.")
         ctx.student({"type": "answer", "questionId": qid, "text": g["answer_text"], "confidence": confidence})
+        g["answer"] = g["answer_text"]
     elif q["format"] == "fill":
         text = " ".join(str(payload.get("text") or "").split())[:200]
         if not text:
@@ -1033,7 +1069,7 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
         ctx.student({"type": "answer", "questionId": qid, "text": text, "confidence": confidence})
         ok = match_fill(q, text)
         g = {"valid": True, "correct": ok, "credit": 1.0 if ok else 0.0, "verdict": "correct" if ok else "incorrect",
-             "misconception": "", "note": "" if ok else "ليست الكلمة المطلوبة.", "exact": True}
+             "misconception": "", "note": "" if ok else "ليست الكلمة المطلوبة.", "exact": True, "answer": text}
     else:
         text = str(payload.get("text") or "").strip()
         if len(text) < 2:
@@ -1046,6 +1082,7 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
             g = await grade_text(ctx, q, text, attempt)
         else:
             g = await grade_text(ctx, {**q, "context_check": context == "check"}, text, attempt)
+        g["answer"] = text
 
     hints = int(pending.get("hints") or 0)
     pending["attempts"] = attempt
@@ -1061,7 +1098,8 @@ async def handle_answer(ctx: Ctx, payload: dict) -> None:
     if first:
         kind = {"check": "check", "quiz": "quiz", "review": "review", "warmup": "review"}[context]
         ev = _evidence(q, g, kind, hints, ctx.iso, confidence)
-        mastery.add_evidence(ctx.tstate(tid), ev)
+        mastery.add_evidence(ctx.tstate(tid), ev, ctx.today)
+        ctx.rate(q, g["correct"])
         p["points"] = int(p.get("points") or 0) + mastery.points_for(g["correct"], q["difficulty"], hints, kind)
         names = {c["id"]: c["name"] for c in topic.get("concepts") or []}
         ctx.events.append({
@@ -1195,7 +1233,7 @@ async def handle_next(ctx: Ctx) -> None:
         if tid:
             enter_topic(ctx, tid)
         else:
-            ctx.say({"type": "text", "md": "أنهيت المحاضرة. راجع خطة المراجعة أعلاه، أو أعد الاختبار الشامل بأسئلة جديدة."}, actions=[_act("final", "اختبار شامل جديد")])
+            ctx.say({"type": "text", "md": "أنهيت المحاضرة. راجع خطة المراجعة أعلاه، أو أعد الاختبار الشامل بأسئلة جديدة."}, actions=_final_actions("اختبار شامل جديد"))
         return
 
     step = p.get("step") or {}
@@ -1431,6 +1469,103 @@ async def handle_ask(ctx: Ctx, payload: dict) -> None:
             ctx.say({"type": "text", "md": "نرجع للسؤال المفتوح 👇"}, question_block(q, pending["context"], pending.get("index"), pending.get("total")))
 
 
+# ══════════════════════════════════════════════════════════════════
+#  Deep dive: one concept, its own page
+# ══════════════════════════════════════════════════════════════════
+
+
+def _concept(ctx: Ctx, cid: str) -> tuple[dict, dict] | None:
+    for t in ctx.lecture["topics"]:
+        for c in t.get("concepts") or []:
+            if c["id"] == cid:
+                return t, c
+    return None
+
+
+async def write_deep_dive(ctx: Ctx, topic: dict, concept: dict) -> dict:
+    """A page that goes deeper into one concept, in the same teaching pieces as
+    a lesson, labelled by origin and checked against the pages by the review.
+    Written once per file and concept, shared like the lessons."""
+    allowed = ctx.all_page_numbers()
+    others = [c for t in ctx.lecture["topics"] for c in t.get("concepts") or [] if c["id"] != concept["id"]]
+    raw = await ai.ask_json(
+        prompts.DEEP_DIVE.format(
+            lecture=ctx.lecture.get("title", ""),
+            title=topic["title"],
+            name=concept["name"],
+            definition=concept.get("definition") or "—",
+            others="؛ ".join(f"{c['id']}: {c['name']}" for c in others[:30]) or "—",
+            pages=ctx.topic_pages_text(topic),
+        ),
+        "Write the deep-dive page.",
+        schema=schemas.DEEP_DIVE,
+        kind="deep_dive",
+        temperature=0.4,
+        max_tokens=12000,
+        timeout=150.0,
+    )
+    raw = raw if isinstance(raw, dict) else {}
+    a, b = topic["pages"]
+    parts = _normalize_parts(raw.get("parts"), allowed, [n for n in range(a, b + 1) if n in allowed][:6])
+    if len(parts) < 2:
+        raise TutorError("تعذّر تجهيز صفحة التعمّق الآن. حاول مرة أخرى بعد قليل.", 502)
+    known = {c["id"] for c in others}
+    page = {
+        "conceptId": concept["id"],
+        "topicId": topic["id"],
+        "parts": parts,
+        "related": [r for r in dict.fromkeys(raw.get("related") or []) if r in known][:4],
+        "generatedAt": ctx.iso,
+    }
+    page["review"] = await review_lesson(ctx, topic, [page])
+    store.save_deep_dive(ctx.db, ctx.lecture["fileHash"], concept["id"], page)
+    return page
+
+
+async def handle_deep_dive(ctx: Ctx, payload: dict) -> None:
+    cid = str(payload.get("conceptId") or "")
+    found = _concept(ctx, cid)
+    if not found:
+        raise TutorError("المفهوم غير موجود.")
+    topic, concept = found
+    p = ctx.progress
+    pending = p.get("pending")
+    if p.get("phase") == "final" or (pending and pending["context"] in ("quiz", "review", "final", "warmup")):
+        raise TutorError("أكمل السؤال الحالي أولاً، ثم تعمّق في المفهوم.")
+    ctx.student({"type": "request", "text": f"تعمّق في: {concept['name']}"})
+    page = store.get_deep_dive(ctx.db, ctx.lecture["fileHash"], cid)
+    if not page or not page.get("parts"):
+        ctx.charge(COST_SMALL)  # only when it is written; reading a written page is free
+        page = await write_deep_dive(ctx, topic, concept)
+    names = {c["id"]: c["name"] for t in ctx.lecture["topics"] for c in t.get("concepts") or []}
+    ts = ctx.tstate(topic["id"])
+    ts["deepDives"] = sorted(set(ts.get("deepDives") or []) | {cid})
+    ctx.say({
+        "type": "deep_dive",
+        "conceptId": cid,
+        "topicId": topic["id"],
+        "topicTitle": topic["title"],
+        "name": concept["name"],
+        "definition": concept.get("definition") or "",
+        "parts": [{"role": x["role"], "origin": x["origin"], "md": x["markdown"], "pages": x.get("pages") or []} for x in page["parts"]],
+        "reviewed": bool((page.get("review") or {}).get("checked")),
+        "related": [{"id": r, "name": names[r]} for r in page.get("related") or [] if r in names],
+    })
+    if pending:
+        q = ctx.question(pending["qid"])
+        if q:
+            ctx.say({"type": "text", "md": "نرجع للسؤال المفتوح 👇"}, question_block(q, pending["context"], pending.get("index"), pending.get("total")))
+
+
+def _concept_chips(ctx: Ctx, topic: dict, ids: list[str] | None = None) -> list[dict]:
+    """Concepts as the student sees them: name, how they answer on it, when its
+    memory needs a review — each one opens its deep dive."""
+    concepts = topic.get("concepts") or []
+    wanted = [c for c in concepts if ids is None or c["id"] in ids]
+    states = mastery.concept_states(ctx.progress["topics"].get(topic["id"]) or {}, [c["id"] for c in wanted], ctx.today)
+    return [{"id": c["id"], "name": c["name"], **states[c["id"]]} for c in wanted]
+
+
 REPORT_REASONS = {
     "wrong_key": "الإجابة المعتمدة خاطئة",
     "unclear": "السؤال غير واضح",
@@ -1523,6 +1658,78 @@ def handle_goto(ctx: Ctx, payload: dict) -> None:
 # ══════════════════════════════════════════════════════════════════
 
 
+# ══════════════════════════════════════════════════════════════════
+#  Mistakes notebook
+# ══════════════════════════════════════════════════════════════════
+
+MISTAKES_SHOWN = 40
+
+
+def mistakes(ctx: Ctx) -> list[dict]:
+    """Every question the student got wrong on the first try, newest first.
+
+    A mistake is «fixed» once the student later answers right — that same
+    question, or another one on the same concept — so the notebook shows what
+    is still open and what was overcome."""
+    out: list[dict] = []
+    for t in ctx.lecture["topics"]:
+        ev = (ctx.progress.get("topics") or {}).get(t["id"], {}).get("evidence") or []
+        names = {c["id"]: c["name"] for c in t.get("concepts") or []}
+        seen: set[str] = set()
+        for i in range(len(ev) - 1, -1, -1):
+            e = ev[i]
+            if e.get("correct") or e.get("qid") in seen:
+                continue
+            seen.add(e.get("qid"))
+            q = ctx.question(e.get("qid") or "")
+            if not q:
+                continue
+            concepts = set(e.get("concept_ids") or q.get("concept_ids") or [])
+            later = ev[i + 1 :]
+            fixed = any(x.get("correct") and (x.get("qid") == e.get("qid") or concepts & set(x.get("concept_ids") or [])) for x in later)
+            out.append({
+                "qid": q["id"],
+                "topicId": t["id"],
+                "topicTitle": t["title"],
+                "kind": e.get("kind"),
+                "prompt": q["prompt"],
+                "format": q["format"],
+                "answer": e.get("answer") or "",
+                "misconception": e.get("misconception") or "",
+                "concepts": [names[c] for c in concepts if c in names],
+                "conceptIds": sorted(concepts),
+                "ts": e.get("ts"),
+                "fixed": fixed,
+                **_reveal(q),
+            })
+    open_ = sorted((m for m in out if not m["fixed"]), key=lambda m: m["ts"] or "", reverse=True)
+    done = sorted((m for m in out if m["fixed"]), key=lambda m: m["ts"] or "", reverse=True)
+    return (open_ + done)[:MISTAKES_SHOWN]
+
+
+async def start_mistakes_practice(ctx: Ctx) -> None:
+    """Practise the open mistakes: a short review of their topics that asks
+    about the same concepts — new questions where there are, so the answer is
+    understood, not remembered."""
+    open_ = [m for m in mistakes(ctx) if not m["fixed"]]
+    if not open_:
+        raise TutorError("ما عندك أخطاء مفتوحة الآن — كل ما أخطأت فيه صحّحته بعدها.")
+    p = ctx.progress
+    if p.get("phase") in ("final", "review") or (p.get("pending") and p["pending"]["context"] in ("quiz", "final", "review")):
+        raise TutorError("أكمل ما بدأته أولاً، ثم تدرّب على أخطائك.")
+    focus: dict[str, list[str]] = {}
+    for m in open_:
+        focus.setdefault(m["topicId"], [])
+        focus[m["topicId"]] += [c for c in m["conceptIds"] if c not in focus[m["topicId"]]]
+    queue = list(focus)[:4]
+    ctx.student({"type": "request", "text": "تدرّب على أخطائي"})
+    p["review"] = {"queue": queue, "focus": focus, "kind": "mistakes", "returnPhase": p.get("phase"), "returnTopic": p.get("currentTopicId"), "returnStep": p.get("step"), "returnPending": p.get("pending")}
+    p["pending"] = None
+    p["phase"] = "review"
+    ctx.say({"type": "text", "md": f"**تدريب على أخطائك ({len(queue)})** — سؤال عن كل فكرة أخطأت فيها، بصيغة جديدة إن وُجدت. الإجابة الصحيحة تُغلق الخطأ في دفترك."})
+    await continue_review(ctx)
+
+
 async def start_review(ctx: Ctx) -> None:
     due = mastery.due_reviews(ctx.progress.get("topics") or {}, ctx.today)
     if not due:
@@ -1545,9 +1752,13 @@ async def continue_review(ctx: Ctx) -> None:
         if not ctx.lesson(tid):
             continue
         pool = ctx.bank(tid, ("quiz",))
-        q = select_next(pool, ctx.asked, 2, need_higher_order=True)
+        # ask about the concepts whose memory is due, the most faded first (FSRS)
+        # — or, when practising mistakes, about the concepts that went wrong
+        due = (r.get("focus") or {}).get(tid) or mastery.concepts_due(ctx.tstate(tid), ctx.today)
+        q = select_next(pool, ctx.asked, 2, due or None, need_higher_order=True)
         if q is None:
             used = [x for x in pool if x["id"] in ctx.asked]
+            used.sort(key=lambda x: not (set(x.get("concept_ids") or []) & set(due)))
             q = used[0] if used else None  # retrieval practice may reuse an old question
         if q is None:
             continue
@@ -1583,10 +1794,47 @@ def offer_final(ctx: Ctx) -> None:
     md = "أنهيت كل موضوعات المحاضرة 👏 الآن **الاختبار الشامل**: أسئلة جديدة موزّعة حسب أهمية الموضوعات، بدون تلميحات، والنتيجة تظهر في النهاية مع خطة مراجعة."
     if weak:
         md += f"\n\nموضوعات ما زالت تحتاج مراجعة: {'، '.join(weak)} — سيشملها الاختبار."
-    ctx.say({"type": "text", "md": md}, actions=[_act("final", "ابدأ الاختبار الشامل")])
+    ctx.say({"type": "text", "md": md}, actions=_final_actions("ابدأ الاختبار الشامل"))
 
 
-async def start_final(ctx: Ctx) -> None:
+EXAM_SECONDS_PER_QUESTION = 90
+EXAM_MIN_MINUTES = 10
+
+
+def _final_actions(label: str) -> list[dict]:
+    """The final exam, in two ways: at the student's own pace, or as a real
+    exam — the whole set against the clock."""
+    return [_act("final", label), _act("final", "محاكاة اختبار حقيقي بوقت محدد", timed=True)]
+
+
+def _time_left(ctx: Ctx) -> float | None:
+    """Seconds left in a timed final exam (None when untimed)."""
+    f = ctx.progress.get("final") or {}
+    if not f.get("deadline"):
+        return None
+    try:
+        return (dt.datetime.fromisoformat(f["deadline"]) - ctx.now).total_seconds()
+    except ValueError:
+        return None
+
+
+def _time_up(ctx: Ctx) -> None:
+    """The time of a timed exam ran out: every unanswered question counts as
+    not answered (wrong in the score, never as evidence about a concept —
+    running out of time is not a misunderstanding), and the report follows."""
+    p = ctx.progress
+    f = p["final"]
+    missed = f["questionIds"][int(f.get("index") or 0):]
+    for qid in missed:
+        f["answers"][qid] = {"correct": False, "credit": 0.0, "misconception": "", "note": "انتهى الوقت قبل الإجابة.", "picked": None, "confidence": None, "missed": True}
+    f["index"] = f["total"]
+    f["timedOut"] = len(missed)
+    p["pending"] = None
+    ctx.say({"type": "notice", "tone": "warn", "md": f"انتهى وقت الاختبار. {len(missed)} سؤال لم تُجب عنه يُحسب بدون درجة — مثل الاختبار الحقيقي."})
+    _finish_final(ctx)
+
+
+async def start_final(ctx: Ctx, timed: bool = False) -> None:
     p = ctx.progress
     if p.get("pending") and p["pending"]["context"] != "final":
         p["pending"] = None
@@ -1616,7 +1864,12 @@ async def start_final(ctx: Ctx) -> None:
     p["final"] = {"status": "running", "questionIds": [q["id"] for q in order], "index": 0, "total": len(order), "answers": {}, "attempt": attempt, "startedAt": ctx.iso, "history": history}
     p["phase"] = "final"
     p["currentTopicId"] = None
-    ctx.say({"type": "text", "md": f"**الاختبار الشامل — المحاولة {attempt}** · {len(order)} سؤالاً. خذ وقتك، ولن تظهر الإجابات إلا في النهاية."})
+    if timed:
+        minutes = max(EXAM_MIN_MINUTES, -(-len(order) * EXAM_SECONDS_PER_QUESTION // 60))
+        p["final"].update(timed=True, minutes=minutes, deadline=(ctx.now + dt.timedelta(minutes=minutes)).isoformat())
+        ctx.say({"type": "text", "md": f"**محاكاة اختبار حقيقي — المحاولة {attempt}** · {len(order)} سؤالاً في **{minutes} دقيقة**. الوقت يمشي حتى لو طلعت من الصفحة، وما لم تُجب عنه عند انتهاء الوقت يُحسب بدون درجة. لا تلميحات، والإجابات تظهر في النهاية."})
+    else:
+        ctx.say({"type": "text", "md": f"**الاختبار الشامل — المحاولة {attempt}** · {len(order)} سؤالاً. خذ وقتك، ولن تظهر الإجابات إلا في النهاية."})
     ask(ctx, order[0], "final", 1, len(order))
 
 
@@ -1626,7 +1879,8 @@ async def _final_answer(ctx: Ctx, q: dict, g: dict) -> None:
     f["answers"][q["id"]] = {"correct": bool(g["correct"]), "credit": float(g.get("credit", 1.0 if g["correct"] else 0.0)), "misconception": g.get("misconception") or "", "note": g.get("note") or "", "picked": g.get("picked"), "confidence": g.get("confidence")}
     tid = q["topic_id"]
     topic = ctx.topic(tid)
-    mastery.add_evidence(ctx.tstate(tid), _evidence(q, g, "final", 0, ctx.iso, g.get("confidence")))
+    mastery.add_evidence(ctx.tstate(tid), _evidence(q, g, "final", 0, ctx.iso, g.get("confidence")), ctx.today)
+    ctx.rate(q, g["correct"])
     p["points"] = int(p.get("points") or 0) + mastery.points_for(g["correct"], q["difficulty"], 0, "final")
     names = {c["id"]: c["name"] for c in topic.get("concepts") or []}
     ctx.events.append({"type": "answer", "topic": topic["title"], "concepts": [names.get(c, c) for c in q.get("concept_ids") or []], "qid": q["id"], "shared": ctx.is_shared(q["id"]), "skill": q["skill"], "difficulty": q["difficulty"], "prompt": q["prompt"], "correct": g["correct"], "kind": "final"})
@@ -1649,7 +1903,7 @@ def _finish_final(ctx: Ctx) -> None:
     f["history"] = (f.get("history") or []) + [{"attempt": f["attempt"], "score": report["score"], "at": ctx.iso}]
     p["phase"] = "done"
     ctx.events.append({"type": "final", "attempt": f["attempt"], "score": report["score"]})
-    ctx.say(report, actions=[_act("final", "اختبار شامل جديد بأسئلة مختلفة"), _act("save_cards", "أضف مصطلحات المحاضرة لبطاقات المراجعة")])
+    ctx.say(report, actions=[*_final_actions("اختبار شامل جديد بأسئلة مختلفة"), _act("save_cards", "أضف مصطلحات المحاضرة لبطاقات المراجعة")])
 
 
 def final_report(ctx: Ctx) -> dict:
@@ -1734,7 +1988,7 @@ def final_report(ctx: Ctx) -> dict:
 #  Entry point
 # ══════════════════════════════════════════════════════════════════
 
-ACTIONS = ("begin", "next", "answer", "hint", "reveal", "reexplain", "ask", "goto", "test_out", "review", "final", "abort_final", "save_cards", "report")
+ACTIONS = ("begin", "next", "answer", "finish_final", "practice_mistakes", "hint", "reveal", "reexplain", "ask", "goto", "test_out", "review", "final", "abort_final", "save_cards", "report", "deep_dive")
 
 
 def section_of(progress: dict) -> str:
@@ -1769,6 +2023,19 @@ async def run_action(ctx: Ctx, action: str, payload: dict) -> None:
 async def _run_action(ctx: Ctx, action: str, payload: dict) -> None:
     if action not in ACTIONS:
         raise TutorError("إجراء غير معروف.")
+    p0 = ctx.progress
+    if p0.get("phase") == "final" and (p0.get("final") or {}).get("status") == "running":
+        left = _time_left(ctx)
+        if left is not None and left <= 0:
+            _track_time(ctx)
+            _time_up(ctx)  # whatever was sent, the time is over: close the exam first
+            return
+    if action == "finish_final":
+        raise TutorError("ما زال في وقت الاختبار بقية — أكمل الإجابة." if p0.get("phase") == "final" else "لا يوجد اختبار جارٍ.")
+    if action == "practice_mistakes":
+        _track_time(ctx)
+        await start_mistakes_practice(ctx)
+        return
     _track_time(ctx)
     p = ctx.progress
     if action == "begin":
@@ -1794,6 +2061,8 @@ async def _run_action(ctx: Ctx, action: str, payload: dict) -> None:
         handle_goto(ctx, payload)
     elif action == "report":
         handle_report(ctx, payload)
+    elif action == "deep_dive":
+        await handle_deep_dive(ctx, payload)
     elif action == "test_out":
         await handle_test_out(ctx)
     elif action == "review":
@@ -1803,15 +2072,16 @@ async def _run_action(ctx: Ctx, action: str, payload: dict) -> None:
             raise TutorError("الاختبار الشامل جارٍ بالفعل.")
         if p.get("pending") and p["pending"]["context"] in ("quiz", "review"):
             raise TutorError("أكمل السؤال الحالي أولاً.")
-        ctx.student({"type": "request", "text": "ابدأ الاختبار الشامل"})
-        await start_final(ctx)
+        timed = payload.get("timed") is True
+        ctx.student({"type": "request", "text": "ابدأ محاكاة اختبار بوقت" if timed else "ابدأ الاختبار الشامل"})
+        await start_final(ctx, timed=timed)
     elif action == "abort_final":
         if p.get("phase") != "final":
             raise TutorError("لا يوجد اختبار شامل جارٍ.")
         p["final"]["status"] = "aborted"
         p["phase"] = "final_ready"
         p["pending"] = None
-        ctx.say({"type": "text", "md": "أوقفت الاختبار. الإجابات التي سجلتها تبقى ضمن أدلة الإتقان، وتقدر تبدأ اختباراً جديداً متى ما حبيت."}, actions=[_act("final", "ابدأ الاختبار الشامل")])
+        ctx.say({"type": "text", "md": "أوقفت الاختبار. الإجابات التي سجلتها تبقى ضمن أدلة الإتقان، وتقدر تبدأ اختباراً جديداً متى ما حبيت."}, actions=_final_actions("ابدأ الاختبار الشامل"))
     elif action == "save_cards":
         pass  # handled in the browser (studyStore); nothing to change server-side
 

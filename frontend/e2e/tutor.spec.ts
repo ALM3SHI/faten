@@ -363,3 +363,72 @@ test("new question types: put steps in order, match pairs, fill the blank — ea
   await page.getByRole("textbox", { name: "الكلمة الناقصة" }).press("Enter");
   await expect(page.getByText("إجابة صحيحة").last()).toBeVisible();
 });
+
+test("a topic's concepts each open a deep-dive page, and lead to related concepts", async ({ page }) => {
+  await asNewStudent(page, "deep");
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+
+  const concepts = page.getByRole("list", { name: "مفاهيم الموضوع — اضغط أي مفهوم لتتعمّق فيه" });
+  await expect(concepts.getByRole("listitem")).toHaveCount(2);
+  await concepts.getByRole("button", { name: /تعمّق في «مبدأ LIFO» — لم يُقَس بعد/ }).click();
+
+  await expect(page.getByText("تعمّق في: مبدأ LIFO")).toBeVisible();
+  const how = page.getByRole("region", { name: "كيف يعمل؟" });
+  await expect(how).toContainText("كل push يضع عنصراً في القمة");
+  await expect(how).toContainText("من ملفك");
+  await expect(page.getByRole("region", { name: "من الواقع" })).toContainText("إضافة توضيحية");
+  // a related concept opens its own page
+  await page.getByRole("list", { name: "مفاهيم مرتبطة به" }).getByRole("button", { name: /عمليتا push و pop/ }).click();
+  await expect(page.getByText("تعمّق في: عمليتا push و pop")).toBeVisible();
+});
+
+async function toTheCheckQuestion(page: Page, who: string) {
+  await asNewStudent(page, who);
+  await page.goto("/study/");
+  await page.locator("#study-file").setInputFiles({ name: "ds.pdf", mimeType: "application/pdf", buffer: TINY_PDF });
+  await page.getByRole("button", { name: "ابدأ الدرس" }).click();
+  await page.getByRole("button", { name: "ابدأ الموضوع الأول" }).click();
+  await page.getByRole("button", { name: "ابدأ الشرح" }).click();
+}
+
+test("a first wrong answer goes to the mistakes notebook, and practising it closes it", async ({ page }) => {
+  await toTheCheckQuestion(page, "notebook");
+  await page.getByRole("radio", { name: "2", exact: true }).click();
+  await page.getByRole("button", { name: "متأكد", exact: true }).click();
+  await page.getByRole("radio", { name: "1", exact: true }).click();
+  await page.getByRole("button", { name: "أظن", exact: true }).click();
+  await expect(page.getByText("إجابة صحيحة")).toBeVisible();
+
+  await page.getByRole("button", { name: /دفتر أخطائي — 1 مفتوحة/ }).click();
+  const book = page.getByRole("dialog", { name: "دفتر أخطائي" });
+  const item = book.getByRole("listitem").first();
+  await expect(item).toContainText("مفتوح");
+  await expect(item).toContainText("إجابتك: 2");
+  await expect(item).toContainText("الصحيح: 1");
+  await expect(item).toContainText("خلط المكدس بالطابور");
+
+  await book.getByRole("button", { name: "تدرّب على أخطائك المفتوحة (1)" }).click();
+  await expect(page.getByText("تدريب على أخطائك (1)")).toBeVisible();
+  await page.getByRole("radio", { name: "1", exact: true }).last().click();
+  await page.getByRole("button", { name: "متأكد", exact: true }).click();
+  await page.getByRole("button", { name: /^دفتر أخطائي$|أخطائي دفتر أخطائي$/ }).click();
+  await expect(page.getByRole("dialog", { name: "دفتر أخطائي" }).getByRole("listitem").first()).toContainText("تجاوزته");
+});
+
+test("a timed final exam shows its clock and ends by itself when the time runs out", async ({ page }) => {
+  await toTheCheckQuestion(page, "timed");
+  await page.getByRole("radio", { name: "1", exact: true }).click();
+  await page.getByRole("button", { name: "أظن", exact: true }).click();
+  await page.getByRole("button", { name: "التالي", exact: true }).click();
+  await page.getByRole("button", { name: "محاكاة اختبار حقيقي بوقت محدد" }).click();
+
+  await expect(page.getByText("محاكاة اختبار حقيقي")).toBeVisible();
+  await expect(page.getByRole("timer", { name: /الوقت المتبقي في الاختبار/ })).toBeVisible();
+  // the mock's exam lasts 3 seconds: the page closes it when the clock reaches zero
+  await expect(page.getByText(/انتهى وقت الاختبار/)).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText(/نتيجة الاختبار الشامل/)).toBeVisible();
+  await expect(page.getByRole("timer", { name: /الوقت المتبقي في الاختبار/ })).toHaveCount(0);
+});

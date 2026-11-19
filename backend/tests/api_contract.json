@@ -499,6 +499,14 @@
     "body": [],
     "response": []
   },
+  "GET /api/tutor/lectures/{lid}/mistakes": {
+    "params": [
+      "header:authorization",
+      "path:lid"
+    ],
+    "body": [],
+    "response": []
+  },
   "POST /api/tutor/lectures/{lid}/reset": {
     "params": [
       "header:authorization",

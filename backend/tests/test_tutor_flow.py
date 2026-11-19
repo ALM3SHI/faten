@@ -398,20 +398,33 @@ def test_spaced_review_after_mastery(api, monkeypatch):
         s.answer(right=True)
         s.step("next")
     assert s.state["topics"]["t1"]["status"] == "mastered"
-    # two days later the review is due
+    # the review date comes from each concept's memory (FSRS): answered well
+    # today, a concept is remembered for ~4 days — not due after 2, due after 5
     import routers.tutor as rt
 
-    later = dt.datetime.now(dt.timezone.utc) + dt.timedelta(days=2)
-    monkeypatch.setattr(rt, "_now", lambda: later)
-    g = http.get(f"/api/tutor/lectures/{s.lid}").json()
+    ts = db.store[("users", UID, "tutor_lectures", s.lid, "progress", "main")]["topics"]["t1"]
+    assert set(ts["concepts"]) and all(m["reps"] >= 1 and m["S"] > 1 for m in ts["concepts"].values())
+    first_due = ts["reviewDue"]
+    assert first_due == min(m["due"] for m in ts["concepts"].values())
+    for days, due in ((2, []), (5, ["t1"])):
+        later = dt.datetime.now(dt.timezone.utc) + dt.timedelta(days=days)
+        monkeypatch.setattr(rt, "_now", lambda later=later: later)
+        g = http.get(f"/api/tutor/lectures/{s.lid}").json()
+        assert g["state"]["reviewDue"] == due, days
     s.state = g["state"]
-    assert g["state"]["reviewDue"] == ["t1"] and g["state"]["topics"]["t1"]["status"] == "review_due"
+    assert g["state"]["topics"]["t1"]["status"] == "review_due"
     s.step("review")
     assert s.state["phase"] == "review" and s.state["pending"]["context"] == "review"
+    # the review asks about a concept whose memory is due
+    q = s.answer_key(s.state["pending"]["question"]["id"])
+    assert set(q["concept_ids"]) & set(ts["concepts"])
     s.answer(right=True)
     s.step("next")
     assert s.state["phase"] == "topic" and s.state["reviewDue"] == []
     assert s.state["topics"]["t1"]["status"] == "mastered"
+    # remembered after 5 days: the next review is further away than the first
+    ts = db.store[("users", UID, "tutor_lectures", s.lid, "progress", "main")]["topics"]["t1"]
+    assert ts["reviewDue"] > first_due
 
 
 def test_same_file_from_another_student_reuses_the_analysis(api):
@@ -644,7 +657,7 @@ def test_due_reviews_reach_the_home_list_and_the_morning_push(api, monkeypatch):
 
     today = dt.date.today()
     assert push.tutor_review_reminder(push.tutor_due(db, UID, today), today) == []  # nothing due yet
-    later = today + dt.timedelta(days=2)
+    later = today + dt.timedelta(days=5)  # FSRS: a concept answered well is reviewed after ~4 days
     items = push.tutor_review_reminder(push.tutor_due(db, UID, later), later)
     assert len(items) == 1 and "مراجعة اليوم" in items[0]["title"]
     assert items[0]["url"] == f"/tutor/?lecture={s.lid}&review=1"
@@ -654,6 +667,6 @@ def test_due_reviews_reach_the_home_list_and_the_morning_push(api, monkeypatch):
     assert push.daily_items(db, UID, later) == []
     import routers.tutor as rt
 
-    monkeypatch.setattr(rt, "_now", lambda: dt.datetime.now(dt.timezone.utc) + dt.timedelta(days=2))
+    monkeypatch.setattr(rt, "_now", lambda: dt.datetime.now(dt.timezone.utc) + dt.timedelta(days=5))
     row = http.get("/api/tutor/lectures").json()["lectures"][0]
     assert row["reviewDue"] == 1 and row["dueTopics"][0]["id"] == "t1"
