@@ -90,6 +90,21 @@ LESSON = {
     "required": ["segments", "questions"],
 }
 
+COVER = {
+    "type": "object",
+    "properties": {
+        "segments": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"title": _STR, "parts": {"type": "array", "items": PART}, "pages": _INTS, "concept_ids": _STRS},
+                "required": ["title", "parts", "pages"],
+            },
+        }
+    },
+    "required": ["segments"],
+}
+
 DEEP_DIVE = {
     "type": "object",
     "properties": {"parts": {"type": "array", "items": PART}, "related": _STRS},
@@ -104,7 +119,7 @@ REVIEW = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {"index": _INT, "supported": {"type": "boolean"}, "unsupported": _STR},
+                "properties": {"index": _INT, "supported": {"type": "boolean"}, "evidence": _STR, "unsupported": _STR},
                 "required": ["index", "supported"],
             },
         },

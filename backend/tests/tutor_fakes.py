@@ -72,6 +72,13 @@ class FakeTutorAI:
                     "key_terms": [{"term": f"Term{chunk[0]}", "definition": "معنى"}],
                 })
             return {"title": "هياكل البيانات", "overview": "محاضرة عن المكدس", "topics": topics, "unclear_pages": []}
+        if "It left out lecture pages" in prompt:
+            self.calls["cover"] += 1
+            missing = [int(x) for x in re.findall(r"=== صفحة (\d+) ===", user + prompt)]
+            return {"segments": [{"title": "ما تبقّى من الموضوع", "pages": missing, "parts": [
+                {"role": "idea", "origin": "lecture", "markdown": "ما تقوله هذه الصفحات " + " ".join(f"[ص {n}]" for n in missing), "pages": missing},
+                {"role": "summary", "origin": "lecture", "markdown": "خلاصة الصفحات المتبقية " + " ".join(f"[ص {n}]" for n in missing), "pages": missing},
+            ]}]}
         if "go DEEPER into ONE concept" in prompt:
             self.calls["deep_dive"] += 1
             others = re.findall(r"(t\d+c\d+): ", prompt)
@@ -90,7 +97,9 @@ class FakeTutorAI:
             solved = re.findall(r"^\(Q(\d+)\) \[(\w+)\] (.*)$", questions_text, flags=re.M)
             return {
                 "parts": [
-                    {"index": int(items[i]), "supported": "ادعاء غير موجود" not in items[i + 1], "unsupported": "حساب عناوين الذاكرة"}
+                    {"index": int(items[i]), "supported": "ادعاء غير موجود" not in items[i + 1], "unsupported": "حساب عناوين الذاكرة",
+                     # a supported part comes with the words that support it — except one marked to test that rule
+                     "evidence": "" if "بلا اقتباس" in items[i + 1] else "[ص 1] آخر داخل أول خارج"}
                     for i in range(0, len(items), 2)
                 ],
                 "answers": [{"index": int(k), "choice": 0 if "مفتاح خاطئ" in text else 1} for k, fmt, text in solved if fmt == "choice"],

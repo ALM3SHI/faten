@@ -495,7 +495,13 @@ async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict], questions: 
     raw = raw if isinstance(raw, dict) else {}
     relabelled = 0
     for e in raw.get("parts") or []:
-        if not isinstance(e, dict) or e.get("supported") is not False:
+        if not isinstance(e, dict):
+            continue
+        # "supported" must come with the words from the pages that support it:
+        # measured on real lectures, a reviewer answering yes/no passed claims
+        # an independent check then flagged. No quote, no «من ملفك».
+        quoted = len(str(e.get("evidence") or "").strip()) >= 8
+        if e.get("supported") is True and quoted:
             continue
         try:
             k = int(e.get("index")) - 1
@@ -508,7 +514,7 @@ async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict], questions: 
         if part["origin"] == "lecture":
             part["origin"] = "added"
             part["pages"] = []
-            part["unsupported"] = clip(e.get("unsupported"), 300)
+            part["unsupported"] = clip(e.get("unsupported") or "لم يُقتبس من الصفحات ما يدعمه", 300)
             relabelled += 1
 
     answers: dict[int, dict] = {}
@@ -530,38 +536,13 @@ async def review_lesson(ctx: Ctx, topic: dict, segments: list[dict], questions: 
     return {"checked": len(items), "relabelled": relabelled, "solved": solved, "disabled": disabled, "at": ctx.iso}
 
 
-async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
-    got = ctx.lesson(tid)
-    if got and got.get("segments"):
-        return got
-    topic = ctx.topic(tid)
-    allowed = ctx.all_page_numbers()
-    earlier = [t["title"] for t in ctx.lecture["topics"][: ctx.topic_ids.index(tid)]]
-    ctx.charge(COST_LESSON)
-    raw = await ai.ask_json(
-        prompts.LESSON.format(
-            lecture=ctx.lecture.get("title", ""),
-            title=topic["title"],
-            objectives="؛ ".join(topic.get("objectives") or []) or "—",
-            concepts=_concepts_text(topic),
-            earlier="، ".join(earlier[:10]) or "— (هذا أول موضوع)",
-            learner="طالب جامعي يذاكر المحاضرة لأول مرة",
-            pages=ctx.topic_pages_text(topic),
-            question_spec=prompts.QUESTION_SPEC.format(),
-            code_note=", write_code (the topic has code)" if topic.get("has_code") else "",
-        ),
-        "Write the lesson and the questions for this topic.",
-        schema=schemas.LESSON,
-        kind="lesson",
-        temperature=0.4,
-        # Gemini 3 counts its reasoning against this limit; a long topic with
-        # its question bank needs room or the JSON gets cut off.
-        max_tokens=32000,
-        timeout=180.0,
-    )
+MAX_SEGMENTS = 6
+COVERAGE_TARGET = 0.75  # below this share of the topic's pages, the missing ones get their own part
+
+
+def _segments_from(raw_segments: Any, topic: dict, allowed: set[int], photos_left: list[int]) -> list[dict]:
     segments = []
-    photos_left = [visuals.MAX_PHOTOS_PER_LESSON]
-    for s in (raw.get("segments") if isinstance(raw, dict) else None) or []:
+    for s in raw_segments if isinstance(raw_segments, list) else []:
         if not isinstance(s, dict):
             continue
         seg_pages = valid_pages(s.get("pages"), allowed)
@@ -583,16 +564,105 @@ async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
         if visual:
             seg["visual"] = visual
         segments.append(seg)
-    segments = segments[:5]
+    return segments
+
+
+def _topic_readable_pages(ctx: Ctx, topic: dict) -> list[int]:
+    a, b = topic["pages"]
+    pages = ctx.pages()
+    return [n for n in range(a, b + 1) if 0 < n <= len(pages) and pages[n - 1].readable]
+
+
+def pages_used(segments: list[dict]) -> set[int]:
+    """The lecture pages a lesson explains: the pages of its parts and pieces, and every page it cites."""
+    used: set[int] = set()
+    for s in segments:
+        used |= set(s.get("pages") or []) | set(cited_pages(s.get("markdown") or ""))
+        for p in s.get("parts") or []:
+            used |= set(p.get("pages") or [])
+    return used
+
+
+async def _cover_missing_pages(ctx: Ctx, topic: dict, segments: list[dict], missing: list[int], allowed: set[int], photos_left: list[int]) -> list[dict]:
+    """One more call when a lesson left pages of its topic out: parts for just
+    those pages, so the course has no gaps (measured: a 13-page topic once
+    explained 4 of them)."""
+    pages = ctx.pages()
+    text = "\n\n".join(page_block(pages[n - 1], 4000) for n in missing if 0 < n <= len(pages))[:TOPIC_PAGES_CHARS]
+    raw = await ai.ask_json(
+        prompts.COVER.format(
+            lecture=ctx.lecture.get("title", ""),
+            title=topic["title"],
+            done="؛ ".join(s["title"] for s in segments),
+            page_list=", ".join(str(n) for n in missing),
+            pages=text,
+            concepts=_concepts_text(topic),
+        ),
+        "Write the missing parts.",
+        schema=schemas.COVER,
+        kind="lesson_cover",
+        temperature=0.4,
+        max_tokens=16000,
+        timeout=180.0,
+    )
+    return _segments_from((raw or {}).get("segments") if isinstance(raw, dict) else None, topic, allowed, photos_left)
+
+
+async def ensure_lesson(ctx: Ctx, tid: str) -> dict:
+    got = ctx.lesson(tid)
+    if got and got.get("segments"):
+        return got
+    topic = ctx.topic(tid)
+    allowed = ctx.all_page_numbers()
+    earlier = [t["title"] for t in ctx.lecture["topics"][: ctx.topic_ids.index(tid)]]
+    readable = _topic_readable_pages(ctx, topic)
+    n_segments = max(2, min(5, -(-len(readable) // 3)))
+    ctx.charge(COST_LESSON)
+    raw = await ai.ask_json(
+        prompts.LESSON.format(
+            lecture=ctx.lecture.get("title", ""),
+            title=topic["title"],
+            objectives="؛ ".join(topic.get("objectives") or []) or "—",
+            concepts=_concepts_text(topic),
+            earlier="، ".join(earlier[:10]) or "— (هذا أول موضوع)",
+            learner="طالب جامعي يذاكر المحاضرة لأول مرة",
+            pages=ctx.topic_pages_text(topic),
+            page_list=", ".join(str(n) for n in readable) or "—",
+            segment_range=f"{max(2, n_segments - 1)}-{n_segments}" if n_segments > 2 else "2",
+            question_spec=prompts.QUESTION_SPEC.format(),
+            code_note=", write_code (the topic has code)" if topic.get("has_code") else "",
+        ),
+        "Write the lesson and the questions for this topic.",
+        schema=schemas.LESSON,
+        kind="lesson",
+        temperature=0.4,
+        # Gemini 3 counts its reasoning against this limit; a long topic with
+        # its question bank needs room or the JSON gets cut off.
+        max_tokens=32000,
+        # measured on real lectures: a long topic on a busy model ran past 180 s
+        timeout=240.0,
+    )
+    photos_left = [visuals.MAX_PHOTOS_PER_LESSON]
+    segments = _segments_from(raw.get("segments") if isinstance(raw, dict) else None, topic, allowed, photos_left)[:MAX_SEGMENTS]
     if not segments:
         raise TutorError("تعذّر تجهيز شرح هذا الموضوع الآن. اضغط «حاول مرة أخرى» بعد قليل.", 502)
+    missing = [n for n in readable if n not in pages_used(segments)]
+    coverage = {"readable": len(readable), "missing": missing, "filled": []}
+    if readable and len(missing) / len(readable) > 1 - COVERAGE_TARGET and len(segments) < MAX_SEGMENTS:
+        try:
+            extra = await _cover_missing_pages(ctx, topic, segments, missing, allowed, photos_left)
+            segments += extra[: MAX_SEGMENTS - len(segments)]
+            coverage["filled"] = sorted(set(missing) & pages_used(extra))
+        except Exception as exc:  # the lesson is still worth showing
+            logger.warning("[tutor] covering pages %s of %s failed: %s", missing, tid, getattr(exc, "detail", exc))
+    coverage["missing"] = [n for n in readable if n not in pages_used(segments)]
     questions = _normalize_questions(raw.get("questions"), topic, allowed, "quiz")
     # A check question must point at an existing segment.
     for q in questions:
         if q["pool"] == "check" and (q.get("segment") is None or not str(q["segment"]).isdigit() or int(q["segment"]) >= len(segments)):
             q["pool"] = "quiz"
             q["segment"] = None
-    lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso}
+    lesson = {"topicId": tid, "segments": segments, "questions": questions, "variants": {}, "generatedAt": ctx.iso, "coverage": coverage}
     video_queries = [clip(q, 100) for q in ((raw.get("video") or {}).get("queries") or []) if clip(q, 100)][:2] if isinstance(raw.get("video"), dict) else []
     if video_queries:
         lesson["video"] = {"queries": video_queries}  # looked up in the background (visuals.schedule_video)
