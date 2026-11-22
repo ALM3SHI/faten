@@ -67,6 +67,9 @@ What we know about the student: {learner}
 Lecture pages for this topic:
 {pages}
 
+The pages of this topic are: {page_list}. EVERY one of them must be explained by at least one
+part and cited like [ص N] — a page left out is a gap in the student's course.
+
 Return ONE JSON object:
 {{
   "segments": [
@@ -96,7 +99,9 @@ inside ``` fences with the language name. Do not put the check question here.
   mistake = a common mistake or misconception and how to avoid it · compare = how it differs
   from a nearby idea · summary = the one or two sentences to remember.
   origin — be honest, the student sees it:
-    "lecture" = what the pages say. Cite them like [ص 12]. Rephrasing is fine; adding is not.
+    "lecture" = what the pages say. Cite them like [ص 12]. Rephrasing is fine; adding is not —
+                a purpose, benefit, consequence or general definition the pages do not state
+                ("this protects against…", "this guarantees…") goes in its own "added" piece.
     "added"   = your own help that is NOT in the pages: an everyday analogy, a real-life
                 example, a common mistake, a comparison. Only well-established knowledge that
                 agrees with the lecture; never a new fact the exam could depend on.
@@ -140,7 +145,27 @@ Required questions:
   the bug), so knowing one question pattern is not enough.
   New situations — do NOT reuse the examples of the explanation word for word.
 - 2 questions with "pool": "final" for the end-of-lecture exam (different from the others).
-2-4 segments. Total explanation must fit the topic: do not over-shorten it.
+{segment_range} segments (about one for every 2-3 pages). Total explanation must fit the topic:
+do not over-shorten it.
+Every segment has at least one "added" piece — a "real_world" example or an everyday analogy
+the student can picture — unless the lecture itself already gives one for that part.
+"""
+
+COVER = """You are «فطن», a patient private tutor. The lesson on "{title}" (lecture "{lecture}")
+already has these parts: {done}. It left out lecture pages {page_list}. Write the missing
+part(s) so the student's course has no gap: explain what these pages say, in the same style.
+
+Concepts of the topic (use these ids): {concepts}
+
+The pages to cover:
+{pages}
+
+Return ONE JSON object: {{"segments": [{{"title": "...", "parts": [ PART, ... ], "pages": [...], "concept_ids": [...]}}]}}
+1-2 segments; every page above must be explained by a part and cited like [ص N]; a "summary" last.
+
+PART — {{"role": "idea" | "why" | "how" | "example" | "real_world" | "code" | "mistake" | "compare" | "summary",
+  "origin": "lecture" | "added", "markdown": "clear Arabic, technical terms in English in
+  parentheses, cite pages like [ص 12] for lecture parts", "pages": [pages, empty for added]}}
 """
 
 DEEP_DIVE = """You are «فطن», a patient private tutor. A student wants to go DEEPER into ONE concept
@@ -168,7 +193,12 @@ PART — {{"role": "idea" | "why" | "how" | "example" | "real_world" | "code" | 
 REVIEW = """You check a lesson against the lecture it was written from. You did not write it.
 For each numbered part below, decide if EVERYTHING it states is supported by the lecture pages:
 rephrasing, simplifying and reordering are fine; a fact, number, step, rule or claim that the
-pages do not contain is NOT supported (even if it is true in general).
+pages do not contain is NOT supported (even if it is true in general). Be strict: a purpose,
+benefit or consequence the pages do not state ("it protects against…", "it is used to…") is a
+claim too, and so is a general definition the pages do not give. A part that mixes supported
+and unsupported sentences is NOT supported. For every part you mark supported, copy into
+"evidence" the exact words from the pages (at most 25) that support it, with the page:
+"[ص N] …". If you cannot quote them, the part is not supported.
 
 Lecture pages:
 {pages}
@@ -178,7 +208,7 @@ student would (you are not shown the answer key). Choice: the option's position 
 Order: the items' positions (0-based, as listed) in the right order. Match: for each left item
 in turn, the position (0-based) of the right item that goes with it. Fill: the missing word.
 
-Return ONE JSON object: {{"parts": [{{"index": 1, "supported": true}},
+Return ONE JSON object: {{"parts": [{{"index": 1, "supported": true, "evidence": "[ص 3] the words from the page"}},
   {{"index": 2, "supported": false, "unsupported": "the claim that is not in the pages, in Arabic"}}],
   "answers": [{{"index": 1, "choice": 2}}, {{"index": 2, "order": [1, 0, 2]}},
               {{"index": 3, "matches": [2, 0, 1]}}, {{"index": 4, "text": "..."}}]}}

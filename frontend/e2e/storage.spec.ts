@@ -38,6 +38,10 @@ async function seed(page: Page) {
 test("saved data from an earlier version is still shown when the server is down", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  // The fixture was recorded in the week of 2026-11-15 (its absence is on that
+  // Sunday). Without a fixed clock, "Sunday" (?day=0) moved to the next week
+  // and the absence was no longer on screen — the test broke on 2026-11-22.
+  await page.clock.setFixedTime(new Date("2026-11-15T09:00:00+03:00"));
   await seed(page);
 
   await page.goto("/record/");
